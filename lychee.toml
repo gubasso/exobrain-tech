@@ -66,6 +66,8 @@ exclude = [
   "^https?://(www\\.)?builder\\.ai",
   "^https?://help\\.openai\\.com",
   "^https?://vim\\.fandom\\.com",
+  # Session/anti-bot redirect: serves a 307 lychee won't follow to completion.
+  "^https?://forums\\.linuxmint\\.com",
   "^https?://web\\.archive\\.org",
   "^https?://dl\\.acm\\.org",
   "^https?://linearb\\.io",
@@ -91,6 +93,12 @@ exclude = [
   "^https?://(www\\.)?clockwork\\.xyz",
   "^https?://(www\\.)?milvus\\.io",
   "^https?://(www\\.)?nano-editor\\.org",
+  # Live pages that chronically exceed the pre-push timeout (slow origins).
+  "^https?://(www\\.)?dynu\\.com",
+  "^https?://no-color\\.org",
+  "^https?://(www\\.)?argyllcms\\.com",
+  "^https?://docs\\.appimage\\.org",
+  "^https?://chromium\\.googlesource\\.com",
 
   # --- Vendor docs that reorganized their URL structures wholesale ---
   # Keep historical references in notes; don't gate pushes on dead old paths.

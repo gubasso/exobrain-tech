@@ -302,7 +302,7 @@ implementar esse capitol), voltar no anterior que ele explica o futures, antes d
 https://cfsamson.gitbook.io/green-threads-explained-in-200-lines-of-rust/
 <https://cfsamson.gitbook.io/book-exploring-async-basics>
 (`cfsamson.github.io/book-exploring-async-basics/` is dead)
-https://cfsamsonbooks.gitbook.io/epoll-kqueue-iocp-explained/
+https://cfsamsonbooks.gitbook.io/explaining-atomics-in-rust/epoll-kqueue-iocp-explained
 
 - [Awesome Rust Streaming](https://github.com/jamesmunns/awesome-rust-streaming/blob/master/README.md)
   - This is a community curated list of livestreams about the programming language Rust.
