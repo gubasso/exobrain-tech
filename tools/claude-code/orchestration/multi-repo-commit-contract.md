@@ -29,8 +29,8 @@ Output:
 ```json
 {
   "ok": true,
-  "repos": [ {"root": "/abs/repo", "paths": ["a"], "extra_dirty": ["b"]} ],
-  "undeclared_dirty": [ {"root": "/abs/other", "paths": ["x"]} ],
+  "repos": [{ "root": "/abs/repo", "paths": ["a"], "extra_dirty": ["b"] }],
+  "undeclared_dirty": [{ "root": "/abs/other", "paths": ["x"] }],
   "declared_no_change": ["/abs/declared-clean"],
   "escapes": ["/abs/path-in-no-repo"],
   "invalid_repos": ["/not/a/repo"],

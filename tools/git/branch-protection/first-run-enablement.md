@@ -19,7 +19,7 @@ Settings → **Actions** → **General**:
 
 **OIDC / Trusted Publishing** needs no repo-level switch — `permissions: id-<REDACTED-EXAMPLE>
 level is what mints the OIDC token, and crates.io authorizes it via the trusted publisher you
-register (workflow filename `release-plz.yml`; see
+register (workflow filename`release-plz.yml`; see
 [Trusted Publishing](../../../languages/rust/release-workflow-spec/03-trusted-publishing-oidc.md)).
 
 **Default branch.** Settings → General → set the default branch to **`develop`** (release-plz

@@ -47,9 +47,8 @@ reconfiguration here, as long as the workflow _file_ name and owner/repo stay th
 
 ## In CI — with release-plz (recommended)
 
-release-plz performs the OIDC exchange itself. Grant the job `id-<REDACTED-EXAMPLE>
-`CARGO_REGISTRY_TOKEN` — there is **no** `rust-lang/crates-io-auth-action` step and no registry
-token in `env`. The full workflow (and the `master` promote job) is in
+release-plz performs the OIDC exchange itself. Grant the job `id-<REDACTED-EXAMPLE>`CARGO_REGISTRY_TOKEN`— there is **no**`rust-lang/crates-io-auth-action`step and no registry
+token in`env`. The full workflow (and the`master` promote job) is in
 [04](./04-release-plz-config.md).
 
 ## In CI — with a plain `cargo publish` workflow

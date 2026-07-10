@@ -24,7 +24,7 @@ semver_check     = true   # gate public-API compatibility (libraries)
 ```
 
 The CI workflow triggers on `develop`, grants `id-<REDACTED-EXAMPLE>
-which mints and exchanges the crates.io OIDC token itself, so there is **no `CARGO_REGISTRY_TOKEN`**
+which mints and exchanges the crates.io OIDC token itself, so there is **no`CARGO_REGISTRY_TOKEN`**
 and no separate auth action:
 
 ```yaml

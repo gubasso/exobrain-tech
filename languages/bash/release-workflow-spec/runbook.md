@@ -19,8 +19,7 @@ trusted-publisher step.
 2. **Create the repo and set the default branch to `develop`.** →
    [first-run enablement](../../../tools/git/branch-protection/first-run-enablement.md).
 
-3. **Enable Actions + workflow permissions** (read/write; provenance needs `id-<REDACTED-EXAMPLE>
-   `attestations: write` at the job level). →
+3. **Enable Actions + workflow permissions** (read/write; provenance needs `id-<REDACTED-EXAMPLE>`attestations: write` at the job level). →
    [first-run enablement](../../../tools/git/branch-protection/first-run-enablement.md).
 
 4. **Apply branch protection** for `develop`, `master`, and tags. →

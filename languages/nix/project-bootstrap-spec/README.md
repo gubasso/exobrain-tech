@@ -22,19 +22,19 @@ then the Nix specifics here.
    [general runbook](../../../programming/project-bootstrap/runbook.md) — the cross-language _what_.
 2. Skim the [Nix language shelf](../README.md) if flake syntax is unfamiliar — this binding links to
    it for language detail rather than restating it.
-3. Follow this [`runbook.md`](runbook.md) for the Nix-specific overlay steps.
-4. Jump to your implementation-kind file (e.g. [`flake-project.md`](flake-project.md)).
+3. Follow this [`runbook.md`](./runbook.md) for the Nix-specific overlay steps.
+4. Jump to your implementation-kind file (e.g. [`flake-project.md`](./flake-project.md)).
 
 ## Index
 
 | # | Chapter                                            | One-line hook                                                                |
 | - | -------------------------------------------------- | ---------------------------------------------------------------------------- |
-| 0 | [Toolchain & layout](00-toolchain-and-layout.md) | `nix flake init`, `flake.nix` inputs/outputs, layout, pin nixpkgs + `.lock`. |
-| 1 | [Quality gates](01-quality-gates.md)             | `nixpkgs-fmt`/`alejandra`, `statix` + `deadnix`, `nix flake check`, hooks.   |
+| 0 | [Toolchain & layout](./00-toolchain-and-layout.md) | `nix flake init`, `flake.nix` inputs/outputs, layout, pin nixpkgs + `.lock`. |
+| 1 | [Quality gates](./01-quality-gates.md)             | `nixpkgs-fmt`/`alejandra`, `statix` + `deadnix`, `nix flake check`, hooks.   |
 
 ## Implementation kinds
 
-- [`flake-project.md`](flake-project.md) — the standard shape: a flake exposing `packages` +
+- [`flake-project.md`](./flake-project.md) — the standard shape: a flake exposing `packages` +
   `devShells`, optionally `nixosModules` / `homeManagerModules`.
 
 `overlay-project.md` (overlay-only) and `module-project.md` (module-only) are followups; add them

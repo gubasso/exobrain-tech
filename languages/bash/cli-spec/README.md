@@ -11,7 +11,7 @@ applies the general principles to the specifics of Bash.
 
 | File                                                     | Hook                                                                                                                                                                         |
 | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [bash-cli-project-specs.md](bash-cli-project-specs.md) | Full reference: directory layout, strict mode, modules, loader, ShellCheck discipline, error handling, signals, tempfiles, `bats-core` testing, install + XDG, distribution. |
+| [bash-cli-project-specs.md](./bash-cli-project-specs.md) | Full reference: directory layout, strict mode, modules, loader, ShellCheck discipline, error handling, signals, tempfiles, `bats-core` testing, install + XDG, distribution. |
 
 ## TL;DR
 

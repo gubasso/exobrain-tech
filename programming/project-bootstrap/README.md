@@ -45,7 +45,7 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 
 ## How to use this tree
 
-1. Read [`runbook.md`](runbook.md) first — the ordered, once-per-project spine of _what_ to do and
+1. Read [`runbook.md`](./runbook.md) first — the ordered, once-per-project spine of _what_ to do and
    _in what order_. Every other page explains the _why_ behind one of its steps.
 2. Read the chapter behind any step you need to understand (the [Index](#index) below).
 3. Jump to your language binding (e.g.
@@ -58,14 +58,14 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 
 | # | Chapter                                                    | One-line hook                                                                        |
 | - | ---------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| 0 | [Bootstrap model](00-bootstrap-model.md)                 | What "bootstrap" is: the once-per-project phase, the three-layer ownership model.    |
-| 1 | [Repository foundation](01-repository-foundation.md)     | `.gitignore`, `LICENSE` (SPDX), `README` skeleton — the root files every repo needs. |
-| 2 | [Governance & docs](02-governance-and-docs.md)           | `CLAUDE.md`, the `AGENTS.md` convention, ADR scaffold, README-as-index.              |
-| 3 | [Local dev environment](03-local-dev-environment.md)     | Nix devShell + `.envrc`, `.editorconfig` — reproducible, cross-editor baseline.      |
-| 4 | [Quality gates](04-quality-gates.md)                     | Formatter, linter, pre-commit, task runner — fail fast, one command.                 |
-| 5 | [CI & release-readiness](05-ci-and-release-readiness.md) | First CI workflow, branch protection, hand-off to the release phase.                 |
-| 6 | [Security baseline](06-security-baseline.md)             | Secrets hygiene, dependency audit, OpenSSF Scorecard.                                |
-| 7 | [Automation with cog](07-automation-with-cog.md)         | The SoT-vs-cog contract and the domain→helper map.                                   |
+| 0 | [Bootstrap model](./00-bootstrap-model.md)                 | What "bootstrap" is: the once-per-project phase, the three-layer ownership model.    |
+| 1 | [Repository foundation](./01-repository-foundation.md)     | `.gitignore`, `LICENSE` (SPDX), `README` skeleton — the root files every repo needs. |
+| 2 | [Governance & docs](./02-governance-and-docs.md)           | `CLAUDE.md`, the `AGENTS.md` convention, ADR scaffold, README-as-index.              |
+| 3 | [Local dev environment](./03-local-dev-environment.md)     | Nix devShell + `.envrc`, `.editorconfig` — reproducible, cross-editor baseline.      |
+| 4 | [Quality gates](./04-quality-gates.md)                     | Formatter, linter, pre-commit, task runner — fail fast, one command.                 |
+| 5 | [CI & release-readiness](./05-ci-and-release-readiness.md) | First CI workflow, branch protection, hand-off to the release phase.                 |
+| 6 | [Security baseline](./06-security-baseline.md)             | Secrets hygiene, dependency audit, OpenSSF Scorecard.                                |
+| 7 | [Automation with cog](./07-automation-with-cog.md)         | The SoT-vs-cog contract and the domain→helper map.                                   |
 
 ## Language-specific bindings
 
@@ -113,7 +113,7 @@ when you bootstrap a project of that kind.
 ## TL;DR (the irreducible defaults)
 
 - **One owner per fact.** Each step lives in exactly one place; other layers link, never restate.
-- **The runbook is the spine.** [`runbook.md`](runbook.md) is the ordered _what_; chapters are the
+- **The runbook is the spine.** [`runbook.md`](./runbook.md) is the ordered _what_; chapters are the
   _why_; language and kind bindings are _overlays_.
 - **Tool docs are linked, not copied.** Branch protection and release setup keep their own homes.
 - **cog automates _how_; this tree owns _what_.** If they disagree, fix the runbook first, then cog.

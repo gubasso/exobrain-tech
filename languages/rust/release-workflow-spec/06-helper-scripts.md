@@ -74,8 +74,7 @@ cargo publish "$@"
 ```
 
 The check passes if any of these is present: `CARGO_REGISTRY_TOKEN` /
-`CARGO_REGISTRIES_CRATES_IO_TOKEN` in the environment, or a `<REDACTED-EXAMPLE>
-`$CARGO_HOME/credentials.toml` (or the legacy `credentials`). `CARGO_HOME` defaults to `~/.cargo`.
+`CARGO_REGISTRIES_CRATES_IO_TOKEN` in the environment, or a `<REDACTED-EXAMPLE>`$CARGO_HOME/credentials.toml`(or the legacy`credentials`).`CARGO_HOME`defaults to`~/.cargo`.
 
 ## `release` — local operator dispatcher
 

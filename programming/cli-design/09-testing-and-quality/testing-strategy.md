@@ -5,7 +5,7 @@ and why every subcommand earns one integration test from day one.
 
 For concrete per-language tooling (runners, snapshot libraries, property-based libraries,
 mutation-testing tools, recording stubs, pre-commit and CI snippets), see the companion file
-**[09a — Testing Tools](testing-tools.md)**.
+**[09a — Testing Tools](./testing-tools.md)**.
 
 ## Non-negotiable principles
 
@@ -215,7 +215,7 @@ Every test runs in a **clean, hermetic environment**:
 - Cleared environment variables — every CLI inherits the parent shell's env, so an active
   `RUST_LOG=trace` in your shell will break CI snapshots if tests don't scrub.
 - No network calls. Mock the adapter, or use a recording library (see
-  [08a — Recording / HTTP fakes](testing-tools.md#recording--http-fakes)).
+  [08a — Recording / HTTP fakes](./testing-tools.md#recording--http-fakes)).
 - No clock dependencies. Use the abstracted `Clock` from `AppContext` so tests can pin the time.
 
 The defense against test pollution is a shared `support/` module that builds a per-test fixture:
@@ -386,7 +386,7 @@ def test_widget_report_renders(snapshot):
 
 **Review snapshot diffs as carefully as code diffs** — they're behavior, not implementation noise.
 
-See [08a — Snapshot](testing-tools.md#snapshot-testing) for `insta` / `syrupy` / `vitest`-snapshot
+See [08a — Snapshot](./testing-tools.md#snapshot-testing) for `insta` / `syrupy` / `vitest`-snapshot
 / `goldie` specifics and the "never auto-update snapshots in CI" rule.
 
 ## Compile-fail / typestate (optional)
@@ -496,7 +496,7 @@ When a property test fails, the framework shrinks the input to the smallest fail
 single character or an empty list) — and you get a concrete bug, not a tangled megabyte of generated
 data. **Pin the failing seed in the regression suite** so the bug stays fixed.
 
-See [08a — Property-based testing](testing-tools.md#property-based-testing) for `proptest` /
+See [08a — Property-based testing](./testing-tools.md#property-based-testing) for `proptest` /
 `hypothesis` / `fast-check` / `gopter` specifics.
 
 ## Mutation testing as quality gate
@@ -532,7 +532,7 @@ triage, fix the test or kill the mutant by adding a test.
 
 Sources: [Stryker — Mutation testing intro](https://stryker-mutator.io/docs/) ·
 [Microsoft Learn — Mutation testing](https://learn.microsoft.com/en-us/dotnet/core/testing/mutation-testing).
-Tooling per language: see [08a — Mutation testing](testing-tools.md#mutation-testing).
+Tooling per language: see [08a — Mutation testing](./testing-tools.md#mutation-testing).
 
 ## Detecting "testing the third-party library"
 
@@ -626,7 +626,7 @@ this principles file and produce a refactor plan.
 | Subject                               | Default                                                                                                                                          |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Filesystem                            | Real, sandboxed in tempdir. Don't mock.                                                                                                          |
-| Network HTTP                          | Fake at the adapter trait. Or use a recording library (vcr-style). See [08a — Recording / HTTP fakes](testing-tools.md#recording--http-fakes). |
+| Network HTTP                          | Fake at the adapter trait. Or use a recording library (vcr-style). See [08a — Recording / HTTP fakes](./testing-tools.md#recording--http-fakes). |
 | Clock / time                          | Mock via the `Clock` trait on `AppContext`.                                                                                                      |
 | Subprocess invocations (wrapped CLIs) | Fake at the `Process` adapter trait.                                                                                                             |
 | Database                              | Use a sqlite tempfile in-process; don't run a real server in tests.                                                                              |
@@ -642,7 +642,7 @@ Test pollution from a live process modifying global state is the #1 source of fl
 
 Use a parallel-by-default runner with fail-fast and a flat summary. The complete per-language list
 with rationale lives in
-[08a — Unit/integration runner](testing-tools.md#unit--integration-runner); short version:
+[08a — Unit/integration runner](./testing-tools.md#unit--integration-runner); short version:
 
 | Language      | Runner                                   |
 | ------------- | ---------------------------------------- |
@@ -671,7 +671,7 @@ immediately.
   - **CI nightly**: mutation testing on critical modules.
 
 Ready-to-paste config snippets (pre-commit, GitHub Actions, Makefile / justfile targets) live in
-[08a — Pre-commit / CI tiering](testing-tools.md#pre-commit--ci-tiering).
+[08a — Pre-commit / CI tiering](./testing-tools.md#pre-commit--ci-tiering).
 
 ## Coverage philosophy
 
@@ -726,7 +726,7 @@ LLM-era specific (the failure modes AI agents fall into most often):
   — agent-specific failure modes.
 - [07 — CLI Wrapper Design § 9 Testability](../07-cli-wrapper-design/process-and-posix.md#9-testability)
   — wrapper-specific seams (Spawner trait, golden argv).
-- [09a — Testing Tools](testing-tools.md) — per-language tooling matrix and pre-commit/CI
+- [09a — Testing Tools](./testing-tools.md) — per-language tooling matrix and pre-commit/CI
   snippets.
 - [99 — Checklist § Testing](../99-checklist.md#testing) — one-page sanity checklist.
 - Language-specific guides:
@@ -740,7 +740,7 @@ LLM-era specific (the failure modes AI agents fall into most often):
 ## References
 
 For per-language tool URLs and pre-commit / CI snippets, see
-[09a — Testing Tools](testing-tools.md#references).
+[09a — Testing Tools](./testing-tools.md#references).
 
 Foundational reading:
 

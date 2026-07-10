@@ -21,7 +21,7 @@
 ### Links
 
 - Bare URL pasted without angle brackets / autolink → `[nit]` "Use `<https://...>` or
-  `text (path: `url`)`."
+  `text (path:`url`)`."
 - Relative link broken by repo restructure → `[blocking]`.
 - Link text "click here" / "this" → `[important]` "Accessibility; link text should be descriptive."
 
@@ -52,4 +52,4 @@
 - Canonical: <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md>.
 - Per-project lint config: `.markdownlint-cli2.jsonc` (single SoT) + pre-commit
   `markdownlint-cli2` + dprint. Toolchain rationale and options:
-  [markdown-formatting-toolchain.md](markdown-formatting-toolchain.md).
+  [markdown-formatting-toolchain.md](./markdown-formatting-toolchain.md).

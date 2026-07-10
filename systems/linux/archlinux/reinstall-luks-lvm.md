@@ -189,9 +189,11 @@ Inside the chroot:
    - Later on:
      - "US International with AltGr dead keys": quotes/tilde/apostrophe behave normally, and only
        become dead keys when you press Right-Alt/AltGr with them
-     - [US AltGr-International Keymap for Arch Linux TTY (Wayland/KDE Independent)](keymap-us-altgr-intl.md)
+     - [US AltGr-International Keymap for Arch Linux TTY (Wayland/KDE Independent)](./keymap-us-altgr-intl.md)
 
 5. Root <REDACTED>
+
+   ```text
    passwd
    ```
 
@@ -308,7 +310,7 @@ On next boot:
   continue into your fresh Arch system, using the same encrypted LUKS + LVM structure you had
   before.
 
-- [Postinstall](postinstall.md)
+- [Postinstall](./postinstall.md)
 
 [1]: https://wiki.archlinux.org/title/Installation_guide?utm_source=chatgpt.com "Installation guide - ArchWiki"
 [2]: https://wiki.archlinux.org/title/Install_Arch_Linux_on_LVM?utm_source=chatgpt.com "Install Arch Linux on LVM - ArchWiki"

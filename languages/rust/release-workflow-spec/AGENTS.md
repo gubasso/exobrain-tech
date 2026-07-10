@@ -32,8 +32,7 @@ merged).
   same run (a `GITHUB_TOKEN` tag push does not retrigger a standalone workflow). Read the tag from
   the action's `releases` output (`jq -r '.[0].tag'`), ancestry-check against `origin/develop`, then
   `git merge --ff-only` `master` onto the tag. Gate on `releases_created == 'true'`.
-- **Auth:** `permissions: id-<REDACTED-EXAMPLE>
-  `CARGO_REGISTRY_TOKEN`**, no `crates-io-auth-action`. crates.io TP covers GitHub Actions and
+- **Auth:** `permissions: id-<REDACTED-EXAMPLE>`CARGO_REGISTRY_TOKEN`**, no`crates-io-auth-action`. crates.io TP covers GitHub Actions and
   **GitLab.com** (self-hosted not yet).
 - **Workflow filenames (critical):** the publish workflow is **`release-plz.yml`** and _that_ is the
   filename registered with the crates.io trusted publisher — branch-agnostic. cargo-dist's generated

@@ -16,7 +16,7 @@ in:
 | ---------------------------- | ------------------------------------------------------------------------- |
 | Branch model + release tool  | `develop`/`master`; release-please (PR gate) or python-semantic-release   |
 | Package/artifact metadata    | `pyproject.toml` `[project]`, classifiers, version SoT                    |
-| Registry auth                | PyPI Trusted Publishing (OIDC), `id-<REDACTED-EXAMPLE>
+| Registry auth                | PyPI Trusted Publishing (OIDC), `id-<REDACTED-EXAMPLE>                    |
 | Release automation config/CI | release-please config / `gh-action-pypi-publish` or `uv publish` workflow |
 | Binary/artifact distribution | wheels + sdist (the published artifacts _are_ the dist)                   |
 | SemVer / version discipline  | SemVer; version bumped in `pyproject.toml` by the release tool            |

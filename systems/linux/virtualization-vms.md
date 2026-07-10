@@ -569,7 +569,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 
 - Type `yes` and press **Enter** . **4. Enter Your Password**
 
-```css
+````css
 john@192.168.122.100's <REDACTED-EXAMPLE>
 
 - Enter the password you set for the user during installation.
@@ -582,7 +582,7 @@ already have an SSH key pair:
 
 ```bash
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-```
+````
 
 - Press **Enter** to accept the default file location.
 

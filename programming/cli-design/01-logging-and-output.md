@@ -2,7 +2,7 @@
 
 Every CLI emits three message types. Conflating them is the root cause of unreadable terminals,
 broken pipes, brittle agents, and unusable log files. This chapter applies the
-[facing category taxonomy](00-architecture.md#facing-category--message-types) to output and
+[facing category taxonomy](./00-architecture.md#facing-category--message-types) to output and
 logging.
 
 ## The three message types
@@ -234,7 +234,15 @@ ts=2026-05-18T10:23:45.123Z level=info target=app::widget op=create id=abc-123 s
 **`--log-format json` (tool-friendly, newline-delimited):**
 
 ```json
-{"ts":"2026-05-18T10:23:45.123Z","level":"info","target":"app::widget","op":"create","id":"abc-123","status":"ok","dur_ms":12}
+{
+  "ts": "2026-05-18T10:23:45.123Z",
+  "level": "info",
+  "target": "app::widget",
+  "op": "create",
+  "id": "abc-123",
+  "status": "ok",
+  "dur_ms": 12
+}
 ```
 
 ### Required fields
@@ -257,7 +265,7 @@ more than from verbosity.
 | `id`, `path`, `url`, … | Operation-specific subject.                                                                              |
 | `status`               | `ok` / `error` / `skip` / `noop`.                                                                        |
 | `dur_ms`               | Duration in milliseconds (integer).                                                                      |
-| `err.kind`             | Stable error code (e.g. `ConfigNotFound`, `Timeout`). See [02 — Error Messages](02-error-messages.md). |
+| `err.kind`             | Stable error code (e.g. `ConfigNotFound`, `Timeout`). See [02 — Error Messages](./02-error-messages.md). |
 | `err.msg`              | Human-readable error message.                                                                            |
 | `span`                 | Span/trace ID when spans are in use.                                                                     |
 | `parent`               | Parent span ID.                                                                                          |
@@ -340,13 +348,13 @@ Language-specific guides live alongside the matching language spec:
 
 ## See also
 
-- [00 — Architecture](00-architecture.md): where the logging-init helper lives and how it's wired
+- [00 — Architecture](./00-architecture.md): where the logging-init helper lives and how it's wired
   through `AppContext`.
-- [02 — Error Messages](02-error-messages.md): how errors map to log records (`err.kind`,
+- [02 — Error Messages](./02-error-messages.md): how errors map to log records (`err.kind`,
   `err.msg`) and to exit codes.
-- [03 — Config Precedence](03-config-precedence.md): how the log destination and level are loaded
+- [03 — Config Precedence](./03-config-precedence.md): how the log destination and level are loaded
   from CLI/env/file/default.
-- [05 — Designing for LLM Agents](05-designing-for-llm-agents.md): why the log-message schema
+- [05 — Designing for LLM Agents](./05-designing-for-llm-agents.md): why the log-message schema
   matters for agent-assisted debugging.
 
 ## References

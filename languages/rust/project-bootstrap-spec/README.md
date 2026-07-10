@@ -16,8 +16,8 @@ cookbook (path: `../cookbook/README.md`) — it inlines and footnotes the chapte
 
 1. Read the general [hub](../../../programming/project-bootstrap/README.md) and
    [general runbook](../../../programming/project-bootstrap/runbook.md) — the cross-language _what_.
-2. Follow this [`runbook.md`](runbook.md) for the Rust-specific overlay steps.
-3. Jump to your implementation-kind file (e.g. [`cli-project.md`](cli-project.md)).
+2. Follow this [`runbook.md`](./runbook.md) for the Rust-specific overlay steps.
+3. Jump to your implementation-kind file (e.g. [`cli-project.md`](./cli-project.md)).
 4. When ready to publish, hand off to
    `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`) — the later Rust release phase.
 
@@ -25,12 +25,12 @@ cookbook (path: `../cookbook/README.md`) — it inlines and footnotes the chapte
 
 | # | Chapter                                            | One-line hook                                                           |
 | - | -------------------------------------------------- | ----------------------------------------------------------------------- |
-| 0 | [Toolchain & layout](00-toolchain-and-layout.md) | `cargo new`/`init`, `Cargo.toml` baseline, `rust-toolchain.toml` + Nix. |
-| 1 | [Quality gates](01-quality-gates.md)             | `rustfmt`, `clippy -D warnings`, `cargo-deny` / `cargo-audit`.          |
+| 0 | [Toolchain & layout](./00-toolchain-and-layout.md) | `cargo new`/`init`, `Cargo.toml` baseline, `rust-toolchain.toml` + Nix. |
+| 1 | [Quality gates](./01-quality-gates.md)             | `rustfmt`, `clippy -D warnings`, `cargo-deny` / `cargo-audit`.          |
 
 ## Implementation kinds
 
-- [`cli-project.md`](cli-project.md) — Rust CLI: the bootstrap-time ordering for arg-parsing,
+- [`cli-project.md`](./cli-project.md) — Rust CLI: the bootstrap-time ordering for arg-parsing,
   logging, and config, delegating detail to [`../cli-spec/`](../cli-spec/README.md).
 
 `library-project.md` and `web-service.md` are followups; add them when you bootstrap those kinds.
