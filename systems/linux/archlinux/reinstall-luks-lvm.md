@@ -312,11 +312,11 @@ On next boot:
 
 - [Postinstall](./postinstall.md)
 
-[1]: https://wiki.archlinux.org/title/Installation_guide?utm_source=chatgpt.com "Installation guide - ArchWiki"
-[2]: https://wiki.archlinux.org/title/Install_Arch_Linux_on_LVM?utm_source=chatgpt.com "Install Arch Linux on LVM - ArchWiki"
-[3]: https://linuxconfig.org/arch-linux-installation-easy-step-by-step-guide?utm_source=chatgpt.com "Arch Linux Installation Guide: Easy Step-by-Step Instructions"
-[4]: https://gist.github.com/jkauppinen/3c437abe64206cafbac45ff2fdd0c478?utm_source=chatgpt.com "Arch linux installation with full disk encryption via dm-crypt + LUKS ..."
-[5]: https://man.archlinux.org/man/pacstrap.8?utm_source=chatgpt.com "pacstrap (8) — Arch manual pages"
-[6]: https://github.com/archlinux/mkinitcpio/blob/master/mkinitcpio.conf?utm_source=chatgpt.com "mkinitcpio/mkinitcpio.conf at master · archlinux/mkinitcpio · GitHub"
-[7]: https://wiki.parabola.nu/Dm-crypt/System_configuration?utm_source=chatgpt.com "dm-crypt/System configuration - ParabolaWiki - Parabola GNU/Linux-libre"
-[8]: https://wiki.archlinux.org/title/Dm-crypt/System_configuration?utm_source=chatgpt.com "dm-crypt/System configuration - ArchWiki"
+[1]: https://wiki.archlinux.org/title/Installation_guide "Installation guide - ArchWiki"
+[2]: https://wiki.archlinux.org/title/Install_Arch_Linux_on_LVM "Install Arch Linux on LVM - ArchWiki"
+[3]: https://linuxconfig.org/arch-linux-installation-easy-step-by-step-guide "Arch Linux Installation Guide: Easy Step-by-Step Instructions"
+[4]: https://gist.github.com/jkauppinen/3c437abe64206cafbac45ff2fdd0c478 "Arch linux installation with full disk encryption via dm-crypt + LUKS ..."
+[5]: https://man.archlinux.org/man/pacstrap.8 "pacstrap (8) — Arch manual pages"
+[6]: https://github.com/archlinux/mkinitcpio/blob/master/mkinitcpio.conf "mkinitcpio/mkinitcpio.conf at master · archlinux/mkinitcpio · GitHub"
+[7]: https://wiki.parabola.nu/Dm-crypt/System_configuration "dm-crypt/System configuration - ParabolaWiki - Parabola GNU/Linux-libre"
+[8]: https://wiki.archlinux.org/title/Dm-crypt/System_configuration "dm-crypt/System configuration - ArchWiki"

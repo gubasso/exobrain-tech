@@ -27,7 +27,7 @@
 
 #### Local remote
 
-```
+```text
 dvc remote add -d myremote /tmp/dvcstore
 git commit .dvc/config -m "Configure local remote"
 ```
@@ -40,7 +40,7 @@ git commit .dvc/config -m "Configure local remote"
 
 Add data:
 
-```
+```text
 dvc add data/data.xml
 git add data/data.xml.dvc data/.gitignore
 git commit -m "Add raw data"
@@ -48,19 +48,19 @@ git commit -m "Add raw data"
 
 Push data to remote:
 
-```
+```text
 dvc push
 ```
 
 Retrieve data from remote (download data):
 
-```
+```text
 dvc pull
 ```
 
 After change the file `data/data.xml`, add changes to dvc:
 
-```
+```text
 dvc add data/data.xml
 git commit data/data.xml.dvc -m "Dataset updates"
 dvc push
@@ -70,7 +70,7 @@ dvc push
 
 Change file name: https://dvc.org/doc/command-reference/move#example-change-the-file-name
 
-```
+```text
 dvc add data.csv
 ...
 
@@ -92,7 +92,7 @@ tree
 
 [Example: Change a file location](https://dvc.org/doc/command-reference/move#example-change-a-file-location)
 
-```
+```text
 tree
 .
 ├── data
@@ -127,7 +127,7 @@ tree
 
 [Example: Move a directory](https://dvc.org/doc/command-reference/move#example-move-a-directory)
 
-```
+```text
 dvc import ../another-repo data
 ...
 
@@ -152,9 +152,9 @@ tree
 
 ---
 
-If wants to access a different version of data, in a differente git branch or commit:
+If wants to access a different version of data, in a different git branch or commit:
 
-```
+```bash
 git checkout <...>
 dvc checkout
 ```
@@ -165,7 +165,7 @@ dvc checkout
 
 - Modifying content
 
-```
+```text
 dvc unprotect train.tsv
 echo "new data item" >> train.tsv
 dvc add train.tsv
@@ -177,7 +177,7 @@ git push
 
 - Replacing files
 
-```
+```text
 dvc remove train.tsv.dvc
 echo new > train.tsv
 dvc add train.tsv
@@ -209,7 +209,7 @@ dvc add train.tsv
 
 Suppose there is a separate repo just for a dataset (data-registry repo):
 
-```
+```text
 +-------------+     +--------------+     +-------------+
 |             |     |  Deployment  |     |             |
 |  Project A  |     |    Server    |     |  Project B  |
@@ -241,7 +241,7 @@ Suppose there is a separate repo just for a dataset (data-registry repo):
 
 Find a file or directory
 
-```
+```text
 dvc list https://github.com/iterative/dataset-registry get-started
 .gitignore
 data.xml
@@ -252,7 +252,7 @@ data.xml.dvc
 
 Download (simple)
 
-```
+```text
 dvc get https://github.com/iterative/dataset-registry \
           use-cases/cats-dogs
 ```
@@ -261,7 +261,7 @@ dvc get https://github.com/iterative/dataset-registry \
 
 Download and add to your repo (Import file or directory)
 
-```
+```text
 dvc import https://github.com/iterative/dataset-registry \
              get-started/data.xml -o data/data.xml
 ```
@@ -274,7 +274,7 @@ dvc import https://github.com/iterative/dataset-registry \
 
 [How to Stop Tracking Data](https://dvc.org/doc/user-guide/how-to/stop-tracking-data)
 
-```
+```text
 dvc remove data.csv.dvc
 rm data.csv
 dvc gc -w
@@ -293,7 +293,7 @@ git add . && git commit
 
 ### DVC: fetch, checkout, pull
 
-```
+```text
 Tracked files                Commands
 ---------------- ---------------------------------
 

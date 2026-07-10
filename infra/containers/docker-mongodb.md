@@ -11,7 +11,7 @@
 
 Import data to db inside container (without copy the file to container):
 
-```
+```bash
 docker exec -i <container-name-or-id> sh -c 'mongoimport -c <c-name> -d <db-name> --drop' < xxx.json
 ```
 
@@ -31,7 +31,7 @@ Import data to mongodb (will run when container is created, first run)
 
 **`20-mongo_seed.sh`**
 
-```
+```bash
 #!/bin/bash
 mongoimport -d mydb -c myCollection --drop --type csv --headerline --file /path/to/yourfile.csv
 ```
@@ -44,7 +44,7 @@ Need to create a db before importing?
 
 **`10-mongo_init.js`**
 
-```
+```text
 db = db.getSiblingDB('test-database')
 ```
 
@@ -52,7 +52,7 @@ db = db.getSiblingDB('test-database')
 
 Select which image
 
-```
+```text
 mongo:<version>
 mongo:5.0.9
 mongo
@@ -61,19 +61,19 @@ mongo:latest
 
 Create a network to connect to an app:
 
-```
+```bash
 docker network create my_net
 ```
 
 Pull desired image:
 
-```
+```bash
 sudo docker pull mongo:5.0.9
 ```
 
 Create and run container:
 
-```
+```bash
 sudo docker run -d --rm \
     -p 27017:27017 \
     --name mongo-dvc-run \
@@ -94,13 +94,13 @@ sudo docker run -d --rm \
 
 Test the correct creation of container:
 
-```
+```bash
 sudo docker exec -it <container_name> bash
 ```
 
 - runs terminal inside container
 
-```
+```text
 > mongosh
 > show dbs
 > use MongoDB
@@ -110,7 +110,7 @@ sudo docker exec -it <container_name> bash
 
 And/or: connect externally (from host or from other container) to mongodb:
 
-```
+```text
 mongodb://<mongo_container_name>:27017
 ```
 
@@ -120,7 +120,7 @@ mongodb://<mongo_container_name>:27017
 
 Remove named volume:
 
-```
+```bash
 docker volume rm <volume_name>
 ```
 
@@ -128,7 +128,7 @@ docker volume rm <volume_name>
 
 **`Dockerfile`**
 
-```
+```text
 FROM ubuntu:focal AS ubuntu_mongo
 RUN apt-get update -y && apt-get upgrade -y \
     && apt-get install -y apt-utils locales software-properties-common gnupg \

@@ -27,7 +27,7 @@ The host usually pins a `credentials_mgr_class` that delegates to a **graphical 
 via D-Bus, GNOME Secret Service, etc.). Inside a typical devcontainer there is **no D-Bus session,
 no Secret Service daemon, and no graphical keyring**, so `osc` fails at startup with:
 
-```
+```text
 Unable to instantiate creds mgr (section: https://api.opensuse.org)
 Please enter new credentials.
 ```
@@ -446,7 +446,7 @@ If the wrong file is being read, suspect:
 Symptom: running `osc -A <apiurl> api /person/<user>` against a pass-less oscrc (the "let osc prompt
 and write back" flow that older versions of this doc described) crashes before reaching the prompt:
 
-```
+```text
 File ".../osc/connection.py", line 652, in __init__
     self.basic_auth_<REDACTED-EXAMPLE>
   File ".../collections/__init__.py", line 1413, in __len__
@@ -478,7 +478,7 @@ with the Python pre-seed against a writable oscrc, then re-mount read-only.
 Symptom: the first `osc … api /person/<user>` call (or any other HTTPS-against-OBS call) crashes
 before sending the request:
 
-```
+```text
 File ".../osc/oscssl.py", line 56, in __init__
     os.makedirs(self.dir_path, mode=0o700)
 PermissionError: [Errno 13] Permission denied: '/home/<user>/.config/osc/trusted-certs'

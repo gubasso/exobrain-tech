@@ -90,7 +90,7 @@ Telegram, Slack, Discord, and 20+ other platforms.
 
 #### Reference Architecture (from pi-mono docs)
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │         Your Application                │
 │    (chatbot gateway + WhatsApp adapter) │
@@ -117,7 +117,7 @@ implementation.
 
 A well-organized directory of plain files (Markdown, PDF, text) on the server filesystem:
 
-```
+```text
 knowledge/
 ├── faqs/
 │   ├── general.md
@@ -144,7 +144,7 @@ tools — exactly like a coding agent navigates a codebase.
 its own conversation history, persisted as JSONL files with a tree structure (append-only DAG with
 branching support).
 
-```
+```text
 WhatsApp message arrives (user: +55 11 9xxxx-xxxx)
   → gateway looks up or creates session for that user ID
   → agent runs with that session's context
@@ -161,7 +161,7 @@ WhatsApp message arrives (user: +55 11 9xxxx-xxxx)
 
 The system uses four complementary layers to minimize LLM API costs:
 
-```
+```text
 Layer 1: Exact match cache         → eliminates ~15% of queries     (free)
 Layer 2: Semantic cache            → eliminates ~55% of queries     (free)
 Layer 3: API prompt caching        → 90% savings on static prefix   (provider-level)
@@ -173,7 +173,7 @@ Layer 4: Smart model routing       → cheap model for 80% of runs    (pi-ai lev
 Hash the user's question (normalized: lowercase, stripped whitespace/punctuation), store the
 response in Redis or SQLite with a TTL.
 
-```
+```text
 "what are your business hours" → hash → cache hit → return stored answer
 ```
 
@@ -187,7 +187,7 @@ Embed the user's question using a small local model (e.g., `all-MiniLM-L6-v2` vi
 `sentence-transformers`, ~80MB, runs on CPU in milliseconds). Search a cache of previous Q&A pairs
 by cosine similarity.
 
-```
+```text
 User asks: "what time do you guys open?"
   → embed the question (local, no API call)
   → search cache of previous Q&A pairs
@@ -303,7 +303,7 @@ single Claude Pro subscription.
 
 ### 5.2 Standard RAG Architecture
 
-```
+```text
 Per query:
   - 1 embedding call (ada-002):            ~$0.0001
   - 1 LLM call (Sonnet):                   ~$0.004
@@ -323,7 +323,7 @@ RAG TOTAL:                                  $95-150/month
 
 ### 5.3 Optimized Agentic Architecture (with all 4 caching layers)
 
-```
+```text
 500 queries arrive per day
 
 Layer 1 - Exact match cache:
@@ -392,7 +392,7 @@ cheaper overall.
 
 ### 6.1 Request Flow (with caching)
 
-```
+```text
 WhatsApp message arrives
   │
   ▼
@@ -433,7 +433,7 @@ Return response → WhatsApp
 
 ### 6.2 System Components
 
-```
+```text
 ┌──────────────────────────────────────────────────────┐
 │                   WhatsApp Cloud API                 │
 │                  (or Twilio / 360dialog)              │
@@ -494,7 +494,7 @@ The vector database becomes just another tool in the agent's toolbox, alongside 
 `read_file`. The agent decides when to use it, what to query, and whether the results were good
 enough.
 
-```
+```text
 Agent receives user question
   → thinks: "this is about pricing, let me check the catalog"
   → tool: vector_search("pricing tiers for product X")

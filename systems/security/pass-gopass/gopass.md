@@ -44,7 +44,7 @@ au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
 
 **For NANO users**: disable backup files for temporary gopass buffers:
 
-- [Nano Setup for Gopass](nano-setup.md)
+- [Nano Setup for Gopass](./nano-setup.md)
 
 ---
 
@@ -166,7 +166,7 @@ See the
 
 Use clear, consistent hierarchies:
 
-```
+```text
 personal/
   email/
   finance/

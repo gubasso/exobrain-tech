@@ -13,7 +13,7 @@ Real-world Rust CLIs worth studying. For each: shape, what they do well, what to
 
 Single crate, ~10k LOC. Layout:
 
-```
+```text
 src/
 ├─ main.rs
 ├─ cli.rs               # clap derive
@@ -34,7 +34,7 @@ Copy: the dedicated `exit_codes.rs`, the per-feature subdirectories (`exec/`, `f
 **The canonical lib+bin pattern.** `src/lib.rs` exposes the rendering engine; `src/bin/bat/` is the
 thin CLI on top:
 
-```
+```text
 src/
 ├─ lib.rs               # public API
 ├─ assets.rs
@@ -53,7 +53,7 @@ Copy: the `src/lib.rs` + `src/bin/<name>/` split when your logic is reusable.
 
 Single crate, TUI-centric:
 
-```
+```text
 src/
 ├─ main.rs
 ├─ app.rs               # top-level state machine
@@ -69,7 +69,7 @@ but instructive.
 
 ### [`ouch-org/ouch`](https://github.com/ouch-org/ouch) — universal compressor
 
-```
+```text
 src/
 ├─ main.rs
 ├─ cli/
@@ -88,7 +88,7 @@ for plugin-like features.
 
 Workspace with reusable library crates:
 
-```
+```text
 crates/
 ├─ core/                # bin + flags + glue
 ├─ matcher/             # grep-matcher: matcher trait
@@ -106,7 +106,7 @@ binary. The `globset` and `ignore` crates are used by dozens of other projects.
 
 ### [`rust-lang/cargo`](https://github.com/rust-lang/cargo) — Rust's package manager
 
-```
+```text
 src/
 ├─ cargo/               # the library
 └─ bin/
@@ -127,7 +127,7 @@ the discipline is the same.
 
 ### [`jj-vcs/jj`](https://github.com/jj-vcs/jj) — Jujutsu VCS
 
-```
+```text
 cli/src/
 ├─ main.rs
 ├─ cli_util.rs
@@ -140,7 +140,7 @@ Copy: `command_error.rs` as a focused error module; `ui.rs` as the single render
 
 ### [`eza-community/eza`](https://github.com/eza-community/eza) — modern `ls`
 
-```
+```text
 src/
 ├─ main.rs
 ├─ options/             # clap + arg parsing
@@ -154,7 +154,7 @@ logic.
 
 ### [`starship/starship`](https://github.com/starship/starship) — shell prompt
 
-```
+```text
 src/
 ├─ main.rs
 ├─ context.rs           # one big AppContext-like struct
@@ -171,7 +171,7 @@ Copy: the `context.rs` + plugin-like `modules/` pattern when you have user-exten
 
 Aggressive workspace split:
 
-```
+```text
 helix-core/             # pure types: rope, position, syntax
 helix-view/             # view layer
 helix-term/             # the binary
@@ -188,7 +188,7 @@ higher-level ones.
 
 ### [`atuinsh/atuin`](https://github.com/atuinsh/atuin) — shell history
 
-```
+```text
 crates/
 ├─ atuin/               # CLI binary
 ├─ atuin-client/        # client-side logic
@@ -201,7 +201,7 @@ server.
 
 ### [`zellij-org/zellij`](https://github.com/zellij-org/zellij) — terminal multiplexer
 
-```
+```text
 zellij-server/
 zellij-client/
 zellij-utils/

@@ -2,7 +2,7 @@
 
 Operational guidance for Claude Code and Codex CLI workflows.
 
-- [invocation-cheatsheet](invocation-cheatsheet.md)
+- [invocation-cheatsheet](./invocation-cheatsheet.md)
 - [orchestration](orchestration/README.md)
 - [skill-authoring](skill-authoring/README.md)
 

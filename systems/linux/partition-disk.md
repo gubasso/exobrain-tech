@@ -5,7 +5,7 @@ sector size before partitioning.][^2]
 
 ## Example layout: UEFI/GPT - Full Disk Encryption (LVM on Luks)
 
-```
+```text
 Device      Size        Type
 /dev/sda1   1GB         EFI System
 /dev/sda2  <remainder>  Linux filesystem
@@ -43,7 +43,7 @@ In this example:
 - `/dev/sda1`: taken up by the EFI Partition
 - `/dev/sda2`: encrypted volume
 
-```
+```text
 Device      Size        Type
 /dev/sda1   1GB         EFI System
 /dev/sda2  <remainder>  Linux filesystem
@@ -51,7 +51,7 @@ Device      Size        Type
 
 - Example[^5]:
 
-```
+```text
 +-----------------------------------------------------------------------+ +-----------------+
 | Logical volume 1      | Logical volume 2      | Logical volume 3      | | Boot partition  |
 |                       |                       |                       | |                 |

@@ -141,7 +141,7 @@ gh issue close <issue-id>
 
 [1]: https://cli.github.com/manual/gh_issue_develop "GitHub CLI | Take GitHub to the command line"
 [2]: https://cli.github.com/manual/gh_issue_create "GitHub CLI | Take GitHub to the command line"
-[3]: https://cli.github.com/manual/gh_pr_checkout?utm_source=chatgpt.com "GitHub CLI | Take GitHub to the command line"
+[3]: https://cli.github.com/manual/gh_pr_checkout "GitHub CLI | Take GitHub to the command line"
 [4]: https://cli.github.com/manual/gh_pr_checks "GitHub CLI | Take GitHub to the command line"
 [5]: https://cli.github.com/manual/gh_pr_ready "GitHub CLI | Take GitHub to the command line"
 [6]: https://cli.github.com/manual/gh_pr_merge "GitHub CLI | Take GitHub to the command line"

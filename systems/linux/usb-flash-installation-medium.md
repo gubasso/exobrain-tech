@@ -134,31 +134,31 @@ ls -l /dev/disk/by-id/usb-*
 
 - using [cat(1)](https://man.archlinux.org/man/cat.1):
 
-```
+```bash
 sudo cat path/to/archlinux-version-x86_64.iso > /dev/disk/by-id/usb-My_flash_drive
 ```
 
 - using [cp(1)](https://man.archlinux.org/man/cp.1):
 
-```
+```bash
 sudo cp path/to/archlinux-version-x86_64.iso /dev/disk/by-id/usb-My_flash_drive
 ```
 
 - using [dd](https://wiki.archlinux.org/title/Dd "Dd"):
 
-```
+```bash
 sudo dd bs=4M if=path/to/archlinux-version-x86_64.iso of=/dev/disk/by-id/usb-My_flash_drive conv=fsync oflag=direct status=progress
 ```
 
 - using [tee](https://wiki.archlinux.org/title/Tee "Tee"):
 
-```
+```bash
 sudo tee < path/to/archlinux-version-x86_64.iso > /dev/disk/by-id/usb-My_flash_drive
 ```
 
 - using [pv](https://archlinux.org/packages/?name=pv):
 
-```
+```bash
 sudo pv path/to/archlinux-version-x86_64.iso -Yo /dev/disk/by-id/usb-My_flash_drive
 ```
 

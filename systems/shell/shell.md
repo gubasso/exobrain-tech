@@ -109,7 +109,7 @@ function bcc() {
 
 [Linux Run Command As Another User](https://www.cyberciti.biz/open-source/command-line-hacks/linux-run-command-as-different-user/)
 
-```
+```text
 runuser -u www-data -- command
 ## Run commands as www-data user ##
 runuser -u www-data -- composer update --no-dev
@@ -122,7 +122,7 @@ runuser -u www-data -- php7 /app/maintenance/update.php
 
 `!!` command
 
-```
+```bash
 sudo systemctl status sshd
 !!:s/status/start/ #substitutes
 ```
@@ -134,7 +134,7 @@ argument
 
 Shell (bash, zsh..) command `set -C`
 
-```
+```bash
 set -C
 # or
 set noclobber
@@ -144,7 +144,7 @@ set noclobber
 
 ## [read stdin in function in bash script](https://stackoverflow.com/questions/14004756/read-stdin-in-function-in-bash-script)
 
-```
+```text
 function myeggs() {
     while read -r data; do
         echo "${data}"
@@ -166,13 +166,13 @@ ls | myeggs
 
 [find files not in a list](https://stackoverflow.com/questions/7306971/find-files-not-in-a-list)
 
-```
+```bash
 find -mtime +7 -print | grep -Fxvf file.lst
 ```
 
 Where:
 
-```
+```text
 -F, --fixed-strings
               Interpret PATTERN as a list of fixed strings, separated by newlines, any of which is to be matched.
 -x, --line-regexp
@@ -185,7 +185,7 @@ Where:
 
 ## Case statement
 
-```
+```text
 function list_csvs() {
     case ${1} in
         in)
@@ -232,7 +232,7 @@ find . -type f -exec sh -c 'file "{}" | grep -q "text"' \; -print0 | xargs -0 -I
 How can I loop over the output of a shell command?
 https://stackoverflow.com/questions/35927760/how-can-i-loop-over-the-output-of-a-shell-command
 
-```
+```text
 pgrep -af python | while read -r line ; do
     echo "$line"
 done
@@ -260,7 +260,7 @@ find ${datapath} -name "${csv_fileext}.part*" | sort | \
 
 - has simple examples
 
-```
+```text
 dir=$(dirname ${full})
 file_with_ext="${full##*/}"
 file_no_ext="${file_with_ext%.*}"
@@ -274,7 +274,7 @@ Nice summary table:[Bash Parameter Expansion](https://linuxhint.com/bash_paramet
 Other nice ways to
 [Extract filename and extension in Bash](https://stackoverflow.com/questions/965053/extract-filename-and-extension-in-bash)
 
-```
+```text
 variable_to_be_expanded="/my/eggs/lala.txt"
 echo "${variable_to_be_expanded}"
 ```

@@ -38,7 +38,7 @@ psql postgresql://username:password@dbmaster:5433/mydb?sslmode=require
 
 Unix socket and the Peer Authentication method
 
-```
+```text
 psql postgres://username@/dbname
 ```
 
@@ -48,7 +48,7 @@ psql postgres://username@/dbname
 
 - Grant select on every table inside schema
 
-```
+```text
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO user;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO user;
 ```
@@ -57,7 +57,7 @@ GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO user;
 
 - Generate SQL table statement/code from csv:[^sql8]
 
-```
+```text
 csvsql -i postgresql examples/realdata/FY09_EDU_Recipients_by_State.csv
 ```
 
@@ -65,18 +65,18 @@ csvsql -i postgresql examples/realdata/FY09_EDU_Recipients_by_State.csv
 
 - environment variable inside psql variable:
 
-```
+```text
 \set afile `echo "$outputdir/a.csv"`
 COPY (SELECT * FROM a) TO :'afile';
 ```
 
-```
+```text
 \set auth_passwd `echo "${AUTH_PASSWD}"`;
 ```
 
 - only psql variables
 
-```
+```text
 \set outputdir '/path/to/output'
 \set afile :outputdir '/a.csv'
 COPY (SELECT * FROM a) TO :'afile';
@@ -84,7 +84,7 @@ COPY (SELECT * FROM a) TO :'afile';
 
 - set variable when call psql command:
 
-```
+```text
 psql --set=outputdir="$outputdir" <conn parameters> -f /path/to/yourscript.sql
 ```
 
@@ -118,7 +118,7 @@ SELECT * FROM table_2;
 
 - run a `main.sql`[^sql13]
 
-```
+```text
 psql -U postgres -h localhost -d postgres -f filename.sql
  or
 psql ... < filename.sql
@@ -141,7 +141,7 @@ psql ... < filename.sql
 
 ### Import/export data to/from postgresql
 
-```
+```text
 COPY api.tab0042(var0014, ind0471, ind0472, ind0483, ind0484, ind0465, ind0466, ind0464, ind0468, ind0461, ind0462, ind0463, ind0467, ind0469)
 FROM '/vagrant/data/tab0042.csv'
 DELIMITER ','
@@ -163,7 +163,7 @@ Dependency to generate SQL insert command from CSV file: `csvkit` package.
 
 Generate a statement in the PostgreSQL dialect [^2]:
 
-```
+```text
 csvsql -i postgresql -d "," examples/realdata/FY09_EDU_Recipients_by_State.csv
 ```
 
@@ -187,18 +187,18 @@ csvsql -i postgresql -d "," examples/realdata/FY09_EDU_Recipients_by_State.csv
 
 - create a role in database:
 
-```
+```text
 create role contacts_read noinherit nologin;
 ```
 
-```
+```text
 - `nologin`: its not possible to connect to database using this user. Have to connect with a different user and switch to this role.
 - `noinherit`: does not inherit any permissions from other users/roles.
 ```
 
 - Connect with password as a environment variable[^sql9].1
 
-```
+```text
 PGPASSWORD=<my-pass> psql -U ...
 ```
 
@@ -206,20 +206,20 @@ PGPASSWORD=<my-pass> psql -U ...
 
 _password prompt_
 
-```
+```text
 psql -h uta.biocommons.org -U foo
 Password for user foo:
 ```
 
 _`pgpass` file_
 
-```
+```text
 <host>:<port>:<database>:<user>:<password>
 ```
 
 _`PGPASSWORD` environment variable_
 
-```
+```bash
 export PG<REDACTED-EXAMPLE>
 psql ...
 
@@ -239,7 +239,7 @@ _breadcrumbs: `## PostgreSQL`_
 - install: with package manager of your distribution or by building it from source
 - enable and start service:
 
-```
+```bash
 sudo systemctl enable postgresql --now
 ```
 
@@ -255,7 +255,7 @@ default.
 
 - secure users passwords[^sql4]
 
-```
+```text
 /var/lib/pgsql/data/postgresql.conf
 ---
 password_encryption = scram-sha-256     # md5 or scram-sha-256
@@ -263,7 +263,7 @@ password_encryption = scram-sha-256     # md5 or scram-sha-256
 
 - change permissions to connections[^sql6]
 
-```
+```text
 /var/lib/pgsql/data/pg_hba.conf
 ---
 #  "local" is for Unix domain socket connections only
@@ -284,14 +284,14 @@ host    all             all             ::1/128                 scram-sha-256
 
 - create password for user `postgres`
 
-```
+```bash
 sudo -u postgres psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '${MY_PASS}';"
 ```
 
 - make all users set new passwords, and change the authentication method specifications in
   pg_hba.conf to scram-sha-256
 
-```
+```text
 CREATE ROLE foo WITH LOGIN PASSWORD 'secret';
 --or
 ALTER ROLE foo WITH LOGIN PASSWORD 'secret';
@@ -305,7 +305,7 @@ ALTER USER user WITH ENCRYPTED PASSWORD 'password';
 
 Used to create a $postgrest database and rest API.[^1]
 
-```
+```text
 \set auth_passwd `echo "${AUTH_PASSWD}"`;
 
 create schema api;

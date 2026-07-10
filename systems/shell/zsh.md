@@ -44,7 +44,7 @@ zinit light zsh-users/zsh-autosuggestions
 
 > https://wiki.archlinux.org/title/Zsh#Startup/Shutdown_files
 
-```
+```text
 1) `/etc/zsh/zshenv`: First zsh file to load
 2) `$ZDOTDIR/.zshenv`: Second zsh file to load
   2.1) `/etc/ambarconfig/env.sh`

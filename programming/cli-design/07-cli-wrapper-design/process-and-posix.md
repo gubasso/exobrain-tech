@@ -1,11 +1,11 @@
 # Wrapper Design — Process & POSIX
 
-> **See also.** The sibling chapter [Typing & Validation](typing-and-validation.md) covers the
+> **See also.** The sibling chapter [Typing & Validation](./typing-and-validation.md) covers the
 > _implementation_ side: how to model the wrapped CLI's domain as typed structures, separate build
 > from execution, and avoid scattered `.arg("--flag")` calls. Read both — this one is about
 > _invoking_ the subprocess correctly; the sibling is about _building_ what you invoke.
 >
-> This chapter is part of [CLI Wrapper Design](README.md) under the general
+> This chapter is part of [CLI Wrapper Design](./README.md) under the general
 > [CLI design principles](../README.md).
 
 General-purpose guideline for CLI programs that need to (a) wrap/invoke another existing CLI command
@@ -26,7 +26,7 @@ rule descends from this.
 
 Treat the CLI as having three syntactic zones:
 
-```
+```text
 mywrap [WRAPPER-OPTS]  <verb|positional>  [--]  [CHILD-ARGS...]
 ```
 
@@ -401,7 +401,7 @@ lives in
 
 ## One-screen start-from-scratch checklist
 
-```
+```text
 ARGV
 [ ] Wrapper flags long & namespaced (--mywrap-*); shorts reserved for child
 [ ] `--` is honored as end-of-options and stops your parsing

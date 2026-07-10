@@ -43,7 +43,7 @@ Use cases
 - security policies
 
   - kill processes
-  - restric behavious
+  - restrict behaviours
   - filter traffic
 
 - kernel patching

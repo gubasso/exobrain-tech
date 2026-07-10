@@ -1,7 +1,7 @@
 # Mise
 
 > Fallback tool-version manager. The canonical per-project environment manager is the Nix flake
-> devShell — see [development-tools-workflow](development-tools-workflow.md) and
+> devShell — see [development-tools-workflow](./development-tools-workflow.md) and
 > [nix](../tools/nix/README.md). dctl sandboxes provision tooling via Nix (see
 > [nix](../tools/nix/README.md)); mise is a lighter-weight option on hosts where a flake is
 > overkill.

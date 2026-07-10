@@ -51,7 +51,7 @@ it covers the dual case without weakening the default UX.
 3. **log-messages** — for both categories, always. Log to files by default and mirror to `stderr`
    only as an explicit opt-in (e.g. `--log-stderr`); never to `stdout`, which stays reserved for the
    human result or machine-output (see the channels matrix in
-   [01 — Logging & Output](01-logging-and-output.md)). Use XDG-compliant paths, defaulting to user
+   [01 — Logging & Output](./01-logging-and-output.md)). Use XDG-compliant paths, defaulting to user
    XDG paths under `$HOME`. Provide at least `info`, `warn`, `error`, and `debug` levels, with room
    to extend. Coding agents are expected log consumers too.
 
@@ -161,12 +161,12 @@ Otherwise, don't pre-extract.
 **Errors**: each adapter defines its own error type (e.g. `GitError`, `HttpError`). The top-level
 `AppError` aggregates them at the boundary. Mechanism is language-specific (Rust: `#[from]`; Python:
 exception hierarchy; Bash: namespaced exit codes) — see
-[02 — Error Messages](02-error-messages.md).
+[02 — Error Messages](./02-error-messages.md).
 
 ### `config/`
 
 **Owns**: layered config loading. Defines the resolved `Config` struct and the merge chain. See
-[03 — Config Precedence](03-config-precedence.md).
+[03 — Config Precedence](./03-config-precedence.md).
 
 **Does NOT own**: global mutable state, business invariants (those live in `domain/`).
 
@@ -192,12 +192,12 @@ Resolve once here, never recompute. Language-specific defaults live in each `cli
 ### `error.rs`
 
 **Owns**: the top-level `AppError` enum and its `exit_code()` mapping. See
-[02 — Error Messages](02-error-messages.md).
+[02 — Error Messages](./02-error-messages.md).
 
 ### `logging.rs`
 
 **Owns**: the install helper for the logging subsystem. See
-[01 — Logging & Output](01-logging-and-output.md).
+[01 — Logging & Output](./01-logging-and-output.md).
 
 **Does NOT own**: log emission. Only the install.
 
@@ -251,7 +251,7 @@ where you parse strings into newtypes, compile patterns, validate enums, and rej
 combinations.
 
 After projection, downstream code **cannot represent an invalid state**. This is the "parse, don't
-validate" principle made concrete (see [04 — Coding Style](04-coding-style-rust-zig.md), rule 2).
+validate" principle made concrete (see [04 — Coding Style](./04-coding-style-rust-zig.md), rule 2).
 
 ---
 
@@ -317,7 +317,7 @@ main()
 
 The context carries:
 
-- `config: Arc<Config>` — resolved config (see [03](03-config-precedence.md)).
+- `config: Arc<Config>` — resolved config (see [03](./03-config-precedence.md)).
 - `paths: Paths` — computed (data dir, state dir, cache dir).
 - `ui: Ui` — the only renderer for human-facing tools; machine-facing tools carry a structured
   output/protocol facility instead.
@@ -357,7 +357,7 @@ workspace navigation outweighs the wins.
 - **Domain crates + glue** (the `ripgrep` pattern): `app-domain/`, `app-adapter-<system>/`,
   `app-service/`, `app-cli/`. Use when subsystems are publishable.
 
-See [10 — Reference Projects](10-reference-projects.md) for organizational patterns from
+See [10 — Reference Projects](./10-reference-projects.md) for organizational patterns from
 well-studied codebases.
 
 ### Directory rules across a workspace
@@ -389,9 +389,9 @@ consumer, **don't** create the public surface — keep modules internal.
 
 ## See also
 
-- [04 — Coding Style](04-coding-style-rust-zig.md) — explicit errors, parse-don't-validate,
+- [04 — Coding Style](./04-coding-style-rust-zig.md) — explicit errors, parse-don't-validate,
   composition, no globals.
-- [08 — Naming & Documentation](08-naming-and-docs.md) — verb/noun discipline, module headers
+- [08 — Naming & Documentation](./08-naming-and-docs.md) — verb/noun discipline, module headers
   ("what it is, what it isn't").
 - [09 — Testing Strategy](09-testing-and-quality/testing-strategy.md) — what tests live where in the
   tree.

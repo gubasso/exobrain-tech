@@ -10,7 +10,7 @@
 
 # Related
 
-- [algorithms](algorithms.md)
+- [algorithms](./algorithms.md)
 
 # General
 
@@ -24,7 +24,7 @@ bucket sort: why is time complexity to O(1)?
 
 ## [Important and Useful links from all over the LeetCode](https://leetcode.com/discuss/general-discussion/665604/Important-and-Useful-links-from-all-over-the-LeetCode)
 
-```
+```text
 Formatting your posts in LeetCode :
 
 Format Your Posts with Markdown

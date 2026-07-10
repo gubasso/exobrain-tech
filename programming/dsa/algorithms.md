@@ -47,7 +47,7 @@ tree is the expectation)."
 
 **Basic Structure**
 
-```
+```text
 func()
 {
   if(  )
@@ -65,7 +65,7 @@ func()
 
 Step 1) Divide the problem into smaller sub-problems
 
-```
+```text
 Calculate the factorial(4)
 
 Fact(1) = 1;
@@ -76,11 +76,11 @@ Fact(4) = 4 * 3 * 2 * 1 = 4 * Fact(3);
 
 - Begin with the simplest cases
 
-```
+```text
 Fact(n) = n * Fact(n-1)
 ```
 
-```
+```text
 Fact(int n)
 {
   if(  )
@@ -96,11 +96,11 @@ Fact(int n)
 
 Step 2) Specify the base condition to stop the recursion
 
-```
+```text
 Fact(1) = 1
 ```
 
-```
+```text
 Fact(int n)
 {
   if( n == 1 )

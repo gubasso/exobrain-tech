@@ -14,17 +14,8 @@ of this as the “starter kit” for your own security operations.
 - [Public Dotfiles](#public-dotfiles)
 - [Gopass (Command-Line Vault)](#gopass-command-line-vault)
 - [Private Cloud Directory](#private-cloud-directory)
-- [Private Dotfiles](#private-dotfiles)
-  - [What to Store](#what-to-store)
-  - [Deployment Methods](#deployment-methods)
-  - [Example Structure](#example-structure)
-  - [Best Practices & Tips](#best-practices--tips)
-- [Private and Secret Dotfiles](#private-and-secret-dotfiles)
-  - [Prerequisites](#prerequisites)
-  - [Directory Setup](#directory-setup)
-  - [Example File Tree](#example-file-tree)
-  - [Saving Your Encryption Passphrase](#saving-your-encryption-passphrase)
-  - [Mounting Script](#mounting-script)
+- [Private Configuration Repositories](#private-configuration-repositories)
+- [Secret Material](#secret-material)
 
 <!--TOC-->
 

@@ -76,7 +76,7 @@ TimeMap.prototype.get = function(key, timestamp) {
 
 ## Solution: Binary Search 101
 
-```
+```text
 https://leetcode.com/problems/binary-search/solutions/423162/binary-search-101/
 AminiCK
 Nov 07, 2019

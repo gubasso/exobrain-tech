@@ -52,7 +52,7 @@ history).
 > **CI retrigger caveat.** On GitHub, a push made with the default `GITHUB_TOKEN` does **not**
 > trigger further workflows. If `master` needs its own CI to run on promotion, either run the
 > promotion as a job in the same release run, or mint a GitHub App token so its push retriggers
-> downstream workflows. See [03 — Tooling by ecosystem](03-tooling-by-ecosystem.md) and the rust
+> downstream workflows. See [03 — Tooling by ecosystem](./03-tooling-by-ecosystem.md) and the rust
 > binding for a worked example.
 
 ## Feeding `develop`

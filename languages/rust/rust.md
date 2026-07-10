@@ -40,7 +40,7 @@
 
   - tracing subscriber
 
-[sqlx](sqlx.md)
+[sqlx](./sqlx.md)
 
 ## Cargo / Cargo Tools
 
@@ -103,7 +103,7 @@ avoid array index out of bounds
 
 basic brute example:
 
-```
+```text
 for i in points.len() {
   let current = points[i];
   let previous = points[i-1];
@@ -113,7 +113,7 @@ for i in points.len() {
 
 with array_windows
 
-```
+```text
 for [previous, current] in points.array_windows().copied() {
   differences.push(current-previous);
 }
@@ -239,7 +239,7 @@ fn type_of<T>(_: T) -> &'static str {
 console output in `println!` (std out)
 https://stackoverflow.com/questions/25106554/why-doesnt-println-work-in-rust-unit-tests
 
-```
+```bash
 cargo test -- --nocapture
 cargo nextest run --show-output
 
@@ -250,7 +250,7 @@ cargo clippy --package p909_snakes_and_ladders
 
 [Sorting Vector of vectors of f64](https://users.rust-lang.org/t/sorting-vector-of-vectors-of-f64/16264)
 
-```
+```text
 use std::cmp::Ordering;
 
 fn main() {

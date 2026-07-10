@@ -19,7 +19,7 @@
 
 ## Organize SQL Project (files, directories)
 
-```
+```text
 .
 ├── build
 │   ├── main.sql

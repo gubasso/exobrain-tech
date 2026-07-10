@@ -12,7 +12,7 @@
 `^` and `$` are called "anchors". They anchor the match to the beginning and end of the string
 respectively.
 
-```
+```text
 ^foo    matches any string starting with 'foo'
 foo$    matches any string ending with 'foo'
 ^foo$   matches exact string 'foo'.

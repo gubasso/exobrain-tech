@@ -27,7 +27,7 @@ fold / unfold https://neovim.io/doc/user/fold.html https://neovim.io/doc/user/fo
 
 > column sum sequence numbers column numbered list
 
-```
+```text
 :help v_g_CTRL-A
 
 # to use a step count of 2
@@ -48,7 +48,7 @@ Find what filetype is loaded in vim / how to know which filetype
 
 function to simplify keymappings:
 
-```
+```text
 -- Functional wrapper for mapping custom keybindings
 -- https://blog.devgenius.io/create-custom-keymaps-in-neovim-with-lua-d1167de0f2c2
 
@@ -64,7 +64,7 @@ map("n", "<leader><tab>", "<cmd>b#<CR>", default_opts)
 map("n", "<leader>h", ":nohlsearch<CR>", default_opts)
 ```
 
-```
+```text
 " Redir output to empty buffer [^5]
 command! -nargs=+ -complete=command Redir let s:reg = @@ | redir @"> | silent execute <q-args> | redir END | new | pu | 1,2d_ | let @@ = s:reg
 " [^5]: Dump the output of internal vim command into buffer (https://vi.stackexchange.com/questions/8378/dump-the-output-of-internal-vim-command-into-buffer)
@@ -72,7 +72,7 @@ command! -nargs=+ -complete=command Redir let s:reg = @@ | redir @"> | silent ex
 
 Macro helpers to input common texts:
 
-```
+```text
 " js helpers
 augroup jshelpers
     au! FileType javascript nnoremap <leader>c "cyiwoconsole.log(<C-r>c)<Esc>
@@ -90,25 +90,25 @@ augroup mdhelpers
     au FileType markdown nnoremap <leader>cc o
 ```
 
-```
+```text
 <Esc>kk
     au FileType markdown nnoremap <leader>cp o
 ```
 
-```
+```text
 <Esc>kk"+p
     "" code block: with file name
     au FileType markdown nnoremap <leader>ff o
 **``**
 ```
 
-```
+```text
 <Esc>kkkklll
     au FileType markdown nnoremap <leader>fp o
 **``**
 ```
 
-```
+```text
 <Esc>kk"+p
     "" link and paste at end
     au FileType markdown nnoremap <leader>i i[]()<Esc>"+pT)
@@ -117,7 +117,7 @@ augroup END
 
 associate different file types with extensions
 
-```
+```text
 augroup mdfiletypes
     " associate *.foo with bar filetype
     " do not override previouslly set filetypes
@@ -136,12 +136,12 @@ Vim Snippets: https://github.com/honza/vim-snippets
 
 [how do I use a variable content as an argument for vim command?](https://superuser.com/questions/320395/how-do-i-use-a-variable-content-as-an-argument-for-vim-command)
 
-```
+```text
 :let $foo="whatever"
 :let $bar=@a
 ```
 
-```
+```text
 :e $foo
 :e $bar
 ```
@@ -245,27 +245,27 @@ https://github.com/tpope/vim-unimpaired : unimpaired.vim: Pairs of handy bracket
 
 [Bulk rename files with Vim](https://vim.fandom.com/wiki/Bulk_rename_files_with_Vim)
 
-```
+```text
 :%s/.*/mv -i & &/g
 :%s/.JPEG$/.jpg/g
 ```
 
 Explanation[^3]:
 
-```
+```text
 :%s/.*/mv -i & &/g
 ```
 
 - Replaces every line in the document (say, "line"), and replaces it by "mv -i line line". `.*` is a
   regex saying "any character, repeated any number of times". & means "what has been found".
 
-```
+```text
 :%s/.JPEG$/.jpg/g
 ```
 
 - Searches for .JPEG at the end of any line (hence the $) and replaces it by .jpg
 
-```
+```text
 :%!bash
 ```
 
@@ -281,7 +281,7 @@ Explanation[^3]:
 
 bulk rename workflow with vim-dirvish
 
-```
+```text
 Workflow with dirvish:
 
     Visit any number of directories using dirvish, in Vim.
@@ -299,7 +299,7 @@ Workflow with dirvish:
 
 **`tmux.conf`**
 
-```
+```text
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' \

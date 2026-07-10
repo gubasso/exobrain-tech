@@ -283,4 +283,4 @@ human-debuggable form of the provenance dict.
   rule and XDG paths.
 - [General — Logging & Output](../../../programming/cli-design/01-logging-and-output.md) — same
   provenance discipline applies to log destinations.
-- [`typer-patterns.md`](typer-patterns.md) — wiring this into Typer commands.
+- [`typer-patterns.md`](./typer-patterns.md) — wiring this into Typer commands.

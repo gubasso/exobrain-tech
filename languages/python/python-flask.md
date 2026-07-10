@@ -13,7 +13,7 @@ cache implementation: https://explore-flask.readthedocs.io/en/latest/views.html#
 
 From a Mongo (pymongo) Curse:
 
-```
+```text
 from flask import Response, request
 from bson.json_util import dumps
 
@@ -31,7 +31,7 @@ return Response(json_data, mimetype='application/json')
 
 Access query string from flask:[^1][^2]
 
-```
+```text
 # url?A=123&A=456&B=789.
 args = request.args
 qstr = args.lists() # A generator for the multi-dict

@@ -2,7 +2,7 @@
 
 Container and devcontainer notes: Docker (reference, Compose, secrets, Dockerfile layout), running
 databases (MongoDB) and Portainer in Docker, devcontainer cleanup, Kubernetes, and a Podman-first
-Neovim dev-container workflow live as topic files here — the [`AGENTS.md`](AGENTS.md) Source Map
+Neovim dev-container workflow live as topic files here — the [`AGENTS.md`](./AGENTS.md) Source Map
 indexes them file by file.
 
 See also: [`../sandbox-isolation-backends/`](../sandbox-isolation-backends/README.md) — the

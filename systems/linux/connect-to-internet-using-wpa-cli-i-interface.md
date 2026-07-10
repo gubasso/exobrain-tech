@@ -28,7 +28,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 2. **Verify prompt** At the prompt, you should see something like:
 
-   ```
+   ```text
    Selected interface 'wlan0'
    >
    ```
@@ -39,7 +39,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 1. **Initiate a scan**
 
-   ```
+   ```text
    > scan
    ```
 
@@ -47,13 +47,13 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 2. **List scan results**
 
-   ```
+   ```text
    > scan_results
    ```
 
    You’ll see lines formatted as:
 
-   ```
+   ```text
    bssid / frequency / signal level / flags / ssid
    ```
 
@@ -63,7 +63,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 1. **Create a new network profile**
 
-   ```
+   ```text
    > add_network
    ```
 
@@ -72,7 +72,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 2. **Set the SSID**
 
-   ```
+   ```text
    > set_network 0 ssid "MyNetworkSSID"
    ```
 
@@ -80,7 +80,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 3. **Set the passphrase**
 
-   ```
+   ```text
    > set_network 0 psk "MySecretPass"
    ```
 
@@ -90,13 +90,13 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
    - **Enable** (allows multiple profiles):
 
-     ```
+     ```text
      > enable_network 0
      ```
 
    - **Select** (exclusively use this one):
 
-     ```
+     ```text
      > select_network 0
      ```
 
@@ -104,7 +104,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 5. **Verify connection status**
 
-   ```
+   ```text
    > status
    ```
 
@@ -114,7 +114,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 1. **Persist configuration**
 
-   ```
+   ```text
    > save_config
    ```
 
@@ -123,7 +123,7 @@ Next, configure that profile with `set_network <id> ssid "<SSID>"` and
 
 2. **Exit interactive mode**
 
-   ```
+   ```text
    > quit
    ```
 

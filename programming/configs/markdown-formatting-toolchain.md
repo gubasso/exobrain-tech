@@ -4,7 +4,7 @@ Canonical rationale for the markdown pre-commit stack used in the dotfiles
 `_templates/pre-commit/markdown/` template and in this repo's own root config. This note exists
 because `dprint.json` is validated by the `pretty-format-json` hook as **strict JSON** (no comments
 allowed), so the options/rationale cannot live inline in that file. See also
-[markdown-review.md](markdown-review.md).
+[markdown-review.md](./markdown-review.md).
 
 ## Division of labor
 

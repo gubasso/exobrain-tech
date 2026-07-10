@@ -3,7 +3,7 @@
 ## When to load
 
 Any `.ts`/`.tsx` file. For React-specific concerns also load react.md; for Svelte
-[svelte.md](svelte.md).
+[svelte.md](./svelte.md).
 
 ## Top review heuristics
 
@@ -47,7 +47,7 @@ Any `.ts`/`.tsx` file. For React-specific concerns also load react.md; for Svelt
 
 Defer to the framework guide:
 
-- [svelte.md](svelte.md)
+- [svelte.md](./svelte.md)
 
 ### Common bugs
 
@@ -82,6 +82,6 @@ Common CLI in JS/TS uses `commander`, `yargs`, or `clipanion`. Review flags:
 ## See also
 
 - javascript.md — runtime / Node specifics.
-- react.md, [svelte.md](svelte.md) — framework-specific.
+- react.md, [svelte.md](./svelte.md) — framework-specific.
 - Upstream guide:
   <https://github.com/awesome-skills/code-review-skill/blob/main/reference/typescript.md>.

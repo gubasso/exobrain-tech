@@ -1,6 +1,6 @@
 # Bash Release — install.sh & AUR
 
-Part of the [bash release-workflow spec](README.md). General principle: **distribution channels**
+Part of the [bash release-workflow spec](./README.md). General principle: **distribution channels**
 — see the [general principles](../../../programming/release-workflow/README.md).
 
 End-user install methods, in priority order. This chapter covers the two user-driven channels: the

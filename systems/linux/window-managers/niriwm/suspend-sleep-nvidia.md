@@ -101,8 +101,8 @@ required” prompts:
 With these steps, hitting your designated key in Niri will correctly invoke `systemctl suspend` (or
 your chosen power command), even on NVIDIA-equipped hardware, and without unwanted password prompts.
 
-[1]: https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate?utm_source=chatgpt.com "Power management/Suspend and hibernate - ArchWiki"
-[2]: https://unix.stackexchange.com/questions/490719/how-does-systemctl-suspend-work?utm_source=chatgpt.com "How does systemctl suspend work? - Unix & Linux Stack Exchange"
+[1]: https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate "Power management/Suspend and hibernate - ArchWiki"
+[2]: https://unix.stackexchange.com/questions/490719/how-does-systemctl-suspend-work "How does systemctl suspend work? - Unix & Linux Stack Exchange"
 [3]: https://github.com/YaLTeR/niri/wiki/Configuration%3A-Key-Bindings "Configuration: Key Bindings · YaLTeR/niri Wiki · GitHub"
-[4]: https://bbs.archlinux.org/viewtopic.php?id=304972&utm_source=chatgpt.com "Suspend and Hibernate not working / Laptop Issues / Arch Linux Forums"
-[5]: https://wiki.archlinux.org/title/Polkit?utm_source=chatgpt.com "polkit - ArchWiki"
+[4]: https://bbs.archlinux.org/viewtopic.php?id=304972 "Suspend and Hibernate not working / Laptop Issues / Arch Linux Forums"
+[5]: https://wiki.archlinux.org/title/Polkit "polkit - ArchWiki"

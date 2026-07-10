@@ -43,7 +43,7 @@ ssh -v -F /dev/null -o PreferredAuthentications=password <user>@<server>
 
 From `local`[^3]:
 
-```
+```text
 # if local user_name is the same of server's
 ssh-copy-id <server>
 # if different user names
@@ -56,19 +56,19 @@ ssh-copy-id -i <private_identity_file> -p 221 <user_name>@<server>
 
 - check applied configs, run command:
 
-```
+```bash
 sudo systemctl restart sshd && sudo sshd -T
 ```
 
 - Just update config:
 
-```
+```bash
 systemctl reload sshd
 ```
 
 - Set config:
 
-```
+```bash
 systemctl restart sshd
 ```
 
@@ -78,7 +78,7 @@ systemctl restart sshd
 
 **`~/.ssh/config`**
 
-```
+```text
 Match host=SERVER1
    IdentitiesOnly yes
    IdentityFile ~/.ssh/id_rsa_IDENTITY1
@@ -104,7 +104,7 @@ Match host=SERVER2,SERVER3
 
 **`~/.ssh/config`**
 
-```
+```text
 host gitolite
     user git
     hostname a.long.server.name.or.annoying.IP.address
@@ -120,7 +120,7 @@ Or to manage multiple keys access:
 
 **`~/.ssh/config`**
 
-```
+```text
 host gitolite
     user git
     hostname gitolite.mydomain.com
@@ -138,7 +138,7 @@ host gitolite-sh
 
 Example of sending a command through ssh:
 
-```
+```bash
 ssh you@example.com 'mkdir -p cadelab-api-backend'
 ```
 
@@ -164,7 +164,7 @@ https://stribika.github.io/2015/01/04/secure-secure-shell.html
 
 Generate without comment:
 
-```
+```bash
 ssh-keygen -f ~/.ssh/<myname>-ed25519 -t ed25519 -a 100 -C ''
 ssh-keygen -t rsa -b 4096 -a 100 -C ''
 ```
@@ -176,7 +176,7 @@ ssh-keygen -t rsa -b 4096 -a 100 -C ''
 With the public key missing, the following command will show you that there is no public key for
 this SSH key.
 
-```
+```bash
 $ ssh-keygen -l -f ~/.ssh/id_rsa
 test is not a public key file.
 ```
@@ -186,7 +186,7 @@ test is not a public key file.
 
 **generate the missing public key again from the private key:**
 
-```
+```bash
 ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 Enter passphrase:
 ```
@@ -197,7 +197,7 @@ Enter passphrase:
 
 You can kill ssh-agent by running:
 
-```
+```text
 eval "$(ssh-agent -k)"
 ```
 
@@ -208,7 +208,7 @@ to only enable agent forwarding for selected hosts.
 
 Setup to use `ssh-agent` to remote access a server:
 
-```
+```text
 at local (my cpu): ~/.ssh/config
 ---
 # By host

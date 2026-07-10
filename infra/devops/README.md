@@ -20,11 +20,11 @@
 - server-vps (path: `../server-vps/server-vps.md`)
 - [home server](../server-vps/server-vps-home_server.md)
 - [dns](../networking/dns.md)
-- [backups](backups.md)
+- [backups](./backups.md)
 
 ## CI / CD
 
-- [github-actions-ci-cd.md](github-actions-ci-cd.md)
+- [github-actions-ci-cd.md](./github-actions-ci-cd.md)
 
 ## Proxy / Reverse Proxy
 

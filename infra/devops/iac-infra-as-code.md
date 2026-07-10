@@ -4,7 +4,7 @@
 
 - [ANSIBLE PROVIDER FOR TERRAFORM | IT HAS ARRIVED! | HOW TO USE](https://www.youtube.com/watch?v=MHJ_0JecM2Y)
 
-```
+```text
 infra/
 ├── terraform/
 │   ├── main.tf

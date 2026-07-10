@@ -2,7 +2,7 @@
 
 Working with python and mongodb simple example (using pymongo):
 
-```
+```text
 import pymongo
 import pandas as pd
 

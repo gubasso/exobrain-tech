@@ -130,11 +130,11 @@ hooks. ([Arch Linux Wiki][8])
 
 ---
 
-[1]: https://wiki.archlinux.org/title/GRUB?utm_source=chatgpt.com "GRUB - ArchWiki"
-[2]: https://wiki.archlinux.org/title/Dm-crypt/System_configuration?utm_source=chatgpt.com "dm-crypt/System configuration - ArchWiki"
-[3]: https://wiki.archlinux.org/title/Microcode?utm_source=chatgpt.com "Microcode - ArchWiki"
-[4]: https://wiki.archlinux.org/title/GRUB/Tips_and_tricks?utm_source=chatgpt.com "GRUB/Tips and tricks - ArchWiki"
-[5]: https://wiki.archlinux.org/title/Kernel_parameters?utm_source=chatgpt.com "Kernel parameters - ArchWiki"
-[6]: https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system?utm_source=chatgpt.com "dm-crypt/Encrypting an entire system - ArchWiki"
-[7]: https://wiki.archlinux.org/title/User%3AAlad/Beginners%27_guide?utm_source=chatgpt.com "User:Alad/Beginners' guide - ArchWiki"
-[8]: https://wiki.archlinux.org/title/GRUB/EFI_examples?utm_source=chatgpt.com "GRUB/EFI examples - ArchWiki"
+[1]: https://wiki.archlinux.org/title/GRUB "GRUB - ArchWiki"
+[2]: https://wiki.archlinux.org/title/Dm-crypt/System_configuration "dm-crypt/System configuration - ArchWiki"
+[3]: https://wiki.archlinux.org/title/Microcode "Microcode - ArchWiki"
+[4]: https://wiki.archlinux.org/title/GRUB/Tips_and_tricks "GRUB/Tips and tricks - ArchWiki"
+[5]: https://wiki.archlinux.org/title/Kernel_parameters "Kernel parameters - ArchWiki"
+[6]: https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system "dm-crypt/Encrypting an entire system - ArchWiki"
+[7]: https://wiki.archlinux.org/title/User%3AAlad/Beginners%27_guide "User:Alad/Beginners' guide - ArchWiki"
+[8]: https://wiki.archlinux.org/title/GRUB/EFI_examples "GRUB/EFI examples - ArchWiki"

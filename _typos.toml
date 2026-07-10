@@ -4,5 +4,5 @@
 # not silenced here.
 
 [default.extend-words]
-# Example:
-#   gere = "gere"   # Portuguese verb form, not a typo of "here"
+gere = "gere"   # Portuguese verb form ("gere o arquivo"), not a typo of "here"
+mis = "mis"     # valid "mis-" prefix in compounds (mis-spelled, mis-organized)

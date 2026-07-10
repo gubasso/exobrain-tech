@@ -23,12 +23,12 @@ xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt base-syst
 
 ## Post Install
 
-- [Install and configure NetworkManager](networkmanager-install-and-configure-on-void.md)
-- [Setup NetworkManager DNS resolv](networkmanager-choosing-the-right-dns-strategy-for-void-linux-symlink-openresolv-or-systemd-resolved.md)
+- [Install and configure NetworkManager](./networkmanager-install-and-configure-on-void.md)
+- [Setup NetworkManager DNS resolv](./networkmanager-choosing-the-right-dns-strategy-for-void-linux-symlink-openresolv-or-systemd-resolved.md)
 
 ### [Cron](https://docs.voidlinux.org/config/cron.html)
 
-- [Choosing CRON Daemon for Void](choosing-cron-daemon-for-void.md)
+- [Choosing CRON Daemon for Void](./choosing-cron-daemon-for-void.md)
 - Choice for now: `dcron`
 
 ### [Date and Time](https://docs.voidlinux.org/config/date-time.html)
@@ -42,7 +42,7 @@ xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt base-syst
 
 #### Fonts
 
-- [Fonts on Void](fonts.md)
+- [Fonts on Void](./fonts.md)
 
 ### After Window Manager
 

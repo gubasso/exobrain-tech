@@ -18,6 +18,6 @@ pint amazon images --active --json --filter="name~sles-,name~byos,name~sap,name\
 
 Filter examples:
 
-```
+```text
 pint_filter = 'name~sles-,name~byos,name~sap,name!arm64,name!manager,name!openSUSE,name!liberty,name!micro'
 ```

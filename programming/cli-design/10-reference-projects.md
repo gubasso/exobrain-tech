@@ -24,7 +24,7 @@ consumer in sight.
 
 ## Pattern 2 — core library + thin binary (`bat`)
 
-```
+```text
 src/
 ├─ lib.rs               public API: the rendering engine
 ├─ printer.rs
@@ -46,7 +46,7 @@ otherwise — a no-op `lib.rs` adds compile cost without buying anything.
 
 ## Pattern 3 — domain crates + glue (`ripgrep`)
 
-```
+```text
 crates/
 ├─ matcher/           grep-matcher  (matcher trait)
 ├─ regex/             grep-regex    (regex impl)
@@ -70,7 +70,7 @@ isolating it. The first rule of workspace migration is "don't migrate proactivel
 
 ## Pattern 4 — bin + client + server + common (`atuin`)
 
-```
+```text
 crates/
 ├─ <app>/              CLI binary (the one the user runs)
 ├─ <app>-client/       client-side logic
@@ -89,7 +89,7 @@ wrong place.
 
 ## Pattern 5 — plugin ABI as a separate crate (`zellij`)
 
-```
+```text
 zellij-server/
 zellij-client/
 zellij-utils/
@@ -108,7 +108,7 @@ marathon.
 
 ## Pattern 6 — uniform `exec()` per subcommand (`cargo`)
 
-```
+```text
 src/bin/<name>/commands/
 ├─ build.rs            pub fn cli() -> Command; pub fn exec(gctx, args) -> CliResult;
 ├─ check.rs
@@ -129,7 +129,7 @@ in `main` is fine; it's grep-able and the compiler tells you when you forgot a b
 
 ## Pattern 7 — focused `command_error.rs` + bounded `ui.rs` (`jj`)
 
-```
+```text
 cli/src/
 ├─ main.rs
 ├─ cli_util.rs
@@ -146,11 +146,11 @@ cli/src/
   other module emits through it.
 
 `jj` does both well. The `ui.rs` bound is what makes "no print outside ui/" a teachable, enforceable
-rule (see [04 — Coding Style, rule 12](04-coding-style-rust-zig.md)).
+rule (see [04 — Coding Style, rule 12](./04-coding-style-rust-zig.md)).
 
 ## Pattern 8 — `options/` vs `output/` separation (`eza`)
 
-```
+```text
 src/
 ├─ main.rs
 ├─ options/            CLI parsing + flag resolution
@@ -167,7 +167,7 @@ pulling it into `output/` (or `ui/`) keeps handlers focused on orchestration.
 
 ## Pattern 9 — `context.rs` + `modules/` (`starship`)
 
-```
+```text
 src/
 ├─ context.rs          one struct holding everything modules need
 ├─ module.rs           trait + helpers
@@ -183,7 +183,7 @@ globals or each other.
 
 ## Pattern 10 — dependency-direction workspace (`helix`)
 
-```
+```text
 helix-core/             pure types: rope, position, syntax
 helix-view/             view layer
 helix-term/             the binary
@@ -219,7 +219,7 @@ depends on nothing app-specific; `commands/` depends on everything below it; nev
 
 ## See also
 
-- [00 — Architecture](00-architecture.md) — the directory roles these patterns map onto.
+- [00 — Architecture](./00-architecture.md) — the directory roles these patterns map onto.
 - Language-specific deep dives:
   - [`rust/cli-spec/10-reference-projects.md`](../../languages/rust/cli-spec/10-reference-projects.md)
     — Rust-specific takeaways from the same projects.

@@ -40,7 +40,7 @@ one-time-init blocks. When you do reach for the unsafe escape hatch, document th
 At every boundary (CLI, file, network), parse strings into precise types **once**. After parsing,
 downstream code can't represent invalid state.
 
-```
+```text
                   +-------------+
 boundary input -->| parse layer |--> precise type --> business logic
                   +-------------+
@@ -217,7 +217,7 @@ overdue.
 The dispatch surface for every command. Built in `main`, passed by reference, holds resolved config
 / paths / runtime handle / UI / clock.
 
-```
+```text
 struct AppContext {
     config: Arc<Config>,
     paths: Paths,
@@ -234,7 +234,7 @@ an explicit `&AppContext`; tests construct one with fakes.
 
 The code says what. Comments say why.
 
-```
+```text
 # no — restates code
 counter += 1  # increment counter
 
@@ -288,7 +288,7 @@ constants. Avoid globally-mutable state.
 
 Order of preference (Rust):
 
-```
+```text
 const > static > LazyLock > lazy_static (legacy)
 ```
 
@@ -355,8 +355,8 @@ When in doubt about where new code belongs, ask in this order:
 
 ## See also
 
-- [00 — Architecture](00-architecture.md) — the directory layout these rules apply to.
-- [02 — Error Messages](02-error-messages.md) — rule 1 in detail.
+- [00 — Architecture](./00-architecture.md) — the directory layout these rules apply to.
+- [02 — Error Messages](./02-error-messages.md) — rule 1 in detail.
 - Language-specific applications:
   - [`rust/cli-spec/09-coding-style.md`](../../languages/rust/cli-spec/09-coding-style.md) — Rust
     idioms (newtypes via `FromStr`, lints, `LazyLock`).

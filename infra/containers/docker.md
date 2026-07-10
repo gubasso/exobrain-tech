@@ -177,7 +177,7 @@ PORT=8000
 
 Check if installation is correct:
 
-```
+```bash
 sudo systemctl status docker
 sudo docker run hello-world
 sudo docker compose version
@@ -187,7 +187,7 @@ sudo docker compose version
 
 **execute commands inside container**
 
-```
+```bash
 sudo docker exec <cont_name> ls
 sudo docker exec -it <cont_name> bash
 ```
@@ -208,7 +208,7 @@ Listing things
 
 ---
 
-```
+```bash
 docker stop <container_name>
 ```
 
@@ -273,7 +273,7 @@ remove commands / cleanup
 
 stop all containers
 
-```
+```bash
 sudo docker kill $(sudo docker ps -q)
 ```
 
@@ -336,7 +336,7 @@ of the base image will be ran
 
 At terminal:
 
-```
+```bash
 docker build .
 sudo docker build -t {img_name} .
 ```
@@ -346,7 +346,7 @@ sudo docker build -t {img_name} .
 
 Then, to run the docker image:
 
-```
+```bash
 docker run -p 3000:3000 <image_id>
 ```
 
@@ -359,7 +359,7 @@ docker run -p 3000:3000 <image_id>
 
 Ignored by `COPY` command.
 
-```
+```text
 .git
 node_modules
 Dockerfile
@@ -370,7 +370,7 @@ Dockerfile
 
 Login to a private registry:
 
-```
+```bash
 docker login localhost:8080
 cat ~/my_password.txt | docker login --username foo --password-stdin
 ```
@@ -389,19 +389,19 @@ If wants to use a private registry:
 
 Save a docker image to file:
 
-```
+```bash
 sudo docker save -o <path for generated tar file> <image name>
 ```
 
 Load a docker image from file:
 
-```
+```bash
 sudo docker load -i <path to image tar file>
 ```
 
 ### Useful example
 
-```
+```text
 FROM node:14-slim
 
 RUN userdel -r node
@@ -421,7 +421,7 @@ WORKDIR /app
 
 And then build the Docker image using the following (which also gives you a nice use of ARG):
 
-```
+```bash
 docker build -t node-util:cliuser --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) .
 ```
 
@@ -466,7 +466,7 @@ docker build -t node-util:cliuser --build-arg USER_ID=$(id -u) --build-arg GROUP
 - user define a path to host machine
 - a map from host dir path to container dir path
 
-```
+```bash
 docker run -d -p 3000:80 --rm \
     --name feedback-app \
     -v feedback:/app/feedback \
@@ -524,7 +524,7 @@ Using docker native network for resolve ip addresses automatically
   - have to be created first, docker will not create automatically if used in a `docker run` command
   - `docker network create favorites-net`
 
-```
+```bash
 docker run -d --name mongodb \
     --network favorites-net
     mongo
@@ -622,7 +622,7 @@ volumes:
 
 Use as a isolated environment.
 
-```
+```bash
 docker run -it node npm init
 ```
 
@@ -630,13 +630,13 @@ docker run -it node npm init
 
 In an empty project directory, create a simple `Dockerfile`
 
-```
+```text
 FROM node:14-alpine
 
 WORKDIR /app
 ```
 
-```
+```bash
 docker run -it -v $(pwd):/app <image_name> <command>
 ```
 
@@ -669,7 +669,7 @@ services:
   - this will allow appended commands
   - will not remove the container automatically (as it happens with `up`)
 
-```
+```bash
 docker-compose run guganpm init
 ```
 
@@ -691,12 +691,12 @@ FROM node:14-slim
 WORKDIR /app
 ```
 
-```
+```bash
 docker build -t node-util:perm .
 docker run -it --rm -v $(pwd):/app node-util:perm npm init
 ```
 
-```
+```bash
 $ ls -la
 
 total 16
@@ -747,7 +747,7 @@ WORKDIR /app
 If I rebuild my Utility Container in the normal way and re-run "npm init", the ownership of the
 package.json file is written as if "scott" wrote the file.
 
-```
+```bash
 $ ls -la
 
 total 12
@@ -787,17 +787,17 @@ WORKDIR /app
 
 And then build the Docker image using the following (which also gives you a nice use of ARG):
 
-```
+```bash
 docker build -t node-util:cliuser --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) .
 ```
 
 And finally running it with:
 
-```
+```bash
 docker run -it --rm -v $(pwd):/app node-util:cliuser npm init
 ```
 
-```
+```bash
 $ ls -la
 
 total 12
@@ -845,7 +845,7 @@ Mongodb images
 - Understanding the Docker Build Context
 - Using EOF File Creation
 
-```
+```bash
 $ docker build -t test -<<EOF
 FROM   centos:7
 MAINTAINER maintainer@baeldung.com
@@ -853,7 +853,7 @@ RUN echo "Welcome to Bealdung"
 EOF
 ```
 
-```
+```bash
 echo "FROM mongo:5.0.9" | sudo docker build -t {img_name} -
 ```
 

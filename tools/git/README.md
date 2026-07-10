@@ -185,7 +185,7 @@ mechanics; the workflow model and its per-language bindings are documented there
   `develop`/`master` branch model, the automated release-PR pattern, and Trusted Publishing / OIDC.
 - [branch-protection/](./branch-protection/) — the platform runbooks and rulesets that **enforce**
   the model (GitHub Rulesets / GitLab protected branches, bypass actor, tag protection).
-- [feature-lifecycle.md](feature-lifecycle.md) + [rebase-workflow.md](rebase-workflow.md) — the
+- [feature-lifecycle.md](./feature-lifecycle.md) + [rebase-workflow.md](./rebase-workflow.md) — the
   day-to-day feature-branch loop that feeds `develop`.
 
 ### External reading
@@ -198,18 +198,18 @@ mechanics; the workflow model and its per-language bindings are documented there
 
 ## Related
 
-- [Gitolite](gitolite.md)
+- [Gitolite](./gitolite.md)
   - manage git users and repositories
 
 ## Development Docs
 
-- [feature-lifecycle.md](feature-lifecycle.md)
+- [feature-lifecycle.md](./feature-lifecycle.md)
   - feature-branch lifecycle from creation to merge
-- [feature-lifecycle-git-commands.md](feature-lifecycle-git-commands.md)
+- [feature-lifecycle-git-commands.md](./feature-lifecycle-git-commands.md)
   - companion git commands for each lifecycle phase
-- [rebase-workflow.md](rebase-workflow.md)
+- [rebase-workflow.md](./rebase-workflow.md)
   - rebasing feature branches onto upstream
-- [glab-auth.md](glab-auth.md)
+- [glab-auth.md](./glab-auth.md)
   - checking, fixing, and setting up `glab` authentication (keyring + HTTPS credential helper)
 - [gh-auth.md](./gh-auth.md)
   - checking, fixing, and setting up `gh` authentication (keyring + HTTPS credential helper)
@@ -217,15 +217,15 @@ mechanics; the workflow model and its per-language bindings are documented there
   - GitHub/GitLab branch-protection rulesets, scripts, and workflows
 - [workflows/](./workflows/)
   - end-to-end git workflow guides
-- [cmds-examples.md](cmds-examples.md)
+- [cmds-examples.md](./cmds-examples.md)
   - assorted git command examples
-- [diffs.md](diffs.md)
+- [diffs.md](./diffs.md)
   - diffing recipes
-- [github.md](github.md)
+- [github.md](./github.md)
   - GitHub-specific notes
-- [git-qa.md](git-qa.md)
+- [git-qa.md](./git-qa.md)
   - git questions and answers
-- [git-commit-signing-with-ssh-git-commit-s-cheatsheet.md](git-commit-signing-with-ssh-git-commit-s-cheatsheet.md)
+- [git-commit-signing-with-ssh-git-commit-s-cheatsheet.md](./git-commit-signing-with-ssh-git-commit-s-cheatsheet.md)
   - SSH commit-signing cheatsheet
 
 ## Resources
@@ -286,7 +286,7 @@ squash commits
 config git local info config
 [How to store a git config as part of the repository?](https://stackoverflow.com/questions/18329621/how-to-store-a-git-config-as-part-of-the-repository)
 
-```
+```bash
 git config --local include.path ../.gitconfig
 ```
 
@@ -294,7 +294,7 @@ git config --local include.path ../.gitconfig
 
 Clear Entire Git Cache
 
-```
+```bash
 git rm -r --cached .
 git add .
 git commit -am 'Removed files from the index (now ignored)'
@@ -304,7 +304,7 @@ git commit -am 'Removed files from the index (now ignored)'
 
 Git add all[^1]
 
-```
+```bash
 git add .
 git add -A #--all
 ```

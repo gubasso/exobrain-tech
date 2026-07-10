@@ -3,7 +3,7 @@
 > Prerequisite:
 > [General principles — Architecture](../../../programming/cli-design/00-architecture.md) for the
 > four-edit rule, parse-shape vs runtime-shape, and service extraction. Parameter-level Typer
-> details live in [Typer / Click Patterns](typer-patterns.md).
+> details live in [Typer / Click Patterns](./typer-patterns.md).
 
 ## The four responsibilities (Python + Typer)
 
@@ -84,7 +84,7 @@ Rules:
 - Typer owns parse-shape: options, arguments, names, short help, and parser-level coercion.
 - No business logic, no direct I/O, and no service calls except the final handoff to the command
   handler.
-- Keep deeper parameter recipes in [Typer / Click Patterns](typer-patterns.md), not in every
+- Keep deeper parameter recipes in [Typer / Click Patterns](./typer-patterns.md), not in every
   subcommand chapter.
 
 ### 2. `cli/__init__.py` or `cli/app.py` (register the command)
@@ -210,7 +210,7 @@ The Python-specific mapping is:
 - The projection lives beside the command handler, not inside domain or adapter code.
 
 For path options, callbacks, `RootModel`, and multi-value parsing, use
-[Typer / Click Patterns](typer-patterns.md) instead of repeating those parameter-level mechanics.
+[Typer / Click Patterns](./typer-patterns.md) instead of repeating those parameter-level mechanics.
 
 ## Handler signature convention
 
@@ -223,7 +223,7 @@ def run(ctx: AppContext, request: WidgetRequest) -> None:
 
 Handlers return `None` on success and raise typed `AppError` subclasses on failure. They do not
 return process exit codes and do not call `sys.exit`; the boundary described in
-[Error Handling (Python)](error-handling-python.md) owns that mapping.
+[Error Handling (Python)](./error-handling-python.md) owns that mapping.
 
 ## When to extract a service
 

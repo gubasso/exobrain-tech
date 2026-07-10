@@ -165,5 +165,5 @@ This will exclude any directory that contains a file named `.ignore`.
 By following these steps, you can effectively manage file and directory exclusions in rclone,
 similar to how `.gitignore` works in Git.
 
-[1]: https://techwiki.co.uk/RClone_-_Filtering?utm_source=chatgpt.com "RClone - Filtering - Tech Wiki"
-[2]: https://github.com/rclone/rclone/issues/394?utm_source=chatgpt.com "Exclude directories? · Issue #394 · rclone/rclone - GitHub"
+[1]: https://techwiki.co.uk/RClone_-_Filtering "RClone - Filtering - Tech Wiki"
+[2]: https://github.com/rclone/rclone/issues/394 "Exclude directories? · Issue #394 · rclone/rclone - GitHub"

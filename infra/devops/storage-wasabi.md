@@ -13,7 +13,7 @@ echo "s3:https://$wasabi_service_url/$wasabi_bucket_name"
 
 - list bucket files with aws cli:
 
-```
+```text
 # https://wasabi-support.zendesk.com/hc/en-us/articles/360037276392-How-can-I-see-the-size-of-my-buckets-
 aws s3 ls --summarize --human-readable --recursive s3://mikeo-test-overwrite1 --endpoint-url=https://s3.wasabisys.com
 ```

@@ -19,7 +19,7 @@ changed the remotes to gitlab (the issue was not with gitolite itself)
 
 git push doesn't work... but the GIT_SSH_COMMAND="ssh -v" git push works...
 
-```
+```text
 ❯ git push
 FATAL: W any example-user/password-store example-user DENIED by fallthru
 (or you mis-spelled the reponame)
@@ -29,7 +29,7 @@ Please make sure you have the correct access rights
 and the repository exists.
 ```
 
-```
+```text
 ❯ GIT_SSH_COMMAND="ssh -v" git push
 OpenSSH_9.6p1, OpenSSL 3.1.4 24 Oct 2023
 ...
@@ -40,7 +40,7 @@ Everything up-to-date
 
 at the repo:
 
-```
+```text
 ❯ git config --list
 user.email=you@example.com
 user.name=Example User
@@ -112,7 +112,7 @@ You:
 
 both ids are correctly loaded at the ssh agent:
 
-```
+```text
 ❯ ssh-add -l
 ...
 ...
@@ -122,14 +122,14 @@ both ids are correctly loaded at the ssh agent:
 
 at the repository "root"
 
-```
+```text
 ❯ git push
 Everything up-to-date
 ```
 
 at the repository example-repo
 
-```
+```text
 example-repo on  master
 ❯ git push
 FATAL: W any example-user/password-store example-user DENIED by fallthru
@@ -142,21 +142,21 @@ and the repository exists.
 
 then I clean the temp files...
 
-```
+```text
 example-repo on  master
 ❯ sudo find /tmp -type s -name '.ssh-*' -delete
 ```
 
 and try again at example-repo:
 
-```
+```text
 ❯ git push
 Everything up-to-date
 ```
 
 it works correctly.... but now when I try at the repository "root"
 
-```
+```text
 root on  master
 ❯ git push
 FATAL: W any example-user/password-store example-user DENIED by fallthru

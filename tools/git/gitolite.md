@@ -115,7 +115,7 @@ At `server:/home/git`, make sure these files/dirs do not exists:
   - this user_pub_key is my local user, that will be the gitolite admin
   - `<user_admin>.pub` : has to have the name of user that will be the gitolite admin
 
-```
+```bash
 scp yourkey.pub git@yourserver.tld:˜/yourname.pub
 # or
 rsync -vurzP yourkey.pub git@yourserver.tld:˜/yourname.pub
@@ -128,7 +128,7 @@ Finally, setup gitolite with yourself as the administrator:
 - at server
 - as \<git_user> (or hosting user) `su - git`
 
-```
+```bash
 $HOME/bin/gitolite setup -pk YourName.pub
 ```
 
@@ -138,7 +138,7 @@ Basic administration is done within `gitolite-admin` repo.
 
 - At workstation
 
-```
+```bash
 git clone git@host:gitolite-admin
 ```
 
@@ -151,7 +151,7 @@ Management will be executed in push. E.g.:
 
 ---
 
-```
+```text
 gitolite help
 ```
 
@@ -175,7 +175,7 @@ Copy `<user>.pub` to `gitolite-admin/keydir`
 
 #### Users: Remove a user
 
-```
+```bash
 git rm keydir/alice.pub
 ```
 
@@ -187,7 +187,7 @@ Users must have been already added to `keydir`
 
 **`conf/gitolite.conf`**
 
-```
+```text
 repo foo
     RW+         =   alice
     RW          =   bob
@@ -198,7 +198,7 @@ repo foo
 
 **`conf/gitolite.conf`**
 
-```
+```text
 repo foo bar
     RW+         =   alice
 ```
@@ -207,7 +207,7 @@ repo foo bar
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @myrepos    =   foo
 @myrepos    =   bar
     .
@@ -228,7 +228,7 @@ include files
 
 **`conf/gitolite.conf`**
 
-```
+```text
 include "foo.conf"
 ```
 
@@ -269,7 +269,7 @@ include "foo.conf"
 
 **`conf/gitolite.conf`**
 
-```
+```text
 repo foo
     RW+                     =   alice
     -   master              =   bob
@@ -289,7 +289,7 @@ repo foo
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @staff      =   alice bob carol
 @interns    =   ashok
 
@@ -303,7 +303,7 @@ repo foss
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @developers     =   dilbert alice wally
 @foss-repos     =   git gitolite
 
@@ -313,7 +313,7 @@ repo @foss-repos
 
 **`conf/gitolite.conf`**
 
-```
+```text
 repo foo bar
 
     RW+                     =   alice @teamleads
@@ -330,7 +330,7 @@ repo foo bar
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @staff      =   alice bob carol
 @developers     =   dilbert alice wally
 ```
@@ -339,7 +339,7 @@ is equal to:
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @staff      =   alice bob
 @staff      =   carol
 ```
@@ -348,7 +348,7 @@ is equal to:
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @developers     =   dilbert alice
 @interns        =   ashok
 @staff          =   @interns @developers
@@ -363,7 +363,7 @@ is equal to:
 
 **`conf/gitolite.conf`**
 
-```
+```text
 @all-devs   =   @staff @interns
 ```
 
@@ -376,13 +376,13 @@ is equal to:
 
 Get server infos:
 
-```
+```bash
 ssh git@host info
 ```
 
 Help with commands:
 
-```
+```bash
 ssh git@host help
 ```
 
@@ -392,7 +392,7 @@ ssh git@host help
 
 E.g.: Bob wants to clone and work in a repo he's added and authorized. In Bob's workstation:
 
-```
+```bash
 git clone git@host:foo
 ```
 

@@ -43,7 +43,7 @@ class MyModel(BaseModel):
         return self
 ```
 
-### Explanation
+### Explanation (instance method)
 
 - `self` is the constructed model instance after normal validation.
 - May return some error, raise a `ValueError`.
@@ -67,7 +67,7 @@ class MyModel(BaseModel):
         return instance
 ```
 
-### Explanation
+### Explanation (class method)
 
 - First param is `cls`, second param is the _model instance_ (`instance`).
 - We use a generic `T` (bound to `"MyModel"`) for correct type annotations, so mypy knows we return

@@ -2,7 +2,7 @@ On Arch linux: `~/.config/chromium-flags.conf`
 
 Correct setup on Void Linux (only sources profile.d files):
 
-```
+```text
 /e/profile.d> cat chromium-flags.sh
 #!/bin/sh
 export CHROME_FLAGS="
@@ -187,14 +187,14 @@ Then launch Chromium normally (your WM config will pick up these flags automatic
 - **Chromium Issue Tracker** – Real-world reports of Ozone/Wayland bugs and workarounds
   ([github.com][1], [github.com][6])
 
-[1]: https://github.com/OSSystems/meta-browser/issues/447?utm_source=chatgpt.com "chromium-ozone-wayland freezes when context menu's are destroyed ..."
-[2]: https://bbs.archlinux.org/viewtopic.php?id=294895&utm_source=chatgpt.com "Chromium odd behavior with Preferred Ozone Platform Flag / Applications ..."
-[3]: https://wiki.archlinux.org/title/Chromium?utm_source=chatgpt.com "Chromium - ArchWiki"
-[4]: https://issues.chromium.org/issues/40654256?utm_source=chatgpt.com "Add ability to disable all the GPU driver bug workarounds ... - Chromium"
-[5]: https://forum.manjaro.org/t/chrome-doesnt-work-properly-on-wayland/74090?utm_source=chatgpt.com "Chrome doesnt work properly on Wayland - Manjaro Linux Forum"
-[6]: https://github.com/hyprwm/Hyprland/issues/9320?utm_source=chatgpt.com "Chromium WebGL wayland performance issue #9320 - GitHub"
-[7]: https://bbs.archlinux.org/viewtopic.php?id=298567&utm_source=chatgpt.com "Chrome starts very slowly on Wayland / AUR Issues, Discussion ..."
-[8]: https://blogs.igalia.com/msisov/chrome-on-wayland-waylandification-project/?utm_source=chatgpt.com "Chrome/Chromium on Wayland: The Waylandification project"
-[9]: https://groups.google.com/a/chromium.org/g/chromium-discuss/c/IIQeveVRLVE?utm_source=chatgpt.com "The GPU process still runs with --disable-gpu - Google Groups"
-[10]: https://docs.getquicker.cn/chrome/developer.chrome.com/developers/how-tos/run-chromium-with-flags.html?utm_source=chatgpt.com "Run Chromium with flags - The Chromium Projects"
-[11]: https://peter.sh/experiments/chromium-command-line-switches/?utm_source=chatgpt.com "List of Chromium Command Line Switches « Peter Beverloo"
+[1]: https://github.com/OSSystems/meta-browser/issues/447 "chromium-ozone-wayland freezes when context menu's are destroyed ..."
+[2]: https://bbs.archlinux.org/viewtopic.php?id=294895 "Chromium odd behavior with Preferred Ozone Platform Flag / Applications ..."
+[3]: https://wiki.archlinux.org/title/Chromium "Chromium - ArchWiki"
+[4]: https://issues.chromium.org/issues/40654256 "Add ability to disable all the GPU driver bug workarounds ... - Chromium"
+[5]: https://forum.manjaro.org/t/chrome-doesnt-work-properly-on-wayland/74090 "Chrome doesnt work properly on Wayland - Manjaro Linux Forum"
+[6]: https://github.com/hyprwm/Hyprland/issues/9320 "Chromium WebGL wayland performance issue #9320 - GitHub"
+[7]: https://bbs.archlinux.org/viewtopic.php?id=298567 "Chrome starts very slowly on Wayland / AUR Issues, Discussion ..."
+[8]: https://blogs.igalia.com/msisov/chrome-on-wayland-waylandification-project/ "Chrome/Chromium on Wayland: The Waylandification project"
+[9]: https://groups.google.com/a/chromium.org/g/chromium-discuss/c/IIQeveVRLVE "The GPU process still runs with --disable-gpu - Google Groups"
+[10]: https://docs.getquicker.cn/chrome/developer.chrome.com/developers/how-tos/run-chromium-with-flags.html "Run Chromium with flags - The Chromium Projects"
+[11]: https://peter.sh/experiments/chromium-command-line-switches/ "List of Chromium Command Line Switches « Peter Beverloo"

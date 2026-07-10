@@ -154,7 +154,7 @@ depends on a compose provider (Docker Compose or Podman Compose). ([Visual Studi
 - **Compose workflows** may be the trickiest area: ensure your compose tooling is aligned with what
   your dev container tooling expects. ([Visual Studio Code][5])
 
-[1]: https://containers.dev/?utm_source=chatgpt.com "Development Containers"
+[1]: https://containers.dev/ "Development Containers"
 [2]: https://containers.dev/implementors/json_reference/ "Dev Container metadata reference"
 [3]: https://containers.dev/implementors/spec/ "Development Container Specification"
 [4]: https://containers.dev/implementors/reference/ "Reference Implementation"

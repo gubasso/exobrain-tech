@@ -1,10 +1,10 @@
 # Isolated AI Dev Environment Automated Wrappers
 
 > Prerequisites: For the necessary background, see
-> [Isolated AI Dev Environment with `systemd-nspawn` (`dev-sandbox`)](isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md)
+> [Isolated AI Dev Environment with `systemd-nspawn` (`dev-sandbox`)](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md)
 
 Since writing the original
-[walkthrough](isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md), I implemented three
+[walkthrough](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md), I implemented three
 small wrapper scripts that automate the workflows described here. They cover three operational
 models (persistent machine, one-shot session, and per-project containers).
 

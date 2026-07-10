@@ -1,6 +1,6 @@
 # 03 — Tooling by ecosystem
 
-The [release-PR invariant](01-release-automation.md) is implemented by a different tool in each
+The [release-PR invariant](./01-release-automation.md) is implemented by a different tool in each
 ecosystem. Pick the idiomatic one; they all reduce to "merge the release PR to publish."
 
 ## Recommendation matrix
@@ -21,7 +21,7 @@ Binary/artifact distribution — shipping **prebuilt binaries and installers** �
 from registry publishing (which ships source). A crate can do either, both, or neither. When you run
 both, keep them in **separate workflow files** and register only the _publish_ file with the
 registry's trusted publisher — see
-[04 — Workflow file conventions](04-workflow-file-conventions.md).
+[04 — Workflow file conventions](./04-workflow-file-conventions.md).
 
 ## How each tool implements the model
 
@@ -47,7 +47,7 @@ registry's trusted publisher — see
 
 Whichever tool cuts the release, **promote `master` onto the release tag**, not onto a branch tip or
 a workflow trigger SHA — the tag is the canonical marker of what was published
-([00 — Branch model](00-branch-model.md)).
+([00 — Branch model](./00-branch-model.md)).
 
 Two wirings, depending on who creates the tag:
 

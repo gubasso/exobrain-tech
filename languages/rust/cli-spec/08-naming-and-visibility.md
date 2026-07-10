@@ -62,7 +62,7 @@ public.
 
 **Pick the post-2018 form.** Given a module `foo` that contains submodules:
 
-```
+```text
 # preferred
 src/
 ├─ foo.rs              # `foo`'s public surface + `pub mod bar; pub mod baz;`

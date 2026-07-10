@@ -2,7 +2,7 @@
 
 - [The Typestate Pattern in Rust](https://cliffle.com/blog/rust-typestate/)
 
-  ```
+  ```text
   What are typestates?
   A simple example: the living and the dead
   More than one “living” state

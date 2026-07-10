@@ -10,7 +10,7 @@ Ports 25, 465, 587
 
 Check if port 25 is open:
 
-```
+```text
 telnet portquiz.net 25
 ```
 

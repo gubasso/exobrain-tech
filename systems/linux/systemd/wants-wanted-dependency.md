@@ -106,6 +106,6 @@ You **can** use **either** approach to achieve the same “KeePassXC is wanted b
 the parent unit (`niri.service` vs. `graphical-session.target`) that best matches when you really
 want KeePassXC to come up.
 
-[1]: https://unix.stackexchange.com/questions/579068/best-practice-for-wants-vs-wantedby-in-systemd-unit-files?utm_source=chatgpt.com "Best practice for Wants= vs WantedBy= in Systemd Unit Files"
-[2]: https://manpages.debian.org/bullseye/systemd/systemctl.1.en.html?utm_source=chatgpt.com "systemctl (1) — systemd — Debian bullseye — Debian Manpages"
-[3]: https://bbs.archlinux.org/viewtopic.php?id=247612&utm_source=chatgpt.com "How to get a 'graphical session'? / Newbie Corner / Arch Linux Forums"
+[1]: https://unix.stackexchange.com/questions/579068/best-practice-for-wants-vs-wantedby-in-systemd-unit-files "Best practice for Wants= vs WantedBy= in Systemd Unit Files"
+[2]: https://manpages.debian.org/bullseye/systemd/systemctl.1.en.html "systemctl (1) — systemd — Debian bullseye — Debian Manpages"
+[3]: https://bbs.archlinux.org/viewtopic.php?id=247612 "How to get a 'graphical session'? / Newbie Corner / Arch Linux Forums"

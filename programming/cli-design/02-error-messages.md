@@ -16,7 +16,7 @@ redundant.
 
 Example (good):
 
-```
+```text
 app: failed to load config
   where: /home/user/.config/app/config.toml (line 12)
   why:   timeout_secs must be a positive integer, got -1
@@ -25,7 +25,7 @@ app: failed to load config
 
 Example (bad — same failure):
 
-```
+```text
 Error: An error occurred while processing your request. Please try again later.
 ```
 
@@ -56,8 +56,8 @@ hint is worse than nothing.
 
 Where the caller's error goes follows the **universal Unix stdout/stderr contract** and does **not**
 change with facing category (see
-[00 — Facing category & message types](00-architecture.md#facing-category--message-types) and the
-channels matrix in [01 — Logging & Output](01-logging-and-output.md)). The caller's error always
+[00 — Facing category & message types](./00-architecture.md#facing-category--message-types) and the
+channels matrix in [01 — Logging & Output](./01-logging-and-output.md)). The caller's error always
 goes to `stderr` with a non-zero exit code; `stdout` carries only a successful result. What differs
 is the _format_, not the channel: a **human-facing** tool writes a prose `What`/`Where`/`Hint`
 message to `stderr`, while a **machine-facing** tool writes a **structured (JSON) error to
@@ -94,7 +94,7 @@ Inside the program, errors are typed per layer (see also
 [Rust 03 — Error Handling](../../languages/rust/cli-spec/03-error-handling.md)). The pattern is
 universal:
 
-```
+```text
 ┌────────────────────────────────────────────────────────┐
 │  main / boundary    AppError → exit code               │
 ├────────────────────────────────────────────────────────┤
@@ -157,7 +157,7 @@ Two display levels:
 
 **Default (terse, for end users):**
 
-```
+```text
 app: failed to load config
   caused by: timeout_secs must be a positive integer
   caused by: parse error at line 12
@@ -165,7 +165,7 @@ app: failed to load config
 
 **Verbose (`-v` or higher), or in the program-log always:**
 
-```
+```text
 app: failed to load config
   err.kind: ConfigInvalid
   where:    /home/user/.config/app/config.toml (line 12)
@@ -179,7 +179,7 @@ Dedupe — if a wrapper's message is `caused by: <inner.message>`, don't print t
 
 In the program-log, the same information appears as fields:
 
-```
+```text
 ts=... level=error op=config.load err.kind=ConfigInvalid err.path=/home/user/.config/app/config.toml err.line=12 err.msg="timeout_secs must be a positive integer"
 ```
 
@@ -215,7 +215,7 @@ When an LLM agent runs your CLI and reads its logs to debug:
 5. **One `op` per top-level command invocation**, with `status=error` and an `err.*` group when it
    fails. The agent can grep `status=error` to find every failure in a session.
 
-See [05 — Designing for LLM Agents](05-designing-for-llm-agents.md) for the broader pattern.
+See [05 — Designing for LLM Agents](./05-designing-for-llm-agents.md) for the broader pattern.
 
 ---
 
@@ -253,9 +253,9 @@ For every error variant, confirm:
 
 - [Rust 03 — Error Handling](../../languages/rust/cli-spec/03-error-handling.md) — `thiserror` +
   `anyhow` stack, `#[from]` mechanics, `AppError::exit_code()`.
-- [01 — Logging & Output](01-logging-and-output.md) — how errors travel through the program-log
+- [01 — Logging & Output](./01-logging-and-output.md) — how errors travel through the program-log
   layer.
-- [05 — Designing for LLM Agents](05-designing-for-llm-agents.md) — agent-readable failure
+- [05 — Designing for LLM Agents](./05-designing-for-llm-agents.md) — agent-readable failure
   schemas.
 
 ## References

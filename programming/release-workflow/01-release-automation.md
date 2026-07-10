@@ -2,7 +2,7 @@
 
 Every modern ecosystem has converged on the same release shape: a bot turns accumulated change
 intent into a **release PR**, and merging that PR is the release. The tool differs per language (see
-[03 — Tooling by ecosystem](03-tooling-by-ecosystem.md)); the invariant does not.
+[03 — Tooling by ecosystem](./03-tooling-by-ecosystem.md)); the invariant does not.
 
 ## The release-PR invariant
 
@@ -17,7 +17,7 @@ intent into a **release PR**, and merging that PR is the release. The tool diffe
    changelog, and publishes to the package registry (see
    [02 — Trusted Publishing / OIDC](./02-trusted-publishing-oidc.md) for auth).
 5. **Promote `master`.** CI fast-forwards the release branch onto the new tag
-   ([00 — Branch model](00-branch-model.md)).
+   ([00 — Branch model](./00-branch-model.md)).
 
 ```text
 commits / changesets on develop

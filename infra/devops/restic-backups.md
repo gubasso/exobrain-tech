@@ -8,7 +8,7 @@
 
 ## General
 
-```
+```text
 -r, --repo repository            repository to backup to or restore from (default: $RESTIC_REPOSITORY)
 --repository-file file       file to read the repository location from (default: $RESTIC_REPOSITORY_FILE)
 --password-command command   shell command to obtain the repository password from (default: $RESTIC_PASSWORD_COMMAND)
@@ -19,7 +19,7 @@
 Calling restic in this way, the shell starts `gpg` and provides restic with file descriptor that it
 can read like a file.[^1]
 
-```
+```text
 restic --password-file <( gpg --decrypt path-to-key.gpg ) backup [...]
 gpg --decrypt blablabla | restic -r /path/to/repo snapshots
 ```

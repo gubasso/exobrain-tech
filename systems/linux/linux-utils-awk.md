@@ -1,6 +1,6 @@
 # Awk
 
-```
+```bash
 awk '/foo/ {print $2}'
 bug list 1 | awk -F ': ' '/Title/ {print $2}'
 ```

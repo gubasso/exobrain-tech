@@ -20,7 +20,7 @@
 
 ## Utils
 
-- [NginX Proxy Manager](nginx-nginx-proxy-manager.md)
+- [NginX Proxy Manager](./nginx-nginx-proxy-manager.md)
 
 ## Configuration
 
@@ -46,13 +46,13 @@ Check these parameters at:
 
 `user <username> <groupname>;`
 
-```
+```text
 - if group name is omitted, username = groupname
 ```
 
 `server_tokens off;`
 
-```
+```text
 - hide nginx version at response header
 ```
 
@@ -62,7 +62,7 @@ Check these parameters at:
 
 - To activate whatever site is available, run the following command:
 
-```
+```bash
 ln -s /etc/nginx/sites-available/www.example.org.conf /etc/nginx/sites-enabled/
 ```
 
@@ -77,7 +77,7 @@ Default config:
 
 **`/etc/nginx/nginx.conf`**
 
-```
+```text
 user <user_name>;
 worker_processes auto;
 worker_cpu_affinity auto;
@@ -103,7 +103,7 @@ REST API / Specific config:
 
 **`/etc/nginx/sites-available/example.conf`**
 
-```
+```text
 server {
   listen 80;
   listen [::]:80;
@@ -120,7 +120,7 @@ Static Site / Specific config:
 
 **`/etc/nginx/sites-available/example.conf`**
 
-```
+```text
 server {
   listen 80;
   listen [::]:80;
@@ -136,7 +136,7 @@ server {
 
 ## From Source
 
-- [Nginx: Installation / Build from Source](nginx-installation-build-source.md)
+- [Nginx: Installation / Build from Source](./nginx-installation-build-source.md)
 
 # Running
 
@@ -155,7 +155,7 @@ if want to set it up with systemd
 
 **`/etc/systemd/system/nginx.service`**
 
-```
+```text
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
 After=syslog.target network-online.target remote-fs.target nss-lookup.target
@@ -176,7 +176,7 @@ WantedBy=multi-user.target
 
 - enable and start service, after check if its running and its ok
 
-```
+```bash
 systemctl enable nginx --now
 systemctl status nginx
 ```
@@ -190,7 +190,7 @@ systemctl status nginx
 
 After nginx is installed and running, config https with certbot/let's encrypt:
 
-[Nginx + certbot](nginx-certbot.md)
+[Nginx + certbot](./nginx-certbot.md)
 
 ## http2
 
@@ -210,7 +210,7 @@ Simpler if it is installed directly on system.
 
 **difference between `systemctl reload nginx` and \`systemctl restart nginx**
 
-```
+```text
 - reload
     - does not stop service
     - try to reload config
@@ -224,7 +224,7 @@ Simpler if it is installed directly on system.
 
 **default_server**
 
-```
+```text
 server{
    listen 1.2.3.4:80 default_server;
    ...
@@ -239,7 +239,7 @@ server{
 
 [Understanding Nginx Server and Location Block Selection Algorithms](https://www.digitalocean.com/community/tutorials/understanding-nginx-server-and-location-block-selection-algorithms)
 
-```
+```text
 - Amazing article about how redirects, location blocks and URL/URI matches works
 - Nginx Block Configurations
 - How Nginx Decides Which Server Block Will Handle a Request

@@ -17,7 +17,7 @@
 # Alternatives
 
 - https://filerun.com/
-- [seafile](seafile.md)
+- [seafile](./seafile.md)
 
 ## Hetzner Storage Share Nextcloud
 
@@ -27,18 +27,18 @@
 
 - Trash bin contents:
 
-  ```
+  ```text
   trashbin:cleanup --all-users
   ```
 
 - File versions:
 
-  ```
+  ```text
   versions:cleanup %USER%
   ```
 
 - You can show the users with the following OCC command:
 
-  ```
+  ```text
   user:list
   ```

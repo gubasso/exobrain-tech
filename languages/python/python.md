@@ -11,11 +11,11 @@
 
 Examples:
 
-```
+```text
 subprocess.call('echo $MY_SUDO_PASS | sudo -S chown -R username_here /home/username_here/folder_to_change_ownership_recursivley', shell=True)
 ```
 
-```
+```text
 from subprocess import Popen, PIPE
 
 input = ['echo', 'FROM mongo:5.0.9']
@@ -30,7 +30,7 @@ print("Output from last process : " + (p2.communicate()[0]).decode())
 
 - project environment / runtime
   - The Python interpreter is provisioned by the project's **Nix flake devShell** (canonical
-    per-project environment manager); [Poetry](python-poetry.md) handles dependencies inside it.
+    per-project environment manager); [Poetry](./python-poetry.md) handles dependencies inside it.
     See [development-tools-workflow](../../workflows/development-tools-workflow.md) and
     [nix](../../tools/nix/README.md).
 
@@ -68,7 +68,7 @@ from rich.pretty import pprint
 
 Convert Python Tuple to Dictionary (legacy: AppDividend 2020-12-22, since removed)
 
-```
+```text
 tup = ((11, "eleven"), (21, "mike"), (19, "dustin"), (46, "caleb"))
 print(tup)
 
@@ -78,7 +78,7 @@ print(dct)
 
 Output:
 
-```
+```text
 ((11, 'eleven'), (21, 'mike'), (19, 'dustin'), (46, 'caleb'))
 {'eleven': 11, 'mike': 21, 'dustin': 19, 'caleb': 46}
 ```
@@ -97,7 +97,7 @@ Data validation with Cerberus:
 
 Example from "Application with Internal Packages"[^5]
 
-```
+```text
 helloworld/
 │
 ├── bin/
@@ -154,14 +154,14 @@ Simple and working answer: https://stackoverflow.com/a/36231122
 
 **`__init__.py`** (inside module dir)
 
-```
+```text
 import os, pkgutil
 __all__ = list(module for _, module, _ in pkgutil.iter_modules([os.path.dirname(__file__)]))
 ```
 
 From outside module, call:
 
-```
+```text
 from yourpackage import *
 ```
 

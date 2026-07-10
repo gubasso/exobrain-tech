@@ -37,13 +37,13 @@ gpg --verify openSUSE-Tumbleweed-NET-x86_64-Snapshot20240815-Media.iso.sha256.as
 
 - Create bootable USB media (dd or Ventoy).
 
-- [opensuse-tumbleweed-partition-table](opensuse-tumbleweed-partition-table.md)
+- [opensuse-tumbleweed-partition-table](./opensuse-tumbleweed-partition-table.md)
   - [SDB:Encrypted root file system](https://en.opensuse.org/SDB:Encrypted_root_file_system)
     - If swap partition: LUKS + LVM
       - or will have to type password twice
       - one for `/` and other for the swap partition
 
-- [opensuse-tumbleweed-installation-settings](opensuse-tumbleweed-installation-settings.md)
+- [opensuse-tumbleweed-installation-settings](./opensuse-tumbleweed-installation-settings.md)
 
 ## Tumbleweed
 

@@ -17,7 +17,7 @@
 
 ## Pyramid layout in the tree
 
-```
+```text
 src/
 └─ commands/widget.rs           [unit tests inline in #[cfg(test)] mod tests]
 

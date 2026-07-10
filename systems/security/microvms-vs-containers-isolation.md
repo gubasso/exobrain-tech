@@ -43,6 +43,6 @@ actual isolation. Neither replaces the other.
 ## Why this matters to me
 
 Relevant when thinking about isolating AI dev environments and untrusted code execution — see also
-[`isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md`](isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md).
+[`isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md`](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md).
 Containers/nspawn give _resource scoping_; microVMs are the upgrade when the threat model is hostile
 code.

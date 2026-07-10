@@ -39,7 +39,7 @@ need, not making whole modules public.
 When a module has submodules, prefer the **module-as-file-with-sibling-dir** form over the
 **dir-with-init-file** form, where the language supports both.
 
-```
+```text
 # preferred (Rust 2018+, modern Python with __init__.py acting as a router):
 src/
 ├─ foo.rs                # foo's public surface + `pub mod bar; pub mod baz;`
@@ -232,7 +232,7 @@ The library root (or `main`'s entry file) starts with:
 
 ### "Comment why, not what"
 
-The code says what. Comments say why. See [04 — Coding Style](04-coding-style-rust-zig.md),
+The code says what. Comments say why. See [04 — Coding Style](./04-coding-style-rust-zig.md),
 rule 11.
 
 Bad:
@@ -294,8 +294,8 @@ modules public only when consumers must reach into them.
 
 ## See also
 
-- [00 — Architecture](00-architecture.md) — the directory roles whose names this chapter governs.
-- [04 — Coding Style](04-coding-style-rust-zig.md) — module size cap, "comment why not what".
+- [00 — Architecture](./00-architecture.md) — the directory roles whose names this chapter governs.
+- [04 — Coding Style](./04-coding-style-rust-zig.md) — module size cap, "comment why not what".
 - Language-specific spec:
   [`rust/cli-spec/08-naming-and-visibility.md`](../../languages/rust/cli-spec/08-naming-and-visibility.md).
 

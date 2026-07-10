@@ -44,7 +44,7 @@ sqlx migrate add <DESCRIPTION>
 
 For **Reverting Migrations**:[^3]
 
-```
+```bash
 $ sqlx migrate add -r <name>
 Creating migrations/20211001154420_<name>.up.sql
 Creating migrations/20211001154420_<name>.down.sql
@@ -61,14 +61,14 @@ sqlx migrate run #[^2]
 
 And **reverts** work as well (when creating the _first_ migration):[^3]
 
-```
+```bash
 $ sqlx migrate revert
 Applied 20211001154420/revert <name>
 ```
 
 **Note**: All the subsequent migrations will be reversible as well.
 
-```
+```bash
 $ sqlx migrate add <name1>
 Creating migrations/20211001154420_<name>.up.sql
 Creating migrations/20211001154420_<name>.down.sql

@@ -79,10 +79,10 @@ Here’s the reasoning, with concrete takeaways:
 If you want, I can refactor your `ActiveProducts` to this pattern (string-level methods on the
 class + small `io.py` with file/stream helpers).
 
-[1]: https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell?utm_source=chatgpt.com "Functional Core, Imperative Shell - Destroy All Software"
-[2]: https://www.arhohuttunen.com/hexagonal-architecture/?utm_source=chatgpt.com "Hexagonal Architecture Explained - Code With Arho"
-[3]: https://doc.rust-lang.org/std/io/?utm_source=chatgpt.com "std::io - Rust"
-[4]: https://serde.rs/impl-serialize.html?utm_source=chatgpt.com "Implementing Serialize · Serde"
-[5]: https://stackoverflow.com/questions/71487308/is-there-any-real-difference-between-fromstr-and-tryfromstr?utm_source=chatgpt.com "rust - Is there any real difference between `FromStr` and `TryFrom<&str ..."
-[6]: https://github.com/rust-lang/api-guidelines/blob/master/src/interoperability.md?utm_source=chatgpt.com "api-guidelines/src/interoperability.md at master · rust-lang/api ..."
-[7]: https://docs.pydantic.dev/latest/concepts/serialization/?utm_source=chatgpt.com "Serialization - Pydantic"
+[1]: https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell "Functional Core, Imperative Shell - Destroy All Software"
+[2]: https://www.arhohuttunen.com/hexagonal-architecture/ "Hexagonal Architecture Explained - Code With Arho"
+[3]: https://doc.rust-lang.org/std/io/ "std::io - Rust"
+[4]: https://serde.rs/impl-serialize.html "Implementing Serialize · Serde"
+[5]: https://stackoverflow.com/questions/71487308/is-there-any-real-difference-between-fromstr-and-tryfromstr "rust - Is there any real difference between `FromStr` and `TryFrom<&str ..."
+[6]: https://github.com/rust-lang/api-guidelines/blob/master/src/interoperability.md "api-guidelines/src/interoperability.md at master · rust-lang/api ..."
+[7]: https://docs.pydantic.dev/latest/concepts/serialization/ "Serialization - Pydantic"

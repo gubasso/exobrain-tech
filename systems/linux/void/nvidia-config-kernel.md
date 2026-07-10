@@ -134,20 +134,20 @@ Void’s wiki and community gist recommend the same ([gist.github.com][11]).
 Follow these steps and your RTX 3000 Ada will run Wayland fast on AC while sleeping soundly on
 battery.
 
-[1]: https://forums.developer.nvidia.com/t/understanding-nvidia-drm-modeset-1-nvidia-linux-driver-modesetting/204068?utm_source=chatgpt.com "Understanding nvidia-drm.modeset=1 (NVIDIA Linux driver modesetting)"
-[2]: https://forums.developer.nvidia.com/t/blank-screen-on-boot/284828?utm_source=chatgpt.com "Blank screen on boot? - Linux - NVIDIA Developer Forums"
-[3]: https://github.com/ventureoo/nvidia-tweaks?utm_source=chatgpt.com "GitHub - ventureoo/nvidia-tweaks: A collection of tweaks and ..."
-[4]: https://bbs.archlinux.org/viewtopic.php?id=303311&utm_source=chatgpt.com "[SOLVED]The simpledrm doesn't automatically bypass with NVIDIA drivers ..."
-[5]: https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/kms.html?utm_source=chatgpt.com "Chapter 36. Direct Rendering Manager Kernel Modesetting (DRM KMS) - Nvidia"
-[6]: https://support.exxactcorp.com/hc/en-us/articles/32048852204951-Understanding-nomodeset-vs-nvidia-drm-modeset-1-on-Linux-Systems-with-NVIDIA-GPUs?utm_source=chatgpt.com "Understanding nomodeset vs. nvidia-drm.modeset=1 on Linux Systems with ..."
-[7]: https://deepwiki.com/hyprwm/hyprland-wiki/4.4-nvidia-configuration?utm_source=chatgpt.com "Nvidia Configuration | hyprwm/hyprland-wiki | DeepWiki"
-[8]: https://forums.developer.nvidia.com/t/nvidia-runtime-d3-power-management-issues/166854?utm_source=chatgpt.com "Nvidia runtime D3 power management issues - NVIDIA Developer Forums"
-[9]: https://github.com/mrpdaemon/nvpowermizerd?utm_source=chatgpt.com "GitHub - mrpdaemon/nvpowermizerd: nvpowermizerd is a daemon to improve ..."
-[10]: https://forums.developer.nvidia.com/t/extremely-power-consumption-after-nvidia-suspend-with-4060-laptop/311217?utm_source=chatgpt.com "Extremely power consumption after nvidia-suspend with 4060 laptop"
-[11]: https://gist.github.com/inscapist/83fd43b49c17e46059eb4fe0c1ae8bea?utm_source=chatgpt.com "Nvidia and Xorg on Void Linux · GitHub"
-[12]: https://bbs.archlinux.org/viewtopic.php?id=295937&utm_source=chatgpt.com "[SOLVED] Wayland + Nvidia - Arch Linux Forums"
-[13]: https://bbs.archlinux.org/viewtopic.php?id=292681&utm_source=chatgpt.com "[SOLVED] KDE Wayland Nvidia doesn't load when using module options ..."
-[14]: https://nvidia.custhelp.com/app/answers/detail/a_id/3130/~/setting-power-management-mode-from-normal-to-maximum-performance?utm_source=chatgpt.com 'Setting "Power management mode" from Normal to Maximum Performance - NVIDIA'
+[1]: https://forums.developer.nvidia.com/t/understanding-nvidia-drm-modeset-1-nvidia-linux-driver-modesetting/204068 "Understanding nvidia-drm.modeset=1 (NVIDIA Linux driver modesetting)"
+[2]: https://forums.developer.nvidia.com/t/blank-screen-on-boot/284828 "Blank screen on boot? - Linux - NVIDIA Developer Forums"
+[3]: https://github.com/ventureoo/nvidia-tweaks "GitHub - ventureoo/nvidia-tweaks: A collection of tweaks and ..."
+[4]: https://bbs.archlinux.org/viewtopic.php?id=303311 "[SOLVED]The simpledrm doesn't automatically bypass with NVIDIA drivers ..."
+[5]: https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/kms.html "Chapter 36. Direct Rendering Manager Kernel Modesetting (DRM KMS) - Nvidia"
+[6]: https://support.exxactcorp.com/hc/en-us/articles/32048852204951-Understanding-nomodeset-vs-nvidia-drm-modeset-1-on-Linux-Systems-with-NVIDIA-GPUs "Understanding nomodeset vs. nvidia-drm.modeset=1 on Linux Systems with ..."
+[7]: https://deepwiki.com/hyprwm/hyprland-wiki/4.4-nvidia-configuration "Nvidia Configuration | hyprwm/hyprland-wiki | DeepWiki"
+[8]: https://forums.developer.nvidia.com/t/nvidia-runtime-d3-power-management-issues/166854 "Nvidia runtime D3 power management issues - NVIDIA Developer Forums"
+[9]: https://github.com/mrpdaemon/nvpowermizerd "GitHub - mrpdaemon/nvpowermizerd: nvpowermizerd is a daemon to improve ..."
+[10]: https://forums.developer.nvidia.com/t/extremely-power-consumption-after-nvidia-suspend-with-4060-laptop/311217 "Extremely power consumption after nvidia-suspend with 4060 laptop"
+[11]: https://gist.github.com/inscapist/83fd43b49c17e46059eb4fe0c1ae8bea "Nvidia and Xorg on Void Linux · GitHub"
+[12]: https://bbs.archlinux.org/viewtopic.php?id=295937 "[SOLVED] Wayland + Nvidia - Arch Linux Forums"
+[13]: https://bbs.archlinux.org/viewtopic.php?id=292681 "[SOLVED] KDE Wayland Nvidia doesn't load when using module options ..."
+[14]: https://nvidia.custhelp.com/app/answers/detail/a_id/3130/~/setting-power-management-mode-from-normal-to-maximum-performance 'Setting "Power management mode" from Normal to Maximum Performance - NVIDIA'
 
 ---
 

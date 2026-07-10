@@ -121,7 +121,7 @@ This yields an **event-driven**, **zero-polling**, **fully supervised** startup 
 your compositor.
 
 [1]: https://www.man7.org/linux/man-pages/man1/inotifywait.1.html "inotifywait(1) - Linux manual page"
-[2]: https://linux.die.net/man/1/dirname?utm_source=chatgpt.com "dirname (1) - Linux man page"
-[3]: https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html?utm_source=chatgpt.com "Command Substitution (Bash Reference Manual)"
+[2]: https://linux.die.net/man/1/dirname "dirname (1) - Linux man page"
+[3]: https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html "Command Substitution (Bash Reference Manual)"
 [4]: https://www.gnu.org/software/bash/manual/html_node/Redirections.html "Redirections (Bash Reference Manual)"
-[5]: https://stackoverflow.com/questions/7082001/how-do-file-descriptors-work?utm_source=chatgpt.com "bash - How do file descriptors work? - Stack Overflow"
+[5]: https://stackoverflow.com/questions/7082001/how-do-file-descriptors-work "bash - How do file descriptors work? - Stack Overflow"

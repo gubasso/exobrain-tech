@@ -16,7 +16,7 @@ them into one tool.
 Per-project environments default to a **Nix flake devShell** for any language. The flake pins the
 runtime(s) and system tooling; `flake.lock` makes it reproducible; `.envrc` (`use flake`)
 auto-enters it via direnv/nix-direnv. See [nix](../tools/nix/README.md). It is the default for any
-language, ahead of ad-hoc version managers ([mise](mise.md), asdf, pyenv, nvm,
+language, ahead of ad-hoc version managers ([mise](./mise.md), asdf, pyenv, nvm,
 rustup-as-installer).
 
 ## Dependency manager: language-native, inside the devShell

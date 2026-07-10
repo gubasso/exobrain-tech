@@ -35,7 +35,7 @@ Include = /etc/pacman.d/mirrorlist
 
 ## 3.4 Localization
 
-- [US AltGr-International keymap (TTY)](keymap-us-altgr-intl.md)
+- [US AltGr-International keymap (TTY)](./keymap-us-altgr-intl.md)
 
 ## 3.6 Initramfs
 
@@ -57,4 +57,4 @@ blkid -o value -s UUID /dev/sdaX
 On Arch Linux most users add kernel parameters to `GRUB_CMDLINE_LINUX_DEFAULT`, like
 `cryptdevice=...`.
 
-- See [Boot loader](boot-loader.md)
+- See [Boot loader](./boot-loader.md)

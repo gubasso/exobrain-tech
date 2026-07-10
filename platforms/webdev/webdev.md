@@ -72,7 +72,7 @@ underrated.
 
 📌 Freelancing
 
-```
+```text
 ✅ Freelancer
 ✅ Upwork
 ✅ Fiverr
@@ -112,7 +112,7 @@ Practice 💻 → Frontend Mentor → TestDome
 
 Run jest test and print `console.log`
 
-```
+```bash
 npm run test -- --silent=false
 ```
 
@@ -120,7 +120,7 @@ npm run test -- --silent=false
 
 Free domains free dns:
 
-```
+```text
 http://www.dot.tk/
 https://www.freenom.com/
 ```
@@ -183,7 +183,7 @@ Parik 🌱 @parik36 5 FREE CSS Generators You Should Know About. A thread 🧵 �
 
 $webdev_tools 📌 Design
 
-```
+```text
 ✅ Behance
 ✅ Dribble
 ✅ One Page Love

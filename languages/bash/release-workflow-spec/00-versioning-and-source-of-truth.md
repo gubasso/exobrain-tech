@@ -1,6 +1,6 @@
 # Bash Release — Versioning & Source of Truth
 
-Part of the [bash release-workflow spec](README.md). General principle: **versioning & source of
+Part of the [bash release-workflow spec](./README.md). General principle: **versioning & source of
 truth** — see the [general principles](../../../programming/release-workflow/README.md).
 
 A lean, opinionated workflow for releasing and distributing a Bash CLI on Linux. Targets a
@@ -55,7 +55,7 @@ Add a `VERSION` file at the repo root containing one line:
 ```
 
 This committed file is the **authoring** source of truth — the one place the number is bumped (by
-`git-cliff --bump`, see [06](06-release-ritual-and-alternatives.md)). The signed `v*` tag is then
+`git-cliff --bump`, see [06](./06-release-ritual-and-alternatives.md)). The signed `v*` tag is then
 cut to match it and is the **published record** every distribution channel keys off. Keeping the
 number authored in exactly one committed file is what GNU coding standards and packaging tools (OBS
 `set_version`, `nfpm`, RPM `%autosetup`) expect, and it leaves nothing to drift.

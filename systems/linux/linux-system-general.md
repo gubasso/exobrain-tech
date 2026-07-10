@@ -52,13 +52,13 @@ userdel -r <user>
 
 - Create/Add new group
 
-```
+```text
 groupadd <group_name>
 ```
 
 - Add user to a group
 
-```
+```text
 usermod -aG <group or group-list> <user_name>
 # example
 usermod -aG wheel,sudo,ssh-user user_name
@@ -72,13 +72,13 @@ To change `sudo` config:
 
 - Option 1: Edit `sudoers` basic config with `visudo` command:
 
-```
+```text
 EDITOR=vim visudo
 ```
 
 - Option 2 (better if available): edit a local config `sudoers` file
 
-```
+```text
 # file: /etc/sudoers.d/99-local-sudoers
 <add your config>
 ```
@@ -103,7 +103,7 @@ pacman -S archlinux-keyring --noconfirm && pacman -Syyu --noconfirm
 
 ### Opensuse Tumbleweed
 
-```
+```bash
 sudo zypper ref && sudo zypper dup -y
 ```
 

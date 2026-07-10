@@ -5,7 +5,7 @@
 
 SUSE's default licensing:
 
-```
+```text
 License for new projects
 We are using OSI Approved licenses, any other case must be granted an explicit exception.
 

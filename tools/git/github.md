@@ -6,19 +6,19 @@
 
 - GitHub fork naming pattern
 
-```
+```text
 <organization>-<project-name>-fork
 ```
 
 Examples:
 
-```
+```text
 suse-openscap
 myco-website
 acme-inventory-fork
 ```
 
-```
+```text
 SUSE-Enceladus-keg-fork
 forked from SUSE-Enceladus/keg
 ```

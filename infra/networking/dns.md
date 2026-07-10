@@ -14,7 +14,7 @@
 
 ## Fully qualified domain name (FQDN)
 
-```
+```text
 <FQDN> = hostname + domain
 <hostname>.<domain>
 # Examples:
@@ -94,13 +94,13 @@ https://github.com/ddclient/ddclient
 
 enable debugging and verbose messages:
 
-```
+```text
 ddclient -daemon=0 -debug -verbose -noquiet
 ```
 
 The configuration can be tested by running
 
-```
+```text
 ddclient -daemon=0 -noquiet -debug
 ```
 

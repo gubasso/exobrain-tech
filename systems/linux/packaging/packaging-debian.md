@@ -68,26 +68,26 @@ At [Packaging Pre-Requisites]: Configuring locales
 
 - Software available to all users
 
-```
+```text
 /usr/local/bin/
 ```
 
 - Where apt/package managers installs 99% of software / packages
 
-```
+```text
 /usr/bin
 ```
 
 - System related software/utilities
 - System essential distribution files
 
-```
+```text
 /bin
 ```
 
 - Generate the package:
 
-```
+```text
 # at $HOME/debpkgs
 > ls
 my-program_version_architecture
@@ -98,13 +98,13 @@ my-program_version_architecture
 
 - To install a package
 
-```
+```text
 dpkg -i my-program_version_architecture.deb
 ```
 
 - To search if the `.deb` is already installed
 
-```
+```text
 gdebi my-program_version_architecture.deb
 ```
 
@@ -117,13 +117,13 @@ install all of the dependencies.
 
 - Package metadata
 
-```
+```bash
 $HOME/debpkgs/my-program_version_architecture/DEBIAN/control
 ```
 
 - Pre / Post installation scripts
 
-```
+```bash
 $HOME/debpkgs/my-program_version_architecture/DEBIAN/preinst
 $HOME/debpkgs/my-program_version_architecture/DEBIAN/postinst
   # postinst needs permission to be set to 755
@@ -131,7 +131,7 @@ $HOME/debpkgs/my-program_version_architecture/DEBIAN/postinst
 
 Inside our package directory: `MYPKG=$HOME/debpkgs/my-program_version_architecture`
 
-```
+```text
 # at $MYPKG
 > ls
 DEBIAN

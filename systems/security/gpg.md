@@ -17,7 +17,7 @@ Config:
 
 **`~/.gnupg/gpg-agent.conf`**
 
-```
+```text
 # cache password really long time
 max-cache-ttl 60480000
 default-cache-ttl 60480000
@@ -84,20 +84,20 @@ Steps:
 
 Encrypt file:
 
-```
+```text
 # recipient@email.com is the id of recipient whose public key you've added to your keyring (step 4)
 gpg --recipient recipient@email.com --encrypt secret_file
 ```
 
 To see this encrypted file:
 
-```
+```text
 file secret_file.gpg
 ```
 
 Decrypt file:
 
-```
+```bash
 gpg --output secret_file_decrypted --decrypt secret_file.gpg
 ```
 

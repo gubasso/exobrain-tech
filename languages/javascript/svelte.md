@@ -13,7 +13,7 @@
 
 call only in client
 
-```
+```text
 if (typeof window !== 'undefined') {
 
 }
@@ -56,7 +56,7 @@ If want to serve a static web app in another URI (same domain, but not at root `
 Change the base path in all of these places to make `sapper export` work: (example with URI/Base
 path `cadelab`)
 
-```
+```text
 src/serve.js
 ---
 
@@ -72,7 +72,7 @@ polka() // You can also use Express
  });
 ```
 
-```
+```text
 rollup.config.js
 ---
 
@@ -113,7 +113,7 @@ export default {
         ]
 ```
 
-```
+```text
 package.json
 ---
   "scripts": {

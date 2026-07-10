@@ -2,7 +2,7 @@
 
 **Problems --> Techniques**
 
-```
+```text
 - Ordered Arrays or Sequences    +
 | Sliding Window Problems        +-->  Two Pointers
 | Palindromes or Symmetry        |      O(n)
@@ -10,7 +10,7 @@
 - subsequences
 ```
 
-```
+```text
 - Subarrays                     +
 - Subarray "valid"              |
   - some constraint             |

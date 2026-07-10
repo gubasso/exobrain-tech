@@ -21,11 +21,11 @@ for REGION in $REGIONS; do
     --region "$REGION" \
     --filters "Name=tag:Name,Values=*$SEARCH_TERM*" \
     --query "Reservations[].Instances[].{ \
-               InstanceID: InstanceId, \
-               Name: Tags[?Key=='Name']|[0].Value, \
-               State: State.Name, \
-               Type: InstanceType \
-             }" \
+              InstanceID: InstanceId, \
+              Name: Tags[?Key=='Name']|[0].Value, \
+              State: State.Name, \
+              Type: InstanceType \
+            }" \
     --output table \
     --no-cli-pager
 done

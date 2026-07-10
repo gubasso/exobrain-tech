@@ -101,13 +101,13 @@ because Void does not source `/etc/env.d`. Instead, use `/etc/profile.d` for she
 `/etc/environment` for PAM logins, runit’s `envdir` for service-specific variables, or a dedicated
 launch wrapper script for your Wayland/Niri session.
 
-[1]: https://wiki.gentoo.org/wiki//etc/env.d?utm_source=chatgpt.com "/etc/env.d - Gentoo Wiki"
-[2]: https://wiki.gentoo.org/wiki/Handbook%3AX86/Working/EnvVar?utm_source=chatgpt.com "Handbook:X86/Working/EnvVar - Gentoo Wiki"
-[3]: https://www.linuxtopia.org/online_books/introduction_to_linux/linux_The_profile.d_directory.html?utm_source=chatgpt.com "Linux - The profile.d directory"
-[4]: https://github.com/void-linux/void-packages/issues/8613?utm_source=chatgpt.com "GDM doesnt load profile file · Issue #8613 · void-linux/void-packages"
-[5]: https://askubuntu.com/questions/65563/how-do-i-set-an-environment-variable-at-boot-time-via-a-script?utm_source=chatgpt.com "How do I set an environment variable at boot time (via a script)?"
-[6]: https://docs.voidlinux.org/config/services/user-services.html?utm_source=chatgpt.com "Per-User Services - Void Linux Handbook"
-[7]: https://unix.stackexchange.com/questions/186431/possible-to-pass-env-vars-into-chpst-without-envdir?utm_source=chatgpt.com "Possible to pass env vars into chpst without envdir?"
-[8]: https://docs.voidlinux.org/config/graphical-session/wayland.html?utm_source=chatgpt.com "Wayland - Void Linux Handbook"
-[9]: https://docs.voidlinux.org/config/session-management.html?utm_source=chatgpt.com "Session and Seat Management - Void Linux Handbook"
-[10]: https://askubuntu.com/questions/866161/setting-path-variable-in-etc-environment-vs-profile?utm_source=chatgpt.com "Setting PATH variable in /etc/environment vs .profile"
+[1]: https://wiki.gentoo.org/wiki//etc/env.d "/etc/env.d - Gentoo Wiki"
+[2]: https://wiki.gentoo.org/wiki/Handbook%3AX86/Working/EnvVar "Handbook:X86/Working/EnvVar - Gentoo Wiki"
+[3]: https://www.linuxtopia.org/online_books/introduction_to_linux/linux_The_profile.d_directory.html "Linux - The profile.d directory"
+[4]: https://github.com/void-linux/void-packages/issues/8613 "GDM doesnt load profile file · Issue #8613 · void-linux/void-packages"
+[5]: https://askubuntu.com/questions/65563/how-do-i-set-an-environment-variable-at-boot-time-via-a-script "How do I set an environment variable at boot time (via a script)?"
+[6]: https://docs.voidlinux.org/config/services/user-services.html "Per-User Services - Void Linux Handbook"
+[7]: https://unix.stackexchange.com/questions/186431/possible-to-pass-env-vars-into-chpst-without-envdir "Possible to pass env vars into chpst without envdir?"
+[8]: https://docs.voidlinux.org/config/graphical-session/wayland.html "Wayland - Void Linux Handbook"
+[9]: https://docs.voidlinux.org/config/session-management.html "Session and Seat Management - Void Linux Handbook"
+[10]: https://askubuntu.com/questions/866161/setting-path-variable-in-etc-environment-vs-profile "Setting PATH variable in /etc/environment vs .profile"

@@ -93,7 +93,7 @@ cat <<EOF
 
 Done. Manual steps this script cannot do via the API:
   1. Copy workflows/release-promote.yml into the repo at
-     .github/workflows/release-promote.yml (commit on a feature branch, PR into develop).
+    .github/workflows/release-promote.yml (commit on a feature branch, PR into develop).
   2. Turn Actions on and grant write — see ../first-run-enablement.md
-     (Settings -> Actions -> General: Read and write + allow Actions to create PRs).
+    (Settings -> Actions -> General: Read and write + allow Actions to create PRs).
 EOF

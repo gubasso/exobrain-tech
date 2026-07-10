@@ -3,10 +3,10 @@
 Two independent CI concerns often coexist on one repo, and confusing them silently breaks releases:
 
 1. **The release / publish workflow** — opens the release PR, tags the version, publishes source to
-   the registry over OIDC, and promotes `master` ([01](01-release-automation.md),
+   the registry over OIDC, and promotes `master` ([01](./01-release-automation.md),
    [02](./02-trusted-publishing-oidc.md)).
 2. **The binary-distribution workflow** — builds prebuilt binaries + installers on the release tag
-   and attaches them to the GitHub Release ([03](03-tooling-by-ecosystem.md)).
+   and attaches them to the GitHub Release ([03](./03-tooling-by-ecosystem.md)).
 
 Keep them in **separate workflow files**. They run on different triggers, own different artifacts,
 and — for tools that generate their own YAML — regenerate independently.
@@ -41,7 +41,7 @@ pointing the trusted publisher at the binary-build workflow, so every OIDC publi
 ## The manual-tag case (no registry)
 
 When there is no registry — a human pushes a signed `v*` tag and CI cuts a GitHub Release (the Bash
-model, [03](03-tooling-by-ecosystem.md)) — a single `release.yml` does the whole job and there is
+model, [03](./03-tooling-by-ecosystem.md)) — a single `release.yml` does the whole job and there is
 no trusted publisher to point anywhere, so no collision arises. The convention only bites once a
 registry publish and a separate binary-dist generator share a repo.
 

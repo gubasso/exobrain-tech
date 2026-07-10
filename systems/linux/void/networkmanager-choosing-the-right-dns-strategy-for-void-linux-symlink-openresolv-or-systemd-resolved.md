@@ -81,10 +81,10 @@ and Fedora 33+ do exactly this automatically ([askubuntu.com][3]).
   and Fedora.
 
 [1]: https://wiki.archlinux.org/title/NetworkManager "NetworkManager - ArchWiki"
-[2]: https://wiki.debian.org/resolv.conf?action=raw&utm_source=chatgpt.com "Debian Wiki"
+[2]: https://wiki.debian.org/resolv.conf?action=raw "Debian Wiki"
 [3]: https://askubuntu.com/questions/941613/configuring-networkmanager-to-use-systemd-resolved-without-dnsmasq-in-17-04 "network manager - Configuring NetworkManager to use systemd-resolved without dnsmasq in 17.04 - Ask Ubuntu"
 [4]: https://wiki.archlinux.org/title/Systemd-resolved "systemd-resolved - ArchWiki"
 [5]: https://infotechys.com/change-dns-settings-using-the-nmcli-utility/ "Change DNS Settings using the NMCLI utility - Infotechys.com"
 [6]: https://serverfault.com/questions/810636/how-to-manage-dns-in-networkmanager-via-console-nmcli "How to manage DNS in NetworkManager via console (nmcli)?"
 [7]: https://wiki.archlinux.org/title/Openresolv "openresolv - ArchWiki"
-[8]: https://bbs.archlinux.org/viewtopic.php?id=297707&utm_source=chatgpt.com "[SOLVED] NetworkManager - Arch Linux Forums"
+[8]: https://bbs.archlinux.org/viewtopic.php?id=297707 "[SOLVED] NetworkManager - Arch Linux Forums"

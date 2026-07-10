@@ -14,7 +14,7 @@ sudo apt-get install ufw -y
 
 **setup a firewall ufw**[^on1]
 
-```
+```bash
 sudo ufw default deny
 sudo ufw default allow outgoing
 sudo ufw allow ssh
@@ -27,7 +27,7 @@ sudo ufw enable
 
 **general ssh 202**
 
-```
+```bash
 sudo ufw default deny
 sudo ufw default allow outgoing
 sudo ufw allow 202
@@ -35,7 +35,7 @@ sudo ufw limit 202
 sudo ufw enable
 ```
 
-```
+```bash
 sudo ufw default deny
 sudo ufw default allow outgoing
 sudo ufw allow ssh
@@ -47,7 +47,7 @@ sudo ufw enable
 
 **cloudron firewall list: https://docs.cloudron.io/security/#cloud-firewall**
 
-```
+```bash
 sudo ufw default deny
 sudo ufw default allow outgoing
 sudo ufw allow 202

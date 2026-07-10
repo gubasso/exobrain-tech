@@ -5,7 +5,7 @@
 - [xprop](#xprop)
 - [tar](#tar)
 - [stow](#stow)
-- [\[awk\](linux-utils-awk.md)](#awklinux-utils-awkmd)
+- [\[awk\](./linux-utils-awk.md)](#awklinux-utils-awkmd)
 - [curl](#curl)
 - [NetworkManager](#networkmanager)
 - [time](#time)
@@ -120,7 +120,7 @@ Common command:
 - create all symlink from `.dotfiles` to `~`, for every dir inside dotfiles `*`
 - go to `~/.dotfiles`, run the command:
 
-```
+```text
 stow -vt ~ *
 stow -vt / zsh
 ```
@@ -136,13 +136,13 @@ stow -vt / zsh
 
 stow never overrides anything
 
-# [awk](linux-utils-awk.md)
+# [awk](./linux-utils-awk.md)
 
 # curl
 
 Multiple parameters:
 
-```
+```bash
 curl \
     --data-urlencode "paramName=value" \
     --data-urlencode "secondParam=value" \
@@ -151,7 +151,7 @@ curl \
 
 Just GET request, with multiple parameters (query string):
 
-```
+```bash
 curl -G "localhost:8000/tab0032" --data-urlencode 'where={"var0542": "1"}'
 ```
 
@@ -159,14 +159,14 @@ curl -G "localhost:8000/tab0032" --data-urlencode 'where={"var0542": "1"}'
 
 [How to force Network Manager to rescan connections?](https://superuser.com/questions/164059/how-to-force-network-manager-to-rescan-connections)
 
-```
+```bash
 nmcli device wifi rescan
 nmcli device wifi list
 ```
 
 # time
 
-```
+```text
 time (curl -G "localhost:8000/tab0032" --data-urlencode 'where={"var0542": "1"}' &> /dev/null)
 ```
 
@@ -174,7 +174,7 @@ time (curl -G "localhost:8000/tab0032" --data-urlencode 'where={"var0542": "1"}'
 
 csv manipulation (better than csvkit)
 
-```
+```text
 xsv index ./data/${tab}.csv
 xsv split -s 10000 ./data ./data/${tab}.csv --filename ${tab}.csv.part-{}
 xsv stats worldcitiespop.csv --everything | xsv table
@@ -187,7 +187,7 @@ xsv count ./data/${tab}.csv >> lines_to_sum
 https://github.com/johnkerl/miller Miller is like awk, sed, cut, join, and sort for data formats
 such as CSV, TSV, JSON, JSON Lines, and positionally-indexed.
 
-```
+```text
 mlr --icsv --ojson cat ./data/${tab}.csv > \
     ./data/${tab}.json
 mlr --c2j --jvquoteall cat ./data/${tab}.csv > \
@@ -201,7 +201,7 @@ conversion converter
 
 [Splitting A Large CSV Files Into Smaller Files In Ubuntu](http://burnignorance.com/linux-tips-and-tricks/splitting-a-large-csv-files-into-smaller-files-in-ubuntu/)
 
-```
+```text
 split -d -l 10000 source.csv tempfile.part.
 ```
 
@@ -211,7 +211,7 @@ split -d -l 10000 source.csv tempfile.part.
 
 Better than `shred`. To shred files and full directory trees.[^1]
 
-```
+```bash
 sudo apt-get install secure-delete
 iaur secure-delete
 srm -r pathname
@@ -220,7 +220,7 @@ srm -r pathname
 Done. Secure delete is a lot more paranoid than shred, using 38 passes instead of 3. To do a fast
 single pass, use
 
-```
+```text
 srm -rfll pathname
 ```
 
@@ -228,7 +228,7 @@ srm -rfll pathname
 
 - `-I`: -I allows {} to represents each file outputted from ls command
 
-```
+```bash
 ls | xargs -I {} slugify {}
 ls | xargs -I {} mv {} $(slugify {})
 
@@ -240,19 +240,19 @@ ls *old | xargs -I {} mv {} {}.old
 
 Script to kill and refresh keybindings (shortcuts). Can be used in vim, after save file.[^5]
 
-```
+```text
 killall sxhkd; setsid sxhkd &
 ```
 
 with vim (https://github.com/kovetskiy/sxhkd-vim)
 
-```
+```text
 autocmd BufWritePost *sxhkdrc !killall sxhkd; setsid sxhkd &
 ```
 
 vimux configs:
 
-```
+```text
 " Vimux config
 let g:VimuxOrientation = "v"
 let g:VimuxHeight = "40"
@@ -305,7 +305,7 @@ OBS:
 
   - https://www.cnconnect.com.br/
 
-  ```
+  ```bash
   #!/bin/bash -x
 
   INRES="1920x1200"
@@ -336,7 +336,7 @@ OBS:
 
   - commands:
 
-    ```
+    ```text
     unzip the github models
     unzip rnnoise-models-master.zip
 
@@ -372,7 +372,7 @@ environment after system restart: https://github.com/tmux-plugins/tmux-resurrect
 
 Each line is a number, sum them all:
 
-```
+```text
 paste -s -d+ lines_to_sum | \bc
 ```
 

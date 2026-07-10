@@ -34,7 +34,7 @@ expect "$ " send "ls -l\\r"
 
 interact
 
-````
+````text
 ### Example 1: Using Environment Variables
 
 ```tcl

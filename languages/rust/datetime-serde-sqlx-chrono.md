@@ -229,7 +229,7 @@ crate automatically handles the conversion from the provided timezone to UTC.
 
 Person:
 
-- ts_rfc3339 doen't exist
+- ts_rfc3339 doesn't exist
 
 ChatGPT:
 

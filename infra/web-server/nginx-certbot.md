@@ -10,14 +10,14 @@
   - --register-unsafely-without-email
     - to substitute email at certificate
 
-```
+```bash
 sudo certbot --nginx -n -m myemail@example.com --agree-tos -d example.com -d www.example.com
 sudo certbot --nginx -n --register-unsafely-without-email --agree-tos -d example.com -d www.example.com
 ```
 
 With interaction (prompt):
 
-```
+```bash
 sudo certbot --nginx
 ```
 
@@ -37,7 +37,7 @@ sudo certbot --nginx
 
 - check if certbot have added:
 
-  ```
+  ```text
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2; #disable SSL
   # check if certbot has added:
       # ciphers directive
@@ -48,7 +48,7 @@ sudo certbot --nginx
 
 - check a renew certificate:
 
-```
+```bash
 sudo certbot renew --dry-run
 ```
 
@@ -56,7 +56,7 @@ sudo certbot renew --dry-run
 
   - `sudo certbot renew`
 
-  ```
+  ```bash
   sudo crontab -e
   ---
   30 4 1 * * sudo certbot renew --quiet

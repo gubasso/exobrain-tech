@@ -4,7 +4,7 @@ Find public ip address: `curl ifconfig.me`
 
 Private ip address:
 
-```
+```text
 ifconfig -a
 ip addr (ip a)
 hostname -I | awk '{print $1}'

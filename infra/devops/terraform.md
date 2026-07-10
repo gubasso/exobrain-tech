@@ -8,7 +8,7 @@
 
   - https://github.com/asdf-community/asdf-hashicorp
 
-  ```
+  ```text
   asdf plugin-add boundary https://github.com/asdf-community/asdf-hashicorp.git
   asdf plugin-add consul https://github.com/asdf-community/asdf-hashicorp.git
   asdf plugin-add levant https://github.com/asdf-community/asdf-hashicorp.git

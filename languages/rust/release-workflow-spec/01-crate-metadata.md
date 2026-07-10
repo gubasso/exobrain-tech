@@ -9,7 +9,7 @@ auth.
 
 - `name` — must be unique on crates.io and unclaimed. Names are first-come and permanent once
   published.
-- `version` — a valid [SemVer](07-semver-yank-rollback.md) version.
+- `version` — a valid [SemVer](./07-semver-yank-rollback.md) version.
 - `description` — a short, one-sentence summary. **crates.io hard-rejects a publish that has no
   `description`.** This is the single most common first-publish blocker.
 - `license` **or** `license-file` — an [SPDX license expression](https://spdx.org/licenses/) (e.g.

@@ -8,10 +8,10 @@ the same potholes. Each known-issue entry records a minimal repro, the package v
 observation, the upstream issue (if any), and a workaround.
 
 Related notes in this shelf:
-[50-native-orchestration-decision.md](50-native-orchestration-decision.md) covers the
+[50-native-orchestration-decision.md](./50-native-orchestration-decision.md) covers the
 orchestration consequence of the newline bug documented below;
-[20-decision-libkrun-linux.md](20-decision-libkrun-linux.md) covers why libkrun is the chosen
-Linux isolation backend; [90-references.md](90-references.md) collects external references.
+[20-decision-libkrun-linux.md](./20-decision-libkrun-linux.md) covers why libkrun is the chosen
+Linux isolation backend; [90-references.md](./90-references.md) collects external references.
 
 ## Environment baseline
 
@@ -180,7 +180,7 @@ exists), and regardless of what `remoteUser` is set to.
 
 **Workaround:** use `podman` directly with `--runtime krun` (single-line `-c` payloads only), and
 drive lifecycle through a custom adapter that calls `podman exec` with fresh argv vectors. See
-[50-native-orchestration-decision.md](50-native-orchestration-decision.md) for the orchestration
+[50-native-orchestration-decision.md](./50-native-orchestration-decision.md) for the orchestration
 decision this forces. An adapter that only ever passes single-line or argv-vector commands does
 exactly this and is immune by construction.
 

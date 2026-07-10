@@ -27,7 +27,7 @@ Apps/Steps:
 
 - Custom DNS:
 
-```
+```text
 A record
 
 *.myapps.example.com

@@ -22,7 +22,7 @@ xwallpapers
 
 ## UI coherence
 
-- [GTK/Qt UI coherence](gtk-qt-ui-coherence-x11-window-managers.md)
+- [GTK/Qt UI coherence](./gtk-qt-ui-coherence-x11-window-managers.md)
 
 ## Tools
 

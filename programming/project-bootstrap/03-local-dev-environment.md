@@ -19,11 +19,11 @@ the template; the language binding names the toolchain that goes inside.
 
 `.editorconfig` sets whitespace, charset, and final-newline rules that every editor honors, so
 formatting is consistent regardless of individual editor config. Keep it aligned with the language
-formatter (chapter [04](04-quality-gates.md)) so the two never fight — the formatter is
+formatter (chapter [04](./04-quality-gates.md)) so the two never fight — the formatter is
 authoritative for code, `.editorconfig` covers everything else.
 
 ## Automation
 
 `bootstrap-nix` scaffolds the flake devShell + `.envrc`; `bootstrap-editorconfig` writes the
 `.editorconfig` and aligns it with the detected formatter/linter. The setup above is the SoT; see
-[07 — Automation with cog](07-automation-with-cog.md).
+[07 — Automation with cog](./07-automation-with-cog.md).

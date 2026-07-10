@@ -7,7 +7,7 @@ loader tracks **which source set which value**, so error messages can name the f
 
 From **lowest** to **highest** precedence (later sources override earlier ones):
 
-```
+```text
 defaults  <  user file  <  project file  <  env vars  <  CLI flags
 ```
 
@@ -28,7 +28,7 @@ well-designed CLI tool. Reuse it; don't reinvent.
 
 ## Implementation pattern (language-agnostic)
 
-```
+```text
 1. Construct a default `Config` value.
 2. Merge the user file (if it exists). Missing file = no-op, not error.
 3. Merge the project file (if it exists). Same.
@@ -105,7 +105,7 @@ Skip:
 
 A loader that can answer _"where did this value come from?"_ lets your errors say:
 
-```
+```text
 config: invalid value
   where: /home/user/.config/app/config.toml (line 12, [defaults] timeout_secs)
   why:   timeout_secs must be a positive integer, got -1
@@ -211,7 +211,7 @@ For full Python guidance see
 
 ## See also
 
-- [00 — Architecture](00-architecture.md) — where `config/` and `context.rs` sit in the tree.
-- [01 — Logging & Output](01-logging-and-output.md) — log-file path resolution uses the same
+- [00 — Architecture](./00-architecture.md) — where `config/` and `context.rs` sit in the tree.
+- [01 — Logging & Output](./01-logging-and-output.md) — log-file path resolution uses the same
   precedence.
 - Language-specific: [`rust/cli-spec/05-config.md`](../../languages/rust/cli-spec/05-config.md).

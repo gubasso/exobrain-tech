@@ -8,7 +8,7 @@
 
 ## `-T/-t` pseudo-terminal allocation
 
-```
+```text
 -T      Disable pseudo-terminal allocation.
 
 -t      Force pseudo-terminal allocation.  This can be  used  to
@@ -45,7 +45,7 @@ Here are some concrete scenarios where `ssh -T` (disable pseudo-TTY allocation) 
 
 - **Test ssh access (in this example, at a gitolite server)**
 
-```
+```text
 ❯ ssh -T git-org-user
 hello example-user, this is git@git.example.com running gitolite3 3.6.12-1 (Debian) on git 2.34.1
 

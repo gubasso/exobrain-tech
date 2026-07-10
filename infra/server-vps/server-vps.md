@@ -36,7 +36,7 @@
 
 - (optional) change original root password
 
-```
+```bash
 passwd root
 ```
 
@@ -44,7 +44,7 @@ passwd root
 - Create groups and add the `super_user` to them:
   [linux-general group management](../../systems/linux/linux-system-general.md#group-management)
 
-```
+```text
 groupadd wheel
 groupadd sudo
 groupadd ssh-user
@@ -54,13 +54,13 @@ usermod -aG wheel,sudo,ssh-user super_user
 - Grant `super_user` root/sudo privileges:
   [linux-general sudo](../../systems/linux/linux-system-general.md#sudo)
 
-```
+```text
 EDITOR=vim visudo
 ```
 
 or **`/etc/sudoers.d/99-local-sudoers`**
 
-```
+```text
 user_name   ALL=(ALL:ALL) ALL
 %wheel      ALL=(ALL:ALL) ALL
 Defaults passwd_timeout=0
@@ -76,7 +76,7 @@ Defaults timestamp_timeout=10
 
 - make it easier to work with commands
 
-```
+```text
 ~/.bashrc
 ---
 set -o vi
@@ -113,7 +113,7 @@ Steps to setup a more secure way to access the server.
 
 Change user to `root`:
 
-```
+```bash
 sudo su
 ```
 
@@ -121,13 +121,13 @@ Check if config file has (or add at the beginning) the following line:
 
 **`/etc/ssh/sshd_config`**
 
-```
+```text
 Include /etc/ssh/sshd_config.d/*.conf
 ```
 
 **`/etc/ssh/sshd_config.d/99-local-sshd.conf`** (create dir and file if needed)
 
-```
+```text
 PermitRootLogin no
 PubkeyAuthentication yes
 PasswordAuthentication no
@@ -158,7 +158,7 @@ sudo systemctl restart sshd && sudo sshd -T
 
 Change user to `super_user`:
 
-```
+```text
 su super_user
 ```
 

@@ -119,11 +119,11 @@ cat <<EOF
 
 Done. Manual steps this script cannot do via the API:
   1. Create a Project Access Token (Settings -> Access tokens, role Maintainer,
-     scope write_repository) for the CI push bot. Premium: pass its user id as
-     BOT_USER_ID and re-run, or add it to master's Allowed to push and merge.
+    scope write_repository) for the CI push bot. Premium: pass its user id as
+    BOT_USER_ID and re-run, or add it to master's Allowed to push and merge.
   2. GitLab 17.2+: Settings -> CI/CD -> Job token permissions ->
-     Allow Git push requests to the repository. No API equivalent yet
-     (gitlab-org/gitlab#494324).
+    Allow Git push requests to the repository. No API equivalent yet
+    (gitlab-org/gitlab#494324).
   3. Copy ci/release-promote.gitlab-ci.yml into the project's .gitlab-ci.yml
-     (or include it). See ../first-run-enablement.md.
+    (or include it). See ../first-run-enablement.md.
 EOF

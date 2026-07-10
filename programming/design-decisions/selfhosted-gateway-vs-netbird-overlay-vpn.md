@@ -59,8 +59,8 @@
 - If you need a **full-blown, zero-trust, multi-protocol mesh** network spanning dozens of
   devices—go with **NetBird** (or another overlay VPN).
 
-[1]: https://netbird.io/connect?utm_source=chatgpt.com "NetBird - Zero-Configuration Private Network"
-[2]: https://docs.netbird.io/?utm_source=chatgpt.com "Introduction to NetBird - NetBird Docs"
-[3]: https://libtechnophile.blogspot.com/2025/05/setting-up-netbird-wireguard-based-self.html?utm_source=chatgpt.com "Setting Up NetBird – A WireGuard-Based Self-Hosted VPN System"
-[4]: https://github.com/netbirdio/netbird?utm_source=chatgpt.com "GitHub - netbirdio/netbird: Connect your devices into a secure ..."
-[5]: https://www.freshports.org/security/netbird/?utm_source=chatgpt.com "FreshPorts -- security/netbird: Peer-to-peer VPN that seamlessly ..."
+[1]: https://netbird.io/connect "NetBird - Zero-Configuration Private Network"
+[2]: https://docs.netbird.io/ "Introduction to NetBird - NetBird Docs"
+[3]: https://libtechnophile.blogspot.com/2025/05/setting-up-netbird-wireguard-based-self.html "Setting Up NetBird – A WireGuard-Based Self-Hosted VPN System"
+[4]: https://github.com/netbirdio/netbird "GitHub - netbirdio/netbird: Connect your devices into a secure ..."
+[5]: https://www.freshports.org/security/netbird/ "FreshPorts -- security/netbird: Peer-to-peer VPN that seamlessly ..."

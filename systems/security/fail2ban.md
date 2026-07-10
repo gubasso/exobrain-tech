@@ -40,7 +40,7 @@ If you changed the SSH default port (e.g. `Port 202`), edit the `[sshd]` section
 
 **`/etc/fail2ban/jail.local`**
 
-```
+```text
 [sshd]
 port = ssh,202
 ```
@@ -62,7 +62,7 @@ sudo fail2ban-client status
 
 **`/etc/fail2ban/jail.local`**
 
-```
+```text
 destemail = myuseremail@email.com
 sender = myuseremail@email.com
 ```

@@ -91,7 +91,7 @@ performance rating (0=best, higher=worse) ([wiki.archlinux.org][4], [man.archlin
 
 A sample snippet might look like:
 
-```
+```text
 LBA Format  0 : Data Size: 512 bytes  – Relative Performance: 0x2 Good (in use)
 LBA Format  1 : Data Size: 4096 bytes – Relative Performance: 0x1 Better
 ```

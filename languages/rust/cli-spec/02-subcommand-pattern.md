@@ -259,7 +259,7 @@ without Tier 3's reason.
 
 ### Reconciling with the "no `println!` outside `ui/`" rule
 
-The rule in [09 — Coding Style §7](09-coding-style.md#7-ci-lint-for-the-no-println-rule) governs
+The rule in [09 — Coding Style §7](./09-coding-style.md#7-ci-lint-for-the-no-println-rule) governs
 **your** code's writes to stdout/stderr. clap's auto-generated help is the parser's output — it goes
 through `clap_builder::output::fmt` and is not subject to the lint. You don't need to route Tier 1
 help through `Ui`.

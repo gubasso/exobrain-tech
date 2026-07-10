@@ -1,6 +1,6 @@
 # Advanced Testing (Rust)
 
-> Prerequisite: [Testing (Rust)](testing.md) for the basics (`assert_cmd`, `insta`, `tempfile`,
+> Prerequisite: [Testing (Rust)](./testing.md) for the basics (`assert_cmd`, `insta`, `tempfile`,
 > `trybuild`, `nextest`). This chapter covers advanced techniques: property-based testing, mutation
 > testing, document-driven CLI testing, inline snapshots, golden files, HTTP fakes, and interactive
 > CLI testing.
@@ -116,7 +116,7 @@ proptest! {
 `proptest` persists failing seeds in `proptest-regressions/` files alongside the test. **Commit
 these files.** They lock down the specific input that triggered the failure so the bug stays fixed.
 
-```
+```text
 tests/
 ├── proptest-regressions/
 │   └── test_widget_id.txt    # auto-generated on failure
@@ -417,7 +417,7 @@ verifying the interactive UX itself.
 
 ## Dev-dependencies summary
 
-Updated dependency table (extends [06 § Crate stack](testing.md#crate-stack)):
+Updated dependency table (extends [06 § Crate stack](./testing.md#crate-stack)):
 
 ```toml
 [dev-dependencies]
@@ -446,7 +446,7 @@ cargo install cargo-insta     # snapshot review workflow
 
 ## Naming conventions
 
-```
+```text
 tests/
 ├── cmd_widget.rs              # integration: subcommand tests (assert_cmd)
 ├── cmd/                        # trycmd test cases (if using trycmd)
@@ -462,9 +462,9 @@ tests/
 
 ## See also
 
-- [Testing (Rust)](testing.md) — core crate stack, unit/integration patterns, nextest profiles,
+- [Testing (Rust)](./testing.md) — core crate stack, unit/integration patterns, nextest profiles,
   support module.
-- [Code Quality (Rust)](code-quality.md) — complexity metrics, clippy restriction lints, binary
+- [Code Quality (Rust)](./code-quality.md) — complexity metrics, clippy restriction lints, binary
   analysis.
 - [07 — Dependencies (Rust)](../07-dependencies.md) — curated default crate list.
 - General principles:

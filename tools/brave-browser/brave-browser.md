@@ -92,7 +92,7 @@ cp Default/Favicons "$dest"/
 cp Default/Top\ Sites "$dest"/
 ```
 
-See [brave-create-profile.fish](brave-create-profile.fish) script.
+See [brave-create-profile.fish](./brave-create-profile.fish) script.
 
 **Note:** Avoid copying files like `Cookies`, `History`, `Login Data`, and `Cache` to prevent
 conflicts and potential corruption.

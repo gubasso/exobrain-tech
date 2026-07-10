@@ -1,12 +1,12 @@
 # 05 — Designing for LLM Coding Agents
 
-> Prerequisite: [General CLI principles index](README.md). This chapter is a deep dive on the
+> Prerequisite: [General CLI principles index](./README.md). This chapter is a deep dive on the
 > specific concern of building CLIs that AI coding agents (Claude Code, Codex CLI, Cursor, Gemini
 > CLI, etc.) can use reliably.
 >
-> Closely related: [01 — Logging & Output](01-logging-and-output.md) for the LLM-token-friendly
-> log schema; [02 — Error Messages](02-error-messages.md) for stable `err.kind` keys;
-> [99 — Checklist](99-checklist.md) for the "Designing for LLM coding agents" rubric.
+> Closely related: [01 — Logging & Output](./01-logging-and-output.md) for the LLM-token-friendly
+> log schema; [02 — Error Messages](./02-error-messages.md) for stable `err.kind` keys;
+> [99 — Checklist](./99-checklist.md) for the "Designing for LLM coding agents" rubric.
 
 > A practical guide and reference for shipping CLIs that agents (Claude Code, Codex CLI, Cursor,
 > Gemini CLI, etc.) can actually use — reliably, deterministically, and without burning your context
@@ -43,7 +43,7 @@
   non-deterministic; your tooling must compensate.
 
 This chapter specializes the general
-[facing category and message type taxonomy](00-architecture.md#facing-category--message-types) for
+[facing category and message type taxonomy](./00-architecture.md#facing-category--message-types) for
 machine-facing and agent-consumed CLIs.
 
 ---
@@ -197,7 +197,7 @@ LLMs have deep priors on the world's most popular CLIs. Mirror them.
 - Flag names: prefer `--dry-run`, `--force`, `--yes`, `--output`, `--format`, `--limit`, `--since`,
   `--verbose`. Don't invent `--simulate-only` when `--dry-run` exists.
 - Exit codes: use BSD `sysexits(3)` — see
-  [`02-error-messages.md`](02-error-messages.md#exit-codes--bsd-sysexits) for the canonical
+  [`02-error-messages.md`](./02-error-messages.md#exit-codes--bsd-sysexits) for the canonical
   matrix. Stable codes give agents a reliable signal to branch on.
 
 The closer you hew to familiar patterns, the less your Skill has to explain and the less the agent
@@ -521,7 +521,7 @@ test-writing skill):
 
 For agents writing tests for _this_ CLI specifically: snapshot-test `--help`, the JSON schema, and
 the exit-code matrix (see
-[99-checklist § Designing for LLM coding agents](99-checklist.md#designing-for-llm-coding-agents)).
+[99-checklist § Designing for LLM coding agents](./99-checklist.md#designing-for-llm-coding-agents)).
 Those three artifacts are the agent's contract with the tool; lock them down.
 
 ---
@@ -865,7 +865,7 @@ Use this when shipping a CLI you want agents to consume reliably.
       and the color policy allows it.
 - [ ] `--dry-run` on destructive ops; `--yes`/`--force` for non-interactive.
 - [ ] `doctor` command exists and surfaces config, auth, reachability, schema version.
-- [ ] Config precedence follows [`03 — Config Precedence`](03-config-precedence.md):
+- [ ] Config precedence follows [`03 — Config Precedence`](./03-config-precedence.md):
       `flags > env > project file > user file > defaults`. No interactive prompts when
       `!isatty(stdin)`.
 - [ ] Verify/validate subcommand returns structured pass/fail (for agent loops).

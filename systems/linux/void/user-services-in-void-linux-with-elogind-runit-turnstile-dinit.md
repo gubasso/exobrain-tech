@@ -232,17 +232,17 @@ With these units in place your Void system boots directly to a login prompt on�
 authenticate, turnstile + dinit bring up niri and the rest in a strictly ordered, fully supervised
 chain—no sleeps, no races, and nothing cluttering your `.profile`.
 
-[2]: https://docs.voidlinux.org/config/session-management.html?utm_source=chatgpt.com "Session and Seat Management - Void Linux Handbook"
+[2]: https://docs.voidlinux.org/config/session-management.html "Session and Seat Management - Void Linux Handbook"
 [3]: https://wiki.artixlinux.org/Main/Dinit "Wiki | Main / dinit"
-[4]: https://github.com/davmac314/dinit/blob/master/doc/getting_started.md?utm_source=chatgpt.com "dinit/doc/getting_started.md at master · davmac314/dinit"
-[5]: https://www.freedesktop.org/software/systemd/man/249/pam_systemd.html?utm_source=chatgpt.com "pam_systemd - freedesktop.org"
-[6]: https://github.com/davmac314/dinit/discussions/252?utm_source=chatgpt.com "how to use ready-notification function? · davmac314 dinit - GitHub"
-[7]: https://github.com/davmac314/dinit/discussions/313?utm_source=chatgpt.com "Wait for busybox syslogd to be ready · davmac314 dinit - GitHub"
-[8]: https://github.com/davmac314/dinit/issues/231?utm_source=chatgpt.com "Improve service type documentation · Issue #231 · davmac314/dinit"
-[9]: https://github.com/davmac314/dinit/discussions/316?utm_source=chatgpt.com "dinitctl start-or-restart · davmac314 dinit · Discussion #316"
-[10]: https://github.com/davmac314/dinit/blob/master/README.md?utm_source=chatgpt.com "dinit/README.md at master · davmac314/dinit · GitHub"
-[11]: https://docs.voidlinux.org/config/services/user-services.html?utm_source=chatgpt.com "Per-User Services - Void Linux Handbook"
-[12]: https://github.com/davmac314/dinit/issues/39?utm_source=chatgpt.com "Variable substitution outside command paths · Issue #39 · davmac314/dinit"
+[4]: https://github.com/davmac314/dinit/blob/master/doc/getting_started.md "dinit/doc/getting_started.md at master · davmac314/dinit"
+[5]: https://www.freedesktop.org/software/systemd/man/249/pam_systemd.html "pam_systemd - freedesktop.org"
+[6]: https://github.com/davmac314/dinit/discussions/252 "how to use ready-notification function? · davmac314 dinit - GitHub"
+[7]: https://github.com/davmac314/dinit/discussions/313 "Wait for busybox syslogd to be ready · davmac314 dinit - GitHub"
+[8]: https://github.com/davmac314/dinit/issues/231 "Improve service type documentation · Issue #231 · davmac314/dinit"
+[9]: https://github.com/davmac314/dinit/discussions/316 "dinitctl start-or-restart · davmac314 dinit · Discussion #316"
+[10]: https://github.com/davmac314/dinit/blob/master/README.md "dinit/README.md at master · davmac314/dinit · GitHub"
+[11]: https://docs.voidlinux.org/config/services/user-services.html "Per-User Services - Void Linux Handbook"
+[12]: https://github.com/davmac314/dinit/issues/39 "Variable substitution outside command paths · Issue #39 · davmac314/dinit"
 [14]: ./inotifywait.md "inotifywait"
 
 ---

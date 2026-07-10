@@ -43,7 +43,7 @@ Unit=restic-backup.service
 WantedBy=timers.target
 ```
 
-```
+```text
 The following special expressions may be used as shorthands for longer normalized forms:
 
     minutely → *-*-* *:*:00

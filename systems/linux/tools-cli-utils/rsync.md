@@ -13,7 +13,7 @@
 
 ## examples
 
-```
+```bash
 rsync -vurzP SOURCE/ DESTINATION/
 rsync source host:destination
 rsync host:source destination
@@ -21,7 +21,7 @@ rsync host:source destination
 
 Example of rsync being used to push/syncing files to server, with watchexec:
 
-```
+```text
 watchexec 'rsync -vurzP --delete-after ./* user@host:/full/path/'
 watchexec 'rsync -vurzP --delete-after ./* user@host:relative/path/from/user/home'
 rsync -vrzP --delete-after ~/website/ user@host:/var/www/html/
@@ -29,14 +29,14 @@ rsync -vrzP --delete-after ~/website/ user@host:/var/www/html/
 
 Example simple file copy
 
-```
+```bash
 rsync -vurP SOURCE/ DESTINATION/
 rsync -vurzP yourkey.pub git@yourserver.tld:˜/yourname.pub
 ```
 
 Example different ssh port:
 
-```
+```bash
 rsync -a -e "ssh -p 2322" /opt/media/ remote_user@remote_host_or_ip:/opt/media/
 ```
 

@@ -1,11 +1,11 @@
 # Wrapper Design — Typing & Validation
 
-> **See also.** The sibling chapter [Process & POSIX](process-and-posix.md) covers the
+> **See also.** The sibling chapter [Process & POSIX](./process-and-posix.md) covers the
 > _invocation_ side: argv layout, `--` separator, exec vs spawn, signal forwarding, exit-code
 > propagation, plugin namespacing, failure modes. Read both — this one is about _what you build_;
 > the sibling is about _how you run it_.
 >
-> This chapter is part of [CLI Wrapper Design](README.md) under the general
+> This chapter is part of [CLI Wrapper Design](./README.md) under the general
 > [CLI design principles](../README.md).
 
 Reference for building CLI programs that wrap other CLI tools using typed data structures.
