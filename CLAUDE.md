@@ -1,6 +1,10 @@
 # CLAUDE.md
 
-Guidance for coding agents working in `exobrain-tech`.
+@AGENTS.md
+
+Guidance for coding agents working in `exobrain-tech`. `AGENTS.md` is the single
+source of truth for governance (self-containment, decisions); the
+project-specific authoring rules below extend it.
 
 ## What this repo is
 

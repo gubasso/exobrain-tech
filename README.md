@@ -18,3 +18,8 @@ Public technical knowledge base. The migrated KB lives in the top-level topic bu
 - [workflows/general-notes.md](workflows/general-notes.md) - staging area for uncategorized general
   notes and link collections carried over from the original KB main index; promote entries into the
   appropriate bucket as they mature.
+
+## License
+
+Content is licensed under [Creative Commons Attribution 4.0 International](LICENSE)
+(CC BY 4.0), copyright 2026 Gustavo Basso.

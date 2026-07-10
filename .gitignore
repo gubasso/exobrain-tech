@@ -2,3 +2,25 @@
 result
 result-*
 .direnv/
+
+# lychee link-checker cache (pre-push hook)
+.lycheecache
+
+# --- cog gitignore (generic) ---
+# Generic ignores
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+# Logs and temporary files
+*.log
+tmp/
+.tmp/
+# Local environment and secrets
+.env
+.env.local
+# Nix devshell
+/result

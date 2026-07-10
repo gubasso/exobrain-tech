@@ -1,0 +1,34 @@
+# CI workflow — markdown knowledge-base checks.
+# Jobs reuse the project's Nix devshell so CI runs the same toolchain as local
+# development: `nix develop --command <task>` calls the justfile recipes wired
+# to the flake's markdown tooling (dprint, editorconfig-checker, pre-commit).
+# This is a Diátaxis markdown KB with no Rust — there is no build/test/nextest.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Cache Nix store
+        uses: DeterminateSystems/flakehub-cache-action@main
+      - name: Lint
+        run: nix develop --command just lint
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Cache Nix store
+        uses: DeterminateSystems/flakehub-cache-action@main
+      - name: Format and check
+        run: nix develop --command just check
