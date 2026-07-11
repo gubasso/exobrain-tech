@@ -16,14 +16,19 @@ Non-negotiable: record every significant, hard-to-reverse decision as an ADR und
 
 Source map:
 
-| Topic                       | File                                                        |
-| --------------------------- | ----------------------------------------------------------- |
-| KB index                    | `README.md`                                                 |
-| Authoring rules             | `CLAUDE.md`                                                 |
-| Zone index                  | `docs/README.md`                                            |
-| ADR template                | `docs/decisions/template.md`                                |
-| Governance decision         | `docs/decisions/ADR-0001-documentation-governance.md`       |
-| Delegation architecture ADR | `docs/decisions/ADR-0002-in-session-subagent-delegation.md` |
-| Self-containment ADR        | `docs/decisions/ADR-0003-self-containment.md`               |
+| Topic                        | File                                                        |
+| ---------------------------- | ----------------------------------------------------------- |
+| KB index                     | `README.md`                                                 |
+| Authoring rules              | `CLAUDE.md`                                                 |
+| Zone index                   | `docs/README.md`                                            |
+| ADR template                 | `docs/decisions/template.md`                                |
+| Governance decision          | `docs/decisions/ADR-0001-documentation-governance.md`       |
+| Delegation architecture ADR  | `docs/decisions/ADR-0002-in-session-subagent-delegation.md` |
+| Self-containment ADR         | `docs/decisions/ADR-0003-self-containment.md`               |
+| Docs-vs-library boundary ADR | `docs/decisions/ADR-0004-docs-vs-library-boundary.md`       |
+
+## Docs vs library content
+
+Non-negotiable: `docs/` is reserved for the `exobrain-tech` product's own reference — governance, ADRs, conventions, architecture, guides, and explanation about how this knowledge base itself works. The knowledge articles and books the product exists to serve live in the eight top-level buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platforms/`, `workflows/`, `data/`). Never place a knowledge article under `docs/`; place it in the owning bucket and cross-link from `docs/` only when the product reference must mention it. Placement test: "Is this about how the KB works?" → `docs/`. "Is this knowledge the library serves?" → the content bucket. See `docs/decisions/ADR-0004-docs-vs-library-boundary.md`.
 
 Public/private boundary: do not place private equipment identity, security posture, recovery material, credentials, or personal workflows here; use `exobrain-tech-vault`. `docs/` is governance-only and migrated KB notes do not belong there.

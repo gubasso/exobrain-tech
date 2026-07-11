@@ -8,9 +8,17 @@ project-specific authoring rules below extend it.
 
 ## What this repo is
 
-This is the public technical knowledge base. Core KB content may use whatever
-file and directory structure best serves the knowledge. Project governance docs
-use the `docs/` Diátaxis scaffold.
+This is the public technical knowledge base. The knowledge is the product; it
+lives in the eight top-level buckets (`programming/`, `languages/`, `systems/`,
+`infra/`, `tools/`, `platforms/`, `workflows/`, `data/`) and may use whatever
+file and directory structure best serves the knowledge within a bucket.
+
+`docs/` is reserved for the product's own reference — governance, ADRs,
+conventions, architecture, and explanation about how this knowledge base itself
+works — using the Diátaxis scaffold. The boundary is non-negotiable: never place
+a knowledge article under `docs/`. Placement test: "Is this about how the KB
+works?" → `docs/`. "Is this knowledge the library serves?" → the content bucket.
+See `docs/decisions/ADR-0004-docs-vs-library-boundary.md`.
 
 ## Documentation Maintenance
 
