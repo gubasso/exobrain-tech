@@ -50,19 +50,38 @@ The merge must:
 
 Use the XDG Base Directory spec everywhere; do not hand-roll `$HOME/.<app>/`.
 
-| Concern               | XDG var           | Default                 |
-| --------------------- | ----------------- | ----------------------- |
-| Config                | `XDG_CONFIG_HOME` | `~/.config/<app>/`      |
-| Data                  | `XDG_DATA_HOME`   | `~/.local/share/<app>/` |
-| State (logs, history) | `XDG_STATE_HOME`  | `~/.local/state/<app>/` |
-| Cache                 | `XDG_CACHE_HOME`  | `~/.cache/<app>/`       |
-| Runtime sockets       | `XDG_RUNTIME_DIR` | `/run/user/$UID/`       |
+| Concern               | XDG var           | Default                                                |
+| --------------------- | ----------------- | ------------------------------------------------------ |
+| Config                | `XDG_CONFIG_HOME` | `~/.config/<app>/`                                     |
+| Data                  | `XDG_DATA_HOME`   | `~/.local/share/<app>/`                                |
+| State (logs, history) | `XDG_STATE_HOME`  | `~/.local/state/<app>/`                                |
+| Cache                 | `XDG_CACHE_HOME`  | `~/.cache/<app>/`                                      |
+| Runtime sockets       | `XDG_RUNTIME_DIR` | no portable default; logind provides `/run/user/$UID/` |
+
+Config and data also have **system search lists** so vendor/admin defaults sit
+beneath user overrides: `XDG_CONFIG_DIRS` (default `/etc/xdg`) and
+`XDG_DATA_DIRS` (default `/usr/local/share:/usr/share`), searched _after_ the
+per-user base (user home wins). State, cache, and runtime have no system list —
+they are single write targets, not layered lookup paths.
+
+Two spec rules a compliant tool must honor: a **relative** `XDG_*` value is
+invalid and must be ignored (fall back to the default); and nothing creates these
+dirs for you — the app makes them on demand at mode `0700` (`XDG_RUNTIME_DIR` is
+mandated `0700`, user-owned). Because `XDG_RUNTIME_DIR` has no portable default,
+never blindly fall back to `/tmp` when it is unset — warn and use an
+equivalent-semantics dir, or degrade.
 
 Use your language's XDG library (`directories` in Rust, `platformdirs` in Python, `xdg` in Go,
 `XDG_*` env-var probes in Bash). Don't reimplement the lookup.
 
+The config/state boundary — _config is read-only at runtime; runtime-written data
+is state_ — is governed by
+[`design-decisions/config-state-ownership/`](../design-decisions/config-state-ownership/README.md).
+For scaffolding a project without mutating config, see
+[11 — XDG scaffolding & `init`](./11-xdg-scaffolding.md).
+
 References:
-[XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/index.html).
+[XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/).
 
 ## Env-var conventions
 

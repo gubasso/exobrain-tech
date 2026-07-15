@@ -27,6 +27,7 @@ details.
 | 8  | [Naming & documentation](./08-naming-and-docs.md)                   | Visibility defaults, doc-comment strategy, "comment why, not what".                                                                           |
 | 9  | [Testing & quality](09-testing-and-quality/)                        | Testing pyramid, per-language tooling, regression safeguards, code quality gates. Strategy, tools, AI-agent verification, complexity metrics. |
 | 10 | [Reference projects](./10-reference-projects.md)                    | Organizational patterns from well-studied CLIs (language-agnostic takeaways).                                                                 |
+| 11 | [XDG scaffolding & `init`](./11-xdg-scaffolding.md)                 | Scaffold a project and prepare dirs without ever writing to `$XDG_CONFIG_HOME`; `init` reuses the `doctor` probes.                            |
 | 99 | [Checklist](./99-checklist.md)                                      | One-page sanity check before shipping a CLI.                                                                                                  |
 
 ## Language-specific implementation

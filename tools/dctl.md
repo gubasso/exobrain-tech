@@ -63,6 +63,15 @@ affect runtime; runtime is fed exclusively from user config + cache.
 
 All three honor `XDG_DATA_HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`.
 
+The one config writer here — `dctl deploy` — is a **deliberate, explicit
+scaffold/stow step** (it copies installed seeds into the user-editable config
+tree, seed → config, on request), not a runtime side effect. At runtime `dctl
+init` only _reads_ config and writes the generated merge to `~/.cache/`; it never
+rewrites `~/.config/dctl/*`. That keeps config read-only during normal operation
+and safe under a `/nix/store` symlink — the distinction the
+[configuration and state ownership](../programming/design-decisions/config-state-ownership/README.md)
+rule draws between scaffolding config and mutating it.
+
 `dctl image build` resolves Dockerfiles **only** from `~/.config/dctl/images/<target>/Dockerfile` —
 never from the installed seed. To use a freshly-edited Dockerfile, it must live at (or be stowed to)
 the user-config path.

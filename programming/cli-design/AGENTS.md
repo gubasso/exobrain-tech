@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-07-10
+last-synced: 2026-07-15
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -11,9 +11,10 @@ source-files:
   - 06-preflight-and-health-checks.md
   - 08-naming-and-docs.md
   - 10-reference-projects.md
+  - 11-xdg-scaffolding.md
   - 99-checklist.md
   - README.md
-token-estimate: 1100
+token-estimate: 1250
 ---
 
 # AGENTS
@@ -112,6 +113,19 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   ABI, uniform exec(), focused error+ui modules, options/output split, context+modules,
   dependency-direction workspace.
 
+### XDG scaffolding & `init` (11)
+
+- Config is read-only at runtime; `init`/scaffold must never write to
+  `$XDG_CONFIG_HOME`. The _why_ lives in
+  `design-decisions/config-state-ownership/`.
+- Four safe scaffold patterns: print starter config to stdout; sane defaults
+  (config optional); write state/cache only; explicit non-clobbering write to a
+  named path.
+- Anti-pattern: `init` appending discovered runtime facts into `~/.config/*` →
+  two writers, breaks under Home Manager. Fix with config/state split + merge.
+- `init` reuses the `doctor` probe subset (see 06). Run `xdg-ninja` as the
+  conformance check.
+
 ### Checklist (99)
 
 - Pre-ship sanity check across architecture, logging, errors, config, coding style, LLM agents,
@@ -119,18 +133,19 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 
 ## Source Map
 
-| Topic                                             | File                                |
-| ------------------------------------------------- | ----------------------------------- |
-| Facing category, parse/runtime shape, AppContext  | `00-architecture.md`                |
-| Message types, log schema, channel matrix         | `01-logging-and-output.md`          |
-| Error anatomy, sysexits, error layering           | `02-error-messages.md`              |
-| 5-layer config merge, XDG, provenance             | `03-config-precedence.md`           |
-| 18 coding-style rules                             | `04-coding-style-rust-zig.md`       |
-| CLI+Skill+AGENTS.md model, agent-facing patterns  | `05-designing-for-llm-agents.md`    |
-| Preflight guards + doctor aggregation (hard/soft) | `06-preflight-and-health-checks.md` |
-| Visibility, naming tables, help generation, docs  | `08-naming-and-docs.md`             |
-| Organizational patterns from 12 CLIs              | `10-reference-projects.md`          |
-| Pre-ship checklist                                | `99-checklist.md`                   |
+| Topic                                              | File                                |
+| -------------------------------------------------- | ----------------------------------- |
+| Facing category, parse/runtime shape, AppContext   | `00-architecture.md`                |
+| Message types, log schema, channel matrix          | `01-logging-and-output.md`          |
+| Error anatomy, sysexits, error layering            | `02-error-messages.md`              |
+| 5-layer config merge, XDG, provenance              | `03-config-precedence.md`           |
+| 18 coding-style rules                              | `04-coding-style-rust-zig.md`       |
+| CLI+Skill+AGENTS.md model, agent-facing patterns   | `05-designing-for-llm-agents.md`    |
+| Preflight guards + doctor aggregation (hard/soft)  | `06-preflight-and-health-checks.md` |
+| Visibility, naming tables, help generation, docs   | `08-naming-and-docs.md`             |
+| Organizational patterns from 12 CLIs               | `10-reference-projects.md`          |
+| Scaffold/`init` without mutating config; xdg-ninja | `11-xdg-scaffolding.md`             |
+| Pre-ship checklist                                 | `99-checklist.md`                   |
 
 ## Maintenance Notes
 
