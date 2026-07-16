@@ -1,4 +1,4 @@
-Copy this file into `<project>/docs/decisions/template.md`. Filled ADRs must stay at or below 350
+Copy this file into `<project>/_docs/decisions/template.md`. Filled ADRs must stay at or below 350
 words. Keep each field brief; split separate decisions into separate ADRs.
 
 # ADR-NNNN: {Short Title}

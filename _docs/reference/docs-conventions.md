@@ -16,7 +16,7 @@ Place a document by the reader need it serves:
 - **`reference/`** — exact facts for lookup. Conventions, schemas, diagnostics, case studies.
 - **`explanation/`** — how a subsystem fits together. Architecture and background.
 
-Zone comes first, topic second: `docs/reference/<topic>/`, not `docs/<topic>/reference.md`. A
+Zone comes first, topic second: `_docs/reference/<topic>/`, not `_docs/<topic>/reference.md`. A
 top-level topic folder mixes reader needs and forces readers to infer intent from prose. If a
 document needs two homes, choose the owner and link from the other.
 

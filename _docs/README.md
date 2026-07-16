@@ -1,7 +1,8 @@
-# exobrain-tech Docs
+# exobrain-tech `_docs`
 
-Governance documentation for the public technical knowledge base. This page is
-only an index into the zones.
+Governance and metadata about the public technical knowledge base — the specs
+_about_ the product, not the product itself. This page is only an index into the
+zones.
 
 | Zone           | Reader need   | Contents                         |
 | -------------- | ------------- | -------------------------------- |
@@ -10,12 +11,12 @@ only an index into the zones.
 | `reference/`   | Lookup        | Facts, diagnostics, known issues |
 | `explanation/` | Understanding | Mental models and architecture   |
 
-Core KB content outside `docs/` can use the structure that best fits the topic.
+Core KB content outside `_docs/` can use the structure that best fits the topic.
 
 ## Start here
 
 - [Knowledge-base architecture](./explanation/knowledge-base-architecture.md) — the
-  product↔docs relationship, content buckets, and the AGENTS.md digest standard.
+  product↔metadata relationship, content buckets, and the AGENTS.md digest standard.
 - [Documentation conventions](./reference/docs-conventions.md) — zones, lean ADRs,
   single-source-of-truth, drafts, and the digest standard.
 - [Documentation review checklist](./reference/docs-review-checklist.md) — the pre-merge

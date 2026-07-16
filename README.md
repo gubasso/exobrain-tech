@@ -1,6 +1,6 @@
 # Exobrain Tech
 
-Public technical knowledge base. The migrated KB lives in the top-level topic buckets; `docs/` is repository governance, not the KB product.
+Public technical knowledge base. The KB — the library, the content — is the product and lives in the top-level topic buckets; `_docs/` holds repository governance and metadata about that product, not the product itself.
 
 ## KB Index
 

@@ -3,18 +3,18 @@
 ## The product is the knowledge
 
 `exobrain-tech` is a knowledge base: a library of knowledge organized as directories and markdown files.
-The **product** is that knowledge — the content tree itself. This is the same relationship a code
+The **product** is that knowledge — the library, the content tree itself. This is the same relationship a code
 project has:
 
-| Code project                   | Knowledge base                      |
-| ------------------------------ | ----------------------------------- |
-| Code is the product            | The markdown content is the product |
-| `docs/` = specs about the code | `docs/` = specs about the content   |
+| Code project                       | Knowledge base                        |
+| ---------------------------------- | ------------------------------------- |
+| The codebase is the product        | The markdown content is the product   |
+| `_docs/` = metadata about the code | `_docs/` = metadata about the content |
 
-So `docs/` here is not where the knowledge lives. The knowledge lives in the content directories at
-the top of the repository. `docs/` holds the **specs about that product**: the definitions,
+So `_docs/` here is not where the knowledge lives. The knowledge lives in the content directories at
+the top of the repository. `_docs/` holds the **metadata and specs about that product**: the definitions,
 decisions, architecture, conventions, and patterns that govern how the knowledge base is structured
-and maintained. When you want to record _how the knowledge base works_, write in `docs/`. When you
+and maintained. When you want to record _how the knowledge base works_, write in `_docs/`. When you
 want to record _knowledge_, write in the content tree.
 
 ## Content structure

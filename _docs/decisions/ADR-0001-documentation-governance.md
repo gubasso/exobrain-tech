@@ -14,7 +14,7 @@ repo-governance rules. Contributors need a small, stable documentation method.
 ## Decision Outcome
 
 Chosen option: **use the docs-design method**. Core KB content remains
-free-form, while `docs/` carries Diátaxis governance, lean ADRs, guides,
+free-form, while `_docs/` carries Diátaxis governance, lean ADRs, guides,
 reference, and explanations.
 
 ## Consequences
