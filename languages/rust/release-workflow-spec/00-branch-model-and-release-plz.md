@@ -23,8 +23,8 @@ publish          = true   # publish to crates.io on release-PR merge
 semver_check     = true   # gate public-API compatibility (libraries)
 ```
 
-The CI workflow triggers on `develop`, grants `id-<REDACTED-EXAMPLE>
-which mints and exchanges the crates.io OIDC token itself, so there is **no`CARGO_REGISTRY_TOKEN`**
+The CI workflow triggers on `develop`, grants `id-token: write`,
+which mints and exchanges the crates.io OIDC token itself, so there is **no** `CARGO_REGISTRY_TOKEN`
 and no separate auth action:
 
 ```yaml
@@ -36,7 +36,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  id-<REDACTED-EXAMPLE>
+  id-token: write
 
 jobs:
   release-plz:
@@ -56,12 +56,13 @@ jobs:
         with:
           command: release-plz
         env:
-          GITHUB_<REDACTED-EXAMPLE>
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Promoting `master` onto the release tag (the official way)
 
-release-plz creates the tag `vX.Y.Z` (default `git_tag_name = "v{{ version }}"` for a single crate).
+release-plz creates the tag `vX.Y.Z` (release-plz's default `git_tag_name = "v{{ version }}"` for
+every crate — no per-crate override needed).
 Promote `master` onto **that tag** — the canonical marker of what was published — not onto the
 workflow's trigger SHA.
 
@@ -120,6 +121,13 @@ bypass actor. Either keep `github-actions[bot]` in the ruleset's bypass list, or
 its own CI on promotion — mint a GitHub App token (`actions/create-github-app-token`) for
 release-plz so its tag push _does_ retrigger a standalone `release-promote.yml`. See
 [branch-protection/](../../../tools/git/branch-protection/) for the ruleset setup.
+
+> **Warning — bypass actor first.** If `master` sits behind a ruleset and the bypass actor (the
+> `github-actions` app, or the GitHub App token you mint) is **not** configured in the ruleset's
+> bypass list, the promote push fails with _permission denied_. Add the actor before protecting
+> `master`. Note too that giving release-plz a GitHub App token makes its **tag** push retrigger
+> **all** tag-triggered workflows — desirable for cargo-dist's `release.yml`, but guard standalone
+> promote/tag jobs with `needs:`/`if:` so they don't loop or double-fire.
 
 ## The full release flow
 

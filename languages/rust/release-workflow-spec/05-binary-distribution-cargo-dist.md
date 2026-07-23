@@ -63,11 +63,16 @@ merges ([00](./00-branch-model-and-release-plz.md)). The ordering per release:
 2. The tag triggers cargo-dist's `release.yml` → it builds binaries + installers and attaches them
    to the GitHub Release for `vX.Y.Z`.
 
-Caveat: a tag pushed by release-plz with the default `GITHUB_TOKEN` may not retrigger a separate
-workflow — the same limitation that shapes `master` promotion
-([00](./00-branch-model-and-release-plz.md)). If `release.yml` does not fire on release-plz's tag,
-mint a GitHub App token for release-plz so its tag push retriggers, or follow cargo-dist's own
-release-CI guidance.
+Retrigger: a tag pushed with the default `GITHUB_TOKEN` does **not** retrigger a separate workflow —
+the same limitation that shapes `master` promotion ([00](./00-branch-model-and-release-plz.md)). So
+run release-plz under a **GitHub App token** (`actions/create-github-app-token`, secrets
+`RELEASE_PLZ_APP_ID` / `RELEASE_PLZ_APP_PRIVATE_KEY`, App with Contents + Pull requests write); its
+tag push then retriggers `release.yml` and binaries build automatically
+([04](./04-release-plz-config.md)).
+
+That App token makes release-plz's tag push retrigger **all** tag-triggered workflows, not just this
+one — ensure it does not double-fire a standalone promote workflow. Guard any such job with
+`needs:`/`if:` so a single tag push can't trigger it twice ([00](./00-branch-model-and-release-plz.md)).
 
 ## cargo-binstall comes for free
 

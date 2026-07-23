@@ -44,10 +44,10 @@ promote-to-master:
         git checkout -B master "$TAG_SHA"
       fi
     - |
-      if [ -n "${PROMOTE_<REDACTED-EXAMPLE>
+      if [ -n "${PROMOTE_TOKEN:-}" ]; then
         AUTH="oauth2:${PROMOTE_TOKEN}"
       else
-        AUTH="gitlab-ci-<REDACTED-EXAMPLE>
+        AUTH="gitlab-ci-token:${CI_JOB_TOKEN}"
       fi
     - git push "https://${AUTH}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" master
 

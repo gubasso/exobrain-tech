@@ -75,7 +75,8 @@ services:
     secrets:
       - postgres_password
 secrets:
-  postgres_<REDACTED-EXAMPLE>
+  postgres_password:
+    file: ./secrets/postgres_password.txt
 ```
 
 **`entrypoint.sh`**
@@ -83,7 +84,7 @@ secrets:
 ```sh
 #!/bin/bash
 # Read password from secret file
-POSTGRES_<REDACTED-EXAMPLE>
+POSTGRES_PASSWORD="$(cat /run/secrets/postgres_password)"
 export POSTGRES_PASSWORD
 # Call the original entrypoint script
 exec docker-entrypoint.sh postgres
@@ -126,7 +127,8 @@ services:
     secrets:
       - postgres_password
 secrets:
-  postgres_<REDACTED-EXAMPLE>
+  postgres_password:
+    file: ./secrets/postgres_password.txt
 ```
 
 ### General Env config

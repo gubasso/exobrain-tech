@@ -19,7 +19,7 @@ and bash shelves.
   place by the release tool; the annotated tag mirrors it.
 - **Tooling:** release-please (PR gate) or python-semantic-release (push model); publish via
   `pypa/gh-action-pypi-publish` or `uv publish`.
-- **Auth:** PyPI Trusted Publishing (OIDC), `permissions: id-<REDACTED-EXAMPLE>
+- **Auth:** PyPI Trusted Publishing (OIDC), `permissions: id-token: write`. The first
   publish is manual (TP attaches to an existing project). The trusted publisher matches the publish
   **workflow filename** — keep it stable.
 - **Distribution:** the published wheels + sdist _are_ the distribution (no separate binary-dist

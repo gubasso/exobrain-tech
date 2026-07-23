@@ -24,7 +24,7 @@ spawn ssh user@hostname
 
 # Handle the password prompt
 
-expect "<REDACTED-EXAMPLE>
+expect "password:"
 
 # Execute a command after login
 

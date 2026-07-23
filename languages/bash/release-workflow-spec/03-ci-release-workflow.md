@@ -12,7 +12,7 @@ on:
 
 permissions:
   contents: write        # for gh release create
-  id-<REDACTED-EXAMPLE>
+  id-token: write        # for keyless OIDC signing/attestations
   attestations: write    # for GitHub Artifact Attestations
 
 jobs:
@@ -44,11 +44,11 @@ jobs:
             --notes-file release_notes.md \
             <tool>-*.tar.gz <tool>-*.tar.gz.sha256
         env:
-          GH_<REDACTED-EXAMPLE>
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trigger OBS service run
         env:
-          OBS_<REDACTED-EXAMPLE>
+          OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
         run: |
           curl --fail-with-body -X POST \
             -H "Authorization: Token ${OBS_TOKEN}" \

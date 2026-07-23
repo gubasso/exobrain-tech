@@ -13,9 +13,9 @@ intent into a **release PR**, and merging that PR is the release. The tool diffe
 3. **Merging the release PR is the human gate.** Nothing is published until a maintainer merges it —
    this removes the manual bump + changelog toil without letting automation publish behind your
    back.
-4. **On merge: tag + changelog + registry publish.** The tool tags the release, finalizes the
-   changelog, and publishes to the package registry (see
-   [02 — Trusted Publishing / OIDC](./02-trusted-publishing-oidc.md) for auth).
+4. **After the merge, the tool tags, writes the changelog, and publishes.** The human merge is the
+   gate; only once it lands does the tool tag the release, finalize the changelog, and publish to the
+   package registry (see [02 — Trusted Publishing / OIDC](./02-trusted-publishing-oidc.md) for auth).
 5. **Promote `master`.** CI fast-forwards the release branch onto the new tag
    ([00 — Branch model](./00-branch-model.md)).
 

@@ -43,7 +43,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 
 cargo_publish_auth_configured() {
   local cred_home="${CARGO_HOME:-$HOME/.cargo}"
-  if [ -n "${CARGO_REGISTRY_<REDACTED-EXAMPLE>
+  if [ -n "${CARGO_REGISTRY_TOKEN:-}" ] || [ -n "${CARGO_REGISTRIES_CRATES_IO_TOKEN:-}" ] || [ -f "$cred_home/credentials.toml" ] || [ -f "$cred_home/credentials" ]; then
     return 0
   fi
   if [ -f "$cred_home/credentials.toml" ] && grep -q 'token[[:space:]]*=' "$cred_home/credentials.toml"; then
@@ -63,7 +63,7 @@ if ! cargo_publish_auth_configured; then
     "  run 'cargo login' and paste an API token from https://crates.io/settings/tokens." \
     "" \
     "CI with release-plz (recommended):" \
-    "  grant 'permissions: id-<REDACTED-EXAMPLE>
+    "  grant 'permissions: id-token: write' — release-plz mints the token" \
     "" \
     "Dry runs need no auth: run ./scripts/publish-dry to validate." >&2
   exit 1
@@ -74,7 +74,8 @@ cargo publish "$@"
 ```
 
 The check passes if any of these is present: `CARGO_REGISTRY_TOKEN` /
-`CARGO_REGISTRIES_CRATES_IO_TOKEN` in the environment, or a `<REDACTED-EXAMPLE>`$CARGO_HOME/credentials.toml`(or the legacy`credentials`).`CARGO_HOME`defaults to`~/.cargo`.
+`CARGO_REGISTRIES_CRATES_IO_TOKEN` in the environment, or a token in `$CARGO_HOME/credentials.toml`
+(or the legacy `credentials`). `CARGO_HOME` defaults to `~/.cargo`.
 
 ## `release` — local operator dispatcher
 

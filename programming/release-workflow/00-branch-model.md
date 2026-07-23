@@ -29,9 +29,10 @@ CI does automatically — in exchange for a release branch that cannot drift.
 
 ## Promotion: `develop` → `master`
 
-On release, CI:
+The release tool creates the tag **after the release PR is merged**, so promotion always consumes an
+**already-existing** tag — it never mints one. On release, CI:
 
-1. Determines the release **tag** the release tool just created (e.g. `v1.4.0`).
+1. Determines the release **tag** the release tool created on merge (e.g. `v1.4.0`).
 2. **Verifies the tagged commit is an ancestor of `develop`** — a tag on a commit not reachable from
    `develop` must be rejected, never promoted.
 3. **Fast-forwards `master` to that tag** (`git merge --ff-only`). If `master` does not exist yet
@@ -50,10 +51,12 @@ exact GitHub Rulesets / GitLab protected-branch setup (bypass actor, tag protect
 history).
 
 > **CI retrigger caveat.** On GitHub, a push made with the default `GITHUB_TOKEN` does **not**
-> trigger further workflows. If `master` needs its own CI to run on promotion, either run the
-> promotion as a job in the same release run, or mint a GitHub App token so its push retriggers
-> downstream workflows. See [03 — Tooling by ecosystem](./03-tooling-by-ecosystem.md) and the rust
-> binding for a worked example.
+> trigger further workflows — this applies to **tag** pushes too, not just branch pushes. A tag
+> pushed with the default `GITHUB_TOKEN` also does not retrigger downstream workflows, so a
+> standalone tag-triggered promote job won't fire. Run promotion as a `needs:` job in the same
+> release run (or mint a GitHub App token so its push retriggers downstream workflows). See
+> [03 — Tooling by ecosystem](./03-tooling-by-ecosystem.md) and the rust binding for a worked
+> example.
 
 ## Feeding `develop`
 

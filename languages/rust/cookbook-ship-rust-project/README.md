@@ -324,8 +324,9 @@ Once per project, in order:[^rs-runbook]
 3. **Register the trusted publisher** at `https://crates.io/crates/<crate>/settings` → Trusted
    Publishing → Add:[^oidc]
    - Repository: `<owner>/<repo>`
-   - **Workflow filename: `release-plz.yml`** (not `release.yml`)
-   - Environment: blank
+   - **Workflow filename: `release-plz.yml`** — the **publish** workflow, never the CI
+     (`ci.yml`) or the binary (`release.yml`) workflow.
+   - Environment: blank — only needed if the release-plz job declares an `environment:`.
 
 4. **Revoke the bootstrap token** at <https://crates.io/settings/tokens>. CI mints short-lived OIDC
    tokens from here on.[^tokens]
@@ -341,8 +342,13 @@ Once per project, in order:[^rs-runbook]
    semver_check     = true   # gate public-API compatibility (libraries)
    ```
 
-   `.github/workflows/release-plz.yml` — runs on `develop`, OIDC auth, **no
-   `CARGO_REGISTRY_TOKEN`**:[^rs-plz]
+   `release_always = false` gates **publishing**, not the release PR: a version bump + CHANGELOG
+   update happens on **every** push to `develop` that carries releasable conventional commits, but
+   the actual `cargo publish` runs only when the **release PR is merged**.
+
+   `.github/workflows/release-plz.yml` — runs on `develop`, OIDC auth (**no
+   `CARGO_REGISTRY_TOKEN`**), under a GitHub App token so its tag push retriggers cargo-dist
+   (§8):[^rs-plz]
 
    ```yaml
    name: release-plz
@@ -354,7 +360,7 @@ Once per project, in order:[^rs-runbook]
    permissions:
      contents: write
      pull-requests: write
-     id-<REDACTED-EXAMPLE>
+     id-token: write
 
    jobs:
      release-plz:
@@ -363,15 +369,39 @@ Once per project, in order:[^rs-runbook]
          - uses: actions/checkout@v4
            with:
              fetch-depth: 0
+         - uses: actions/create-github-app-token@v3
+           id: app-token
+           with:
+             app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+             private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
          - uses: release-plz/action@v0.5
+           id: release-plz
            with:
              command: release-plz
            env:
-             GITHUB_<REDACTED-EXAMPLE>
+             GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
    ```
 
-   To also fast-forward `master` onto each release tag, add the `promote` job (a `needs:` job in the
-   same run — a `GITHUB_TOKEN` tag push doesn't retrigger a standalone workflow).[^branch-model]
+   **GitHub App token (enables automatic binaries).** The job runs release-plz under a GitHub App
+   token so the tag it pushes **retriggers** cargo-dist's `release.yml` (§8); a tag pushed with the
+   default `GITHUB_TOKEN` does **not** retrigger workflows. One-time, before the workflow runs:
+
+   1. **Create a GitHub App** — Settings → Developer settings → GitHub Apps → New. Repository
+      permissions: **Contents: Read and write** and **Pull requests: Read and write**; no webhook.
+   2. **Generate a private key** and **install the App** on `<owner>/<repo>`.
+   3. **Store two repo secrets** (Settings → Secrets and variables → Actions): `RELEASE_PLZ_APP_ID`
+      (the App's numeric ID) and `RELEASE_PLZ_APP_PRIVATE_KEY` (the downloaded `.pem`).
+
+   (The `promote` job still pushes `master` with the default `GITHUB_TOKEN`, so keep
+   `github-actions[bot]` in `master`'s bypass list from §6.)
+
+   **(Optional `develop`/`master` topology.)** If `develop` is the trunk and `master` mirrors
+   releases, add a `promote` job to fast-forward `master` onto each release tag. Run it as a `needs:`
+   job in the same run (a `GITHUB_TOKEN` tag push doesn't retrigger a standalone workflow). The
+   promote job must **not** re-create the tag — release-plz already created it — it only
+   fast-forwards/merges `master` onto that existing tag. Pushing to a protected `master` needs a
+   GitHub App token or fine-grained PAT with bypass: the default `GITHUB_TOKEN` is blocked from
+   protected branches and does not retrigger downstream workflows.[^branch-model]
 
 6. **(Optional) Enable "require trusted publishing"** on the crate once an OIDC release has
    succeeded — it rejects all token publishes.[^oidc]
@@ -388,9 +418,11 @@ dist generate      # regenerate release.yml after editing dist-workspace.toml
 ```
 
 `release.yml` (binaries) is a **separate** file from `release-plz.yml` (source publish) — never
-merge them, and never register `release.yml` with the trusted publisher.[^cargo-dist]
-`cargo binstall
-<crate>` then works for free.
+merge them, and never register `release.yml` with the trusted publisher.[^cargo-dist] It is
+**tag-triggered** (it fires on the version tag), not branch-triggered, so it chains off the tag
+release-plz creates when the release PR merges. It fires automatically because release-plz pushes
+that tag with the GitHub App token from §7 (a tag pushed with the default `GITHUB_TOKEN` would not
+retrigger it). `cargo binstall <crate>` then works for free.
 
 ## 9. Day-2 — semver / yank / rollback[^semver]
 

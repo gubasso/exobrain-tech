@@ -57,7 +57,7 @@ distribution channels (`install.sh`, AUR, OBS for `.rpm`/`.deb`).
 ### CI release workflow
 
 - `.github/workflows/release.yml`, trigger `on push tags ['v*']`. Permissions: `contents: write`,
-  `id-<REDACTED-EXAMPLE>
+  `id-token: write`, `attestations: write`.
 - Jobs: `test` → `release` (`make dist` → `orhun/git-cliff-action` notes →
   `actions/attest-build-provenance` (SLSA L3, keyless via Sigstore/GitHub OIDC) →
   `gh release create` → trigger OBS service run) → `promote` (fast-forward `master` onto the tag,

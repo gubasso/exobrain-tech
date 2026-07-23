@@ -16,7 +16,7 @@ in:
 | ---------------------------- | ------------------------------------------------------------------------- |
 | Branch model + release tool  | `develop`/`master`; release-please (PR gate) or python-semantic-release   |
 | Package/artifact metadata    | `pyproject.toml` `[project]`, classifiers, version SoT                    |
-| Registry auth                | PyPI Trusted Publishing (OIDC), `id-<REDACTED-EXAMPLE>                    |
+| Registry auth                | PyPI Trusted Publishing (OIDC), `id-token: write`                         |
 | Release automation config/CI | release-please config / `gh-action-pypi-publish` or `uv publish` workflow |
 | Binary/artifact distribution | wheels + sdist (the published artifacts _are_ the dist)                   |
 | SemVer / version discipline  | SemVer; version bumped in `pyproject.toml` by the release tool            |
@@ -39,7 +39,7 @@ source of truth, bumped in place by the release tool; the annotated tag mirrors 
   branch, not via a release PR.
 - **Publish + auth:** [PyPI Trusted Publishing (OIDC)](https://docs.pypi.org/trusted-publishers/)
   via [`pypa/gh-action-pypi-publish`](https://github.com/pypa/gh-action-pypi-publish) — tokenless,
-  needs `permissions: id-<REDACTED-EXAMPLE>
+  needs `permissions: id-token: write` for
   Trusted Publishing.
 
 This mirrors the general release-PR + trusted-publishing model. Related note:

@@ -182,7 +182,7 @@ reference:
 ```yaml
 - name: Trigger OBS service run
   env:
-    OBS_<REDACTED-EXAMPLE>
+    OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
   run: |
     curl --fail-with-body -X POST \
       -H "Authorization: Token ${OBS_TOKEN}" \

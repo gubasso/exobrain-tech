@@ -55,7 +55,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  id-<REDACTED-EXAMPLE>
+  id-token: write
 
 jobs:
   release-plz:
@@ -64,15 +64,27 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
       - uses: release-plz/action@v0.5
+        id: release-plz
         with:
           command: release-plz
         env:
-          GITHUB_<REDACTED-EXAMPLE>
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 ```
 
-See [03 — Trusted Publishing / OIDC](./03-trusted-publishing-oidc.md) for why `id-<REDACTED-EXAMPLE>
+See [03 — Trusted Publishing / OIDC](./03-trusted-publishing-oidc.md) for why `id-token: write` and
 no registry token are all the auth this needs.
+
+> **App token.** The job runs release-plz under a GitHub App token (secrets `RELEASE_PLZ_APP_ID` /
+> `RELEASE_PLZ_APP_PRIVATE_KEY`, App with Contents + Pull requests write, installed on the repo) so
+> its tag push **retriggers** cargo-dist's `release.yml`
+> ([05](./05-binary-distribution-cargo-dist.md)) — a tag pushed with the default `GITHUB_TOKEN`
+> would not. This is independent of crates.io auth, which OIDC (`id-token: write`) handles.
 
 > **Branch model.** release-plz auto-detects the default branch; the example runs on `develop`
 > (integration + release trigger). To keep a `master` release branch as a mirror of the latest

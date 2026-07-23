@@ -25,7 +25,7 @@ Expected when healthy:
 ```text
 ✓ Logged in to github.com account <user>
 ✓ Git operations for github.com configured to use https protocol
-✓ <REDACTED-EXAMPLE>
+✓ Token scopes: 'gist', 'read:org', 'repo', 'workflow'
 ```
 
 `You are not logged into any GitHub hosts` → continue below.

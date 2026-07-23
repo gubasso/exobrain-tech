@@ -17,7 +17,7 @@ Settings → **Actions** → **General**:
 3. Tick **Allow GitHub Actions to create and approve pull requests.** release-plz opens the release
    PR; without this it cannot.
 
-**OIDC / Trusted Publishing** needs no repo-level switch — `permissions: id-<REDACTED-EXAMPLE>
+**OIDC / Trusted Publishing** needs no repo-level switch — `permissions: id-token: write` at the job
 level is what mints the OIDC token, and crates.io authorizes it via the trusted publisher you
 register (workflow filename`release-plz.yml`; see
 [Trusted Publishing](../../../languages/rust/release-workflow-spec/03-trusted-publishing-oidc.md)).

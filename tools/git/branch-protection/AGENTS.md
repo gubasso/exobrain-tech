@@ -34,7 +34,7 @@ toggles.
 - **First-run enablement**: `first-run-enablement.md` — after the first push, enable Actions/CI and
   set write permissions (GitHub: Actions → General → Read and write + allow Actions to create PRs;
   GitLab: enable CI/CD, let CI push to protected `master`, OIDC `id_tokens`). OIDC needs no
-  repo-level switch on GitHub — `id-<REDACTED-EXAMPLE>
+  repo-level switch on GitHub — `id-token: write` at the job level is enough.
 - **Bypass actor**: `master` is written only by CI — GitHub default `github-actions` app id `15368`
   (override via `BYPASS_ACTOR_ID`); GitLab Premium allow-lists a Project Access Token bot user, Free
   relies on the 17.2+ job-token push toggle.

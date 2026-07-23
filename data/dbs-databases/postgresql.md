@@ -220,12 +220,12 @@ _`pgpass` file_
 _`PGPASSWORD` environment variable_
 
 ```bash
-export PG<REDACTED-EXAMPLE>
+export PGPASSWORD='<your-password>'
 psql ...
 
 # Or in one line for this invocation only:
 
-PG<REDACTED-EXAMPLE>
+PGPASSWORD='<your-password>' psql ...
 ```
 
 - `psql -c "CREATE USER admin WITH PASSWORD 'test101';"` : run this command in database to create a

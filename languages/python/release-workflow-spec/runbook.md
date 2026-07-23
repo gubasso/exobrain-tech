@@ -12,7 +12,7 @@ identical.
 2. **Create the repo and set the default branch to `develop`.** →
    [first-run enablement](../../../tools/git/branch-protection/first-run-enablement.md).
 3. **Enable Actions + workflow permissions** (release-please opens the release PR; the publish job
-   needs `id-<REDACTED-EXAMPLE>
+   needs `id-token: write`.
    [first-run enablement](../../../tools/git/branch-protection/first-run-enablement.md).
 4. **Apply branch protection** for `develop`/`master`/tags. →
    [branch-protection/](../../../tools/git/branch-protection/).

@@ -69,7 +69,7 @@ you've read the matching general chapter, and each links back to it.
   to it**. (`main` is the common alias for `master`.)
 - **A bot opens the release PR; merging it is the release.** Change intent is captured as
   Conventional Commits or changeset files; the bot maintains a PR that bumps the version + rewrites
-  the changelog; merging it tags + publishes.
+  the changelog; after merging, the tool tags and publishes.
 - **Publish over OIDC / Trusted Publishing.** Short-lived, keyless tokens minted at job time — no
   long-lived registry secret. Enforce it once it works.
 - **The first publish is manual.** Trusted Publishing attaches to an already-existing package, so it

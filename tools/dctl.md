@@ -246,7 +246,7 @@ Commands:
 This is why running `dctl image build` **as root** is hard-refused
 (`Do not run as root (would bake UID 0 into images)`). Run from your host user account.
 
-**GitHub token <REDACTED-EXAMPLE>
+**GitHub token (optional).** Pass a personal access token to the build
 as `--secret id=gh_token,src=…`. Dockerfiles can read it via `--mount=type=secret,id=gh_token` to
 avoid the 60 req/hr anonymous GitHub API rate limit during mise installs.
 

@@ -18,7 +18,7 @@ enabling Actions, branch protection, the one-time first publish, configuring the
 optional cargo-dist). The numbered chapters below are the reference each step links to.
 
 For a single-file, copy-paste path that also covers the earlier scaffold/quality-gate/CI phase, see
-the [cookbook](../cookbook/README.md) — it inlines and footnotes this shelf.
+the [cookbook](../cookbook-ship-rust-project/README.md) — it inlines and footnotes this shelf.
 
 ## Index
 
@@ -42,7 +42,7 @@ current change.
   merge tags + publishes to crates.io over OIDC.
 - **Promote `master` onto the release tag** in a `needs:` job in the same run — resolve the tag from
   release-plz's `releases` output, ancestry-check against `develop`, fast-forward.
-- **No `CARGO_REGISTRY_TOKEN`.** `permissions: id-<REDACTED-EXAMPLE>
+- **No `CARGO_REGISTRY_TOKEN`.** `permissions: id-token: write` on the release-plz job is all the auth it needs.
 - **Two workflow files, kept distinct:** `release-plz.yml` publishes source (register _this_ with
   the trusted publisher); cargo-dist's `release.yml` builds binaries.
 - **The first publish is manual** — a scoped `publish-new` token, revoked once OIDC is live

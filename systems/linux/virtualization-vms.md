@@ -570,7 +570,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 - Type `yes` and press **Enter** . **4. Enter Your Password**
 
 ````css
-john@192.168.122.100's <REDACTED-EXAMPLE>
+john@192.168.122.100's password:
 
 - Enter the password you set for the user during installation.
 

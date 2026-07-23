@@ -20,7 +20,8 @@ And this `secrets` section:
 
 ```yaml
 secrets:
-  postgres_<REDACTED-EXAMPLE>
+  postgres_password:
+    environment: "POSTGRES_PASSWORD"
   database_url:
     environment: "DATABASE_URL"
 ```

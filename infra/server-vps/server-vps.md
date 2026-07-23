@@ -40,7 +40,7 @@
 passwd root
 ```
 
-- Add new `super_user` and set a <REDACTED-EXAMPLE>
+- Add new `super_user` and set a strong password
 - Create groups and add the `super_user` to them:
   [linux-general group management](../../systems/linux/linux-system-general.md#group-management)
 

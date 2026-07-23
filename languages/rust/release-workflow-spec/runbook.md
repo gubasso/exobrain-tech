@@ -38,6 +38,9 @@ Everyday releases after setup are not here — those are just "merge the release
    [branch-protection/](../../../tools/git/branch-protection/) (`github/setup.sh` /
    `gitlab/setup.sh`).
 
+   > Ensure the CI bypass actor (`github-actions[bot]` or the App token) is in `master`'s bypass list
+   > **before** protecting it, or the promote job in step 8 fails with _permission denied_.
+
 5. **First manual publish** — see the section below.
 
 6. **Configure the trusted publisher** on `https://crates.io/crates/<crate>/settings` → Trusted
@@ -48,9 +51,12 @@ Everyday releases after setup are not here — those are just "merge the release
    tokens from now on. → [02 — API tokens and scopes](./02-api-tokens-and-scopes.md).
 
 8. **Add release-plz.** Commit `release-plz.toml` and `.github/workflows/release-plz.yml` (the
-   release-plz job with `id-<REDACTED-EXAMPLE>
-   job). → [04 — release-plz config](./04-release-plz-config.md),
-   [00 — Branch model](./00-branch-model-and-release-plz.md).
+   release-plz job with `id-token: write` and the `master` promote job). Create a **GitHub App**
+   (Contents + Pull requests write), install it on the repo, and store `RELEASE_PLZ_APP_ID` /
+   `RELEASE_PLZ_APP_PRIVATE_KEY` secrets — release-plz runs under that App token so its tag push
+   retriggers cargo-dist (step 9). → [04 — release-plz config](./04-release-plz-config.md),
+   [00 — Branch model](./00-branch-model-and-release-plz.md),
+   [05 — Binary distribution](./05-binary-distribution-cargo-dist.md).
 
 9. **(Optional) Binary distribution.** If the crate ships prebuilt binaries:
 
@@ -84,7 +90,7 @@ Trusted Publishing attaches to a crate that **already exists**
    - Name: disposable, e.g. `<crate>-bootstrap-first-publish`.
    - Endpoint scope: **`publish-new` only** (the first upload creates the crate).
    - Crate scope: the exact crate name. Expiration: the shortest offered.
-3. **Log in** and paste the <REDACTED-EXAMPLE>
+3. **Log in** (`cargo login`) and paste the `publish-new` token.
 4. **Validate again** — the exact build the publish will run: `cargo publish --dry-run`.
 5. **Publish**: `cargo publish`.
 

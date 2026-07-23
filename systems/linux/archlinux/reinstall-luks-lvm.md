@@ -191,7 +191,7 @@ Inside the chroot:
        become dead keys when you press Right-Alt/AltGr with them
      - [US AltGr-International Keymap for Arch Linux TTY (Wayland/KDE Independent)](./keymap-us-altgr-intl.md)
 
-5. Root <REDACTED>
+5. Root password
 
    ```text
    passwd

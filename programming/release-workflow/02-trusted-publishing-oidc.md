@@ -7,7 +7,7 @@ crates.io, PyPI, and npm all support it, and the shape is the same everywhere.
 ## How it works
 
 1. The CI job requests an **OIDC identity token** from the platform (GitHub Actions / GitLab CI/CD).
-   On GitHub this needs `permissions: id-<REDACTED-EXAMPLE>
+   On GitHub this needs `permissions: id-token: write`.
 2. The job presents that token to the registry.
 3. The registry checks it against a **trusted publisher** you configured on the package settings —
    matching on repository owner, repository name, workflow filename, and an optional environment.
@@ -42,8 +42,8 @@ requires temporarily turning enforcement off. It only affects _new_ versions.
 ## Fallback
 
 When OIDC is unavailable (registry or platform doesn't support it, or CI is down), fall back to a
-long-lived <REDACTED-EXAMPLE>
-the exception, and scope + expire the token tightly.
+long-lived `CARGO_REGISTRY_TOKEN` secret — treat OIDC as the default and this as the exception, and
+scope + expire the token tightly.
 
 ## Reference
 

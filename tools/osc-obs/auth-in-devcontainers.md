@@ -173,7 +173,7 @@ Compute the obfuscated `pass =` line in pure Python and append it to the oscrc. 
 ```bash
 python3 -c '
 import base64, bz2, getpass
-p = getpass.getpass("OBS <REDACTED-EXAMPLE>
+p = getpass.getpass("OBS password: ")
 print("pass =", base64.b64encode(bz2.compress(p.encode("ascii"))).decode("ascii"))
 ' >> ~/.config/osc-container/oscrc
 
@@ -448,7 +448,7 @@ and write back" flow that older versions of this doc described) crashes before r
 
 ```text
 File ".../osc/connection.py", line 652, in __init__
-    self.basic_auth_<REDACTED-EXAMPLE>
+    self.basic_auth_password = self._get_password()
   File ".../collections/__init__.py", line 1413, in __len__
     return len(self.data)
 TypeError: object of type 'NoneType' has no len()
