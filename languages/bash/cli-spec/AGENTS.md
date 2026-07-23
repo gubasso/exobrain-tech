@@ -1,10 +1,10 @@
 ---
 digest-of: languages/bash/cli-spec
-last-synced: 2026-07-10
+last-synced: 2026-07-23
 source-files:
   - README.md
   - bash-cli-project-specs.md
-token-estimate: 500
+token-estimate: 650
 ---
 
 # AGENTS
@@ -16,10 +16,17 @@ installation, distribution, and Bash idioms for the general facing-category taxo
 
 ## Key Points
 
-- **Entry point**: `bin/<name>` is a thin shim resolving symlinks, sourcing `lib/helpers.sh`,
-  `lib/loader.sh`, `lib/core.sh`, then calling `mycli::main "$@"`.
+- **Entry points**: every non-trivial runnable Bash entry point uses explicit `main()` and ends with
+  `main "$@"` or the project-namespaced equivalent. Only truly trivial one-liners are exempt.
+  `bin/<name>` stays a thin shim resolving symlinks, sourcing `lib/helpers.sh`, `lib/loader.sh`,
+  `lib/core.sh`, then calling `mycli::main "$@"`.
 - **Strict mode**: `set -euo pipefail` + `shopt -s inherit_errexit`. Know caveats:
-  `local var=$(...)` masks exit, pipefail can fail on SIGPIPE, never set `IFS=$'\n\t'` globally.
+  `local var=$(...)` masks exit, pipefail can fail on SIGPIPE, never set global `IFS`.
+- **Function idioms**: use `local` for function variables and `readonly` for constants. Split
+  command-substitution assignments from `local`/`export`/`readonly` when the command status matters.
+  Prefer builtins and parameter expansion for simple Bash-native transformations.
+- **Source/execute guard**: `BASH_SOURCE[0] == "$0"` guards are only for intentional dual-mode
+  scripts, not ordinary runnable entry points.
 - **Module layout**: One public function per file. `libexec/commands/cmd_<n>.sh` defines
   `mycli::cmd::<n>`. Top-level `functions/fn_<n>.sh` defines `mycli::fn::<n>` when a sourced
   framework surface exists. `lib/` is for shared libraries; private helpers are prefixed `__`.

@@ -1,13 +1,13 @@
 ---
 digest-of: languages/bash/project-bootstrap-spec
-last-synced: 2026-07-10
+last-synced: 2026-07-23
 source-files:
   - 00-toolchain-and-layout.md
   - 01-quality-gates.md
   - README.md
   - cli-project.md
   - runbook.md
-token-estimate: 800
+token-estimate: 850
 ---
 
 # AGENTS
@@ -28,11 +28,13 @@ shfmt/shellcheck/bats gates) and the CLI implementation-kind ordering. Distribut
   script first); `../cli-spec/` owns the detailed _how_.
 - **Layout:** `bin/<name>` is a thin executable shim on `PATH` that sources the library and calls
   `main "$@"`; `lib/` holds the real logic split into sourced files (loader, core, one function per
-  file); `tests/` holds `bats` files. A single-file utility can be just the shim.
+  file); `tests/` holds `bats` files. A single-file utility can be just the shim, but still uses
+  setup, helpers, `main()`, and final `main "$@"` unless it is a truly trivial one-liner.
 - **Shebang:** prefer `#!/usr/bin/env bash` over `#!/bin/bash` so the script uses the `bash` on
   `PATH` (the Nix devShell's), not a stale system Bash (macOS ships 3.2).
-- **Strict mode:** every script starts with `set -euo pipefail` + `IFS=$'\n\t'` — `-e` exit on
-  unhandled non-zero, `-u` error on unset vars, `-o pipefail` fail if any pipeline stage fails.
+- **Strict mode:** every script starts with `set -euo pipefail` plus guarded
+  `shopt -s inherit_errexit`; do not set `IFS` globally. `-e` exits on unhandled non-zero, `-u`
+  errors on unset vars, and `-o pipefail` fails if any pipeline stage fails.
 - **ShellCheck-driven structure:** keep sourced files discoverable
   (`# shellcheck source=lib/core.sh` above dynamic `source` lines), prefer functions over top-level
   code; treating warnings as errors from the first commit shapes the layout.
@@ -76,5 +78,3 @@ shfmt/shellcheck/bats gates) and the CLI implementation-kind ordering. Distribut
 - Re-verify the default-tool flags (`shfmt`, `shellcheck -S style`, `bats-core`) against upstream on
   a cadence when regenerating.
 - No conflicts among the current source files.
-  </content>
-  </invoke>

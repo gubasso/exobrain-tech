@@ -15,8 +15,10 @@ applies the general principles to the specifics of Bash.
 
 ## TL;DR
 
-- `bin/<name>` is a thin shim → `lib/loader.sh` → `lib/core.sh` → `main "$@"`.
+- Every non-trivial runnable entry point uses an explicit `main()` and final `main "$@"`.
 - `set -euo pipefail` everywhere; know its caveats (`||true`, subshell exit-code propagation).
+- Use `local` for function variables, `readonly` for constants, split status-bearing declaration
+  assignments, and prefer builtins/parameter expansion for simple Bash-native transformations.
 - One function per file: `libexec/commands/` for CLI subcommands, top-level `functions/` for a
   sourced framework surface, and `lib/` for shared libraries.
 - ShellCheck on every file; treat warnings as errors.

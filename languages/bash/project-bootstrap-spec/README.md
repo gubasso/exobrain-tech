@@ -19,10 +19,10 @@ then the Bash specifics here.
 
 ## Index
 
-| # | Chapter                                            | One-line hook                                                           |
-| - | -------------------------------------------------- | ----------------------------------------------------------------------- |
-| 0 | [Toolchain & layout](./00-toolchain-and-layout.md) | `bin/`+`lib/` layout, shebang, `set -euo pipefail`, Nix-hosted tooling. |
-| 1 | [Quality gates](./01-quality-gates.md)             | `shfmt` (format), `shellcheck -S style` (lint), `bats-core` (test).     |
+| # | Chapter                                            | One-line hook                                                             |
+| - | -------------------------------------------------- | ------------------------------------------------------------------------- |
+| 0 | [Toolchain & layout](./00-toolchain-and-layout.md) | `bin/`+`lib/` layout, explicit `main()`, strict mode, Nix-hosted tooling. |
+| 1 | [Quality gates](./01-quality-gates.md)             | `shfmt` (format), `shellcheck -S style` (lint), `bats-core` (test).       |
 
 ## Implementation kinds
 

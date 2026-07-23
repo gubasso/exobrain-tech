@@ -59,7 +59,29 @@ interactive-shell package, applied to a standalone CLI.
 
 ---
 
-## Entry Point (`bin/my-cli`)
+## Entry Points
+
+Every non-trivial runnable Bash entry point uses an explicit `main` function and ends by calling
+`main "$@"` or the project-namespaced equivalent. This applies to `bin/<name>` shims, maintenance
+scripts, installers, and single-file utilities. The only exception is a genuinely trivial one-liner:
+no parsing, branching, traps, temporary state, helper functions, or multiple commands.
+
+Single-file utility shape:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit 2>/dev/null || true
+
+main() {
+  local name="${1:-world}"
+  printf 'hello, %s\n' "$name"
+}
+
+main "$@"
+```
+
+Multi-file CLI shim shape (`bin/my-cli`):
 
 ```bash
 #!/usr/bin/env bash
@@ -73,8 +95,10 @@ while [[ -L "$src" ]]; do
   src="$(readlink "$src")"
   [[ "$src" != /* ]] && src="$dir/$src"
 done
-readonly SCRIPT_DIR="$(cd -P "$(dirname "$src")" && pwd)"
-readonly LIB_DIR="${SCRIPT_DIR}/../lib"
+SCRIPT_DIR="$(cd -P "$(dirname "$src")" && pwd)"
+readonly SCRIPT_DIR
+LIB_DIR="${SCRIPT_DIR}/../lib"
+readonly LIB_DIR
 
 # shellcheck source=../lib/helpers.sh
 source "${LIB_DIR}/helpers.sh"
@@ -86,11 +110,29 @@ source "${LIB_DIR}/core.sh"
 mycli::main "$@"
 ```
 
-- Shim only — no logic in `bin/`.
+- Shims stay thin — no business logic in `bin/`.
 - Symlink resolution matters: `stow`, `make install`, and `ln -s` in `~/.local/bin` all break the
   naive `dirname "${BASH_SOURCE[0]}"` idiom.
 - `inherit_errexit` fixes the silent-`set -e`-disables-in-subshells pitfall; guarded for pre-4.4
   bash.
+- A `BASH_SOURCE[0]` source/execute guard is only for intentional dual-mode scripts. Do not make it
+  the default for ordinary runnable entry points.
+
+Intentional dual-mode script shape:
+
+```bash
+main() {
+  printf '%s\n' "running"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
+```
+
+Further reading: [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html),
+[Greg's Wiki BashGuide Practices](https://mywiki.wooledge.org/BashGuide/Practices), and
+[Nick Janetakis on source/execute guards](https://nickjanetakis.com/blog/detect-if-a-shell-script-is-being-executed-or-sourced).
 
 ---
 
@@ -109,14 +151,44 @@ Treat as the default. Known limits:
 - `set -o pipefail` can turn a benign SIGPIPE (producer killed by a short-circuiting `grep -q`) into
   a failure.
 - `set -u` overlaps with shellcheck; keep it for defence-in-depth.
-- **Do not set `IFS=$'\n\t'` globally.** It changes global word-splitting semantics and breaks
-  sourced code that assumes default IFS. Quote everything (`"$@"`, `"${arr[@]}"`) and use arrays;
-  that solves the real problem without global side effects. (Critique:
+- **Do not set global `IFS`.** Changing word-splitting semantics globally breaks sourced code that
+  assumes the shell default. Quote everything (`"$@"`, `"${arr[@]}"`) and use arrays; that solves
+  the real problem without global side effects. (Critique:
   [Gondža](https://olivergondza.github.io/2019/10/01/bash-strict-mode.html),
   [BashFAQ/105](https://mywiki.wooledge.org/BashFAQ/105).)
 
 For load-bearing logic, prefer an explicit `|| return` / `trap '...' ERR` over trusting `set -e`
 implicitly.
+
+---
+
+## Function Scope, Constants, and Builtins
+
+- Use `local` for function variables so helpers do not leak names into callers.
+- Use `readonly` for constants after assignment. When the assignment involves command substitution,
+  split assignment from `readonly` so the command status stays visible.
+- Split `local`, `export`, and `readonly` command-substitution assignments whenever the command's
+  status matters; declaration builtins can mask the substitution's exit code.
+- Prefer Bash builtins and parameter expansion for simple Bash-native transformations such as
+  trimming prefixes, defaults, case conversion, and string replacement. Use external tools when they
+  are clearer or doing real tool work.
+
+```bash
+load_config() {
+  local config_path
+  config_path="$(resolve_config_path "$@")" || return
+
+  readonly DEFAULT_FORMAT="text"
+
+  local name="${1:-}"
+  name="${name#prefix-}"
+  printf '%s\n' "$name"
+}
+```
+
+Further reading: [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html),
+[ShellCheck SC2155](https://www.shellcheck.net/wiki/SC2155), and
+[Pure Bash Bible](https://github.com/dylanaraps/pure-bash-bible).
 
 ---
 

@@ -12,8 +12,9 @@ scripts you create by hand. The baseline shape:
 - `lib/` — the real logic, split into sourced files (a loader, core, one function per file).
 - `tests/` — `bats` test files.
 
-For a single-file utility the shim _is_ the script. For anything with subcommands or multiple
-modules, follow the detailed structure spec:
+For a single-file utility the shim _is_ the script, but it still uses setup, helpers, `main()`, and
+a final `main "$@"` unless it is a truly trivial one-liner. For anything with parsing, branching,
+traps, temporary state, helpers, subcommands, or multiple modules, follow the detailed structure spec:
 [`../cli-spec/bash-cli-project-specs.md`](../cli-spec/bash-cli-project-specs.md). Bootstrap owns the
 _ordering_ (get a runnable, lintable script first); `cli-spec/` owns the detailed _how_.
 
@@ -30,15 +31,17 @@ swallowed:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-IFS=$'\n\t'
+shopt -s inherit_errexit 2>/dev/null || true
 ```
 
 - `-e` — exit on any unhandled non-zero command.
 - `-u` — error on unset variables.
 - `-o pipefail` — a pipeline fails if any stage fails, not just the last.
+- `inherit_errexit` — keeps command substitutions from silently disabling `errexit` on Bash 4.4+.
 
-Know the caveats (`|| true` to opt out, subshell exit-code propagation) — the detailed treatment is
-in [`../cli-spec/bash-cli-project-specs.md`](../cli-spec/bash-cli-project-specs.md).
+Do not set `IFS` globally; quote expansions and use arrays instead. Know the caveats (`|| true` to
+opt out, subshell exit-code propagation) — the detailed treatment is in
+[`../cli-spec/bash-cli-project-specs.md`](../cli-spec/bash-cli-project-specs.md).
 
 ## ShellCheck-driven structure
 

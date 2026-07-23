@@ -1,8 +1,11 @@
 ---
 digest-of: languages/bash
-last-synced: 2026-07-10
+last-synced: 2026-07-23
 source-files:
   - README.md
+  - cli-spec/AGENTS.md
+  - project-bootstrap-spec/AGENTS.md
+  - release-workflow-spec/AGENTS.md
 token-estimate: 300
 ---
 
@@ -10,35 +13,33 @@ token-estimate: 300
 
 ## Scope
 
-Bash language notes at the top level (outside `cli-spec/`). Currently contains the code-review guide
-for Bash scripts.
+Bash language notes at the top level, routing into the Bash CLI, bootstrap, and release workflow
+specs. Bash review heuristics live in the owning specs rather than in a separate top-level rule dump.
 
 ## Key Points
 
-### Bash Review Heuristics
-
-- **Strict mode**: Missing `set -euo pipefail` -> `[blocking]`.
-- **Quoting**: Unquoted `$var` in non-numeric context -> `[blocking]` (word-splitting + glob bug).
-- **Command injection**: `eval "$user_input"`, `bash -c "$cmd"`, `ssh host "ls $dir"` ->
-  `[blocking]`.
-- **Process management**: Background job without `wait` or trap-cleanup -> `[important]`.
-- **Test brackets**: `[[ ]]` preferred over `[ ]` in bash; `-a`/`-o` deprecated.
-- **Common bugs**: `for f in $(ls)` -> `[blocking]`; `cd $dir` without `|| exit` -> `[important]`;
-  unchecked pipeline without pipefail.
+- **CLI scripting rules**: `cli-spec/` owns entry-point shape, strict-mode caveats, module layout,
+  ShellCheck discipline, error handling, temp cleanup, testing, install/XDG, and Bash idioms.
+- **Bootstrap rules**: `project-bootstrap-spec/` owns the order for turning a fresh Bash project into
+  a runnable, lintable, gated script project and cross-links to `cli-spec/` for detailed technique.
+- **Release workflow**: `release-workflow-spec/` owns tag, changelog, GitHub Release,
+  `install.sh`, AUR, OBS, and release runbook guidance.
+- **Review routing**: use the child digests and owning specs for Bash review heuristics; cross-link
+  instead of copying rules into this top-level digest.
 
 ## Source Map
 
-| Topic                                                                          | File                                          |
-| ------------------------------------------------------------------------------ | --------------------------------------------- |
-| Bash-specific review heuristics (strict mode, quoting, injection, common bugs) | `code-review-guide.md`                        |
-| CLI project spec (layout, modules, testing)                                    | `cli-spec/` (separate AGENTS.md)              |
-| Release workflow (tag → GitHub Release → install.sh/AUR/OBS)                   | `release-workflow-spec/` (separate AGENTS.md) |
+| Topic                                                        | File                                           |
+| ------------------------------------------------------------ | ---------------------------------------------- |
+| Top-level Bash index                                         | `README.md`                                    |
+| CLI project spec and Bash review heuristics                  | `cli-spec/` (separate AGENTS.md)               |
+| Project bootstrap ordering and quality gates                 | `project-bootstrap-spec/` (separate AGENTS.md) |
+| Release workflow (tag → GitHub Release → install.sh/AUR/OBS) | `release-workflow-spec/` (separate AGENTS.md)  |
 
 ## Maintenance Notes
 
-- The code-review guide is loaded on demand by the review-code-deep skill when `.sh`/`.bash` files
-  are in the diff.
-- `cli-spec/` and `release-workflow-spec/` each have their own AGENTS.md; this digest covers only
-  the top-level bash directory. The `release-workflow-spec/` binding (bash release + distribution:
-  tag, git-cliff changelog, Makefile, install.sh, AUR, OBS) is the bash binding of the general
+- `cli-spec/`, `project-bootstrap-spec/`, and `release-workflow-spec/` each have their own
+  AGENTS.md. This digest is the top-level router and should not duplicate detailed Bash rules.
+- The `release-workflow-spec/` binding (bash release + distribution: tag, git-cliff changelog,
+  Makefile, install.sh, AUR, OBS) is the bash binding of the general
   `programming/release-workflow/` shelf.
