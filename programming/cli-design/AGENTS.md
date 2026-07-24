@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-07-15
+last-synced: 2026-07-24
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -12,9 +12,10 @@ source-files:
   - 08-naming-and-docs.md
   - 10-reference-projects.md
   - 11-xdg-scaffolding.md
+  - 12-config-generation-from-types.md
   - 99-checklist.md
   - README.md
-token-estimate: 1250
+token-estimate: 1320
 ---
 
 # AGENTS
@@ -123,8 +124,24 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   named path.
 - Anti-pattern: `init` appending discovered runtime facts into `~/.config/*` →
   two writers, breaks under Home Manager. Fix with config/state split + merge.
+- The only sanctioned write to a user-owned surface is explicit: a flag naming the
+  exact target, off by default, confirmed, and reversible/non-clobbering — never a
+  silent side effect.
 - `init` reuses the `doctor` probe subset (see 06). Run `xdg-ninja` as the
   conformance check.
+
+### Config generation from types (12)
+
+- Config is read-only to the tool, so **copy-don't-scaffold**: generate the example
+  the user copies rather than writing their config.
+- The config type is the single source of truth; generate a JSON Schema (editor/CI
+  validation) and an annotated `*.example.*` (required active, optional commented,
+  fake placeholders, generated header) from it.
+- Generation hard-fails if a public field lacks a description; the example must
+  round-trip through the real loader.
+- Freshness gated by a pre-commit `--check` (`pass_filenames: false`,
+  `always_run: true`); CI runs the same. Non-reflectable surfaces ship as
+  hand-maintained examples under the same discipline.
 
 ### Checklist (99)
 
@@ -133,19 +150,20 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 
 ## Source Map
 
-| Topic                                              | File                                |
-| -------------------------------------------------- | ----------------------------------- |
-| Facing category, parse/runtime shape, AppContext   | `00-architecture.md`                |
-| Message types, log schema, channel matrix          | `01-logging-and-output.md`          |
-| Error anatomy, sysexits, error layering            | `02-error-messages.md`              |
-| 5-layer config merge, XDG, provenance              | `03-config-precedence.md`           |
-| 18 coding-style rules                              | `04-coding-style-rust-zig.md`       |
-| CLI+Skill+AGENTS.md model, agent-facing patterns   | `05-designing-for-llm-agents.md`    |
-| Preflight guards + doctor aggregation (hard/soft)  | `06-preflight-and-health-checks.md` |
-| Visibility, naming tables, help generation, docs   | `08-naming-and-docs.md`             |
-| Organizational patterns from 12 CLIs               | `10-reference-projects.md`          |
-| Scaffold/`init` without mutating config; xdg-ninja | `11-xdg-scaffolding.md`             |
-| Pre-ship checklist                                 | `99-checklist.md`                   |
+| Topic                                                    | File                                 |
+| -------------------------------------------------------- | ------------------------------------ |
+| Facing category, parse/runtime shape, AppContext         | `00-architecture.md`                 |
+| Message types, log schema, channel matrix                | `01-logging-and-output.md`           |
+| Error anatomy, sysexits, error layering                  | `02-error-messages.md`               |
+| 5-layer config merge, XDG, provenance                    | `03-config-precedence.md`            |
+| 18 coding-style rules                                    | `04-coding-style-rust-zig.md`        |
+| CLI+Skill+AGENTS.md model, agent-facing patterns         | `05-designing-for-llm-agents.md`     |
+| Preflight guards + doctor aggregation (hard/soft)        | `06-preflight-and-health-checks.md`  |
+| Visibility, naming tables, help generation, docs         | `08-naming-and-docs.md`              |
+| Organizational patterns from 12 CLIs                     | `10-reference-projects.md`           |
+| Scaffold/`init` without mutating config; xdg-ninja       | `11-xdg-scaffolding.md`              |
+| Generate config examples from types; copy-don't-scaffold | `12-config-generation-from-types.md` |
+| Pre-ship checklist                                       | `99-checklist.md`                    |
 
 ## Maintenance Notes
 

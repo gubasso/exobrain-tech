@@ -1,12 +1,12 @@
 ---
 digest-of: programming/design-decisions/config-state-ownership
-last-synced: 2026-07-15
+last-synced: 2026-07-24
 source-files:
   - README.md
   - 01-placement-xdg-fhs.md
   - 02-patterns.md
   - 03-anti-patterns-and-case-studies.md
-token-estimate: 700
+token-estimate: 720
 ---
 
 # AGENTS
@@ -64,7 +64,9 @@ CLI-implementation recipe (how `init`/scaffold avoids mutating config) lives in
 - Real incidents: GitHub CLI writable `config.yml`, lazygit `state.yml` move
   (#2794), k9s runtime context out of `config.yaml` (#2346).
 - `dctl` worked example: split `projects.yaml` (config) from
-  `registry.yaml` (state), merge on read.
+  `registry.yaml` (state), merge on read. The registry is keyed by absolute
+  project path — machine-local and non-portable, which is precisely why it is
+  state, not data; making keys portable is a deliberate later step.
 - `xdg-ninja` audits `$HOME` for violations — run it as the conformance check.
 
 ## Source Map

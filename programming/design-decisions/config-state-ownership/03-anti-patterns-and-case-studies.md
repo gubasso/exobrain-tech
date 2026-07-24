@@ -49,6 +49,14 @@ The config manager's wiring then collapses to a plain read-only symlink — no
 out-of-store gymnastics, no activation merge, no drift. The tool's current XDG
 layout is documented in [`tools/dctl.md`](../../../tools/dctl.md#xdg-layout-the-3-tier-model).
 
+The registry is keyed by the project's **absolute path**, which is exactly why it
+is state and not data: an absolute-path map is machine-local and **non-portable**
+(paths differ across machines and users), and losing it loses only a rebuildable
+association, not authored intent. That non-portability is the tell — a portable,
+user-authored value would be config; a machine-local, tool-recorded one is state.
+Making such keys portable (home-relative, or keyed off a repo remote) is a
+deliberate later step, not a reason to move the registry out of state.
+
 ## Checking your own tool: `xdg-ninja`
 
 [`xdg-ninja`](https://github.com/b3nj5m1n/xdg-ninja) audits `$HOME` for tools

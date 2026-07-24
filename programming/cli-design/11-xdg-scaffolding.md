@@ -56,12 +56,16 @@ foo init
 
 ### 4. Explicit, non-clobbering write
 
-If a subcommand really does author a config file, do it **only when explicitly
-asked** and **only if the target does not already exist** — never a silent
-in-place rewrite of a file another owner may manage.
+If a subcommand really does author a file, the write is the **only** sanctioned
+relativization of the read-only rule, and it stays sanctioned only when it is:
+**explicit** (a flag that names the exact target), **off by default**,
+**confirmed** (a prompt or `--yes`), and **reversible / non-clobbering** (refuses
+to overwrite a file another owner may manage) — never a silent in-place rewrite,
+never a side effect of a normal command. Prefer aiming such a write at **state**
+(a registry, a recorded binding) rather than config wherever the data allows.
 
 ```bash
-foo init --config ~/.config/foo/config.toml   # refuses if the file exists
+foo bind --write ~/.config/foo/config.toml   # explicit target; refuses if it exists
 ```
 
 ## The anti-pattern
@@ -103,6 +107,9 @@ absence from its complaints ≈ compliant.
 
 ## Further reading
 
+- [12 — Config generation from types](./12-config-generation-from-types.md) — the
+  copy-don't-scaffold companion: generate the example the user copies instead of
+  scaffolding config.
 - [`design-decisions/config-state-ownership/`](../design-decisions/config-state-ownership/README.md)
   — the ownership rule and XDG/FHS placement (the _why_).
 - XDG Base Directory Specification — <https://specifications.freedesktop.org/basedir-spec/latest/>
