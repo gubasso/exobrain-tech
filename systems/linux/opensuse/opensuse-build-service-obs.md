@@ -18,7 +18,7 @@
 
 ## Companion subtree (canonical OBS/osc notes)
 
-- [`~/DocsNNotes/tech/tools/osc-obs/`](../../../tools/osc-obs/README.md) — dedicated OBS/osc
+- [`tools/osc-obs/`](../../../tools/osc-obs/README.md) — dedicated OBS/osc
   subtree:
   - [`setup-home-project-from-upstream.md`](../../../tools/osc-obs/setup-home-project-from-upstream.md)
     — from-scratch home-project walkthrough (project meta, base import vs branch, satellite
@@ -79,7 +79,7 @@ Sometimes, you will see the obs://DOMAIN/PROJECT notation. The obs:// schema is 
 
 For the `osc` verb cheat sheet (branch / co / build / commit / sr / etc.), home-project setup,
 patch/link mechanics, build-state diagnostics, and metadata templates, see the dedicated subtree:
-**[`~/DocsNNotes/tech/tools/osc-obs/`](../../../tools/osc-obs/README.md)**.
+**[`tools/osc-obs/`](../../../tools/osc-obs/README.md)**.
 
 Upstream references:
 
@@ -99,6 +99,6 @@ The standard openSUSE contribution path, from a home project:
 5. Commit (`osc commit`) and wait for the OBS build to go green.
 6. Submit a request back to the origin project (`osc sr`).
 
-Detailed walkthroughs are in `~/DocsNNotes/tech/tools/osc-obs/setup-home-project-from-upstream.md`
-(full home-project setup) and `~/DocsNNotes/tech/tools/osc-obs/obs-github-coordination.md`
+Detailed walkthroughs are in `tools/osc-obs/setup-home-project-from-upstream.md`
+(full home-project setup) and `tools/osc-obs/obs-github-coordination.md`
 (upstream-PR-vs-OBS-patch lifecycle).

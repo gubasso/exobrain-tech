@@ -247,4 +247,4 @@ was missing. For `failed`, `osc buildlog … | tail -200` gives the compile erro
   - [auth-in-devcontainers.md](./auth-in-devcontainers.md)
   - [common-mistakes-and-pitfalls.md](./common-mistakes-and-pitfalls.md)
 - Curated upstream-URL index:
-  `~/DocsNNotes/tech/systems/linux/opensuse/opensuse-build-service-obs.md`
+  `systems/linux/opensuse/opensuse-build-service-obs.md`

@@ -4,6 +4,12 @@ Digest for `exobrain-tech`.
 
 This repo is the public technical knowledge base. The KB — the library, the content — is the product and lives in the eight top-level buckets, exactly as a code project's product is its codebase; `_docs/` holds the metadata and specs _about_ that product (governance, following the docs-design method), never the product itself. Root `AGENTS.md` intentionally keeps the existing concise no-frontmatter style; migrated per-directory digests carry refreshed frontmatter.
 
+## Glossary
+
+- **MONOREPO** — the public `exobrain-tech` KB (this repo) plus the private `../exobrain-tech-vault`, together forming one logical knowledge base. References between the two are in-repo cross-references within the MONOREPO, not external dependencies — which is what keeps them compatible with the Self-Containment rule below (ADR-0003).
+- **`$EXOBRAIN_TECH`** — a checkout of the public KB (this repo, `exobrain-tech`). Docs and scripts point into it as `$EXOBRAIN_TECH/<path>`.
+- **`$EXOBRAIN_TECH_VAULT`** — a checkout of the private vault (`exobrain-tech-vault`). Point into it as `$EXOBRAIN_TECH_VAULT/<path>`.
+
 <!-- self-containment -->
 
 ## Self-Containment

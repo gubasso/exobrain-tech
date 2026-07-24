@@ -149,5 +149,5 @@ merge it server-side.
   home-project walkthrough.
 - [common-mistakes-and-pitfalls.md](./common-mistakes-and-pitfalls.md) — the CLI foot-guns and
   workspace mistakes worth memorizing before you hit them.
-- [`~/DocsNNotes/tech/systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md)
+- [`systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md)
   — curated upstream-URL index (user guides, packaging guidelines, cheat sheets).

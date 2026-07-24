@@ -55,4 +55,4 @@ authoritative; these notes capture stable patterns.
 - Usage patterns are tied to the `tsk` binary version (notes synced against riptask 0.2.0).
   Re-verify flags, output format, and the `require_shared_layer` gate when upgrading.
 - Consumers: the `tsk-new`, `tsk-impl`, and `prex` Claude skills, which load `commands.md` via
-  `$DOCS_NOTES_REPO/tools/riptask/commands.md`.
+  `$EXOBRAIN_TECH/tools/riptask/commands.md`.

@@ -66,10 +66,10 @@ build-system errors that can't be inferred from prior context.
 
 ## Companion files
 
-- `~/DocsNNotes/tech/systems/linux/opensuse/opensuse-build-service-obs.md` — curated upstream-URL
+- `systems/linux/opensuse/opensuse-build-service-obs.md` — curated upstream-URL
   index for OBS / osc / packaging documentation (kept in the openSUSE subtree because the curated
   links live there); cross-links into this `osc-obs` subtree.
-- `~/DocsNNotes/tech/tools/dctl.md` — `dctl` CLI surface used by `auth-in-devcontainers.md` when the
+- `tools/dctl.md` — `dctl` CLI surface used by `auth-in-devcontainers.md` when the
   host runs containers via dctl rather than vanilla VS Code remote-containers.
 - [`runbook-template.md`](./runbook-template.md) — generic shape for a per-lane convergence runbook
   driven by a Claude self-debug loop. Placeholder-based so it can be copied into any OBS overlay

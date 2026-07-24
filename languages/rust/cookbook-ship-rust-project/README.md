@@ -290,7 +290,7 @@ history); `v*` tags immutable.[^bp-model]
 
    ```bash
    OWNER_REPO=<owner>/<repo> REQUIRED_CHECKS="test" \
-     "$DOCS_NOTES_REPO"/tech/tools/git/branch-protection/github/setup.sh
+     "$EXOBRAIN_TECH"/tools/git/branch-protection/github/setup.sh
    ```
 
    Applies: `master` — no human writes, linear history, CI bypass actor, 1 review; `develop` — 1
@@ -448,7 +448,7 @@ optionally yank.[^semver]
 Branch model, release-plz/OIDC, and metadata are identical. Differences:
 
 - **Branch protection:**
-  `PROJECT=group/project TIER=free "$DOCS_NOTES_REPO"/tech/tools/git/branch-protection/gitlab/setup.sh`
+  `PROJECT=group/project TIER=free "$EXOBRAIN_TECH"/tools/git/branch-protection/gitlab/setup.sh`
   (or `TIER=premium BOT_USER_ID=<id>`).[^bp]
 - **Enable CI/CD**, let the pipeline write to `master`, set default branch `develop`.[^bp-firstrun]
 - **OIDC:** crates.io Trusted Publishing supports gitlab.com (not self-hosted). The job requests a

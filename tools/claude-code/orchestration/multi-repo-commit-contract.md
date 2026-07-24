@@ -3,7 +3,7 @@
 How an executor commits work that spans more than one git repository. The rule: **a caller that runs
 or coordinates changes and then commits must commit the work in _every_ repo it touched, by
 default** — the source repo plus any satellite/target repo (e.g. a project being extracted into) or
-SoT docs repo (e.g. DocsNNotes). It asks the user only when something looks off.
+SoT docs repo (e.g. `exobrain-tech`). It asks the user only when something looks off.
 
 The deterministic mechanics live in `agent-helper`; the `gc` skill (Claude and Codex) and callers
 like `plan-queue-runner` stay thin orchestrators. This file defines the **contracts and shapes**.

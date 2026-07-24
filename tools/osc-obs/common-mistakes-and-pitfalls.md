@@ -588,7 +588,7 @@ operator runs deliberately.
 - [`auth-in-devcontainers.md`](./auth-in-devcontainers.md) — full decision matrix for §1's auth
   setup.
 - Curated upstream-URL index:
-  `~/DocsNNotes/tech/systems/linux/opensuse/opensuse-build-service-obs.md`.
+  `systems/linux/opensuse/opensuse-build-service-obs.md`.
 
 ## Project-specific mistakes logs
 

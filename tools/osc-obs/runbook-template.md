@@ -28,10 +28,10 @@ Placeholders used below:
 # Runbook template — SLE 15 SP<N>
 
 > Diagnostics rule: on any error / branch point / retry, the agent MUST fetch authoritative sources
-> (local `~/DocsNNotes/tech/tools/osc-obs/` → in-project reference docs → `<loop-library>/` →
+> (local `$EXOBRAIN_TECH/tools/osc-obs/` → in-project reference docs → `<loop-library>/` →
 > `osc --help` / API probes → upstream OBS / SUSE / rpm.org URLs) before proposing a fix, and
 > persist any reusable finding back to both `<loop-library>/<topic>.md` and
-> `~/DocsNNotes/tech/tools/osc-obs/<topic>.md`. See the Diagnostics protocol section of the
+> `$EXOBRAIN_TECH/tools/osc-obs/<topic>.md`. See the Diagnostics protocol section of the
 > `osc-obs` Claude Code skill.
 
 ## Lane
@@ -68,7 +68,7 @@ osc -A https://api.opensuse.org results <home-project>
   could cancel it.
 - The target lane shows `unresolvable` or `failed` → proceed to Step 1.
 - The target lane (and typically every sibling lane) shows `broken` → OBS link/source drift,
-  pre-build. Recover per `~/DocsNNotes/tech/tools/osc-obs/broken-state-link-drift.md` (re-run
+  pre-build. Recover per `$EXOBRAIN_TECH/tools/osc-obs/broken-state-link-drift.md` (re-run
   `<bootstrap-script>` if it `osc rm`s orphan patches; or the explicit
   `osc add <new>.patch && osc rm <old>.patch &&
   osc ci -m '…'` sequence in the workspace).
@@ -76,7 +76,7 @@ osc -A https://api.opensuse.org results <home-project>
   `unresolvable` / `failed`; the resolver and build never ran.
 - The target lane shows `blocked: <dep>` → scheduler-waiting on a sibling-package republish, not
   terminal. Default wait is 15–20 min; do **NOT** `osc rebuild` (cancels the in-flight
-  auto-rebuild). See `~/DocsNNotes/tech/tools/osc-obs/blocked-state-is-transient.md`.
+  auto-rebuild). See `$EXOBRAIN_TECH/tools/osc-obs/blocked-state-is-transient.md`.
 
 ## Step 1 — (first remediation)
 
