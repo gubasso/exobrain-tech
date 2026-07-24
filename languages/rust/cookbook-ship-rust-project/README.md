@@ -7,10 +7,8 @@ owns the _why_.
 > **Assumes:** a crate you can already `cargo build`, a git repo, and a GitHub remote (GitLab notes
 > at the end). Replace `<owner>/<repo>` and `<crate>` throughout.
 >
-> This is a **cookbook** — it deliberately inlines snippets that live canonically in the specs it
-> footnotes. That duplication is a sanctioned exception to the repo's single-source-of-truth rule.[^rule]
-> For the reasoning behind any step, follow the footnote; if a snippet here ever disagrees with its
-> footnoted spec, **the spec wins**.
+> **Cookbook:** steps + snippets only; the _why_ lives in the footnoted specs. Inlined snippets are a
+> sanctioned exception to single-source-of-truth[^rule] — if one disagrees with its spec, **the spec wins**.
 
 **See also:** general recipes — project-bootstrap[^gen-bootstrap], release-workflow[^gen-release];
 Rust specs distilled here — project-bootstrap-spec[^rs-bootstrap],
@@ -49,8 +47,7 @@ components = ["rustfmt", "clippy"]
 
 ## 2. Crate metadata — the publish gate[^crate-meta]
 
-crates.io **rejects** a publish without `description` and a license. Set these in `Cargo.toml` now;
-a dry run (§7) validates them with no token.
+crates.io **rejects** a publish without `description` and a license — set them now.[^crate-meta]
 
 ```toml
 [package]
@@ -73,8 +70,7 @@ exclude = [
 ]
 ```
 
-Ship the actual license files too (`LICENSE-MIT` + `LICENSE-APACHE` for the dual default) — an SPDX
-`license` field does **not** auto-include them in the tarball.[^crate-meta]
+Ship the license files too (`LICENSE-MIT` + `LICENSE-APACHE`) — the SPDX field doesn't include them.[^crate-meta]
 
 ## 3. Quality gates[^rs-gates]
 
@@ -298,8 +294,8 @@ Then turn Actions on with write permission (the script can't via the API):[^bp-f
   **Allow GitHub Actions to create and approve pull requests**.
 
 Rulesets applied: `master` — no human writes, linear history, CI bypass actor, 1 review; `develop` —
-1 review, no force-push/deletion; `v*` tags — no delete/update.[^bp] _(Solo project? Set
-`required_approving_review_count` to `0` in the ruleset payloads, or merge via the bypass actor.)_
+1 review, no force-push/deletion; `v*` tags — no delete/update.[^bp] _(Solo project? Set the review
+count to `0` — see [^bp].)_
 
 ## 7. Release + publish[^rs-release]
 
@@ -342,9 +338,7 @@ Once per project, in order:[^rs-runbook]
    semver_check     = true   # gate public-API compatibility (libraries)
    ```
 
-   `release_always = false` gates **publishing**, not the release PR: a version bump + CHANGELOG
-   update happens on **every** push to `develop` that carries releasable conventional commits, but
-   the actual `cargo publish` runs only when the **release PR is merged**.
+   `release_always = false` gates **publish**, not the release PR.[^rs-plz]
 
    `.github/workflows/release-plz.yml` — runs on `develop`, OIDC auth (**no
    `CARGO_REGISTRY_TOKEN`**), under a GitHub App token so its tag push retriggers cargo-dist
@@ -382,9 +376,8 @@ Once per project, in order:[^rs-runbook]
              GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
    ```
 
-   **GitHub App token (enables automatic binaries).** The job runs release-plz under a GitHub App
-   token so the tag it pushes **retriggers** cargo-dist's `release.yml` (§8); a tag pushed with the
-   default `GITHUB_TOKEN` does **not** retrigger workflows. One-time, before the workflow runs:
+   **GitHub App token (enables automatic binaries).** Runs release-plz so its tag push retriggers
+   cargo-dist's `release.yml` (§8).[^rs-plz] One-time, before the workflow runs:
 
    1. **Create a GitHub App** — Settings → Developer settings → GitHub Apps → New. Repository
       permissions: **Contents: Read and write** and **Pull requests: Read and write**; no webhook.
@@ -392,16 +385,11 @@ Once per project, in order:[^rs-runbook]
    3. **Store two repo secrets** (Settings → Secrets and variables → Actions): `RELEASE_PLZ_APP_ID`
       (the App's numeric ID) and `RELEASE_PLZ_APP_PRIVATE_KEY` (the downloaded `.pem`).
 
-   (The `promote` job still pushes `master` with the default `GITHUB_TOKEN`, so keep
-   `github-actions[bot]` in `master`'s bypass list from §6.)
+   (`promote` pushes `master` with the default `GITHUB_TOKEN` — keep `github-actions[bot]` in §6's bypass list.)
 
-   **(Optional `develop`/`master` topology.)** If `develop` is the trunk and `master` mirrors
-   releases, add a `promote` job to fast-forward `master` onto each release tag. Run it as a `needs:`
-   job in the same run (a `GITHUB_TOKEN` tag push doesn't retrigger a standalone workflow). The
-   promote job must **not** re-create the tag — release-plz already created it — it only
-   fast-forwards/merges `master` onto that existing tag. Pushing to a protected `master` needs a
-   GitHub App token or fine-grained PAT with bypass: the default `GITHUB_TOKEN` is blocked from
-   protected branches and does not retrigger downstream workflows.[^branch-model]
+   **(Optional `develop`/`master` topology.)** Add a `promote` `needs:` job to fast-forward `master`
+   onto each release tag — don't re-create the tag; protected `master` needs the App token / bypass
+   actor.[^branch-model]
 
 6. **(Optional) Enable "require trusted publishing"** on the crate once an OIDC release has
    succeeded — it rejects all token publishes.[^oidc]
@@ -417,12 +405,9 @@ dist init          # writes dist-workspace.toml + .github/workflows/release.yml
 dist generate      # regenerate release.yml after editing dist-workspace.toml
 ```
 
-`release.yml` (binaries) is a **separate** file from `release-plz.yml` (source publish) — never
-merge them, and never register `release.yml` with the trusted publisher.[^cargo-dist] It is
-**tag-triggered** (it fires on the version tag), not branch-triggered, so it chains off the tag
-release-plz creates when the release PR merges. It fires automatically because release-plz pushes
-that tag with the GitHub App token from §7 (a tag pushed with the default `GITHUB_TOKEN` would not
-retrigger it). `cargo binstall <crate>` then works for free.
+`release.yml` (binaries) is a **separate** file from `release-plz.yml` — never merge or register it
+with the trusted publisher. It is **tag-triggered**, firing on the tag release-plz pushes with §7's
+App token.[^cargo-dist] Then `cargo binstall <crate>` works for free.
 
 ## 9. Day-2 — semver / yank / rollback[^semver]
 
@@ -432,8 +417,8 @@ cargo yank --version 1.2.3             # stop new selections of a bad version
 cargo yank --version 1.2.3 --undo      # reverse it
 ```
 
-Published versions are **immutable** — never re-publish a number. "Rollback" = fix forward: patch on
-`develop`, cut a new PATCH, optionally yank the bad one.[^semver]
+Published versions are **immutable** — rollback = fix forward (patch on `develop`, cut a new PATCH),
+optionally yank.[^semver]
 
 ## GitLab notes
 
@@ -502,7 +487,7 @@ Branch model, release-plz/OIDC, and metadata are identical. Differences:
 
 [^rs-plz]: [release-workflow-spec/04 — release-plz config & CI](../release-workflow-spec/04-release-plz-config.md).
 
-[^branch-model]: [release-workflow-spec/00 — Branch model & `master` promotion](../release-workflow-spec/00-branch-model-and-release-plz.md).
+[^branch-model]: [release-workflow-spec/00 — Promoting `master` onto the release tag](../release-workflow-spec/00-branch-model-and-release-plz.md#promoting-master-onto-the-release-tag-the-official-way).
 
 [^cargo-dist]: [release-workflow-spec/05 — Binary distribution (cargo-dist)](../release-workflow-spec/05-binary-distribution-cargo-dist.md).
 

@@ -27,6 +27,10 @@ PROJECT=group/project TIER=free gitlab/setup.sh          # or TIER=premium BOT_U
 `release-workflow-spec`. If unset, no status-check rule is added (nothing to block PRs on). GitLab
 gates on the pipeline itself (`only_allow_merge_if_pipeline_succeeds`), so it needs no check names.
 
+**Solo project.** The `master` and `develop` rulesets require one approving review. Working alone,
+set `required_approving_review_count` to `0` in `github/rulesets/{master,develop}.json` (or merge via
+the CI bypass actor); every other rule applies unchanged.
+
 Each script then prints the manual host steps it cannot do via the API (copy the release-promote CI
 template into the repo; enable Actions/CI write — see `first-run-enablement.md`).
 
