@@ -382,15 +382,21 @@ Once per project, in order:[^rs-runbook]
    repeat per repo):
 
    1. **Register the App** (once per account) — Settings → Developer settings → GitHub Apps → **New**.
-      Name = unique, ≤34 chars — prefer a neutral, reusable name like `<owner>-ci-bot` (not
-      `<owner>-release-plz-bot`); **Homepage URL** = your profile `https://github.com/<owner>`
-      (required but cosmetic); **uncheck Webhook → Active**; **Repository permissions → Contents: Read
-      and write** and **Pull requests: Read and write**; **install only on this account**. Create.
+      Fill only these; leave everything else at its default:
+      - **Name** — unique, ≤34 chars; prefer a neutral, reusable name like `<owner>-ci-bot` (not
+        `<owner>-release-plz-bot`).
+      - **Homepage URL** — your profile `https://github.com/<owner>` (required but cosmetic).
+      - **Webhook → Active** — **uncheck**.
+      - **Repository permissions** — **Contents: Read and write** and **Pull requests: Read and write**.
+      - **Where can this be installed?** — **Only on this account**.
+
+      Then click **Create GitHub App**.
    2. **Generate a private key** (downloads a `.pem`, once) and **Install App** on `<owner>/<repo>`
       (per repo) — creation alone mints no token.
-   3. **Store two repo secrets** (per repo → Settings → Secrets and variables → Actions):
-      `RELEASE_PLZ_APP_ID` (the App's numeric ID) and `RELEASE_PLZ_APP_PRIVATE_KEY` (the downloaded
-      `.pem`) — same values in every repo.
+   3. **Store two repo secrets** (per repo → Settings → Secrets and variables → Actions) — same values
+      in every repo:
+      - `RELEASE_PLZ_APP_ID` — the App's numeric ID.
+      - `RELEASE_PLZ_APP_PRIVATE_KEY` — the downloaded `.pem`.
 
    (`promote` pushes `master` with the default `GITHUB_TOKEN` — keep `github-actions[bot]` in §6's bypass list.)
 
