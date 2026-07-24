@@ -1,7 +1,7 @@
 # branch-protection
 
-Templates and a one-shot setup script per platform for the `develop` → tag → CI → `master` workflow.
-Run once per new project.
+Manual runbooks and CI templates for the `develop` → tag → CI → `master` workflow. Use them once per
+new project.
 
 Part of the once-per-project setup — see
 [project bootstrap](../../../programming/project-bootstrap/runbook.md).
@@ -14,34 +14,31 @@ Part of the once-per-project setup — see
 - [master-promotion](./master-promotion.md) — how CI fast-forwards `master` onto each release tag
   (standalone vs inline, the ancestry check, and the token/bypass split).
 - [github-web-ui](./github-web-ui.md) / [gitlab-web-ui](./gitlab-web-ui.md) — point-and-click
-  alternatives to the setup scripts.
+  branch and tag protection runbooks.
 
 ## Usage
 
-```bash
-# GitHub — apply master/develop/tag rulesets, set develop as default, verify.
-OWNER_REPO=owner/repo REQUIRED_CHECKS="ci/build,ci/test" github/setup.sh
+Choose the host runbook for the new project:
 
-# GitLab — protect branches/tags, set develop as default, verify.
-PROJECT=group/project TIER=free gitlab/setup.sh          # or TIER=premium BOT_USER_ID=<id>
-```
+- GitHub — [github-web-ui.md](./github-web-ui.md): create the `master`, `develop`, and `v*` tag
+  rulesets; set `develop` as default; verify.
+- GitLab — [gitlab-web-ui.md](./gitlab-web-ui.md): protect `master`, `develop`, and release tags;
+  set `develop` as default; verify.
 
-`REQUIRED_CHECKS` is a comma-separated list of CI status-check contexts to require on `master` and
-`develop`. It **must match the job names your CI actually emits** — see your language's
-`release-workflow-spec`. If unset, no status-check rule is added (nothing to block PRs on). GitLab
-gates on the pipeline itself (`only_allow_merge_if_pipeline_succeeds`), so it needs no check names.
+For GitHub, the required status checks entered in the ruleset UI must match the job names your CI
+actually emits. See the project's language `release-workflow-spec` for those names. GitLab gates on
+the pipeline itself (`only_allow_merge_if_pipeline_succeeds`), so it needs no check names.
 
 **Solo project.** The `master` and `develop` rulesets require one approving review. Working alone,
-set `required_approving_review_count` to `0` in `github/rulesets/{master,develop}.json` (or merge via
-the CI bypass actor); every other rule applies unchanged.
+set the review count to `0` in the GitHub ruleset UI (or merge via the CI bypass actor); every other
+rule applies unchanged.
 
-Each script then prints the manual host steps it cannot do via the API (copy the release-promote CI
-template into the repo; enable Actions/CI write — see `first-run-enablement.md`).
+The former automated scripting path is retired. This shelf now keeps the self-contained manual
+runbooks plus the workflow templates that each project copies during setup.
 
 ## Layout
 
-- `github/setup.sh` — entry point; reads `OWNER_REPO`.
-  - `rulesets/` — the master/develop/tag ruleset payloads it applies.
-  - `workflows/release-promote.yml` — copied into the target repo's `.github/workflows/`.
-- `gitlab/setup.sh` — entry point; reads `PROJECT` (`group/project`) and `TIER`.
-  - `ci/release-promote.gitlab-ci.yml` — copied into the target project's `.gitlab-ci.yml`.
+- `github-web-ui.md` — GitHub rulesets runbook.
+- `gitlab-web-ui.md` — GitLab protected branches/tags runbook.
+- `github/workflows/release-promote.yml` — copied into the target repo's `.github/workflows/`.
+- `gitlab/ci/release-promote.gitlab-ci.yml` — copied into the target project's CI configuration.

@@ -1,6 +1,6 @@
 ---
 digest-of: languages/rust/cookbook
-last-synced: 2026-07-10
+last-synced: 2026-07-24
 source-files:
 token-estimate: 400
 ---
@@ -24,8 +24,8 @@ ADR-0002).
 - **Section order:** 0 prerequisites → 1 scaffold with `rust-toolchain.toml` → 2 crate metadata
   (publish gate) → 3 quality gates (`[lints]`, `deny.toml`, pre-commit, justfile) → 4 Nix devShell →
   5 first CI (`ci.yml`; job name is the required status check) → 6 branch security
-  (`github/setup.sh` rulesets, Actions read/write) → 7 release/publish (dry-run, first manual
-  publish, register trusted publisher `release-plz.yml`, revoke token, commit
+  (manual host rulesets, Actions read/write) → 7 release/publish (dry-run, first manual publish,
+  register trusted publisher `release-plz.yml`, revoke token, commit
   `release-plz.toml`/`.yml`) → 8 cargo-dist binaries → 9 semver/yank/rollback → GitLab notes.
 - **GitHub-primary**, GitLab covered as a short closing section.
 - Regeneration of the cookbook is human-authored (it is prose the maintainer owns), but this

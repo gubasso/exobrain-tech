@@ -120,7 +120,7 @@ push has no way through. The App-token push is uniform: it works the same on per
 accounts.
 
 > **Org-only shortcut.** On an **organization** repo you _may_ instead keep the default `GITHUB_TOKEN`
-> push and add **`github-actions[bot]`** (GitHub App id **15368**) to the bypass list — there the global
+> push and add the global **`github-actions[bot]`** app to the bypass list — there the global
 > GitHub Actions app _is_ an eligible bypass actor. This shelf standardizes on the App to keep one model
 > everywhere; reach for the shortcut only if you deliberately want no App on an org repo.
 
@@ -144,6 +144,6 @@ fast-forwards `master`; release creation belongs to the other workflow.
 - [github-app-token.md](./github-app-token.md) — the App token whose tag push retriggers this workflow,
   and the `GITHUB_TOKEN` anti-recursion rule.
 - [github/workflows/release-promote.yml](./github/workflows/release-promote.yml) — the template applied
-  per project (copied in by `github/setup.sh`).
+  per project (copied into each project during manual setup).
 - [GitHub Actions — triggering a workflow](https://docs.github.com/en/actions/using-workflows/triggering-a-workflow)
   (the default-`GITHUB_TOKEN` no-retrigger rule and its exceptions).

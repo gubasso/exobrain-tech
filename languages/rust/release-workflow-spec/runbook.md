@@ -34,13 +34,14 @@ Everyday releases after setup are not here — those are just "merge the release
    → [first-run enablement](../../../tools/git/branch-protection/first-run-enablement.md).
 
 4. **Apply branch protection** for `develop`, `master`, and tags — `master` written only by CI (keep
-   the CI bypass actor in place _before_ you protect it), linear history, tag protection. →
-   [branch-protection/](../../../tools/git/branch-protection/) (`github/setup.sh` /
-   `gitlab/setup.sh`).
+   the CI bypass actor in place _before_ you protect it), linear history, tag protection. Follow the
+   host runbook in [branch-protection/](../../../tools/git/branch-protection/):
+   [github-web-ui](../../../tools/git/branch-protection/github-web-ui.md) or
+   [gitlab-web-ui](../../../tools/git/branch-protection/gitlab-web-ui.md).
 
    > Ensure `master`'s bypass actor — your **installed GitHub App** (on a personal account
-   > `github-actions[bot]` cannot be one), set via `BYPASS_ACTOR_ID` — is in the bypass list **before**
-   > protecting it, or the promote job in step 8 fails with _permission denied_.
+   > `github-actions[bot]` cannot be one) — is in the bypass list **before** protecting it, or the
+   > promote job in step 8 fails with _permission denied_.
 
 5. **First manual publish** — see the section below.
 

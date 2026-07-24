@@ -21,7 +21,6 @@ release-workflow-spec[^rs-release], cli-spec[^cli]; platform enforcement — bra
 ```bash
 cargo --version         # rustc + cargo installed
 gh auth status          # GitHub CLI authenticated  (https://cli.github.com)
-jq --version            # used by the branch-protection setup script
 git remote -v           # origin points at your GitHub repo
 ```
 
@@ -283,9 +282,9 @@ Register **one** GitHub App per account and reuse it across every repo. It is th
 - is `master`'s **ruleset bypass actor** (§7); and
 - **pushes `master`** in the promote workflow (§7), under its token.
 
-Its `RELEASE_PLZ_APP_ID` + `RELEASE_PLZ_APP_PRIVATE_KEY` secrets are consumed by branch security (§7,
-as `BYPASS_ACTOR_ID`) and by `release-plz.yml` (§8). Register once (steps 1–2); **install + store
-secrets per repo** (steps 3–4).
+Its `RELEASE_PLZ_APP_ID` + `RELEASE_PLZ_APP_PRIVATE_KEY` secrets are consumed by branch security (§7)
+and by `release-plz.yml` (§8). Use the numeric App ID as the bypass actor in the ruleset UI.
+Register once (steps 1–2); **install + store secrets per repo** (steps 3–4).
 
 1. **Register the App** (once per account) — Settings → Developer settings → GitHub Apps → **New**.
    Fill only these; leave everything else at its default:
@@ -312,7 +311,7 @@ secrets per repo** (steps 3–4).
 Model: `develop` integrates (feature branches PR here); `master` mirrors releases (CI-only, linear
 history); `v*` tags immutable.[^bp-model]
 
-_Prefer point-and-click over the script?_ The same rulesets by hand —
+Use the manual host runbook for the full field-by-field path:
 [github-web-ui](../../../tools/git/branch-protection/github-web-ui.md) (GitLab:
 [gitlab-web-ui](../../../tools/git/branch-protection/gitlab-web-ui.md)).
 
@@ -322,27 +321,32 @@ _Prefer point-and-click over the script?_ The same rulesets by hand —
    git switch -c develop && git push -u origin develop
    ```
 
-2. **Apply all three rulesets + set the default branch** with one script[^bp] (`REQUIRED_CHECKS` must
-   match the CI job name from §5, `"test"`; `BYPASS_ACTOR_ID` is your App ID from §6):
+2. **Create the `master-protection` ruleset** in GitHub's ruleset UI.[^bp] Target the default branch
+   (`master` until step 5), add your installed GitHub App as the bypass actor using its numeric App
+   ID (§6), block deletion and force-push, require linear history, require a pull request with one
+   approval, require resolved conversations, and require the `test` status check from §5.
 
-   ```bash
-   OWNER_REPO=<owner>/<repo> REQUIRED_CHECKS="test" \
-     BYPASS_ACTOR_ID=<your RELEASE_PLZ_APP_ID> \
-     "$EXOBRAIN_TECH"/tools/git/branch-protection/github/setup.sh
-   ```
+3. **Create the `develop-protection` ruleset.** Target `refs/heads/develop`, block deletion and
+   force-push, require a pull request with one approval, require resolved conversations, and require
+   the `test` status check from §5.
 
-   On a **personal account** the default `github-actions` bypass actor is rejected (422) — pass your
-   own App's ID (§6) so the App is `master`'s bypass actor.[^app-token] Applies: `master` — no human
-   writes, linear history, App bypass actor, 1 review; `develop` — 1 review, no force-push/deletion;
-   `v*` tags — no delete/update. _(Solo project? Set the review count to `0` — see [^bp].)_
+4. **Create the `release-tags` ruleset.** Target `refs/tags/v*`; block delete, update, and
+   non-fast-forward changes.
 
-3. **Enable Actions write** (the script can't via the API):[^bp-firstrun] **Settings → Actions →
-   General →** allow Actions; **Workflow permissions → Read and write**; tick **Allow GitHub Actions to
-   create and approve pull requests**.
+5. **Set the default branch** to `develop` in Settings → General.
 
-4. **Add the promote workflow** — copy `release-promote.yml` into `.github/workflows/` so CI
+6. **Enable Actions write**:[^bp-firstrun] **Settings → Actions → General →** allow Actions;
+   **Workflow permissions → Read and write**; tick **Allow GitHub Actions to create and approve pull
+   requests**.
+
+7. **Add the promote workflow** — copy `release-promote.yml` into `.github/workflows/` so CI
    fast-forwards `master` onto each release tag. It pushes `master` **under the App token** (the bypass
    actor), so the App must be installed with its secrets stored (§6).[^promote]
+
+On a **personal account** `github-actions[bot]` cannot be the bypass actor (422); use your installed
+App instead.[^app-token] Applies: `master` — no human writes, linear history, App bypass actor, one
+review; `develop` — one review, no force-push/deletion; `v*` tags — no delete/update. _(Solo project?
+Set the review count to `0` — see [^bp].)_
 
 ## 8. Release + publish[^rs-release]
 
@@ -460,9 +464,9 @@ optionally yank.[^semver]
 
 Branch model, release-plz/OIDC, and metadata are identical. Differences:
 
-- **Branch protection:**
-  `PROJECT=group/project TIER=free "$EXOBRAIN_TECH"/tools/git/branch-protection/gitlab/setup.sh`
-  (or `TIER=premium BOT_USER_ID=<id>`).[^bp]
+- **Branch protection:** follow [gitlab-web-ui.md](../../../tools/git/branch-protection/gitlab-web-ui.md):
+  protect `master`, `develop`, and `v*` tags; set `develop` as default; enable pipeline-only merge
+  gates and CI promotion permissions.[^bp]
 - **Enable CI/CD**, let the pipeline write to `master`, set default branch `develop`.[^bp-firstrun]
 - **OIDC:** crates.io Trusted Publishing supports gitlab.com (not self-hosted). The job requests a
   GitLab `id_token`, exchanges it via `CRATES_IO_ID_TOKEN`, then `cargo publish`; register the
@@ -488,8 +492,8 @@ Branch model, release-plz/OIDC, and metadata are identical. Differences:
 
 [^cli]: [Rust cli-spec](../cli-spec/README.md) — detailed CLI crate structure, testing, and quality.
 
-[^bp]: [branch-protection](../../../tools/git/branch-protection/README.md) — `github/setup.sh`, the
-    ruleset payloads, and the GitLab path.
+[^bp]: [branch-protection](../../../tools/git/branch-protection/README.md) — the manual host runbooks
+    and copy-into-project workflow templates.
 
 [^nix-toolchain]: [nix/03 — Rust toolchain in a devShell](../../../tools/nix/03-rust-toolchain.md).
 

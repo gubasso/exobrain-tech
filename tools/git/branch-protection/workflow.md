@@ -8,15 +8,13 @@ Specification for protecting `master`, restricting development to `develop`, and
 > [tech/programming/release-workflow/](../../../programming/release-workflow/). This document is the
 > platform **enforcement** layer — how to apply the rulesets/protections on GitHub and GitLab.
 
-Apply it (pick one per platform):
+Apply it with the manual host runbook for the platform:
 
-- **Scripted** — `github/setup.sh` (reads `OWNER_REPO`) or `gitlab/setup.sh` (reads `PROJECT`,
-  `TIER`). One run per new project; see [README](./README.md#usage).
-- **Point-and-click** — [github-web-ui](./github-web-ui.md) / [gitlab-web-ui](./gitlab-web-ui.md).
+- GitHub — [github-web-ui](./github-web-ui.md).
+- GitLab — [gitlab-web-ui](./gitlab-web-ui.md).
 
-Required CI status checks are **not** baked into the rulesets — pass `REQUIRED_CHECKS`
-(comma-separated contexts matching the job names your CI emits) to `github/setup.sh`. If unset, no
-status-check rule is added. GitLab gates on the pipeline itself, not named checks.
+Required CI status checks are **not** hardcoded into this shelf. In GitHub's ruleset UI, enter the
+contexts matching the job names your CI emits. GitLab gates on the pipeline itself, not named checks.
 
 Related:
 
@@ -45,7 +43,7 @@ The only identity that may write to `master`. Use a GitHub App, or a GitLab Proj
 
 - GitHub: use your **installed GitHub App** as the bypass actor, and have the promote workflow push
   `master` under that App's token — uniform across personal and organization repos. On a **personal
-  account** `github-actions[bot]` (app id **15368**) **cannot** be a bypass actor at all (HTTP 422); on
+  account** the global `github-actions[bot]` app **cannot** be a bypass actor at all (HTTP 422); on
   an **organization** it can, so there you may alternatively keep `github-actions[bot]` + a
   default-`GITHUB_TOKEN` promote push. See [master-promotion.md](./master-promotion.md#token--bypass).
 - GitLab Premium/Ultimate: allow-list the bot user of a Project Access Token.
@@ -68,7 +66,6 @@ commits, no rewrites.
 - CI has run at least once so required status-check names exist.
 - Bypass actor / service identity exists **before** you turn protection on — otherwise `master`
   becomes unreleasable.
-- For CLI runbooks: `gh` / `glab` authenticated, `jq` installed.
 
 ## Local guardrail (optional)
 

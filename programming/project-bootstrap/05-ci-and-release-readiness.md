@@ -16,11 +16,11 @@ Branch protection is the once-per-project platform setup that enforces the branc
 integrates, `master` mirrors releases, CI promotes). It is owned by
 [`tools/git/branch-protection/`](../../tools/git/branch-protection/) — **linked, not copied here**.
 Follow its first-run enablement (path: `../../tools/git/branch-protection/first-run-enablement.md`) to turn
-Actions/CI on with write permission after the first push, then apply the rulesets via its `setup.sh`
-scripts.
+Actions/CI on with write permission after the first push, then apply the host protection runbook for
+GitHub or GitLab.
 
-The `REQUIRED_CHECKS` you protect on must match the CI job names above — see the branch-protection
-README.
+The GitHub status checks you protect on must match the CI job names above — see the
+branch-protection README.
 
 ## Hand-off to the release phase
 

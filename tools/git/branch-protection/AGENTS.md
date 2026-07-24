@@ -16,33 +16,29 @@ token-estimate: 600
 
 ## Scope
 
-Branch-protection enforcement for the `develop` → tag → CI → `master` path: one setup script per
-platform plus a point-and-click alternative, the canonical strategy doc, and the first-run host
-toggles.
+Branch-protection enforcement for the `develop` → tag → CI → `master` path: manual host runbooks,
+the canonical strategy doc, first-run host toggles, and copy-into-project CI templates.
 
 ## Key Points
 
 - **Workflow**: `workflow.md` describes the branch-protection strategy and rationale (the abstract
   branch/release _model_ lives in `programming/release-workflow/`; this subtree is the platform
   _enforcement_ layer).
-- **Apply it**: `github/setup.sh` (reads `OWNER_REPO`) and `gitlab/setup.sh` (reads `PROJECT`,
-  `TIER=free|premium`) are the one-run-per-project entry points. Each applies the branch/tag
-  protections, sets `develop` as default, verifies, and prints the manual host steps it cannot do
-  via the API. `*-web-ui.md` are the point-and-click equivalents.
-- **Required status checks are a parameter, not a hardcode**: pass `REQUIRED_CHECKS`
-  (comma-separated contexts matching the job names the project's CI emits) to `github/setup.sh`. If
-  unset, no status-check rule is added — the ruleset never blocks on a check that never reports. The
-  check names are owned by the project's CI/language spec, not by this layer. GitLab gates on the
-  pipeline (`only_allow_merge_if_pipeline_succeeds`), so it uses no named checks.
+- **Apply it**: `github-web-ui.md` and `gitlab-web-ui.md` are the one-run-per-project host runbooks.
+  Each covers branch/tag protection, the `develop` default branch, and verification.
+- **Required status checks are host inputs, not hardcodes**: in GitHub's ruleset UI, enter contexts
+  matching the job names the project's CI emits. The check names are owned by the project's
+  CI/language spec, not by this layer. GitLab gates on the pipeline
+  (`only_allow_merge_if_pipeline_succeeds`), so it uses no named checks.
 - **First-run enablement**: `first-run-enablement.md` — after the first push, enable Actions/CI and
   set write permissions (GitHub: Actions → General → Read and write + allow Actions to create PRs;
   GitLab: enable CI/CD, let CI push to protected `master`, OIDC `id_tokens`). OIDC needs no
   repo-level switch on GitHub — `id-token: write` at the job level is enough.
 - **Bypass actor**: `master` is written only by CI. Standard model = the **installed GitHub App** is the
-  bypass actor and the promote workflow pushes `master` under the App token (set `BYPASS_ACTOR_ID` to the
-  App ID). On a **personal account** `github-actions[bot]` (15368) cannot be a bypass actor at all (HTTP
-  422); on an **organization** it can, so 15368 + a default-token push is an org-only shortcut. GitLab
-  Premium allow-lists a Project Access Token bot user; Free relies on the 17.2+ job-token push toggle.
+  bypass actor and the promote workflow pushes `master` under the App token. On a **personal account**
+  the global `github-actions[bot]` app cannot be a bypass actor at all (HTTP 422); on an **organization**
+  it can, so `github-actions[bot]` + a default-token push is an org-only shortcut. GitLab Premium allow-lists a Project
+  Access Token bot user; Free relies on the 17.2+ job-token push toggle.
 - **GitHub App token**: `github-app-token.md` owns why a GitHub App (not a PAT/deploy key) is the CI
   actor whose tag push retriggers workflows (the default `GITHUB_TOKEN` does not), plus the
   field-by-field App registration. Consumed by the language release spec's release-plz workflow.
@@ -50,30 +46,30 @@ toggles.
   standalone tag-triggered workflow vs inline `needs:` job (chosen by who pushes the tag), the
   ancestry-check guard, and the App token that both _triggers_ it (the tag push) and _pushes_ `master`
   as its own bypass actor.
-- **Layout**: `github/` holds `setup.sh`, the `rulesets/` payloads, and the release-promote
-  workflow; `gitlab/` holds `setup.sh` and the release-promote CI template.
+- **Layout**: `github/` holds the release-promote workflow template; `gitlab/` holds the
+  release-promote CI template. Manual host configuration lives in `github-web-ui.md` and
+  `gitlab-web-ui.md`.
 
 ## Source Map
 
 | Topic                              | File / Subtree                            |
 | ---------------------------------- | ----------------------------------------- |
 | Canonical workflow strategy        | `workflow.md`                             |
-| One-shot setup per platform        | `github/setup.sh`, `gitlab/setup.sh`      |
 | Enable Actions/CI + write perms    | `first-run-enablement.md`                 |
 | GitHub App token (why + setup)     | `github-app-token.md`                     |
 | Master promotion (fast-forward)    | `master-promotion.md`                     |
 | Point-and-click runbooks           | `github-web-ui.md`, `gitlab-web-ui.md`    |
-| GitHub ruleset payloads + workflow | `github/rulesets/`, `github/workflows/`   |
+| GitHub release-promote workflow    | `github/workflows/release-promote.yml`    |
 | GitLab release-promote CI template | `gitlab/ci/release-promote.gitlab-ci.yml` |
 
 ## Maintenance Notes
 
 - The parent `tools/git/` digest points here for the branch-protection subtree.
-- Keep the README index and Usage block aligned with the two `setup.sh` entry points and the
-  `rulesets/` / `ci/` template subtrees.
+- Keep the README index and Usage block aligned with the manual host runbooks and copy-into-project
+  CI template subtrees.
 - The abstract branch/release model (the `develop` → tag → CI-promote-`master` strategy) is owned by
   the general shelf `programming/release-workflow/`; this subtree is the platform _enforcement_
-  layer (GitHub Rulesets / GitLab protected-branch runbooks, payloads, `setup.sh` scripts, and the
-  tag-triggered release-promote CI templates). Standardized on `develop`/`master`.
+  layer (GitHub Rulesets / GitLab protected-branch runbooks and the tag-triggered release-promote CI
+  templates). Standardized on `develop`/`master`.
 - Status-check context names are intentionally not hardcoded: they must match each project's actual
-  CI job names (per its language `release-workflow-spec`), supplied via `REQUIRED_CHECKS`.
+  CI job names (per its language `release-workflow-spec`) and are entered in the host UI.
