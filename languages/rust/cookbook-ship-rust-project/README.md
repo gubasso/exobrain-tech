@@ -233,7 +233,7 @@ direnv allow              # or a one-off: nix develop
 ## 5. First CI workflow[^gen-ci]
 
 `.github/workflows/ci.yml` reuses the flake and runs the gates on every push/PR. The **job name is
-the status-check context** branch protection will require (§6) — name it deliberately.
+the status-check context** branch protection will require (§7) — name it deliberately.
 
 ```yaml
 name: ci
@@ -274,7 +274,40 @@ success-output = "never"
 failure-output = "immediate-final"
 ```
 
-## 6. Branch security[^bp]
+## 6. GitHub App — the CI bot identity[^app-token]
+
+Register **one** GitHub App per account and reuse it across every repo. It is the bot identity that:
+
+- lets release-plz's tag push **retrigger** the tag workflows — cargo-dist's `release.yml` (§9) and the
+  promote (§7); the default `GITHUB_TOKEN` would not;
+- is `master`'s **ruleset bypass actor** (§7); and
+- **pushes `master`** in the promote workflow (§7), under its token.
+
+Its `RELEASE_PLZ_APP_ID` + `RELEASE_PLZ_APP_PRIVATE_KEY` secrets are consumed by branch security (§7,
+as `BYPASS_ACTOR_ID`) and by `release-plz.yml` (§8). Register once (steps 1–2); **install + store
+secrets per repo** (steps 3–4).
+
+1. **Register the App** (once per account) — Settings → Developer settings → GitHub Apps → **New**.
+   Fill only these; leave everything else at its default:
+   - **Name** — unique, ≤34 chars; prefer a neutral, reusable name like `<owner>-ci-bot` (not
+     `<owner>-release-plz-bot`).
+   - **Homepage URL** — your profile `https://github.com/<owner>` (required but cosmetic).
+   - **Webhook → Active** — **uncheck**.
+   - **Repository permissions** — **Contents: Read and write** and **Pull requests: Read and write**.
+   - **Where can this be installed?** — **Only on this account**.
+
+   Then click **Create GitHub App**.
+2. **Generate a private key** (once) — on the App's page → **Private keys** → **Generate a private
+   key**. A `.pem` downloads; store it securely (GitHub keeps only the public half).
+3. **Install the App** on the repo (per repo) — on the App's page → **Install App** (left sidebar) →
+   **Install** next to your account → choose **Only select repositories** → select `<owner>/<repo>` →
+   **Install**. Creation alone mints no token — an uninstalled App is inert.
+4. **Store two repo secrets** (per repo → Settings → Secrets and variables → Actions → **New repository
+   secret**) — same values in every repo:
+   - `RELEASE_PLZ_APP_ID` — the App's numeric ID (shown under **About** on the App page).
+   - `RELEASE_PLZ_APP_PRIVATE_KEY` — the full contents of the downloaded `.pem`.
+
+## 7. Branch security[^bp]
 
 Model: `develop` integrates (feature branches PR here); `master` mirrors releases (CI-only, linear
 history); `v*` tags immutable.[^bp-model]
@@ -290,25 +323,28 @@ _Prefer point-and-click over the script?_ The same rulesets by hand —
    ```
 
 2. **Apply all three rulesets + set the default branch** with one script[^bp] (`REQUIRED_CHECKS` must
-   match the CI job name from §5, `"test"`):
+   match the CI job name from §5, `"test"`; `BYPASS_ACTOR_ID` is your App ID from §6):
 
    ```bash
    OWNER_REPO=<owner>/<repo> REQUIRED_CHECKS="test" \
+     BYPASS_ACTOR_ID=<your RELEASE_PLZ_APP_ID> \
      "$EXOBRAIN_TECH"/tools/git/branch-protection/github/setup.sh
    ```
 
-   Applies: `master` — no human writes, linear history, CI bypass actor, 1 review; `develop` — 1
-   review, no force-push/deletion; `v*` tags — no delete/update. _(Solo project? Set the review count
-   to `0` — see [^bp].)_
+   On a **personal account** the default `github-actions` bypass actor is rejected (422) — pass your
+   own App's ID (§6) so the App is `master`'s bypass actor.[^app-token] Applies: `master` — no human
+   writes, linear history, App bypass actor, 1 review; `develop` — 1 review, no force-push/deletion;
+   `v*` tags — no delete/update. _(Solo project? Set the review count to `0` — see [^bp].)_
 
 3. **Enable Actions write** (the script can't via the API):[^bp-firstrun] **Settings → Actions →
    General →** allow Actions; **Workflow permissions → Read and write**; tick **Allow GitHub Actions to
    create and approve pull requests**.
 
 4. **Add the promote workflow** — copy `release-promote.yml` into `.github/workflows/` so CI
-   fast-forwards `master` onto each release tag.[^promote]
+   fast-forwards `master` onto each release tag. It pushes `master` **under the App token** (the bypass
+   actor), so the App must be installed with its secrets stored (§6).[^promote]
 
-## 7. Release + publish[^rs-release]
+## 8. Release + publish[^rs-release]
 
 Once per project, in order:[^rs-runbook]
 
@@ -352,8 +388,8 @@ Once per project, in order:[^rs-runbook]
    `release_always = false` gates **publish**, not the release PR.[^rs-plz]
 
    `.github/workflows/release-plz.yml` — runs on `develop`, OIDC auth (**no
-   `CARGO_REGISTRY_TOKEN`**), under a GitHub App token so its tag push retriggers cargo-dist
-   (§8):[^rs-plz]
+   `CARGO_REGISTRY_TOKEN`**), under the GitHub App token from §6 so its tag push retriggers cargo-dist
+   (§9):[^rs-plz]
 
    ```yaml
    name: release-plz
@@ -387,36 +423,9 @@ Once per project, in order:[^rs-runbook]
              GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
    ```
 
-   **GitHub App token (enables automatic binaries).** Runs release-plz so its tag push retriggers
-   cargo-dist's `release.yml` (§8) — the default `GITHUB_TOKEN` would not.[^app-token] The App is
-   account-wide and workflow-agnostic — register it **once** and reuse it across every repo (steps 2–3
-   repeat per repo):
-
-   1. **Register the App** (once per account) — Settings → Developer settings → GitHub Apps → **New**.
-      Fill only these; leave everything else at its default:
-      - **Name** — unique, ≤34 chars; prefer a neutral, reusable name like `<owner>-ci-bot` (not
-        `<owner>-release-plz-bot`).
-      - **Homepage URL** — your profile `https://github.com/<owner>` (required but cosmetic).
-      - **Webhook → Active** — **uncheck**.
-      - **Repository permissions** — **Contents: Read and write** and **Pull requests: Read and write**.
-      - **Where can this be installed?** — **Only on this account**.
-
-      Then click **Create GitHub App**.
-   2. **Generate a private key** (once) — on the App's page → **Private keys** → **Generate a private
-      key**. A `.pem` downloads; store it securely (GitHub keeps only the public half).
-   3. **Install the App** on the repo (per repo) — on the App's page → **Install App** (left sidebar) →
-      **Install** next to your account → choose **Only select repositories** → select `<owner>/<repo>` →
-      **Install**. Creation alone mints no token — an uninstalled App is inert.
-   4. **Store two repo secrets** (per repo → Settings → Secrets and variables → Actions → **New
-      repository secret**) — same values in every repo:
-      - `RELEASE_PLZ_APP_ID` — the App's numeric ID (shown under **About** on the App page).
-      - `RELEASE_PLZ_APP_PRIVATE_KEY` — the full contents of the downloaded `.pem`.
-
-   (`promote` pushes `master` with the default `GITHUB_TOKEN` — keep `github-actions[bot]` in §6's bypass list.)
-
-   **(Optional `develop`/`master` topology.)** Add a `promote` `needs:` job to fast-forward `master`
-   onto each release tag — don't re-create the tag; protected `master` needs the App token / bypass
-   actor.[^branch-model]
+   The App token comes from the App set up in §6; `release-plz.yml` reads its `RELEASE_PLZ_APP_ID` /
+   `RELEASE_PLZ_APP_PRIVATE_KEY` secrets. `master` is promoted onto each release tag by the promote
+   workflow (§7), which pushes under that same App token.[^promote]
 
 6. **(Optional) Enable "require trusted publishing"** on the crate once an OIDC release has
    succeeded — it rejects all token publishes.[^oidc]
@@ -424,7 +433,7 @@ Once per project, in order:[^rs-runbook]
 **The everyday loop after setup:** merge a `feat:`/`fix:` to `develop` → release-plz opens a release
 PR → merge it → release-plz tags `vX.Y.Z` and publishes over OIDC.[^branch-model]
 
-## 8. (Optional) Prebuilt binaries — cargo-dist[^cargo-dist]
+## 9. (Optional) Prebuilt binaries — cargo-dist[^cargo-dist]
 
 ```bash
 cargo install cargo-dist
@@ -433,10 +442,10 @@ dist generate      # regenerate release.yml after editing dist-workspace.toml
 ```
 
 `release.yml` (binaries) is a **separate** file from `release-plz.yml` — never merge or register it
-with the trusted publisher. It is **tag-triggered**, firing on the tag release-plz pushes with §7's
+with the trusted publisher. It is **tag-triggered**, firing on the tag release-plz pushes with §6's
 App token.[^cargo-dist] Then `cargo binstall <crate>` works for free.
 
-## 9. Day-2 — semver / yank / rollback[^semver]
+## 10. Day-2 — semver / yank / rollback[^semver]
 
 ```bash
 cargo semver-checks check-release      # libraries: catch API breaks (release-plz runs this)

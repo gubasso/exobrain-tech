@@ -38,16 +38,18 @@ toggles.
   set write permissions (GitHub: Actions → General → Read and write + allow Actions to create PRs;
   GitLab: enable CI/CD, let CI push to protected `master`, OIDC `id_tokens`). OIDC needs no
   repo-level switch on GitHub — `id-token: write` at the job level is enough.
-- **Bypass actor**: `master` is written only by CI — GitHub default `github-actions` app id `15368`
-  (override via `BYPASS_ACTOR_ID`); GitLab Premium allow-lists a Project Access Token bot user, Free
-  relies on the 17.2+ job-token push toggle.
+- **Bypass actor**: `master` is written only by CI. Standard model = the **installed GitHub App** is the
+  bypass actor and the promote workflow pushes `master` under the App token (set `BYPASS_ACTOR_ID` to the
+  App ID). On a **personal account** `github-actions[bot]` (15368) cannot be a bypass actor at all (HTTP
+  422); on an **organization** it can, so 15368 + a default-token push is an org-only shortcut. GitLab
+  Premium allow-lists a Project Access Token bot user; Free relies on the 17.2+ job-token push toggle.
 - **GitHub App token**: `github-app-token.md` owns why a GitHub App (not a PAT/deploy key) is the CI
   actor whose tag push retriggers workflows (the default `GITHUB_TOKEN` does not), plus the
   field-by-field App registration. Consumed by the language release spec's release-plz workflow.
 - **Master promotion**: `master-promotion.md` owns how CI fast-forwards `master` onto each release tag —
   standalone tag-triggered workflow vs inline `needs:` job (chosen by who pushes the tag), the
-  ancestry-check guard, and the split between the App token that _triggers_ it and the default
-  `GITHUB_TOKEN` + `github-actions[bot]` bypass that _pushes_ `master`.
+  ancestry-check guard, and the App token that both _triggers_ it (the tag push) and _pushes_ `master`
+  as its own bypass actor.
 - **Layout**: `github/` holds `setup.sh`, the `rulesets/` payloads, and the release-promote
   workflow; `gitlab/` holds `setup.sh` and the release-promote CI template.
 

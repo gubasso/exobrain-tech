@@ -40,12 +40,14 @@ Related:
 
 ### Bypass actor / allowed pusher
 
-The only identity that may write to `master`. Use a GitHub App, `github-actions[bot]`, or a GitLab
-Project Access Token. **Never a human user.**
+The only identity that may write to `master`. Use a GitHub App, or a GitLab Project Access Token.
+**Never a human user.**
 
-- GitHub: `github-actions[bot]` is the default (app id **15368**).
-- GitHub, for CI-on-`master`-after-promotion: use a GitHub App token — pushes via `GITHUB_TOKEN` do
-  **not** retrigger workflows.
+- GitHub: use your **installed GitHub App** as the bypass actor, and have the promote workflow push
+  `master` under that App's token — uniform across personal and organization repos. On a **personal
+  account** `github-actions[bot]` (app id **15368**) **cannot** be a bypass actor at all (HTTP 422); on
+  an **organization** it can, so there you may alternatively keep `github-actions[bot]` + a
+  default-`GITHUB_TOKEN` promote push. See [master-promotion.md](./master-promotion.md#token--bypass).
 - GitLab Premium/Ultimate: allow-list the bot user of a Project Access Token.
 - GitLab Free: relies on the CI job-token push toggle (17.2+) or a Deploy Token — it cannot restrict
   push to a specific user.

@@ -38,8 +38,9 @@ Everyday releases after setup are not here — those are just "merge the release
    [branch-protection/](../../../tools/git/branch-protection/) (`github/setup.sh` /
    `gitlab/setup.sh`).
 
-   > Ensure the CI bypass actor (`github-actions[bot]` or the App token) is in `master`'s bypass list
-   > **before** protecting it, or the promote job in step 8 fails with _permission denied_.
+   > Ensure `master`'s bypass actor — your **installed GitHub App** (on a personal account
+   > `github-actions[bot]` cannot be one), set via `BYPASS_ACTOR_ID` — is in the bypass list **before**
+   > protecting it, or the promote job in step 8 fails with _permission denied_.
 
 5. **First manual publish** — see the section below.
 

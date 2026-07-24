@@ -15,7 +15,10 @@
 #                    master + develop. MUST match the job names your CI emits
 #                    (see your language's release-workflow-spec). If unset, no
 #                    status-check rule is added — nothing to block PRs on.
-#   BYPASS_ACTOR_ID  master bypass actor id (default: github-actions app 15368).
+#   BYPASS_ACTOR_ID  master bypass actor id. Default: github-actions app 15368,
+#                    which is a valid bypass actor only on ORGANIZATION repos. On a
+#                    PERSONAL account it is rejected (HTTP 422) — pass your installed
+#                    GitHub App's ID (Integration actor_type is correct for an App ID).
 #   DEFAULT_BRANCH   default branch to set (default: develop).
 #
 # Requires: gh (authenticated), jq.
@@ -30,13 +33,13 @@ DEFAULT_BRANCH="${DEFAULT_BRANCH:-develop}"
 
 # --- optional: list common bypass-actor ids and exit ------------------------
 if [[ "${1:-}" == "--lookup" ]]; then
-  # GitHub Actions app is a fixed global id.
-  printf 'github-actions\t15368\tIntegration\n'
+  # GitHub Actions app: a fixed global id, but a valid bypass actor only on
+  # organization repos (rejected on personal accounts).
+  printf 'github-actions\t15368\tIntegration\t(org repos only)\n'
+  # Your installed GitHub App — the bypass actor to use on a personal account.
   if app_id=$(gh api "/repos/${OWNER_REPO}/installation" --jq '.app_id' 2>/dev/null); then
-    printf 'installed-app\t%s\tIntegration\n' "$app_id"
+    printf 'installed-app\t%s\tIntegration\t(pass as BYPASS_ACTOR_ID)\n' "$app_id"
   fi
-  bot_id=$(gh api /users/github-actions%5Bbot%5D --jq '.id')
-  printf 'github-actions[bot]-user\t%s\tUser\n' "$bot_id"
   exit 0
 fi
 
@@ -68,6 +71,21 @@ apply_ruleset() {
   jq "${jq_args[@]}" "$filter" "$payload" \
     | gh api -X POST "/repos/${OWNER_REPO}/rulesets" --input -
 }
+
+# --- guard: the master bypass actor must be valid for this repo's owner type ---
+# On a personal (User-owned) account the default github-actions app (15368) cannot
+# be a ruleset bypass actor, so creating master-protection would fail with HTTP 422.
+# Require an explicit BYPASS_ACTOR_ID (your installed GitHub App's ID) there.
+if [[ -z "${BYPASS_ACTOR_ID:-}" ]]; then
+  owner_type=$(gh api "/repos/${OWNER_REPO}" --jq '.owner.type' 2>/dev/null || echo "")
+  if [[ "$owner_type" == "User" ]]; then
+    echo "error: ${OWNER_REPO} is a personal (User) repo; the default bypass actor" >&2
+    echo "       (github-actions app 15368) is rejected there (HTTP 422). Set" >&2
+    echo "       BYPASS_ACTOR_ID to your installed GitHub App's ID and re-run." >&2
+    echo "       Find it with: OWNER_REPO=${OWNER_REPO} $0 --lookup" >&2
+    exit 1
+  fi
+fi
 
 echo "== applying master-protection =="
 apply_ruleset "${rulesets}/master.json" checks

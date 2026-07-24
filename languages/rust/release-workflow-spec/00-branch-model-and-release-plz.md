@@ -77,9 +77,16 @@ it, and fast-forward:
     if: github.repository_owner == '<owner>' && needs.release-plz.outputs.releases_created == 'true'
     runs-on: ubuntu-latest
     steps:
+      # Push master as the App (master's bypass actor), not the default token.
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
       - name: Fast-forward master to the release tag
         env:
           RELEASES: ${{ needs.release-plz.outputs.releases }}
@@ -117,20 +124,21 @@ it, and fast-forward:
 ### If `master` is a protected branch
 
 Once `master` sits behind a ruleset (no human writes, linear history), the promotion push needs a
-bypass actor. Either keep `github-actions[bot]` in the ruleset's bypass list, or — if `master` needs
-its own CI on promotion — mint a GitHub App token for release-plz so its tag push _does_ retrigger a
-standalone `release-promote.yml` (why an App and the field-by-field setup:
-[github-app-token](../../../tools/git/branch-protection/github-app-token.md)). See
+bypass actor. Use your **installed GitHub App**: make it `master`'s bypass actor and push `master`
+under the App token (`create-github-app-token` → `checkout` with `token:`, as above). On a **personal
+account** `github-actions[bot]` cannot be a bypass actor at all (HTTP 422); on an **organization** you
+may instead keep `github-actions[bot]` + a default-token push. Why an App and the field-by-field setup:
+[github-app-token](../../../tools/git/branch-protection/github-app-token.md). See
 [branch-protection/](../../../tools/git/branch-protection/) for the ruleset setup, and
 [master-promotion](../../../tools/git/branch-protection/master-promotion.md) for the
-platform-agnostic promote mechanics and the standalone-vs-inline decision this section applies.
+platform-agnostic promote mechanics (token/bypass and the standalone-vs-inline decision).
 
-> **Warning — bypass actor first.** If `master` sits behind a ruleset and the bypass actor (the
-> `github-actions` app, or the GitHub App token you mint) is **not** configured in the ruleset's
-> bypass list, the promote push fails with _permission denied_. Add the actor before protecting
-> `master`. Note too that giving release-plz a GitHub App token makes its **tag** push retrigger
-> **all** tag-triggered workflows — desirable for cargo-dist's `release.yml`, but guard standalone
-> promote/tag jobs with `needs:`/`if:` so they don't loop or double-fire.
+> **Warning — bypass actor first.** If `master` sits behind a ruleset and its bypass actor (your GitHub
+> App) is **not** configured in the ruleset's bypass list, the promote push fails with _permission
+> denied_. Add the actor before protecting `master`. Note too that giving release-plz a GitHub App token
+> makes its **tag** push retrigger **all** tag-triggered workflows — desirable for cargo-dist's
+> `release.yml`, but guard standalone promote/tag jobs with `needs:`/`if:` so they don't loop or
+> double-fire.
 
 ## The full release flow
 

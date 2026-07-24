@@ -12,7 +12,11 @@ UI labels verified against docs.github.com on 2026-04-22.
 
 - **Ruleset name**: `master-protection`
 - **Enforcement status**: `Active`
-- **Bypass list → Add bypass** → `github-actions` (GitHub Apps) → **Bypass mode**: `Always allow`
+- **Bypass list → Add bypass** → select **your installed GitHub App** (GitHub Apps) → **Bypass mode**:
+  `Always allow`. The promote workflow pushes `master` under this App's token, so the App is the actor
+  that must bypass. _(On a **personal account**, `github-actions` is **not** an available bypass actor —
+  pick your App. On an **organization** you may instead pick `github-actions` and let the promote push
+  under the default token.)_
 - **Target branches → Add a target** → **Include default branch**
 - Enable:
   - [x] Restrict deletions

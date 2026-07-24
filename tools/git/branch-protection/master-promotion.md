@@ -58,10 +58,19 @@ jobs:
   promote:
     runs-on: ubuntu-latest
     steps:
+      # Mint the App token so the push to master is attributed to the App —
+      # master's bypass actor (see "Token & bypass" below).
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Verify tag is on develop
         run: |
@@ -88,7 +97,7 @@ jobs:
 
       - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: gh release create "$GITHUB_REF_NAME" --generate-notes
 ```
 
@@ -97,21 +106,29 @@ advancing the release branch. Never remove it.
 
 ## Token & bypass
 
-The promote **push moves a branch pointer and retriggers nothing downstream**, so it uses the default
-`GITHUB_TOKEN` — no App token is needed _for the push itself_. But `master` is a protected branch, so
-its ruleset must let the push through: add **`github-actions[bot]`** (the default-token actor, GitHub
-App id **15368**) to the bypass list. Without that bypass entry, the protected-branch rule rejects the
-promote push and `master` never advances.
+`master` is a protected branch, so the promote push must come from an actor its ruleset lets bypass.
+Use the **installed GitHub App** for both halves: it is `master`'s **bypass actor**, and the job
+**pushes `master` under the App token** (minted with `create-github-app-token`, wired into `checkout`
+via `token:` so `git push` is attributed to the App). Push identity = bypass actor → the push is
+accepted. Set the ruleset's bypass `actor_id` to the App's ID (`actor_type: Integration`).
 
-Two distinct token concerns, kept separate:
+Why the App and not the default token: a push made with the default `GITHUB_TOKEN` is attributed to
+`github-actions[bot]`, which is **not** the App. On a **personal account** `github-actions[bot]` can
+never be added as a ruleset bypass actor at all — GitHub rejects it with _"Actor GitHub Actions
+integration must be part of the ruleset source or owner organization"_ (HTTP 422) — so a default-token
+push has no way through. The App-token push is uniform: it works the same on personal and organization
+accounts.
 
-- **Triggering** the standalone workflow needs an App-token (or PAT/human) tag push — the release tool's
-  concern. See [github-app-token.md](./github-app-token.md).
-- **Pushing** `master` inside the job uses the default `GITHUB_TOKEN` + the `github-actions[bot]` bypass
-  entry — this page's concern.
+> **Org-only shortcut.** On an **organization** repo you _may_ instead keep the default `GITHUB_TOKEN`
+> push and add **`github-actions[bot]`** (GitHub App id **15368**) to the bypass list — there the global
+> GitHub Actions app _is_ an eligible bypass actor. This shelf standardizes on the App to keep one model
+> everywhere; reach for the shortcut only if you deliberately want no App on an org repo.
 
-The one exception: if `master` has its **own** CI that must run _after_ promotion, the default-token push
-will not retrigger it (same anti-recursion rule), so promote under an App token instead.
+Because the push is made with the App token, it **does** retrigger workflows (App-token events are not
+subject to the anti-recursion rule), so any `on: push: [master]` CI runs on the promoted commit — a
+default-token push would not. Two token concerns, both now the App's: **triggering** this workflow needs
+the App-token tag push (the release tool's job — see [github-app-token.md](./github-app-token.md)), and
+**pushing** `master` uses the App token as its own bypass actor (this page's job).
 
 ## Don't double-create the release
 

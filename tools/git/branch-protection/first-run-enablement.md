@@ -25,11 +25,13 @@ register (workflow filename`release-plz.yml`; see
 **Default branch.** Settings → General → set the default branch to **`develop`** (release-plz
 auto-detects it).
 
-**Protected `master`.** When you protect `master` (no human writes, linear history), keep the CI
-bypass actor — `github-actions[bot]`, or a [GitHub App token](./github-app-token.md) when `master`
-needs its own CI on promotion, since a `GITHUB_TOKEN` tag push does not retrigger workflows. Apply it
-with [`github/setup.sh`](github/setup.sh) or [github-web-ui.md](./github-web-ui.md); see
-[workflow.md](./workflow.md).
+**Protected `master`.** When you protect `master` (no human writes, linear history), set the bypass
+actor to your **installed [GitHub App](./github-app-token.md)** and have the promote workflow push
+`master` under the App token — on a personal account `github-actions[bot]` cannot be a bypass actor at
+all (HTTP 422), and even on an org this keeps one model. Apply it with
+[`github/setup.sh`](github/setup.sh) (pass `BYPASS_ACTOR_ID=<App ID>`) or
+[github-web-ui.md](./github-web-ui.md); see [workflow.md](./workflow.md) and
+[master-promotion.md](./master-promotion.md#token--bypass).
 
 ## GitLab (gitlab.com)
 
