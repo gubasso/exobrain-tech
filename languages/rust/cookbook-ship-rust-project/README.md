@@ -279,6 +279,10 @@ failure-output = "immediate-final"
 Model: `develop` integrates (feature branches PR here); `master` mirrors releases (CI-only, linear
 history); `v*` tags immutable.[^bp-model]
 
+_Prefer point-and-click over the script?_ The same rulesets by hand —
+[github-web-ui](../../../tools/git/branch-protection/github-web-ui.md) (GitLab:
+[gitlab-web-ui](../../../tools/git/branch-protection/gitlab-web-ui.md)).
+
 1. **Create `develop`** (if it doesn't exist yet) and push it:
 
    ```bash
