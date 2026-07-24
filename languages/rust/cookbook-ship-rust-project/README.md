@@ -391,12 +391,15 @@ Once per project, in order:[^rs-runbook]
       - **Where can this be installed?** — **Only on this account**.
 
       Then click **Create GitHub App**.
-   2. **Generate a private key** (downloads a `.pem`, once) and **Install App** on `<owner>/<repo>`
-      (per repo) — creation alone mints no token.
-   3. **Store two repo secrets** (per repo → Settings → Secrets and variables → Actions) — same values
-      in every repo:
-      - `RELEASE_PLZ_APP_ID` — the App's numeric ID.
-      - `RELEASE_PLZ_APP_PRIVATE_KEY` — the downloaded `.pem`.
+   2. **Generate a private key** (once) — on the App's page → **Private keys** → **Generate a private
+      key**. A `.pem` downloads; store it securely (GitHub keeps only the public half).
+   3. **Install the App** on the repo (per repo) — on the App's page → **Install App** (left sidebar) →
+      **Install** next to your account → choose **Only select repositories** → select `<owner>/<repo>` →
+      **Install**. Creation alone mints no token — an uninstalled App is inert.
+   4. **Store two repo secrets** (per repo → Settings → Secrets and variables → Actions → **New
+      repository secret**) — same values in every repo:
+      - `RELEASE_PLZ_APP_ID` — the App's numeric ID (shown under **About** on the App page).
+      - `RELEASE_PLZ_APP_PRIVATE_KEY` — the full contents of the downloaded `.pem`.
 
    (`promote` pushes `master` with the default `GITHUB_TOKEN` — keep `github-actions[bot]` in §6's bypass list.)
 

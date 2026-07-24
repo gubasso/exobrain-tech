@@ -98,10 +98,12 @@ and private key each time.
 1. **Generate a private key** (one-time). On the App's page → **Private keys** → **Generate a private
    key**. A `.pem` downloads; GitHub keeps only the public half, so store the file securely (you can
    hold up to 25 keys; they don't expire but can be revoked).
-2. **Install the App on the repo** (per repo). **Install App** → install on your account → grant access
-   to `<owner>/<repo>` (**Only select repositories**). _Creating the App is not enough — an uninstalled
-   App mints no token._
-3. **Store two repository secrets** (per repo → Settings → Secrets and variables → Actions). The values
+2. **Install the App on the repo** (per repo). On the App's page → **Install App** (left sidebar) →
+   **Install** next to your account → choose **Only select repositories** → select `<owner>/<repo>` →
+   **Install**. (Also reachable via Settings → Applications → Installed GitHub Apps → **Configure**.)
+   _Creating the App is not enough — an uninstalled App mints no token._
+3. **Store two repository secrets** (per repo → Settings → Secrets and variables → Actions → **New
+   repository secret**). The values
    are **identical across every repo** — the same App ID and key are reused. The names are arbitrary
    labels; match whatever your workflow's `create-github-app-token` step references:
    - `RELEASE_PLZ_APP_ID` — the App's **numeric App ID** (shown under _About_ on the App page).
