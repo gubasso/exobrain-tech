@@ -33,7 +33,8 @@ Related:
 - `develop` — integration branch. Feature branches merge here via PR/MR with review + green CI.
 - Feature branches — short-lived, merged into `develop`.
 - Release — maintainer tags `vX.Y.Z` on `develop` → CI verifies ancestry → fast-forwards `master` to
-  the tag → publishes the release.
+  the tag → publishes the release. The promote job's mechanics (standalone vs inline, the ancestry
+  guard, token/bypass split) live in [master-promotion.md](./master-promotion.md).
 
 ## Core concepts
 

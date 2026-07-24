@@ -11,6 +11,8 @@ Part of the once-per-project setup — see
   first push.
 - [github-app-token](./github-app-token.md) — why a GitHub App (not a PAT/deploy key) is the CI
   bypass/retrigger actor, and the field-by-field setup.
+- [master-promotion](./master-promotion.md) — how CI fast-forwards `master` onto each release tag
+  (standalone vs inline, the ancestry check, and the token/bypass split).
 - [github-web-ui](./github-web-ui.md) / [gitlab-web-ui](./gitlab-web-ui.md) — point-and-click
   alternatives to the setup scripts.
 

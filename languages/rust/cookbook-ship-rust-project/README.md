@@ -277,25 +277,32 @@ failure-output = "immediate-final"
 ## 6. Branch security[^bp]
 
 Model: `develop` integrates (feature branches PR here); `master` mirrors releases (CI-only, linear
-history); `v*` tags immutable.[^bp-model] Make sure `develop` exists first, then apply all three
-rulesets + set the default branch with one script:[^bp]
+history); `v*` tags immutable.[^bp-model]
 
-```bash
-git switch -c develop && git push -u origin develop   # if it doesn't exist yet
+1. **Create `develop`** (if it doesn't exist yet) and push it:
 
-# REQUIRED_CHECKS must match the CI job name from §5 ("test").
-OWNER_REPO=<owner>/<repo> REQUIRED_CHECKS="test" \
-  "$DOCS_NOTES_REPO"/tech/tools/git/branch-protection/github/setup.sh
-```
+   ```bash
+   git switch -c develop && git push -u origin develop
+   ```
 
-Then turn Actions on with write permission (the script can't via the API):[^bp-firstrun]
+2. **Apply all three rulesets + set the default branch** with one script[^bp] (`REQUIRED_CHECKS` must
+   match the CI job name from §5, `"test"`):
 
-- **Settings → Actions → General →** allow Actions; **Workflow permissions → Read and write**; tick
-  **Allow GitHub Actions to create and approve pull requests**.
+   ```bash
+   OWNER_REPO=<owner>/<repo> REQUIRED_CHECKS="test" \
+     "$DOCS_NOTES_REPO"/tech/tools/git/branch-protection/github/setup.sh
+   ```
 
-Rulesets applied: `master` — no human writes, linear history, CI bypass actor, 1 review; `develop` —
-1 review, no force-push/deletion; `v*` tags — no delete/update.[^bp] _(Solo project? Set the review
-count to `0` — see [^bp].)_
+   Applies: `master` — no human writes, linear history, CI bypass actor, 1 review; `develop` — 1
+   review, no force-push/deletion; `v*` tags — no delete/update. _(Solo project? Set the review count
+   to `0` — see [^bp].)_
+
+3. **Enable Actions write** (the script can't via the API):[^bp-firstrun] **Settings → Actions →
+   General →** allow Actions; **Workflow permissions → Read and write**; tick **Allow GitHub Actions to
+   create and approve pull requests**.
+
+4. **Add the promote workflow** — copy `release-promote.yml` into `.github/workflows/` so CI
+   fast-forwards `master` onto each release tag.[^promote]
 
 ## 7. Release + publish[^rs-release]
 
@@ -493,6 +500,10 @@ Branch model, release-plz/OIDC, and metadata are identical. Differences:
     · general [branch model](../../../programming/release-workflow/00-branch-model.md).
 
 [^bp-firstrun]: [branch protection first-run enablement](../../../tools/git/branch-protection/first-run-enablement.md)
+
+[^promote]: [branch-protection/master-promotion](../../../tools/git/branch-protection/master-promotion.md) —
+    how CI fast-forwards `master` onto each release tag (standalone vs inline, the ancestry guard,
+    token/bypass).
 
 [^rs-runbook]: [release-workflow-spec/runbook](../release-workflow-spec/runbook.md) — the canonical
     ordered setup sequence.

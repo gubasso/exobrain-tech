@@ -121,7 +121,9 @@ bypass actor. Either keep `github-actions[bot]` in the ruleset's bypass list, or
 its own CI on promotion — mint a GitHub App token for release-plz so its tag push _does_ retrigger a
 standalone `release-promote.yml` (why an App and the field-by-field setup:
 [github-app-token](../../../tools/git/branch-protection/github-app-token.md)). See
-[branch-protection/](../../../tools/git/branch-protection/) for the ruleset setup.
+[branch-protection/](../../../tools/git/branch-protection/) for the ruleset setup, and
+[master-promotion](../../../tools/git/branch-protection/master-promotion.md) for the
+platform-agnostic promote mechanics and the standalone-vs-inline decision this section applies.
 
 > **Warning — bypass actor first.** If `master` sits behind a ruleset and the bypass actor (the
 > `github-actions` app, or the GitHub App token you mint) is **not** configured in the ruleset's

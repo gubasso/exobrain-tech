@@ -24,9 +24,10 @@ GitHub Actions is deliberately anti-recursive: **events triggered by a workflow 
 
 That safeguard breaks the release pipeline: when release-plz tags `vX.Y.Z` under `GITHUB_TOKEN`, the
 tag push is invisible to triggers, so a tag-triggered binary-build workflow (cargo-dist's
-`release.yml`) never fires — no binaries build. The same limitation applies to a protected-`master`
-promotion push that must itself run CI. The tag/commit has to come from an actor whose events **do**
-retrigger workflows. A GitHub App installation token is that actor.
+`release.yml`) never fires — no binaries build. The same limitation governs whether a standalone
+promote workflow fires at all (see [master-promotion.md](./master-promotion.md) for the promotion
+mechanics). The tag/commit has to come from an actor whose events **do** retrigger workflows. A GitHub
+App installation token is that actor.
 
 ## What it does at runtime
 

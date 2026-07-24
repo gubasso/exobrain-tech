@@ -8,6 +8,7 @@ source-files:
   - workflow.md
   - first-run-enablement.md
   - github-app-token.md
+  - master-promotion.md
 token-estimate: 600
 ---
 
@@ -43,6 +44,10 @@ toggles.
 - **GitHub App token**: `github-app-token.md` owns why a GitHub App (not a PAT/deploy key) is the CI
   actor whose tag push retriggers workflows (the default `GITHUB_TOKEN` does not), plus the
   field-by-field App registration. Consumed by the language release spec's release-plz workflow.
+- **Master promotion**: `master-promotion.md` owns how CI fast-forwards `master` onto each release tag —
+  standalone tag-triggered workflow vs inline `needs:` job (chosen by who pushes the tag), the
+  ancestry-check guard, and the split between the App token that _triggers_ it and the default
+  `GITHUB_TOKEN` + `github-actions[bot]` bypass that _pushes_ `master`.
 - **Layout**: `github/` holds `setup.sh`, the `rulesets/` payloads, and the release-promote
   workflow; `gitlab/` holds `setup.sh` and the release-promote CI template.
 
@@ -54,6 +59,7 @@ toggles.
 | One-shot setup per platform        | `github/setup.sh`, `gitlab/setup.sh`      |
 | Enable Actions/CI + write perms    | `first-run-enablement.md`                 |
 | GitHub App token (why + setup)     | `github-app-token.md`                     |
+| Master promotion (fast-forward)    | `master-promotion.md`                     |
 | Point-and-click runbooks           | `github-web-ui.md`, `gitlab-web-ui.md`    |
 | GitHub ruleset payloads + workflow | `github/rulesets/`, `github/workflows/`   |
 | GitLab release-promote CI template | `gitlab/ci/release-promote.gitlab-ci.yml` |
