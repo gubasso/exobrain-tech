@@ -26,6 +26,8 @@ the canonical strategy doc, first-run host toggles, and copy-into-project CI tem
   _enforcement_ layer).
 - **Apply it**: `github-web-ui.md` and `gitlab-web-ui.md` are the one-run-per-project host runbooks.
   Each covers branch/tag protection, the `develop` default branch, and verification.
+- **Optional public citation**: `README.md` links to public bebash `git-branch-protection` only as
+  further reading; `github-web-ui.md` and `gitlab-web-ui.md` remain the authoritative apply path.
 - **Required status checks are host inputs, not hardcodes**: in GitHub's ruleset UI, enter contexts
   matching the job names the project's CI emits. The check names are owned by the project's
   CI/language spec, not by this layer. GitLab gates on the pipeline

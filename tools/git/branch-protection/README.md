@@ -36,6 +36,10 @@ rule applies unchanged.
 The former automated scripting path is retired. This shelf now keeps the self-contained manual
 runbooks plus the workflow templates that each project copies during setup.
 
+- Further reading (optional): [git-branch-protection](https://github.com/gubasso/bebash) — a public
+  bebash CLI that applies these same rulesets; the manual runbooks here remain the authoritative,
+  self-contained path.
+
 ## Layout
 
 - `github-web-ui.md` — GitHub rulesets runbook.

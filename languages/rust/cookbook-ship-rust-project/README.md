@@ -346,7 +346,7 @@ Use the manual host runbook for the full field-by-field path:
 On a **personal account** `github-actions[bot]` cannot be the bypass actor (422); use your installed
 App instead.[^app-token] Applies: `master` — no human writes, linear history, App bypass actor, one
 review; `develop` — one review, no force-push/deletion; `v*` tags — no delete/update. _(Solo project?
-Set the review count to `0` — see [^bp].)_
+Set the review count to `0` — see [^bp].)_[^bebash]
 
 ## 8. Release + publish[^rs-release]
 
@@ -494,6 +494,10 @@ Branch model, release-plz/OIDC, and metadata are identical. Differences:
 
 [^bp]: [branch-protection](../../../tools/git/branch-protection/README.md) — the manual host runbooks
     and copy-into-project workflow templates.
+
+[^bebash]: Optional automation — the same rulesets can be applied from the command line with
+    [git-branch-protection](https://github.com/gubasso/bebash), a public bebash tool. Further reading
+    only; the manual GUI steps above are the authoritative path.
 
 [^nix-toolchain]: [nix/03 — Rust toolchain in a devShell](../../../tools/nix/03-rust-toolchain.md).
 
