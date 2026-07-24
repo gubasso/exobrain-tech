@@ -9,6 +9,8 @@ Part of the once-per-project setup — see
 - [workflow](./workflow.md) — strategy, prerequisites, caveats, verification checklist.
 - [first-run-enablement](./first-run-enablement.md) — turning Actions/CI on and to write, after the
   first push.
+- [github-app-token](./github-app-token.md) — why a GitHub App (not a PAT/deploy key) is the CI
+  bypass/retrigger actor, and the field-by-field setup.
 - [github-web-ui](./github-web-ui.md) / [gitlab-web-ui](./gitlab-web-ui.md) — point-and-click
   alternatives to the setup scripts.
 

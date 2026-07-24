@@ -87,8 +87,8 @@ commits fail before they reach the remote:
 - `gh` CLI is read-only for rulesets (`gh ruleset {list,view,check}`); create/update goes through
   `gh api`.
 - Pushes using the default `GITHUB_TOKEN` do **not** trigger further workflow runs. If `master`
-  needs CI on promotion, mint a GitHub App token via `actions/create-github-app-token@v1` and put
-  that App in the ruleset's bypass list.
+  needs CI on promotion, mint a [GitHub App token](./github-app-token.md) and put that App in the
+  ruleset's bypass list.
 
 ### GitLab
 

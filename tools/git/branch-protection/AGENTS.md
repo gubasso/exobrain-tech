@@ -1,11 +1,13 @@
 ---
 digest-of: tools/git/branch-protection
-last-synced: 2026-07-10
+last-synced: 2026-07-24
 source-files:
   - README.md
   - github-web-ui.md
   - gitlab-web-ui.md
   - workflow.md
+  - first-run-enablement.md
+  - github-app-token.md
 token-estimate: 600
 ---
 
@@ -38,6 +40,9 @@ toggles.
 - **Bypass actor**: `master` is written only by CI — GitHub default `github-actions` app id `15368`
   (override via `BYPASS_ACTOR_ID`); GitLab Premium allow-lists a Project Access Token bot user, Free
   relies on the 17.2+ job-token push toggle.
+- **GitHub App token**: `github-app-token.md` owns why a GitHub App (not a PAT/deploy key) is the CI
+  actor whose tag push retriggers workflows (the default `GITHUB_TOKEN` does not), plus the
+  field-by-field App registration. Consumed by the language release spec's release-plz workflow.
 - **Layout**: `github/` holds `setup.sh`, the `rulesets/` payloads, and the release-promote
   workflow; `gitlab/` holds `setup.sh` and the release-promote CI template.
 
@@ -48,6 +53,7 @@ toggles.
 | Canonical workflow strategy        | `workflow.md`                             |
 | One-shot setup per platform        | `github/setup.sh`, `gitlab/setup.sh`      |
 | Enable Actions/CI + write perms    | `first-run-enablement.md`                 |
+| GitHub App token (why + setup)     | `github-app-token.md`                     |
 | Point-and-click runbooks           | `github-web-ui.md`, `gitlab-web-ui.md`    |
 | GitHub ruleset payloads + workflow | `github/rulesets/`, `github/workflows/`   |
 | GitLab release-promote CI template | `gitlab/ci/release-promote.gitlab-ci.yml` |

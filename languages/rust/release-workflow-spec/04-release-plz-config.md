@@ -80,11 +80,12 @@ jobs:
 See [03 — Trusted Publishing / OIDC](./03-trusted-publishing-oidc.md) for why `id-token: write` and
 no registry token are all the auth this needs.
 
-> **App token.** The job runs release-plz under a GitHub App token (secrets `RELEASE_PLZ_APP_ID` /
-> `RELEASE_PLZ_APP_PRIVATE_KEY`, App with Contents + Pull requests write, installed on the repo) so
-> its tag push **retriggers** cargo-dist's `release.yml`
-> ([05](./05-binary-distribution-cargo-dist.md)) — a tag pushed with the default `GITHUB_TOKEN`
-> would not. This is independent of crates.io auth, which OIDC (`id-token: write`) handles.
+> **App token.** The `create-github-app-token` step runs release-plz under a GitHub App token so its
+> tag push **retriggers** cargo-dist's `release.yml` ([05](./05-binary-distribution-cargo-dist.md)) —
+> a tag pushed with the default `GITHUB_TOKEN` would not. Why an App (not a PAT/deploy key) and the
+> field-by-field setup:
+> [github-app-token](../../../tools/git/branch-protection/github-app-token.md). Independent of
+> crates.io auth, which OIDC (`id-token: write`) handles.
 
 > **Branch model.** release-plz auto-detects the default branch; the example runs on `develop`
 > (integration + release trigger). To keep a `master` release branch as a mirror of the latest

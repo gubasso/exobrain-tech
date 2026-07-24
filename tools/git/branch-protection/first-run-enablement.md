@@ -26,9 +26,9 @@ register (workflow filename`release-plz.yml`; see
 auto-detects it).
 
 **Protected `master`.** When you protect `master` (no human writes, linear history), keep the CI
-bypass actor — `github-actions[bot]`, or a GitHub App token when `master` needs its own CI on
-promotion, since a `GITHUB_TOKEN` tag push does not retrigger workflows. Apply it with
-[`github/setup.sh`](github/setup.sh) or [github-web-ui.md](./github-web-ui.md); see
+bypass actor — `github-actions[bot]`, or a [GitHub App token](./github-app-token.md) when `master`
+needs its own CI on promotion, since a `GITHUB_TOKEN` tag push does not retrigger workflows. Apply it
+with [`github/setup.sh`](github/setup.sh) or [github-web-ui.md](./github-web-ui.md); see
 [workflow.md](./workflow.md).
 
 ## GitLab (gitlab.com)
