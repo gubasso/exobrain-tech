@@ -25,7 +25,8 @@ See <https://diataxis.fr/> and <https://www.writethedocs.org/guide/writing/docs-
 - Use four documentation zones: decisions, guides, reference, and explanation.
 - Put architecture decisions in lean ADRs under `<project>/docs/decisions/`.
 - Keep filled ADRs at or below 350 words.
-- Never delete accepted decisions. Mark them superseded or rejected and link forward.
+- Never delete accepted decisions. Mark them superseded, deprecated, or rejected and link forward;
+  partially changed decisions keep their status and gain an `Amended by` pointer.
 - Put task instructions and runbooks under `<project>/docs/guides/`.
 - Put lookup material, diagnostics, and case studies under `<project>/docs/reference/`.
 - Put cross-cutting architecture and conceptual background under `<project>/docs/explanation/`.
@@ -45,7 +46,9 @@ declares status. If the record cannot fit within 350 words, the project probably
 decisions and should split them.
 
 **Never-delete lifecycle.** Decision history is evidence. If a decision becomes wrong, mark it
-`Superseded` and link to the replacement. If the project considered and rejected an option, keep
+`Superseded` and link to the replacement; if its context evaporated with no successor, mark it
+`Deprecated`. If a later decision changes only part of it, keep the status and add an `Amended by`
+pointer so the old record cannot mislead. If the project considered and rejected an option, keep
 that rejection when it prevents repeated debate. Deletion is reserved for drafts that never became
 project state.
 

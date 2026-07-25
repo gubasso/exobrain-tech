@@ -1,6 +1,6 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-07-10
+last-synced: 2026-07-25
 source-files:
   - 00-overview.md
   - 01-diataxis-zones.md
@@ -46,8 +46,11 @@ tracking and revalidation, and a review checklist for documentation changes.
 
 - Use the MADR-minimal sections: context, options, outcome, consequences, status.
 - Filled ADR bodies stay at or below 350 words.
-- Lifecycle is `Proposed -> Accepted -> Implemented -> Superseded | Rejected`.
-- Never delete accepted decisions; link to successors or rejecting ADRs.
+- Lifecycle is `Proposed -> Accepted -> Implemented -> Superseded | Deprecated | Rejected`.
+- `Superseded` has a successor; `Deprecated` has none (context evaporated).
+- Never delete accepted decisions — and never let one mislead: a decision changed only in part
+  keeps its status and gains an `Amended by ADR-NNNN — <what changed>` line under `Status`; edit
+  the old body only where it would actively mislead.
 - Supporting data belongs in reference or explanation, linked from the ADR.
 
 ### Comments and Code as SoT (03)

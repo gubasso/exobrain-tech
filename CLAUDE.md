@@ -27,9 +27,12 @@ See `_docs/decisions/ADR-0004-docs-vs-library-boundary.md`.
 - Keep `_docs/` organized by Diátaxis zones: `decisions/`, `guides/`,
   `reference/`, and `explanation/`.
 - ADRs are lean MADR records at or below 350 words with exactly one `Status`.
-- Valid statuses are `Proposed`, `Accepted`, `Implemented`, `Superseded`, and
-  `Rejected`.
-- Never delete accepted decisions; supersede or reject them with links.
+- Valid statuses are `Proposed`, `Accepted`, `Implemented`, `Deprecated`,
+  `Superseded`, and `Rejected`.
+- Never delete accepted decisions — and never let one mislead: supersede
+  (successor exists), deprecate (no successor), or reject, with links; a partial
+  change by a later ADR keeps the status and adds an `Amended by ADR-NNNN` line
+  under `Status`.
 - Keep each fact in one source of truth and cross-link instead of duplicating.
 - Drafts live in `.draft/`; promotion means rewriting into the right zone.
 - `README.md` and `AGENTS.md` are indexes or digests, not rule dumps.

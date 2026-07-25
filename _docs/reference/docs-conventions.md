@@ -26,9 +26,13 @@ Architecture decisions live in `decisions/` as lean ADRs. A useful ADR names the
 serious options, records the chosen option, states consequences, and declares status. Keep a filled
 ADR body at or below 350 words; if it cannot fit, it is probably multiple decisions — split them.
 
-Lifecycle: `Proposed → Accepted → Implemented → Superseded | Rejected`. **Never delete an accepted
-decision.** If it becomes wrong, mark it `Superseded` and link forward; keep a `Rejected` option
-when the rejection prevents repeated debate. Copy `decisions/template.md` to start a new ADR.
+Lifecycle: `Proposed → Accepted → Implemented → Superseded | Deprecated | Rejected`. **Never
+delete an accepted decision — and never let one mislead.** Replaced wholesale → `Superseded`, link
+the successor. No longer applicable with no successor → `Deprecated`, say why. Changed only in part
+by a later ADR while the decision stands → keep the status and add an `Amended by ADR-NNNN — <what
+changed>` line under `Status`, editing the old body only where it would actively mislead. Keep a
+`Rejected` option when the rejection prevents repeated debate. Copy `decisions/template.md` to
+start a new ADR.
 
 ## Single source of truth
 

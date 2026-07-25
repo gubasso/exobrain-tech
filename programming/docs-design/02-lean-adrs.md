@@ -57,21 +57,37 @@ ADR should say why those artifacts exist and which option they enact.
 
 Use this lifecycle:
 
-`Proposed -> Accepted -> Implemented -> Superseded | Rejected`
+`Proposed -> Accepted -> Implemented -> Superseded | Deprecated | Rejected`
 
 `Proposed` means the record is ready for review but not yet binding. `Accepted` means the project
 has chosen the direction. `Implemented` means the code, docs, or operations now enact the choice.
-`Superseded` means a later ADR replaced it. `Rejected` means the project explicitly decided not to
-take that path.
+`Superseded` means a later ADR replaced it. `Deprecated` means the decision no longer applies and
+no successor exists — the context evaporated (a feature was dropped, a dependency vanished) rather
+than a replacement being chosen. `Rejected` means the project explicitly decided not to take that
+path.
 
 Every implemented ADR should link to the code, configuration, or documentation that enacts it when
-there is a stable target. Every superseded ADR should link to the successor. Every rejected ADR
-should explain enough that the same option is not reopened without new evidence.
+there is a stable target. Every superseded ADR should link to the successor. Every deprecated ADR
+should say why it stopped applying. Every rejected ADR should explain enough that the same option
+is not reopened without new evidence.
 
 Status changes are edits to history, not rewrites of history. When moving from `Accepted` to
 `Implemented`, keep the original context and outcome intact. Add the implementation link. When
 moving to `Superseded`, add a short pointer to the successor and stop there. The successor ADR owns
 the new reasoning.
+
+### Amendments: partial change without supersession
+
+A later ADR often changes one aspect of a decision that otherwise stands — renames a command the
+old ADR describes, closes an item the old ADR deferred — without reversing it. Marking the old ADR
+`Superseded` would be false (the decision holds), but leaving it untouched misleads: a reader or
+agent loading it follows stale details as if current.
+
+Handle this with an **amendment pointer**: keep the status, and add a line under `## Status` in the
+form `Amended by ADR-NNNN — <one line: what changed>`. Edit the old body only where its wording
+would actively mislead; never rewrite it to pretend the later design was the original choice. The
+amending ADR owns the new reasoning and should name what it amends. `Amended by` is an annotation
+on a status, not a status value — the status vocabulary stays closed.
 
 ## Never delete
 
@@ -80,12 +96,15 @@ Deleting them destroys context and makes old reviews, commits, and comments hard
 
 Deletion is appropriate for drafts that never became project state. Once an ADR is accepted, change
 its status instead of removing it. If the title was misleading, keep the file and clarify the
-decision outcome. If the decision was wrong, supersede it. If the project backed away before
-implementation, reject it.
+decision outcome. If the decision was wrong, supersede it. If the context evaporated with no
+successor, deprecate it. If the project backed away before implementation, reject it. If a later
+ADR changed only part of it, add an amendment pointer (see _Amendments_ above).
 
-Never-delete does not mean never-correct. Fix typos, broken links, and misleading wording. Correct
-metadata that was wrong when written. Do not edit an old ADR to pretend a later design was the
-original choice. If the meaning changed, write a new ADR or change the status.
+Never-delete does not mean never-correct — and it does not mean never-mislead. Fix typos, broken
+links, and misleading wording. Correct metadata that was wrong when written. Do not edit an old ADR
+to pretend a later design was the original choice. If the meaning changed, write a new ADR and
+change the status or add an amendment pointer; an old ADR that reads as current when it is not is a
+trap for every future reader and agent.
 
 This mirrors the precedent of durable proposal systems: Rust RFCs
 <https://rust-lang.github.io/rfcs/0002-rfc-process.html>, Python PEPs
@@ -124,12 +143,14 @@ Use exactly one status value per ADR:
 - `Proposed`: open for review.
 - `Accepted`: chosen, not necessarily implemented.
 - `Implemented`: enacted by the project.
+- `Deprecated`: no longer applies; no successor exists.
 - `Superseded`: replaced by a later ADR.
 - `Rejected`: explicitly not chosen.
 
-Do not invent status synonyms such as `Done`, `Deprecated`, `Canceled`, or `Obsolete`. Synonyms make
-filtering and agent reasoning harder. If the project needs more detail, add one sentence after the
-status and link to the successor or implementation.
+Do not invent status synonyms such as `Done`, `Canceled`, or `Obsolete`. Synonyms make filtering
+and agent reasoning harder. If the project needs more detail, add one sentence after the status and
+link to the successor or implementation. `Amended by ADR-NNNN` is such an annotation, not a status:
+the record keeps its status value and gains the pointer.
 
 Use status as data. Reviewers, scripts, and agents should be able to grep for `Status` and classify
 the decision without reading the whole file. If the status line needs explanation every time, the

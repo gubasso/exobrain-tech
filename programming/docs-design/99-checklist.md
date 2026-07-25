@@ -23,10 +23,13 @@ See [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md).
 - [ ] New ADRs use the sections from [02 — Lean ADRs](./02-lean-adrs.md).
 - [ ] The filled ADR body is at or below 350 words.
 - [ ] The ADR has exactly one canonical `Status:`.
-- [ ] Status is one of `Proposed`, `Accepted`, `Implemented`, `Superseded`, or `Rejected`.
+- [ ] Status is one of `Proposed`, `Accepted`, `Implemented`, `Deprecated`, `Superseded`, or
+      `Rejected`.
 - [ ] Implemented ADRs link to the code, config, or docs that enact them when a stable target
       exists.
-- [ ] Superseded ADRs link to the successor.
+- [ ] Superseded ADRs link to the successor; deprecated ADRs say why they stopped applying.
+- [ ] An ADR changed only in part by a later ADR keeps its status and carries an
+      `Amended by ADR-NNNN` line under `Status`.
 - [ ] Rejected ADRs explain enough to prevent repeated debate without new evidence.
 - [ ] The project did not delete an accepted or implemented decision.
 - [ ] Supporting data too large for the ADR lives in reference or explanation and is linked.

@@ -115,7 +115,8 @@ When two files disagree, use the placement table:
 
 After choosing the owner, edit the non-owner file to link to it. Do not leave both claims in place.
 If the conflict reveals a changed decision, write or update an ADR and mark the older decision
-superseded. See [02 — Lean ADRs](./02-lean-adrs.md).
+superseded — or, when only part of it changed, add an `Amended by` pointer under its status. See
+[02 — Lean ADRs](./02-lean-adrs.md).
 
 Operational docs use the same conflict rule. If a runbook embeds a diagnostic table, move the table
 to reference and link to it. See [06 — Operational Docs](./06-operational-docs.md).

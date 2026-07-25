@@ -18,7 +18,7 @@ Non-negotiable: this project is self-contained. The knowledge it depends on is h
 
 ## Decisions
 
-Non-negotiable: record every significant, hard-to-reverse decision as an ADR under `_docs/decisions/`, one decision per file, using the MADR-minimal `template.md` (at or below 350 words, exactly one `Status`), so the rationale lives with the code. Accepted ADRs are not deleted; a changed decision gets a new superseding ADR.
+Non-negotiable: record every significant, hard-to-reverse decision as an ADR under `_docs/decisions/`, one decision per file, using the MADR-minimal `template.md` (at or below 350 words, exactly one `Status`), so the rationale lives with the code. Accepted ADRs are not deleted: a replaced decision gets a new superseding ADR, a decision whose context evaporated is marked `Deprecated`, and a decision changed only in part keeps its status and gains an `Amended by ADR-NNNN` pointer so no reader follows stale details.
 
 Source map:
 
