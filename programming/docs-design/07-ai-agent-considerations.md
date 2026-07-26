@@ -87,6 +87,38 @@ Project entry points should also say what not to do. For documentation, the most
 rules are: do not duplicate facts, do not add file trees, do not commit drafts into docs, and do not
 invent a new document zone for one topic.
 
+## Modular author-instructions for large subtrees
+
+Author-instruction files load eagerly and grow. When one accumulates rules that only matter inside a
+particular subtree, every session pays for that detail even while working elsewhere — the context
+pollution above, self-inflicted. The fix mirrors single-source-of-truth placement: move
+subtree-local rules into a nested author-instructions file scoped to where they are used.
+
+The pattern:
+
+- **Move** the subtree-local rules from the root author-instructions file into a nested one placed
+  in that subtree; it becomes the single home for those rules.
+- **Bridge** for the tool that reads only its own filename. Claude Code reads `CLAUDE.md`, not
+  `AGENTS.md`, and lazy-loads a nested `CLAUDE.md` only when it touches a file in that subtree. A
+  one-line `<subtree>/CLAUDE.md` containing `@AGENTS.md` forwards the nested rules — an import path
+  resolves relative to the importing file, so the sibling is `@AGENTS.md`, not a repo-root path.
+- **Point, don't import** from root: leave a plain link to the nested file in the root file. An
+  eager `@import` would pull the detail back into every session and defeat the split.
+- **Keep cross-cutting rules in root** — anything that applies while editing code _outside_ the
+  subtree stays where every session sees it.
+
+The caveat that decides what may move: **not every agent lazy-loads.** Some `AGENTS.md`-native tools
+(e.g. Codex) build their instruction chain eagerly from the repo root down to the working directory
+once at launch, so a nested file is invisible to a run started at the root. Move only rules used
+_inside_ the subtree; a rule needed while editing elsewhere must stay in root. The exact per-tool
+loading behavior (eager vs. lazy, import-path resolution) lives in
+[Claude Code memory-file loading](../../tools/claude-code/memory-file-loading.md).
+
+This targets the _rules_ files (project author-instructions), and is orthogonal to the local
+`AGENTS.md` digest role above, where a per-area `AGENTS.md` is a derived map, never a rules home. It
+is the same discipline as [04 — Single Source of Truth](./04-single-source-of-truth.md): one owning
+home per rule, a pointer from everywhere else — applied to the author-instruction files themselves.
+
 ## Documentation maintenance instructions
 
 Every project that expects agent help should add a `## Documentation Maintenance` section to its

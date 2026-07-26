@@ -1,10 +1,11 @@
 ---
 digest-of: tools/claude-code
-last-synced: 2026-07-10
+last-synced: 2026-07-26
 source-files:
   - README.md
   - invocation-cheatsheet.md
-token-estimate: 350
+  - memory-file-loading.md
+token-estimate: 450
 ---
 
 # AGENTS
@@ -28,6 +29,9 @@ orchestration, plan rounds, skill authoring, and implementation review practices
 - **Behavioral orientation**: Every prompt starts with READ-ONLY or WRITE orientation block.
 - **Git**: Codex must never run git commands; all git operations belong to the Claude Code
   orchestrator.
+- **Memory-file loading**: root/ancestor `CLAUDE.md` + `@imports` load eagerly at launch; a nested
+  `CLAUDE.md` loads lazily on subtree access; import paths resolve relative to the importing file;
+  Codex builds its `AGENTS.md` chain eagerly root→cwd at launch. See `memory-file-loading.md`.
 
 ## Source Map
 
@@ -36,6 +40,7 @@ orchestration, plan rounds, skill authoring, and implementation review practices
 | Claude Code operational index                         | `README.md`                                                                                            |
 | Codex CLI conventions, sandbox, safety rules          | `codex-conventions.md`                                                                                 |
 | Invocation patterns and command cheat sheet           | `invocation-cheatsheet.md`                                                                             |
+| CLAUDE.md/AGENTS.md load order (eager vs. lazy)       | `memory-file-loading.md`                                                                               |
 | Model aliases, effort, pricing (now in `cog` repo)    | `cog:docs/reference/models-reference-claude.md`, `models-reference-codex.md`, `model-effort-policy.md` |
 | Skills/orchestration integration                      | `skills-and-orchestration.md`                                                                          |
 | Orchestration contracts and patterns                  | `orchestration/`                                                                                       |

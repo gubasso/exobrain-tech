@@ -1,6 +1,6 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-07-25
+last-synced: 2026-07-26
 source-files:
   - 00-overview.md
   - 01-diataxis-zones.md
@@ -15,7 +15,7 @@ source-files:
   - 99-checklist.md
   - README.md
   - template-adr.md
-token-estimate: 1150
+token-estimate: 1250
 ---
 
 # AGENTS
@@ -88,6 +88,9 @@ tracking and revalidation, and a review checklist for documentation changes.
 - Semantic filenames and stable headings improve retrieval.
 - `CLAUDE.md` or equivalent author instructions should include documentation maintenance rules.
 - Agents should update docs for durable behavior, operations, or decisions, not every detail.
+- Split a large author-instructions file along the eager/lazy seam: subtree-local rules go to a
+  nested file (plus a `CLAUDE.md` `@AGENTS.md` bridge), cross-cutting rules stay in root, and root
+  points rather than `@import`s.
 
 ### Tracking and Revalidation (08)
 

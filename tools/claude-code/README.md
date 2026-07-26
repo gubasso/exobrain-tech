@@ -3,6 +3,7 @@
 Operational guidance for Claude Code and Codex CLI workflows.
 
 - [invocation-cheatsheet](./invocation-cheatsheet.md)
+- [memory-file-loading](./memory-file-loading.md) — how CLAUDE.md/AGENTS.md load (eager vs. lazy)
 - [orchestration](orchestration/README.md)
 - [skill-authoring](skill-authoring/README.md)
 
