@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-07-24
+last-synced: 2026-07-27
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -15,7 +15,7 @@ source-files:
   - 12-config-generation-from-types.md
   - 99-checklist.md
   - README.md
-token-estimate: 1320
+token-estimate: 1450
 ---
 
 # AGENTS
@@ -60,6 +60,15 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 - BSD sysexits exit codes (64=usage, 65=data, 66=noinput, 69=unavailable, 70=software, 74=ioerr,
   78=config). No catch-all `1`.
 - Per-layer typed errors aggregated at top-level `AppError`.
+- Codes are **program-wide categories, not per-subcommand namespaces**; the per-command view is a
+  mapping onto the fixed set, expressed as one central command×code matrix (single source of truth).
+- **Exit code = category; stderr + `err.kind` = instance** — this is what keeps the code set small.
+- Fine-grained spectrum: coarse (grep/diff `0/1/2`) → small-structured (gh `0/1/2/4`, sysexits;
+  default) → fine (rsync ~15, curl ~90). Add a code only when a real consumer branches on it.
+- **Append-only stability**: codes are a permanent API — never reassign, only append; consumers
+  branch on `0`/non-zero or documented categories.
+- Sanctioned bare `1`: a read-only checker's `--strict` promoting `warn`→`1` (documented exception).
+- Child processes: pass status through verbatim (`128+N`, `126`/`127`) — owned by Ch. 07.
 
 ### Config Precedence (03)
 

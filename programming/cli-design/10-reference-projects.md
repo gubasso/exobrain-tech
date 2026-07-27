@@ -220,6 +220,9 @@ depends on nothing app-specific; `commands/` depends on everything below it; nev
 ## See also
 
 - [00 — Architecture](./00-architecture.md) — the directory roles these patterns map onto.
+- [02 — Error Messages](./02-error-messages.md#exit-codes--bsd-sysexits) — the exit-code _strategy_
+  these projects use (program-wide categories, the coarse↔fine spectrum, append-only stability); this
+  chapter only covers where the code matrix _lives_ (`exit_codes.rs` / `command_error.rs`).
 - Language-specific deep dives:
   - [`rust/cli-spec/10-reference-projects.md`](../../languages/rust/cli-spec/10-reference-projects.md)
     — Rust-specific takeaways from the same projects.

@@ -149,6 +149,76 @@ Reference: [`sysexits(3)`](https://man.freebsd.org/cgi/man.cgi?query=sysexits&se
 **Treat the matrix as part of the user-facing API.** Unit-test that each error variant maps to its
 declared code. Shell scripts depend on these.
 
+### Codes are program-wide categories, not per-subcommand namespaces
+
+One taxonomy for the whole program. `78` means "config error" whether it came from `start`, `init`,
+or `config` — the code identifies the _kind_ of failure, not the command that raised it. Do **not**
+mint a fresh code space per subcommand ("exit 3 means X for `push`, Y for `pull`"). That is API
+surface that rots, it collides as commands multiply, and it tempts consumers to branch on
+implementation detail that should have stayed diagnostic text.
+
+So is "one specific code per failure case, per subcommand" the goal? No — that is the cumbersome
+anti-pattern. The per-command view is a **mapping onto the fixed set**, not a new code space. For a
+multi-subcommand CLI, express it as **one central command × code matrix** (single source of truth);
+each subcommand's own docs describe its failure _conditions_ in prose and point at the matrix,
+rather than carrying a competing code table.
+
+### Exit code = category; message = instance
+
+This is the split that lets the code set stay small:
+
+- The **exit code** carries the _category_ — coarse, stable, for machine branching.
+- **stderr** (the `what`/`where`/`why`/`hint`) plus the **`err.kind`** carry the _instance_ — the
+  specific file, value, or step.
+
+You never need a distinct code per distinct failure, because the message and the kind already carry
+the specifics. `curl` exit `7` always means "failed to connect"; _which_ host and _why_ live in the
+stderr line. Scripts branch on `7`; humans and agents read the message.
+
+### How fine-grained? A spectrum
+
+Reference CLIs sit at different points, all defensible:
+
+| Style            | Examples                    | Shape                                                  |
+| ---------------- | --------------------------- | ------------------------------------------------------ |
+| Coarse           | `grep`, `diff`, `ripgrep`   | `0` ok/match · `1` no-match/differ · `2` **any** error |
+| Small-structured | `gh`, `sysexits` categories | a handful of branchable classes (`gh`: `0/1/2/4`)      |
+| Fine-grained     | `rsync` (~15), `curl` (~90) | one code per failure class scripts actually branch on  |
+
+**Default to small-structured** for a multi-subcommand tool: `0`, a usage class, and the handful of
+sysexits categories a real consumer would branch on. Go fine-grained only where automation genuinely
+acts differently per class — `curl 28` (timeout, retry) vs `curl 3` (bad URL, don't). Rule of thumb:
+**add a distinct code only when a real consumer will branch on it**; otherwise fold it into a
+category and let stderr carry the specifics.
+
+### Stability is a promise (append-only)
+
+Documented codes are a permanent API. Once shipped:
+
+- **Never reassign** a code's meaning across versions.
+- **Only append** — new codes take fresh, unused numbers (`curl` ships ~90 and has retired none).
+- Tell consumers to branch on **`0` vs non-zero, or the documented categories** — never on an
+  undocumented number, and never assume codes beyond the documented set won't appear later.
+
+This is what makes coarse codes safe to extend: a script written against today's matrix keeps working
+when tomorrow adds a category.
+
+### The `--strict` exception
+
+A read-only checker (`doctor`, a linter) may adopt the warnings-as-errors convention: `--strict`
+promotes a soft `warn` to exit `1`. This is the one sanctioned use of a bare `1` — a _policy signal_
+on a side-effect-free command, not an operational failure — and it must be documented as the
+explicit exception to "never a generic `1`." Operational failures still use the sysexits categories.
+
+### Child processes: pass the status through
+
+When your CLI **starts another process** (a wrapper, an `exec`/`shell` verb), the boundary flips:
+before the child starts, use sysexits for your own failures; **once the child is running, propagate
+its status verbatim** (`0..255`, `128+N` for signal death, `127` not-found / `126` not-executable).
+That whole contract is owned by
+[07 — Process & POSIX](./07-cli-wrapper-design/process-and-posix.md#3-process-model--exec-vs-spawn-signals-exit-codes-tty);
+don't restate it here.
+
 ---
 
 ## Printing the chain
@@ -229,6 +299,10 @@ See [05 — Designing for LLM Agents](./05-designing-for-llm-agents.md) for the 
 - **Swallowing context**: `.map_err(|_| MyError::Generic)?` loses the cause. Always preserve the
   chain.
 - **Catch-all exit code `1`**: the matrix is the API; map every variant.
+- **Per-subcommand code namespaces**: the same number meaning different things in different
+  subcommands. Codes are program-wide categories; map each command onto the shared set.
+- **Reassigning a code's meaning** across versions: it's a permanent API. Append new codes; never
+  repurpose an old one.
 - **Inventing new exit codes** without documentation. Stick to `sysexits` unless you have a very
   good reason.
 - **Multi-paragraph error blobs on stderr** in non-verbose mode. The user wants three lines: what,
@@ -242,7 +316,8 @@ See [05 — Designing for LLM Agents](./05-designing-for-llm-agents.md) for the 
 For every error variant, confirm:
 
 - [ ] It has a stable `err.kind` identifier.
-- [ ] It maps to a specific (non-`1`) exit code.
+- [ ] It maps to a specific (non-`1`) exit code, drawn from the **program-wide** category set (not a
+      per-subcommand number); new codes are appended, never reassigned.
 - [ ] Its `what` / `where` / `why` / `hint` are clear when rendered.
 - [ ] Its chain preserves the underlying cause (`#[from]`, `errors.Unwrap()`, `from e`, etc.).
 - [ ] It appears in a unit test that locks down the exit code.
@@ -261,6 +336,9 @@ For every error variant, confirm:
 ## References
 
 - [`sysexits(3)` (FreeBSD man page)](https://man.freebsd.org/cgi/man.cgi?query=sysexits&sektion=3)
+- [GNU `grep` exit status (`0`/`1`/`2`)](https://www.gnu.org/software/grep/manual/grep.html#Exit-Status)
+- [GitHub CLI exit codes (`gh`: `0`/`1`/`2`/`4`)](https://cli.github.com/manual/gh_help_exit-codes)
+- [`curl` exit codes (append-only, ~90)](https://everything.curl.dev/cmdline/exitcode.html)
 - [BurntSushi: Error Handling in Rust](https://burntsushi.net/rust-error-handling/)
 - [Alexis King: Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
 - [`miette`](https://docs.rs/miette/) · [`color-eyre`](https://docs.rs/color-eyre/) ·
