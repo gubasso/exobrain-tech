@@ -68,6 +68,40 @@ never a side effect of a normal command. Prefer aiming such a write at **state**
 foo bind --write ~/.config/foo/config.toml   # explicit target; refuses if it exists
 ```
 
+### 5. No `init` at all
+
+Once the config scaffold is forbidden, ask the question this chapter's other
+patterns skip: **does `init` still earn its place?** Removing a verb is a legitimate
+outcome, and often the right one.
+
+Work through what would be left, in this order:
+
+1. **Is config genuinely optional?** If every key has a built-in default
+   ([Pattern 2](#2-sane-defaults--config-optional)), there is no first-run setup.
+2. **Does anything persist between runs?** A registry, a binding, a recorded
+   choice. If every value is resolved fresh from flags, env, and config on each
+   invocation, there is nothing to write.
+3. **Does another verb already own what is left?** Credentials usually belong to an
+   `auth`/`account` verb; directories are better created on demand by the command
+   that needs them, since a directory created by `init` and never used is litter.
+
+If all three come back empty, **delete the verb.** A verb kept for a job it no
+longer has is worse than no verb: it occupies a name a wrapped program or a future
+subcommand may want, and it teaches users to expect a setup step the tool does not
+need — so they go looking for one, do not find it, and conclude the docs are stale.
+
+The discriminator between this and [Pattern 4](#4-explicit-non-clobbering-write) is
+whether there is **durable state to record**. A tool that resolves a project to a
+manifest, or a machine to an account, has a binding worth persisting, so `init`
+survives as a read-only assistant with a `--write` escape. A tool whose every input
+is resolved per-invocation has nothing to persist, so it does not.
+
+Two worked cases, same rule, opposite outcomes: a VM manager keeps
+`init --write` because it records a project→manifest binding in state; a CLI
+wrapper whose active profile is just a config key plus a `--profile` flag drops
+`init` entirely, and ships a generated example to copy
+([12](./12-config-generation-from-types.md)) in its place.
+
 ## The anti-pattern
 
 `init` discovering runtime facts and appending them into
@@ -96,6 +130,7 @@ absence from its complaints ≈ compliant.
 
 ## Checklist
 
+- [ ] `init` still has a job once the config scaffold is gone — or it was deleted.
 - [ ] `init` writes **nothing** to `$XDG_CONFIG_HOME`.
 - [ ] Starter config is printed to stdout, or written only on explicit request to
       a non-existent path.

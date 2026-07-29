@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-07-27
+last-synced: 2026-07-29
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -15,7 +15,7 @@ source-files:
   - 12-config-generation-from-types.md
   - 99-checklist.md
   - README.md
-token-estimate: 1450
+token-estimate: 1650
 ---
 
 # AGENTS
@@ -138,6 +138,11 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   silent side effect.
 - `init` reuses the `doctor` probe subset (see 06). Run `xdg-ninja` as the
   conformance check.
+- **Deleting `init` is a sanctioned outcome.** Once the config scaffold is
+  forbidden, test whether it still earns its place: config optional via defaults? no
+  durable state to persist? another verb already owns the rest? If all three, remove
+  the verb. Discriminator vs the explicit-write pattern: is there a **binding worth
+  recording** (keep `init --write`) or is everything resolved per-invocation (drop it)?
 
 ### Config generation from types (12)
 
@@ -148,9 +153,22 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   fake placeholders, generated header) from it.
 - Generation hard-fails if a public field lacks a description; the example must
   round-trip through the real loader.
-- Freshness gated by a pre-commit `--check` (`pass_filenames: false`,
-  `always_run: true`); CI runs the same. Non-reflectable surfaces ship as
-  hand-maintained examples under the same discipline.
+- Freshness gated by a pre-commit hook (`pass_filenames: false`, `always_run: true`);
+  CI runs the same command with `--check`.
+- **Staleness is rendered-bytes vs on-disk bytes — never a cache or stamp.** A cache
+  adds an artifact, an invalidation rule, and a way for the gate to report fresh when
+  it is not. Requires deterministic, byte-stable rendering: no dates, stable key
+  order, no absolute paths.
+- **Regenerate-and-stage in pre-commit, verify-only in CI**, so a model change and
+  its example land in one commit. Cost: generated files must be staged whole, so
+  `git commit -p` on one is a mistake the gate cannot detect.
+- The generator is a **separate build target** (Rust `cargo xtask`, a dev-only
+  Python package, a Go `tools/` main) — never a hidden subcommand shipping schema
+  deps to every user. In Rust it needs a library target to import the config types
+  from, which is often what trips a "no workspace yet" rule.
+- Non-reflectable surfaces ship as hand-maintained examples under the same
+  discipline. **Most real tools have a mix**, split by who owns each schema; a
+  wrapper's own config reflects, the fragments it composes do not.
 
 ### Checklist (99)
 
@@ -159,20 +177,20 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 
 ## Source Map
 
-| Topic                                                    | File                                 |
-| -------------------------------------------------------- | ------------------------------------ |
-| Facing category, parse/runtime shape, AppContext         | `00-architecture.md`                 |
-| Message types, log schema, channel matrix                | `01-logging-and-output.md`           |
-| Error anatomy, sysexits, error layering                  | `02-error-messages.md`               |
-| 5-layer config merge, XDG, provenance                    | `03-config-precedence.md`            |
-| 18 coding-style rules                                    | `04-coding-style-rust-zig.md`        |
-| CLI+Skill+AGENTS.md model, agent-facing patterns         | `05-designing-for-llm-agents.md`     |
-| Preflight guards + doctor aggregation (hard/soft)        | `06-preflight-and-health-checks.md`  |
-| Visibility, naming tables, help generation, docs         | `08-naming-and-docs.md`              |
-| Organizational patterns from 12 CLIs                     | `10-reference-projects.md`           |
-| Scaffold/`init` without mutating config; xdg-ninja       | `11-xdg-scaffolding.md`              |
-| Generate config examples from types; copy-don't-scaffold | `12-config-generation-from-types.md` |
-| Pre-ship checklist                                       | `99-checklist.md`                    |
+| Topic                                                                     | File                                 |
+| ------------------------------------------------------------------------- | ------------------------------------ |
+| Facing category, parse/runtime shape, AppContext                          | `00-architecture.md`                 |
+| Message types, log schema, channel matrix                                 | `01-logging-and-output.md`           |
+| Error anatomy, sysexits, error layering                                   | `02-error-messages.md`               |
+| 5-layer config merge, XDG, provenance                                     | `03-config-precedence.md`            |
+| 18 coding-style rules                                                     | `04-coding-style-rust-zig.md`        |
+| CLI+Skill+AGENTS.md model, agent-facing patterns                          | `05-designing-for-llm-agents.md`     |
+| Preflight guards + doctor aggregation (hard/soft)                         | `06-preflight-and-health-checks.md`  |
+| Visibility, naming tables, help generation, docs                          | `08-naming-and-docs.md`              |
+| Organizational patterns from 12 CLIs                                      | `10-reference-projects.md`           |
+| Scaffold/`init` without mutating config; when to delete `init`; xdg-ninja | `11-xdg-scaffolding.md`              |
+| Generate config examples from types; copy-don't-scaffold                  | `12-config-generation-from-types.md` |
+| Pre-ship checklist                                                        | `99-checklist.md`                    |
 
 ## Maintenance Notes
 
