@@ -40,6 +40,41 @@ mywrap [WRAPPER-OPTS]  <verb|positional>  [--]  [CHILD-ARGS...]
 - **Avoid future collisions with upstream flags:** use **long-only, namespaced** wrapper flags
   (`--mywrap-trace`); leave short flags to the child. If both sides use the same name, namespace
   yours or move it to an env var.
+- **Push a flag down to the verb when it is only meaningful there** — see
+  [§1.1](#11-top-level-vs-verb-level-flags). This is the cheapest way to keep the top-level
+  denylist small.
+
+### 1.1 Top-level vs verb-level flags
+
+Not every wrapper flag costs the same. The zone it lives in decides that, and the difference is
+easy to miss because both spellings look identical in `--help`.
+
+A **top-level** flag sits before the verb, which means the wrapper must intercept it _before_ it
+knows whether this invocation is a wrapper command or a passthrough. It is therefore removed from
+the child's reachable surface permanently — for every invocation, forever, whether or not the
+wrapper's own verbs are in play. A **verb-level** flag is written after a wrapper verb, and once
+the first non-flag token is a wrapper verb the whole invocation belongs to the wrapper; the child
+never sees any of it. That flag costs the child nothing.
+
+So the placement test is not "is this flag wrapper-owned?" — every wrapper flag is. It is **when
+does the parser need the answer?**
+
+| Needed before the wrapper-vs-passthrough split | Needed only inside a wrapper verb |
+| ---------------------------------------------- | --------------------------------- |
+| `--config` (loaded before anything else)       | `--yes` (confirmations)           |
+| `--verbose` / `--quiet` (affects passthrough)  | `--list`, `--output`, `--format`  |
+| Anything a passthrough invocation honours      | Anything only one verb honours    |
+
+The left column has to be top-level and is worth the collision. The right column does not, and
+putting it there is a permanent subtraction from the child's surface bought for nothing.
+
+This matters most for the confirmation flag, because `--yes` is exactly the flag people reach for
+first and reflexively put at the top level ([01 — Non-interactive mode](../01-logging-and-output.md)). It is only ever consulted by the verb that prompts, so it
+belongs to that verb.
+
+The cost is real but small: a verb-level flag does not appear in top-level `--help`, so users find
+it through `mywrap <verb> --help`. That is the normal place to look for a verb's options, and it
+buys back a name the child keeps forever.
 
 Sources:
 
@@ -407,6 +442,8 @@ ARGV
 [ ] `--` is honored as end-of-options and stops your parsing
 [ ] Documented shape: mywrap [WRAPPER] verb [-- CHILD-ARGS...]
 [ ] Unknown flag before `--` is an error; after `--` is forwarded
+[ ] Top-level only if needed before the wrapper-vs-passthrough split;
+    verb-only flags (--yes, --list) go after the verb, costing the child nothing
 
 CONFIG
 [ ] Precedence: flag > env (MYWRAP_*) > project > $XDG_CONFIG_HOME > system > default

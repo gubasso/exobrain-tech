@@ -22,6 +22,10 @@ If a box is unchecked, fix it or explicitly waive it in an ADR.
 - [ ] Wrapper's own flags come **before** the subcommand:
       `wrapper [WRAPPER-FLAGS] <subcommand> [CHILD-FLAGS]`.
 - [ ] `--` sentinel: everything after `--` passes through to the child verbatim, unmodified.
+- [ ] Every top-level flag is needed **before** the wrapper-vs-passthrough split. Anything only one
+      verb consults (`--yes`, `--list`, `--output`) is verb-level, where the child never sees it and
+      it costs nothing. See
+      [process-and-posix.md §1.1](./process-and-posix.md#11-top-level-vs-verb-level-flags).
 - [ ] No silent argv rewriting. If you transform child args, document it.
 - [ ] Subcommand namespace is small and stable; new subcommands are deliberate.
 - [ ] Conflicting flags (wrapper vs child) are documented; the wrapper's grammar wins for _its_ own
