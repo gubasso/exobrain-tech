@@ -20,6 +20,11 @@
             pkgs.pre-commit              # per-project git hooks
             pkgs.dprint                  # markdown formatter
             pkgs.editorconfig-checker    # .editorconfig lint
+            # Node for the markdownlint-cli2 pre-commit hook. pre-commit's node
+            # language falls back to nodeenv, which downloads a generic-glibc
+            # node that cannot execute on a Nix host (no /lib64 loader); with
+            # node+npm on PATH it uses `language_version: system` instead.
+            pkgs.nodejs
           ];
           shellHook = ''echo "dev shell ready"'';
         };
