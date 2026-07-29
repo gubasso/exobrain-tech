@@ -21,6 +21,10 @@ Every Nix-managed project commits exactly three files:
 
 Also add `.direnv/` and `/result` to `.gitignore`.
 
+Pinning inputs is one instance of a general rule — state the values a guarantee rests on instead of
+inheriting them, so an upstream change cannot alter your behavior without a diff in your repo. See
+[Pin the values a guarantee rests on](../../programming/design-decisions/pin-values-guarantees-rest-on.md).
+
 ## Mental model
 
 ```bash
