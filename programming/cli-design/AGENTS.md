@@ -108,7 +108,7 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   command needs), and `init`/setup — no independent per-command checks that drift.
 - Each check has a stable ID (doubles as `err.kind`) and is classified **hard** (blocks, non-zero
   exit + remediation) or **soft** (warn + documented fallback).
-- Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/show) never gate.
+- Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) never gate.
 
 ### Naming and Docs (08)
 

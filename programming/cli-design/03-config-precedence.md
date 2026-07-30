@@ -209,7 +209,7 @@ For full Python guidance see
 - **Mutating config at runtime**: makes behavior unrepeatable. Resolve once at startup.
 - **Mixing config and CLI parser definitions**: keep them separate. The CLI parser knows about
   flags; the config knows about persistent settings.
-- **No way to inspect the resolved config**: add a `--print-config` (or `config show`) subcommand
+- **No way to inspect the resolved config**: add a `--print-config` (or `config view`) subcommand
   that dumps the resolved value with source annotations. Indispensable for support.
 - **Silent unknown-key acceptance** at the file layer. Typos like `timeut_secs = 30` should fail
   loudly.

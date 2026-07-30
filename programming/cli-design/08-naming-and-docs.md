@@ -105,6 +105,34 @@ it everywhere.
 See [Rust API Guidelines: Naming](https://rust-lang.github.io/api-guidelines/naming.html) for the
 canonical reference.
 
+## Subcommand naming
+
+Read-only subcommands are where naming goes vague fastest, because one word gets stretched over
+several different jobs. Pick by **what the command answers**:
+
+| The user asks                                | Subcommand | Returns                                                     |
+| -------------------------------------------- | ---------- | ----------------------------------------------------------- |
+| "What is in this object?"                    | `view`     | A document the tool holds, rendered — deterministic content |
+| "Is this healthy / current / selected?"      | `status`   | Live state: freshness, health, what is active right now     |
+| "What objects are there?"                    | `list`     | An enumeration, one row per object                          |
+| "Everything about this, including internals" | `inspect`  | The debugging view — more than a user normally wants        |
+| "Where did this value come from?"            | `path`     | Which files or sources were consulted                       |
+
+**`view` and `status` are the pair worth keeping distinct.** `view` renders content the tool already
+has; run it twice with no intervening change and the output is identical. `status` reports state
+that moves on its own — whether a generated file is stale, which profile is active, whether a
+credential still works. Collapsing them into one command means the output has to grow a section the
+user did not ask for.
+
+**This is why `show` is the word to avoid.** It reads as either one, so `foo config show` gives no
+hint whether it prints the config or reports on it — and once a tool has both jobs, `show` is
+occupying the name that one of them needs. Prefer the specific word from the first day; renaming a
+subcommand after release is a breaking change.
+
+Corroboration in widely-used tools: `gh repo view`, `git status`, `systemctl status`,
+`docker inspect`, `kubectl describe`. `git show` is the counter-example, and it is inherited from an
+era before `git status` existed.
+
 ## Documentation strategy
 
 ### Doc comments

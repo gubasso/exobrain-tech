@@ -29,8 +29,10 @@ waive it in an ADR — don't ship with silent gaps.
 - [ ] Human-UX non-interactive mode: `--yes` for confirmations; auto-fail-vs-prompt when stdin is
       not a TTY.
 - [ ] Machine-facing tools default to structured machine-output on stdout (JSON or best format).
-- [ ] Human-facing tools expose machine-output via `--format json`, `--json`, or equivalent for
-      commands whose output might be piped or scripted.
+- [ ] Human-facing tools expose machine-output via `--json` for commands whose output might be
+      piped or scripted.
+- [ ] `--json` is declared **per command**, not as a global `--format`/`-o`, so each command's
+      output schema stays independent.
 - [ ] Machine-output does not paginate by default; any too-large output documents
       `--limit`/`--page`/`--cursor`/`--offset` rules in `--help`.
 - [ ] Machine-output is token-friendly where possible without compromising machine readability.
@@ -68,7 +70,7 @@ waive it in an ADR — don't ship with silent gaps.
 - [ ] Env vars use `<APP>_*` prefix; nested keys use `__` separator.
 - [ ] Log level reuses the ecosystem env var (`RUST_LOG` / `PYTHONLOGLEVEL`), not an app-specific
       one.
-- [ ] `--print-config` (or `config show`) subcommand exists and shows resolved values + sources.
+- [ ] `--print-config` (or `config view`) subcommand exists and shows resolved values + sources.
 
 → Detail: [03 — Config Precedence](./03-config-precedence.md)
 
@@ -90,8 +92,8 @@ waive it in an ADR — don't ship with silent gaps.
 
 - [ ] `--help` is documentation. Every flag and subcommand has descriptive help text.
 - [ ] `help` / usage output lets an agent discover commands, flags, defaults, and examples.
-- [ ] Machine-output is default for machine-facing tools; human-facing tools expose `--format json`
-      or equivalent.
+- [ ] Machine-output is default for machine-facing tools; human-facing tools expose a per-command
+      `--json`.
 - [ ] Output is deterministic for the same input. No timestamps in default output (unless that's the
       point).
 - [ ] A `doctor` subcommand (or equivalent) exists and emits a structured health report.
@@ -112,7 +114,7 @@ waive it in an ADR — don't ship with silent gaps.
 - [ ] Every check has a stable ID and is classified **hard** (blocks) or **soft** (warn + fallback).
 - [ ] Each subcommand runs its hard-prerequisite subset **at entry** and fails fast before any side
       effect.
-- [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/show) do **not** gate.
+- [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) do **not** gate.
 - [ ] Guards, `doctor`, and `init` share one probe set; refusals carry a stable exit code +
       remediation.
 
@@ -124,6 +126,8 @@ waive it in an ADR — don't ship with silent gaps.
       codebase.
 - [ ] Verb/noun naming follows the table in [08](./08-naming-and-docs.md): `<Verb>Args`,
       `<Verb>Request`, `<Layer>Error`.
+- [ ] Read-only subcommands are named for the question they answer — `view` renders content,
+      `status` reports live state, `list` enumerates. No `show`, which straddles the first two.
 - [ ] Every public and crate-public item has a doc comment.
 - [ ] Doc comments on CLI flag fields are written for the user; they become `--help` text.
 - [ ] Crate root has a module map linking to the architecture spec.

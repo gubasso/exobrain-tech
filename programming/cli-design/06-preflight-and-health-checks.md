@@ -73,7 +73,7 @@ Fix: pigeon auth login        # then re-run
 
 The rule: **a command that genuinely depends on a readiness condition treats it as a hard
 prerequisite and verifies it at entry.** Read-only or inert commands (`status`, `version`, `help`,
-`doctor` itself, list/show verbs) have no such prerequisites and must **not** gate — gating them is
+`doctor` itself, list/view verbs) have no such prerequisites and must **not** gate — gating them is
 its own bug (it makes the tool unusable exactly when you want to diagnose it).
 
 Keep the guard cheap. It runs on every invocation of a hot command, so it should verify _presence
@@ -182,7 +182,7 @@ catalog, per-command subsets, no drift.
 - [ ] Each check is classified **hard** (blocks) or **soft** (warns + fallback) in the catalog.
 - [ ] Each subcommand runs its hard-prerequisite subset **at entry** and refuses before any side
       effect.
-- [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/show) do **not** gate.
+- [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) do **not** gate.
 - [ ] Guards, `doctor`, and `init` share **one** probe set — no independent per-command checks.
 - [ ] A refusal carries a **specific stable exit code** and the check's **remediation string**
       verbatim.

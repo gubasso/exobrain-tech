@@ -248,7 +248,7 @@ These are intrinsically wrapper-owned by name; do **not** put them under `self`:
 - **`help`** — your help; delegate to the child via `--` or a `child-help` verb.
 - **`completion`** / `completions` — emit shell completion for _your_ flags.
 - **`config`** — manage _your_ config. If you can plausibly collide with a child `config` verb
-  (e.g., wrapping `git`, which has `git config`), rename — `mywrap config-show`, `mywrap describe`,
+  (e.g., wrapping `git`, which has `git config`), rename — `mywrap config-view`, `mywrap describe`,
   or move it behind a flag — rather than reaching for `self`.
 - **`doctor`** / `diagnose` — wrapper self-diagnostics.
 - **`init`** — only if it sets up _your_ state; leave child init to the child.

@@ -134,9 +134,16 @@ The agent pipes this into context once and is done. Beats walking `--help` on ev
 
 ### 2.2 `--json` everywhere
 
-- Human-facing commands support `--json` (or `--output json`) for machine-output. Machine-facing
-  commands make machine-output the default and may still accept `--json` as an explicit spelling.
-  Writes should return the created or changed object when useful.
+- **`--json` is the canonical spelling.** Human-facing commands expose machine-output through it;
+  machine-facing commands make machine-output the default and still accept `--json` as an explicit
+  spelling. Writes should return the created or changed object when useful.
+- **Declare it per command, not globally.** Each command that produces data owns its own `--json`,
+  rather than one global `--format <text|json>` or `-o`. Two reasons. A global flag implies a single
+  output contract across the whole tool, when in practice each command's document evolves on its own
+  schedule — per-command declaration makes that independence explicit and keeps one command's
+  reshaping from implying anything about another's. And in a tool that forwards unrecognized
+  arguments to a child process, every global flag is permanently subtracted from what the child can
+  receive; a flag parsed after a subcommand costs the child nothing.
 - **Schema is a contract**. Version it. Never rename fields on a whim — silent parser breakage is
   worse than errors.
 - Human-facing tools can keep human output as their default. For machine-facing tools, the default
@@ -163,7 +170,7 @@ $ pigeon dispatch --to roost-42 --body "stand by"
 Dispatched message MSG-a1b2c3 to roost-42 (ETA: 14 min)
 
 Next:
-  pigeon message show MSG-a1b2c3
+  pigeon message view MSG-a1b2c3
   pigeon message track MSG-a1b2c3 --follow
   pigeon message cancel MSG-a1b2c3
 ```
@@ -192,10 +199,11 @@ the agent can course-correct without asking the user.
 
 LLMs have deep priors on the world's most popular CLIs. Mirror them.
 
-- `pigeon dispatch` / `pigeon flock list` / `pigeon message show` — verb-noun structure mirrors
-  `kubectl`, `docker`, `gh`.
-- Flag names: prefer `--dry-run`, `--force`, `--yes`, `--output`, `--format`, `--limit`, `--since`,
-  `--verbose`. Don't invent `--simulate-only` when `--dry-run` exists.
+- `pigeon dispatch` / `pigeon flock list` / `pigeon message view` — verb-noun structure mirrors
+  `kubectl`, `docker`, `gh`. Pick read-only verbs by the question they answer; see the
+  `view`/`status`/`list` table in [`08-naming-and-docs.md`](./08-naming-and-docs.md#subcommand-naming).
+- Flag names: prefer `--dry-run`, `--force`, `--yes`, `--json`, `--limit`, `--since`, `--verbose`.
+  Don't invent `--simulate-only` when `--dry-run` exists.
 - Exit codes: use BSD `sysexits(3)` — see
   [`02-error-messages.md`](./02-error-messages.md#exit-codes--bsd-sysexits) for the canonical
   matrix. Stable codes give agents a reliable signal to branch on.
@@ -384,7 +392,7 @@ Common, high-reliability pattern:
 2. Run `pigeon dispatch --dry-run --from-file <path>` and read output.
 3. If errors reported, revise and repeat from step 2.
 4. When dry-run passes, run without `--dry-run`.
-5. Verify with `pigeon message show MSG-*` and confirm status is `in-flight`.
+5. Verify with `pigeon message view MSG-*` and confirm status is `in-flight`.
 ```
 
 This pattern is directly from
@@ -583,7 +591,7 @@ pigeon
 │   └── --json
 ├── message
 │   ├── list [--status ...] [--since ...] [--limit N] [--json]
-│   ├── show <msg-id> [--json]
+│   ├── view <msg-id> [--json]
 │   ├── track <msg-id> [--follow]
 │   ├── cancel <msg-id>
 │   └── verify <msg-id>                # structured validation, for agent loops
@@ -591,7 +599,7 @@ pigeon
     ├── list [--active|--retired] [--json]
     ├── add <roost-id> --latitude --longitude [--json]
     ├── remove <roost-id>
-    └── show <roost-id> [--json]
+    └── view <roost-id> [--json]
 ```
 
 ### 7.3 `--help` example
@@ -627,7 +635,7 @@ EXIT CODES:
     5   dispatch rejected by flock master
 
 SEE ALSO:
-    pigeon message show <msg-id>
+    pigeon message view <msg-id>
     pigeon flock list --active
 ```
 
@@ -651,7 +659,7 @@ pigeon dispatch --to roost-42 --body "stand by" --json
     "eta_min": 14
   },
   "next_commands": [
-    "pigeon message show MSG-a1b2c3d4",
+    "pigeon message view MSG-a1b2c3d4",
     "pigeon message track MSG-a1b2c3d4 --follow",
     "pigeon message cancel MSG-a1b2c3d4"
   ]
@@ -766,10 +774,10 @@ See `reference/workflows.md` for the `--from-file` + loop pattern and rate-limit
 
 ### A message is stuck
 
-1. `pigeon message show <MSG-ID> --json` — check `status` and `last_seen_at`.
+1. `pigeon message view <MSG-ID> --json` — check `status` and `last_seen_at`.
 2. `pigeon message verify <MSG-ID>` — runs a structured validation.
 3. If `status == "in-flight"` and `last_seen_at > 2h ago`, run:
-   `pigeon flock show <roost-id> --json` and check `weather_status`.
+   `pigeon flock view <roost-id> --json` and check `weather_status`.
 4. For deeper diagnostics, see `reference/troubleshooting.md`.
 
 ## Input templates
