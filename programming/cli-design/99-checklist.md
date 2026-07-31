@@ -126,8 +126,11 @@ waive it in an ADR — don't ship with silent gaps.
       codebase.
 - [ ] Verb/noun naming follows the table in [08](./08-naming-and-docs.md): `<Verb>Args`,
       `<Verb>Request`, `<Layer>Error`.
+- [ ] Every subcommand and flag discriminates: no namespace verb with a single child, no global flag
+      on verbs that never read it.
 - [ ] Read-only subcommands are named for the question they answer — `view` renders content,
-      `status` reports live state, `list` enumerates. No `show`, which straddles the first two.
+      `status` reports live state, `list` enumerates. No `show`, which straddles the first two. Split
+      only where a caller would want one part without the others.
 - [ ] Every public and crate-public item has a doc comment.
 - [ ] Doc comments on CLI flag fields are written for the user; they become `--help` text.
 - [ ] Crate root has a module map linking to the architecture spec.

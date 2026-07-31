@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-07-29
+last-synced: 2026-07-31
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -15,7 +15,7 @@ source-files:
   - 12-config-generation-from-types.md
   - 99-checklist.md
   - README.md
-token-estimate: 1650
+token-estimate: 1720
 ---
 
 # AGENTS
@@ -112,6 +112,12 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 
 ### Naming and Docs (08)
 
+- **A surface element earns its place by discriminating**: a subcommand from its siblings, a flag
+  between invocations. A one-child namespace collapses to the bare verb; a flag is declared where it
+  is read, not globally.
+- Read-only subcommand names (`view`/`status`/`list`/`inspect`/`path`) are a tie-breaker once
+  several jobs exist, never an argument to split. One verb answering the whole question beats five
+  narrow ones.
 - Visibility defaults to least-public. `pub(crate)` before `pub`.
 - `<Verb>Args` (parse-shape), `<Verb>Request` (runtime), `<Layer>Error`, concept-name newtypes.
 - `--help` is generated from parser, not hand-authored. Narrative goes in intro/epilog hooks.
@@ -186,7 +192,7 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 | 18 coding-style rules                                                     | `04-coding-style-rust-zig.md`        |
 | CLI+Skill+AGENTS.md model, agent-facing patterns                          | `05-designing-for-llm-agents.md`     |
 | Preflight guards + doctor aggregation (hard/soft)                         | `06-preflight-and-health-checks.md`  |
-| Visibility, naming tables, help generation, docs                          | `08-naming-and-docs.md`              |
+| Surface discrimination, visibility, naming tables, help generation, docs  | `08-naming-and-docs.md`              |
 | Organizational patterns from 12 CLIs                                      | `10-reference-projects.md`           |
 | Scaffold/`init` without mutating config; when to delete `init`; xdg-ninja | `11-xdg-scaffolding.md`              |
 | Generate config examples from types; copy-don't-scaffold                  | `12-config-generation-from-types.md` |

@@ -105,10 +105,32 @@ it everywhere.
 See [Rust API Guidelines: Naming](https://rust-lang.github.io/api-guidelines/naming.html) for the
 canonical reference.
 
+## Does the element exist at all?
+
+Name a subcommand only after deciding it should exist, and decide that by asking what it
+**discriminates**. A subcommand distinguishes itself from its siblings; a flag distinguishes one
+invocation's behaviour from another's. An element with nothing to distinguish is a token the user
+must type to say nothing — and a contract that must then be specified, tested, and kept working
+forever.
+
+Two corollaries fall out mechanically:
+
+- **A namespace verb with one subcommand collapses to the bare verb.** `foo profile list` with no
+  sibling is `foo profile`. Adding the second subcommand later reintroduces the namespace, which is
+  a breaking change — so this is a bet that the second one is genuinely speculative, not a
+  deferral of known work.
+- **A flag is declared on the invocations that read it**, not globally. A global flag appears in
+  `--help` for every verb that ignores it, which teaches the user something false. This is the same
+  reasoning that makes `--json` per-verb rather than global.
+
+Corroboration: `nix flake` and `cargo` keep namespaces because their children genuinely differ;
+`jq` and `rg` stayed flat because theirs never would. The counter-example is a tool that ships
+`x config get` on day one and never adds `set` — the namespace bought nothing and cannot be removed.
+
 ## Subcommand naming
 
-Read-only subcommands are where naming goes vague fastest, because one word gets stretched over
-several different jobs. Pick by **what the command answers**:
+Once several read-only jobs genuinely exist, naming goes vague fastest, because one word gets
+stretched over all of them. Pick by **what the command answers**:
 
 | The user asks                                | Subcommand | Returns                                                     |
 | -------------------------------------------- | ---------- | ----------------------------------------------------------- |
@@ -132,6 +154,14 @@ subcommand after release is a breaking change.
 Corroboration in widely-used tools: `gh repo view`, `git status`, `systemctl status`,
 `docker inspect`, `kubectl describe`. `git show` is the counter-example, and it is inherited from an
 era before `git status` existed.
+
+**The table above is a tie-breaker, not a mandate to split.** It tells you which word to use once a
+job has earned its own command; it never argues that a job must. Where one output answers the whole
+question — the rendered content _and_ its provenance _and_ whether it is current — one bare verb
+that reports all of it beats five narrow ones the user has to choose between before they can ask.
+The discriminator is whether a caller would realistically want one part without the others: `list`
+survives that test against `view` (different objects entirely), `path` usually does not (it is a
+column of the thing `view` already prints).
 
 ## Documentation strategy
 
