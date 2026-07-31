@@ -8,6 +8,13 @@
 #       pre-push    : slower, network-aware (link check).
 #       commit-msg  : Conventional Commits shape.
 #
+# Tool provisioning:
+#   Hooks marked `language: system` (dprint, typos, committed) get no
+#   environment of their own and resolve off the ambient PATH. flake.nix is the
+#   single provider — enter the shell (`direnv allow`, or `nix develop
+#   --command ...` when non-interactive) before running them. Adding another
+#   such hook means adding its package to the devShell in the same change.
+#
 # Tooling stack (and what each owns):
 #   - pre-commit-hooks : whitespace, line endings, basic safety.
 #   - editorconfig-ec  : honor .editorconfig.
@@ -17,7 +24,7 @@
 #   - markdownlint-cli2: style gate beyond what dprint enforces, plus the one
 #                        autofix dprint can't do — ordered-list renumbering
 #                        (MD029). dprint owns all other formatting.
-#   - typos            : conservative spell check (autofix).
+#   - typos            : conservative spell check (report-only; SoT: _typos.toml).
 #   - ripsecrets       : secret scanner (fast).
 #   - lychee           : link checker (pre-push only; network).
 #   - no-bare-relative-links : forbid bare-filename relative links (explicit ./ or path).
@@ -166,14 +173,26 @@ repos:
         entry: '^\s*\[[^\]]+\]:\s+(?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/|<)[^\s/:#]+\.[A-Za-z0-9]+'
 
   # --- Spelling (report-only) ---
+  #
+  # `language: system` because upstream ships this hook as `language: python`
+  # whose wheel carries a prebuilt binary needing /lib64/ld-linux-x86-64.so.2 —
+  # absent on a Nix host, so it installs fine and dies at exec. flake.nix
+  # supplies a store-linked typos instead; the `rev:` now pins hook metadata
+  # only, and the binary version tracks flake.lock independently.
   - repo: https://github.com/crate-ci/typos
     rev: v1.47.2
     hooks:
-      # Report-only (no --write-changes): typos auto-fix silently rewrites
-      # deliberate identifiers / error-kind strings and can break code when
-      # these hooks are layered into a code repo. Fix real typos by hand;
-      # allowlist false positives in _typos.toml.
+      # Report-only: typos auto-fix silently rewrites deliberate identifiers /
+      # error-kind strings and can break code when these hooks are layered into
+      # a code repo. Fix real typos by hand; allowlist in _typos.toml.
+      #
+      # The args override is load-bearing, not decoration: upstream's defaults
+      # are [--write-changes, --force-exclude], so a bare `- id: typos` autofixes
+      # and contradicts the policy above. --force-exclude is restated so
+      # `exclude:` keeps applying to explicitly-passed filenames.
       - id: typos
+        language: system
+        args: [--force-exclude]
 
   # --- Secrets (fast, local) ---
   - repo: https://github.com/sirwart/ripsecrets
@@ -198,10 +217,17 @@ repos:
           - --no-progress
 
   # --- Commit message: Conventional Commits (single SoT -> committed.toml) ---
+  #
+  # `language: system` for the same reason as typos above — the upstream hook is
+  # `language: python` over a prebuilt binary wheel that cannot exec on a Nix
+  # host. flake.nix supplies it. The entry and args (--fixup --wip
+  # --commit-file) still come from the upstream hook definition; only the
+  # environment changes.
   - repo: https://github.com/crate-ci/committed
     rev: v1.1.11
     hooks:
       - id: committed
+        language: system
         stages: [commit-msg]
   # commitizen is intentionally NOT the commit-msg linter (committed is the SoT).
   # For version bumping / changelog only, add commitizen explicitly per-project.
