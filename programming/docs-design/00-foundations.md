@@ -49,7 +49,8 @@ a durable fact needs a home
 
 The four documentation zones and the plan zone are defined in
 [01 — Diataxis Zones](./01-diataxis-zones.md); this chapter decides which one a fact belongs to, and
-that chapter defines what each one promises its reader.
+that chapter defines what each one promises its reader. It also decides where the docs root itself
+goes, which depends on whether the product is a codebase or the content tree.
 
 Behavior contracts belong as close to execution as possible. A function name, type signature, schema,
 or test is stronger than prose because it participates in change. Documentation points readers at the

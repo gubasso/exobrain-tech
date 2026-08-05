@@ -20,7 +20,7 @@ source-files:
   - template-docs-rules.md
   - template-plan-zone.md
   - template-slice.md
-token-estimate: 1026
+token-estimate: 1108
 ---
 
 # AGENTS
@@ -46,6 +46,8 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 | Should this be a comment, a name, a test, or a doc?                     | `00-foundations.md`               |
 | May I paste a directory tree?                                           | `00-foundations.md`               |
 | Where does this document go?                                            | `01-diataxis-zones.md`            |
+| Is this the product, or is it about the product?                        | `01-diataxis-zones.md`            |
+| Does the docs root go in `docs/` or `_docs/`?                           | `01-diataxis-zones.md`            |
 | What does a runbook, case study, or diagnostic page contain?            | `01-diataxis-zones.md`            |
 | Does this choice deserve an ADR, and what shape?                        | `02-lean-adrs.md`                 |
 | What status does this decision carry now?                               | `02-lean-adrs.md`                 |
@@ -64,6 +66,7 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 ## Non-negotiables
 
 - One owner per durable fact; every other mention is a link.
+- Docs never live inside the product: `docs/` for a codebase, `_docs/` for a knowledge base.
 - Never delete an accepted decision; supersede, deprecate, reject, or amend it.
 - Drafts stay out of `docs/`; a binding plan is project state, not a draft.
 - No bold and no italics, anywhere.

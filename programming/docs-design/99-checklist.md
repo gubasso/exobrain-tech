@@ -21,6 +21,8 @@ Owner: [00 — Foundations](./00-foundations.md).
 
 Owner: [01 — Diataxis Zones](./01-diataxis-zones.md).
 
+- [ ] The docs root matches the project's product: `docs/` for a codebase, `_docs/` for a knowledge
+      base, and nothing that is product content sits under it.
 - [ ] Each file has one primary reader need and lives in the matching zone. Plan-zone documents are
       exempt: they may carry intent, scope, and status together.
 - [ ] Operational material is zone-first: runbooks and setup in guides, diagnostics and case studies in

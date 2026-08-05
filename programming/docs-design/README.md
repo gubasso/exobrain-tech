@@ -22,7 +22,7 @@ reviewed, indexed, and superseded when it stops being true.
 | #        | Chapter                                                        | One-line hook                                                       |
 | -------- | -------------------------------------------------------------- | ------------------------------------------------------------------- |
 | 0        | [Foundations](./00-foundations.md)                             | Which artifact owns a fact, and what wins when two disagree.        |
-| 1        | [Diataxis Zones](./01-diataxis-zones.md)                       | The five homes, by reader need, and where operational docs go.      |
+| 1        | [Diataxis Zones](./01-diataxis-zones.md)                       | The docs root, the five homes by reader need, and operational docs. |
 | 2        | [Lean ADRs](./02-lean-adrs.md)                                 | MADR-minimal records, a 350-word cap, and a never-delete lifecycle. |
 | 3        | [Subsystem Pages](./03-subsystem-pages.md)                     | The living design page: records freeze, descriptions stay live.     |
 | 4        | [Agent Context](./04-agent-context.md)                         | Context pollution, semantic names, and one entry document per job.  |

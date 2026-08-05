@@ -36,6 +36,8 @@ second sentence, the definition belongs in the owning chapter instead.
   Rules: [02 — Lean ADRs](./02-lean-adrs.md).
 - `digest` — a derived per-directory map for agents, such as an `AGENTS.md`, which is never a rules
   home. Rules: [04 — Agent Context](./04-agent-context.md).
+- `docs root` — the directory the zones sit under: `docs/` in a code project, `_docs/` in a knowledge
+  base. Rules: [01 — Diataxis Zones](./01-diataxis-zones.md).
 - `downhill` — the phase of work in which the unknowns are solved and only execution is left.
   Rules: [06 — Appetite and Scope](./06-appetite-and-scope.md).
 - `draft` — provisional material that is not yet project state, held outside shipped docs.
@@ -48,6 +50,8 @@ second sentence, the definition belongs in the owning chapter instead.
   Rules: [07 — Plan and Slices](./07-plan-and-slices.md).
 - `honest-fail` — a test left failing so it does not hide a bug in an external system.
   Rules: [09 — Known Issues](./09-known-issues.md).
+- `knowledge base` — a project whose product is its content tree of directories and markdown files
+  rather than a codebase. Rules: [01 — Diataxis Zones](./01-diataxis-zones.md).
 - `known-issue case` — one tracked bug in a system the project does not own, filed as its own
   directory. Rules: [09 — Known Issues](./09-known-issues.md).
 - `load-bearing comment` — a comment whose removal would confuse a future maintainer.
@@ -63,6 +67,8 @@ second sentence, the definition belongs in the owning chapter instead.
 - `pre-production gate` — the standing rule that no new specification page or outside ADR is opened
   until the current slice is implemented.
   Rules: [07 — Plan and Slices](./07-plan-and-slices.md).
+- `product` — what a project exists to produce, which its documentation is about rather than part of.
+  Rules: [01 — Diataxis Zones](./01-diataxis-zones.md).
 - `promotion` — rewriting a draft into a durable document in its owning zone.
   Rules: [05 — Drafts and Promotion](./05-drafts-and-promotion.md).
 - `Rejected` — a decision the project explicitly chose not to take.

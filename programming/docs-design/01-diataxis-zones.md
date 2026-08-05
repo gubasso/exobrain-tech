@@ -6,6 +6,39 @@ system wants explanation; a maintainer reviewing a design wants the decision rec
 defines the homes. Which home a given fact belongs to is decided in
 [00 — Foundations](./00-foundations.md).
 
+## The docs root
+
+Every zone sits under a docs root, and where that root goes depends on what the project's product is.
+
+In a code project the product is the codebase. Documentation describes something that is not itself
+prose, so a plain `docs/` at the repository root is unambiguous: what is outside it is the product,
+what is inside it is about the product.
+
+In a knowledge base the product is the content — the directories and markdown files the library
+exists to serve. Documentation about the library is also markdown at the root, so a plain `docs/`
+would sit inside the product's own namespace and read as one more subject area. The root is therefore
+`_docs/`, whose leading underscore sorts it clear of the content listing and marks it as the one
+top-level directory that is not library content.
+
+```text
+code project                          knowledge base
+────────────                          ──────────────
+src/     ┐                            <subject>/  ┐
+lib/     ├ the product                <subject>/  ├ the product — the library
+tests/   ┘                            <subject>/  ┘
+
+docs/    → about the product          _docs/      → about the product
+```
+
+The difference is the root's name, not its contents. The zones below, their reader promises, and the
+placement rules are identical under either root. This shelf writes `docs/` throughout; in a knowledge
+base, read every such path as `_docs/`.
+
+One test decides which side a file falls on: is this about how the project works, or is it the thing
+the project produces? A page explaining the library's own conventions is about the project and goes
+under `_docs/`. A page of the knowledge the library exists to serve goes in the content tree, and
+never under `_docs/` — the boundary only holds if it holds in both directions.
+
 ## The zones
 
 | Zone        | Default path                  | Reader question                                      | Holds                                             |
@@ -114,6 +147,9 @@ the exact status values", "I need to know why this exists". The sentence usually
 
 ## Anti-patterns
 
+- Docs root inside the product: a knowledge base with a bare `docs/` at its root, which a reader
+  cannot distinguish from a subject area, and which invites knowledge articles to be filed as
+  metadata.
 - Topic-first top level: a `<topic>/` directory as a sibling of the zones, holding a runbook, a
   decision, and an overview together, so every reader must open files to infer intent.
 - README as junk drawer: the root docs README is an index into the zones, not the canonical home for

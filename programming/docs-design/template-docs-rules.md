@@ -5,6 +5,9 @@ session pays for on every load.
 
 ## Documentation Maintenance
 
+- Keep documentation out of the product's own namespace: `<project>/docs/` when the product is a
+  codebase, `<project>/_docs/` when the product is the content tree. In a knowledge base, read every
+  `docs/` path below as `_docs/`, and never file a knowledge article there.
 - Put decisions in `<project>/docs/decisions/`, task docs and runbooks in `<project>/docs/guides/`,
   lookup and diagnostics in `<project>/docs/reference/`, and architecture and background in
   `<project>/docs/explanation/`.
