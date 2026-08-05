@@ -35,7 +35,7 @@ The layers link; they never duplicate. Branch protection lives under
 [`tools/git/branch-protection/`](../../tools/git/branch-protection/) and is _referenced_ from the
 runbook, not copied. Release setup lives in [release-workflow](../release-workflow/README.md). This
 is the single-source-of-truth discipline from
-[docs-design / single source of truth](../docs-design/04-single-source-of-truth.md): duplicated
+[docs-design / single source of truth](../docs-design/00-foundations.md): duplicated
 instructions drift, so each fact is owned in one place and pointed to from everywhere else.
 
 ## Relationship to the release phase

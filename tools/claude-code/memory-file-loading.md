@@ -3,7 +3,7 @@
 How Claude Code and the `AGENTS.md`-native CLIs discover author-instruction files, and when each one
 enters the context window. This is the tool-specific source of truth behind the language-agnostic
 pattern in
-[docs-design 07 — AI agent considerations](../../programming/docs-design/07-ai-agent-considerations.md).
+[docs-design 04 — Agent context](../../programming/docs-design/04-agent-context.md).
 
 ## Claude Code
 

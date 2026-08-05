@@ -1,85 +1,89 @@
 # Documentation Design
 
-Language-agnostic principles for organizing a software project's `docs/` directory. Use this shelf
-when a project needs clear document ownership, lean decision records, operational docs that are easy
-to find, and source-of-truth rules that humans and LLM agents can follow.
+Language-agnostic principles for organizing a software project's `docs/` directory: clear document
+ownership, lean decision records, operational docs that are easy to find, a plan zone for what is next,
+and source-of-truth rules that humans and LLM agents can both follow. It is intentionally small —
+enough structure to prevent drift, not enough to turn documentation into a separate process.
 
-The pattern uses Diataxis zones for what exists and a plan zone for what is next, lean ADRs beside
-living subsystem pages, single-source-of-truth placement, load-bearing comments, gitignored drafts,
-tracking for perishable facts, a fixed appetite and one directory per unit of work, and a markdown
-house style that spends formatting on structure rather than decoration. It is intentionally small: enough structure to prevent drift, not
-enough to turn documentation into a separate process.
+## Problem
 
-## How to use this shelf
+Most project documentation decays for predictable reasons. A rule starts in a design note, gets copied
+into a README, is restated in an onboarding guide, and then changes in only one place. A draft records
+useful reasoning but never becomes a decision. A troubleshooting page grows into a mixed bag of
+runbooks, diagnostics, background, and stale conclusions. Eventually readers stop trusting the docs and
+fall back to guessing from code, chat history, or old issues.
 
-1. Read [00 — Overview](./00-overview.md) for the defaults and when to apply them.
-2. Apply the zone map from [01 — Diataxis Zones](./01-diataxis-zones.md).
-3. Copy [template-adr.md](./template-adr.md) into `<project>/docs/decisions/template.md`.
-4. Enforce the lean ADR rules from [02 — Lean ADRs](./02-lean-adrs.md).
-5. Adopt the markdown house style from [10 — Lean Markdown](./10-lean-markdown.md).
-6. Bound units of work with [11 — Appetite and Scope](./11-appetite-and-scope.md) when the project
-   plans before it builds.
-7. Shape the plan zone with [12 — Plan and Slices](./12-plan-and-slices.md), and copy
-   [template-slice.md](./template-slice.md) for each unit of work.
-8. Use [99 — Checklist](./99-checklist.md) before merging documentation changes.
+The cure is not more ceremony. It is a small set of homes with clear ownership: each fact has one
+source of truth, each document serves one reader need, and each decision stays short enough to be
+reviewed, indexed, and superseded when it stops being true.
 
-LLM agents should load [AGENTS.md](./AGENTS.md) first for the digest, then read the source chapters
-that own the current change.
+## Chapters
 
-For a new project, start small. Create only the zones that have real content, but keep the same
-placement rules. Empty structure is not the goal; predictable ownership is.
+| #        | Chapter                                                        | One-line hook                                                       |
+| -------- | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 0        | [Foundations](./00-foundations.md)                             | Which artifact owns a fact, and what wins when two disagree.        |
+| 1        | [Diataxis Zones](./01-diataxis-zones.md)                       | The five homes, by reader need, and where operational docs go.      |
+| 2        | [Lean ADRs](./02-lean-adrs.md)                                 | MADR-minimal records, a 350-word cap, and a never-delete lifecycle. |
+| 3        | [Subsystem Pages](./03-subsystem-pages.md)                     | The living design page: records freeze, descriptions stay live.     |
+| 4        | [Agent Context](./04-agent-context.md)                         | Context pollution, semantic names, and one entry document per job.  |
+| 5        | [Drafts and Promotion](./05-drafts-and-promotion.md)           | Keep drafts out of shipped docs and promote by reader need.         |
+| 6        | [Appetite and Scope](./06-appetite-and-scope.md)               | Fix the budget, vary the scope, and gate every change to it.        |
+| 7        | [Plan and Slices](./07-plan-and-slices.md)                     | The plan zone's documents and one directory per unit of work.       |
+| 8        | [Tracking and Revalidation](./08-tracking-and-revalidation.md) | Track perishable facts and revalidate their sources on a cadence.   |
+| 9        | [Known Issues](./09-known-issues.md)                           | Track bugs in external systems under test; expand then collapse.    |
+| 10       | [Lean Markdown](./10-lean-markdown.md)                         | Spend markdown on structure; drop bold, italics, and decoration.    |
+| 99       | [Checklist](./99-checklist.md)                                 | The pre-merge review gate for a documentation diff.                 |
+|          | [Glossary](./glossary.md)                                      | One sentence per term, each naming the chapter that owns it.        |
+| Template | [ADR](./template-adr.md)                                       | Drop-in lean ADR.                                                   |
+| Template | [Slice](./template-slice.md)                                   | Drop-in entry document for one unit of work.                        |
+| Template | [Plan zone](./template-plan-zone.md)                           | Drop-in charter, milestones, and open-questions skeletons.          |
+| Template | [Docs rules](./template-docs-rules.md)                         | Drop-in maintenance block for a project's author-instructions.      |
 
-For an existing project, migrate by ownership. Move decisions first, then operational guides and
-reference material. Leave broad explanation until the factual sources of truth are clear.
+## Reading
 
-## Index
+Read the chapters in number order. Ownership comes before location, so the zone chapter can be a
+placement map rather than a re-argument; the frozen record and the living description are adjacent
+because their whole doctrine is the contrast between them; the agent constraint precedes the process
+chapters that build on it; and style and the review gate come last, applied to material you already
+know how to produce.
 
-| #        | Chapter                                                        | One-line hook                                                      |
-| -------- | -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| 0        | [Overview](./00-overview.md)                                   | Defaults, principles, and when this pattern is worth applying.     |
-| 1        | [Diataxis Zones](./01-diataxis-zones.md)                       | Decisions, guides, reference, and explanation by reader need.      |
-| 2        | [Lean ADRs](./02-lean-adrs.md)                                 | MADR-minimal records, 350-word cap, and never-delete lifecycle.    |
-| 3        | [Comments and Code as SoT](./03-comments-and-code-as-sot.md)   | Keep comments only when they carry rationale code cannot express.  |
-| 4        | [Single Source of Truth](./04-single-source-of-truth.md)       | Placement table and cross-link discipline for durable facts.       |
-| 5        | [Drafts and Promotion](./05-drafts-and-promotion.md)           | Keep drafts outside shipped docs and promote by reader need.       |
-| 6        | [Operational Docs](./06-operational-docs.md)                   | Place runbooks, diagnostics, case studies, and workflows in zones. |
-| 7        | [AI Agent Considerations](./07-ai-agent-considerations.md)     | Reduce context pollution with semantic names and tight docs.       |
-| 8        | [Tracking and Revalidation](./08-tracking-and-revalidation.md) | Track perishable facts and revalidate their sources on a cadence.  |
-| 9        | [Known Issues](./09-known-issues.md)                           | Track bugs in external systems under test; expand then collapse.   |
-| 10       | [Lean Markdown](./10-lean-markdown.md)                         | Spend markdown on structure; drop bold, italics, and decoration.   |
-| 11       | [Appetite and Scope](./11-appetite-and-scope.md)               | Fix the budget, vary the scope, and gate every change to it.       |
-| 12       | [Plan and Slices](./12-plan-and-slices.md)                     | One directory per unit of work, and what may live inside it.       |
-| 99       | [Checklist](./99-checklist.md)                                 | Review checklist for docs changes.                                 |
-| Template | [ADR template](./template-adr.md)                              | Drop-in lean ADR template for project decisions.                   |
-| Template | [Slice template](./template-slice.md)                          | Drop-in entry document for one unit of work.                       |
+An agent should not read the shelf linearly. Load [AGENTS.md](./AGENTS.md), find the owning chapter in
+its routing table, and read that chapter plus the sources it names — the corpus load is exactly what
+[04 — Agent Context](./04-agent-context.md) forbids.
 
-## Defaults
+## Adopting this shelf
 
-- Put decisions in `<project>/docs/decisions/`.
-- Put scope, milestones, and open questions in `<project>/docs/plan/` when the project defines its
-  work before building it; a binding plan is project state, not a draft.
-- Give every unit of work a fixed appetite and a declared non-negotiable core, and change the
-  appetite only by a committed edit that cites the condition met.
-- Give every unit of work one directory under `<project>/docs/plan/slices/`, with `README.md` as its
-  entry document and no sibling file that has not met its gate.
-- Put the current design of a subsystem in `<project>/docs/explanation/<subsystem>.md`; it stays
-  live, and the ADRs it links stay frozen.
-- Put task docs and runbooks in `<project>/docs/guides/`.
-- Put lookup, diagnostics, and case studies in `<project>/docs/reference/`.
-- Put architecture overviews and conceptual background in `<project>/docs/explanation/`.
-- Keep filled ADRs at or below 350 words.
-- Never delete accepted decisions; supersede or reject them.
-- Keep drafts in `<project>/.draft/` or another gitignored workspace.
-- Use no bold and no italics; identifiers go in inline code and binding requirements in uppercase
-  RFC 8174 keywords.
-- Write each durable fact once and cross-link from everywhere else.
-- Track bugs in external systems under test as known-issue cases under
-  `<project>/docs/reference/known-issues/`; expand while hot, collapse to one summary when resolved.
-- Track perishable facts in a machine-readable registry with a cadence and a `last_checked` date.
-- Keep code comments load-bearing: rationale, invariants, boundary conditions, and links to owning
-  decisions.
-- Keep agent digests derived from source chapters; never let the digest become the source of truth.
-- Keep the root docs README as navigation. If it starts carrying decisions, procedures, or
-  diagnostic facts, move those facts to the owning zone and link back.
-- Let the filesystem own structure: index files (README/AGENTS) explain purpose; they never
-  replicate the directory tree.
+Copy [template-docs-rules.md](./template-docs-rules.md) into the project's author-instructions file,
+take the layout from [01 — Diataxis Zones](./01-diataxis-zones.md), copy
+[template-adr.md](./template-adr.md), add [template-slice.md](./template-slice.md) and
+[template-plan-zone.md](./template-plan-zone.md) if the project plans before it builds, and use
+[99 — Checklist](./99-checklist.md) at review time.
+
+For a new project, start small: create only the zones that have real content and keep the same
+placement rules. Empty structure is not the goal; predictable ownership is. For an existing project,
+migrate by ownership — decisions first, then operational guides and reference material, leaving broad
+explanation until the factual sources of truth are clear.
+
+Apply this to any project with a `docs/` directory, more than one maintainer, recurring design
+decisions, operational procedures, or an agent in the loop. Do not spend time on it for a throwaway
+spike with no readers beyond the author, do not create empty directories to signal maturity, and do not
+write an ADR for a choice that a type name already expresses. If applying it creates more documents
+than the project can keep truthful, shrink the inventory and keep the placement rules.
+
+## House format
+
+The markdown rules are [10 — Lean Markdown](./10-lean-markdown.md), which this shelf obeys. What is
+specific to the shelf's own layout:
+
+- Frontmatter: only `AGENTS.md` carries it.
+- One `#` per file. `##` for sections, `###` only for genuinely parallel sub-parts. Never `####`.
+- An unheaded opening of two to four sentences states what the file owns, then normative sections, then
+  `## Anti-patterns` where the chapter has failure modes, then `## Sources`.
+- No `## See also`. This table and inline links are the navigation.
+- Paragraphs carry one point, normally three sentences or fewer.
+- Cite inline at the claim when one claim uses a source; a trailing `## Sources` block only where a
+  chapter carries three or more. A URL appears in two chapters only when each supports a different
+  claim.
+- In-shelf links take the form `[NN — Title](./NN-slug.md)`.
+- `<angle>` placeholders for anything project-specific; no real project name appears in the shelf.
+- Hand-wrap at 100 columns; the formatter maintains wrapping rather than reflowing it.

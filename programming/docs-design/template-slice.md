@@ -1,7 +1,7 @@
 Copy this file into `<project>/docs/plan/slices/<id>-<slug>/README.md`. Commit it before the work
 starts. Keep the heading list exactly as it is so `MD043` can pin it. Do not add `tasks.md`,
 `requirements.md`, or any other sibling file unless the gate in
-[12 — Plan and Slices](./12-plan-and-slices.md) is met.
+[07 — Plan and Slices](./07-plan-and-slices.md) is met.
 
 # <id> — {Short Title}
 

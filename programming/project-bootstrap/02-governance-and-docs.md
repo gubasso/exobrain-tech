@@ -33,7 +33,7 @@ itself.
 
 Every directory's `README.md` is its index — it routes to the files in and under it, and does not
 duplicate their content. This keeps navigation deterministic and prevents the drift that
-[single source of truth](../docs-design/04-single-source-of-truth.md) warns against. This shelf's
+[single source of truth](../docs-design/00-foundations.md) warns against. This shelf's
 [hub README](./README.md) is an example.
 
 ## Automation

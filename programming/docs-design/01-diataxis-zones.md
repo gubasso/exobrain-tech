@@ -1,196 +1,133 @@
 # 01 — Diataxis Zones
 
-Diataxis organizes documentation by reader need. This matters because a single document cannot serve
-every mode well. A reader doing a task wants steps. A reader debugging a field wants lookup
-material. A reader learning a system wants explanation. A maintainer reviewing a design wants the
-decision record.
+Diataxis organizes documentation by reader need, because one document cannot serve every mode well. A
+reader doing a task wants steps; a reader debugging a field wants lookup material; a reader learning a
+system wants explanation; a maintainer reviewing a design wants the decision record. This chapter
+defines the homes. Which home a given fact belongs to is decided in
+[00 — Foundations](./00-foundations.md).
 
-Sources: <https://diataxis.fr/> and <https://diataxis.fr/how-to-use-diataxis/>.
+## The zones
 
-## The four reader needs
+| Zone        | Default path                  | Reader question                                      | Holds                                             |
+| ----------- | ----------------------------- | ---------------------------------------------------- | ------------------------------------------------- |
+| Guides      | `<project>/docs/guides/`      | What do I do next?                                   | Task sequences, runbooks, setup, migrations       |
+| Reference   | `<project>/docs/reference/`   | What is the exact value, field, command, or symptom? | Schemas, option tables, diagnostics, case studies |
+| Explanation | `<project>/docs/explanation/` | How does this area fit together?                     | Architecture, subsystem pages, design forces      |
+| Decisions   | `<project>/docs/decisions/`   | Why did the project choose this shape?               | Lean ADRs                                         |
+| Plan        | `<project>/docs/plan/`        | What are we building next, and what bounds it?       | Charter, milestones, open questions, slices       |
 
-| Need          | Reader question                                      | Documentation zone |
-| ------------- | ---------------------------------------------------- | ------------------ |
-| Task          | What do I do next?                                   | Guides             |
-| Lookup        | What is the exact value, field, command, or symptom? | Reference          |
-| Understanding | How does this area fit together?                     | Explanation        |
-| Decision      | Why did the project choose this shape?               | Decisions          |
+The zones are not content categories; they are reader promises. A guide promises sequence and
+completion. A reference page promises stable lookup and precise facts. An explanation promises context
+and trade-offs. A decision record promises the choice and its consequences.
 
-The zones are not content categories. They are reader promises. A guide promises sequence and
-completion. A reference page promises stable lookup and precise facts. An explanation promises
-context and trade-offs. A decision record promises the choice and its consequences.
+Treat the need as a mode, not a reader identity. The same maintainer is a learner in the morning, a
+task-doer during a release, and a reviewer in the afternoon. The path should tell them which mode the
+document supports before they read the first paragraph.
 
-When a document feels confused, identify the reader need it is trying to satisfy. If it has two
-strong needs, split it and cross-link. A runbook with a long conceptual preface becomes easier to
-use when the runbook stays in guides and links to an explanation page.
+A project may add topic directories inside a zone when volume requires it, as
+`<project>/docs/guides/<topic>/`. The topic comes after the reader need, never before it.
 
-Treat the need as a mode, not as a reader identity. The same maintainer can be a learner in the
-morning, a task-doer during a release, and a reviewer in the afternoon. The directory path should
-tell that maintainer which mode the document supports before they read the first paragraph.
+## The plan zone
 
-## Default docs layout
+Diataxis organizes what exists: all four reader needs are asked about a system that is already there.
+It does not model intent over time, and does not claim to. A project that defines its artifacts before
+implementing them needs a home for what is being built next, what bounds it, and what is still
+undecided — material that is not a task, not lookup, not a mental model, and not a settled decision.
 
-Use this table as the default placement map:
-
-| Zone        | Default path                  | Reader need   |
-| ----------- | ----------------------------- | ------------- |
-| Decisions   | `<project>/docs/decisions/`   | Why           |
-| Guides      | `<project>/docs/guides/`      | Task          |
-| Reference   | `<project>/docs/reference/`   | Lookup        |
-| Explanation | `<project>/docs/explanation/` | Understanding |
-
-The project can add topic directories inside a zone when volume requires it:
-`<project>/docs/guides/<topic>/`, `<project>/docs/reference/<topic>/`, and
-`<project>/docs/explanation/<topic>/`. The topic comes after the reader need, not before it.
-
-Avoid making `<topic>/` siblings of the zones. A top-level topic folder usually mixes guides,
-reference, explanation, and decisions in one place. That asks every reader to open files and infer
-intent from prose. The zone-first layout makes intent visible from the path.
-
-The root docs README is only an index into these zones. It may list the zones, name the most common
-entry points, and point to the project's author-instructions file. It should not become a fifth zone
-for policies, workflows, or troubleshooting notes.
-
-## The second axis: intent
-
-Diataxis organizes what exists. All four reader needs are asked about a system that is already
-there: how do I use it, what is its exact shape, how does it fit together, why is it like this. The
-framework does not model intent over time, and it does not claim to.
-
-A project that defines its artifacts before it implements them needs something the four zones cannot
-hold: what is being built next, what bounds it, and what is still undecided. That material is not a
-task, not lookup, not a mental model, and not a settled decision. Without a home it falls into the
-gitignored drafts workspace, where the plan that actually drives the work becomes invisible to
-review, to version control, and to a fresh agent session.
-
-Add one zone on a second axis:
-
-| Zone | Default path           | Reader question                                |
-| ---- | ---------------------- | ---------------------------------------------- |
-| Plan | `<project>/docs/plan/` | What are we building next, and what bounds it? |
-
-The plan zone holds the project's scope and appetite, its ordered milestones, and its register of
-open questions. It does not hold reference tables, task instructions, or conceptual background; when
-a plan document starts explaining a subsystem, that explanation belongs in `explanation/` and the
-plan links to it.
+```text
+               what exists  (Diataxis)
+┌──────────────────────────┬──────────────────────────┐
+│ guides/                  │ reference/               │
+│ "what do I do next?"     │ "what is the exact       │
+│                          │  value, field, symptom?" │
+├──────────────────────────┼──────────────────────────┤
+│ explanation/             │ decisions/               │
+│ "how does this area      │ "why did the project     │
+│  fit together?"          │  choose this shape?"     │
+└──────────────────────────┴──────────────────────────┘
+                  ▲
+                  │  all four are asked about a system
+                  │  that is already there
+─ ─ ─ ─ ─ ─ ─ ─ ─ ┼ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   second axis: intent
+                  │
+┌─────────────────┴─────────────────────────────────────┐
+│ plan/                                                 │
+│ "what are we building next, and what bounds it?"      │
+│ the only zone whose contents are expected to go stale │
+└───────────────────────────────────────────────────────┘
+```
 
 The plan zone is the only zone whose contents are expected to become false. A guide that stops being
-true is a bug; a milestone that stops being current is the normal course of the work. That is why
-plan documents carry statuses and the other four zones do not, and why a plan document may serve
-intent, scope, and status at once instead of one reader need.
+true is a bug; a milestone that stops being current is the normal course of the work. That is why plan
+documents carry statuses and the other four do not, and why a plan document may serve intent, scope,
+and status at once instead of one reader need. Work that finishes leaves the zone the way any fact
+does: the durable result moves to the zone that owns it and the plan keeps only the pointer.
 
-Work that is finished leaves the plan zone the way any fact does: the durable result moves to the
-zone that owns it, and the plan keeps only the pointer.
+What bounds a unit of work is in [06 — Appetite and Scope](./06-appetite-and-scope.md); what documents
+the zone holds is in [07 — Plan and Slices](./07-plan-and-slices.md).
 
-What bounds a unit of work in this zone — the appetite, the non-negotiable core, and the conditions
-under which the appetite may change — is in [11 — Appetite and Scope](./11-appetite-and-scope.md).
-What documents the zone holds and what shape a unit of work takes on disk is in
-[12 — Plan and Slices](./12-plan-and-slices.md).
+## Operational material
 
-## Placement rules
+Operational documentation often grows outside the model because it starts under pressure: a fix
+becomes a runbook, a failure analysis becomes a case study, a diagnostic command becomes a reference
+page. The zones still apply — runbooks and setup walkthroughs are guides, diagnostics and case studies
+are reference.
 
-Put a document in `decisions/` when it records a choice the project may later revisit. It should be
-a lean ADR: short context, serious options, chosen outcome, consequences, and status. See
-[02 — Lean ADRs](./02-lean-adrs.md).
+A runbook is written for execution under pressure and contains preconditions, ordered actions,
+verification, rollback or stop conditions, and links to the diagnostics it uses. Every destructive or
+irreversible action names its confirmation point before the action, and a destructive command shows
+the dry-run or inspection form first where the tool supports one. A runbook that requires
+understanding the whole architecture before acting is not a runbook; move that background to
+explanation and link it.
 
-Put a document in `guides/` when it tells the reader how to complete a task. A guide can include
-prerequisites and verification, but it should not become the canonical home for every field or error
-code it mentions. Link to reference material instead.
+A diagnostic page is optimized for lookup and contains symptom, signal or command, expected result,
+interpretation, and a link to the guide that uses it. It helps a reader decide which bucket a failure
+is in; it does not need to solve every bucket inline.
 
-Put a document in `reference/` when readers need exact facts: schemas, option tables, diagnostic
-signals, API shapes, command matrices, case studies, and known symptoms. Reference pages are
-organized for lookup, not narrative flow.
+A case study records what happened, what signals were present, what fixed it, and what durable lesson
+remains. It is not the only home for a new rule: when a case study changes policy, write the ADR or
+update the author-instructions file and link to it.
 
-Put a document in `explanation/` when readers need the mental model: architecture overview,
-subsystem responsibilities, design forces, trade-offs, and conceptual background. Explanation is
-allowed to be discursive, but it should link to ADRs instead of restating their decisions.
+Workflows and setup walkthroughs are guides with a clear start state, end state, and verification
+step. Setup docs are not a mirror of every configuration option; link to configuration reference for
+accepted values and defaults.
 
-Operational material follows the same map. Runbooks are guides. Diagnostics and case studies are
-reference. See [06 — Operational Docs](./06-operational-docs.md).
-
-## Subsystem pages
-
-One explanation page per subsystem, `<project>/docs/explanation/<subsystem>.md`, is the zone's
-load-bearing artifact rather than an optional extra. It is the document
-[02 — Lean ADRs](./02-lean-adrs.md) points at when a run of decisions on one area shows that a
-design document is missing, and the document a slice's `Governed by` section names instead of
-listing eleven records; see [12 — Plan and Slices](./12-plan-and-slices.md).
-
-A subsystem page is one to three pages: what the subsystem is, its components and boundaries, the
-constraints that currently hold, and one diagram when a diagram earns its place. It ends with an
-`Unresolved` list naming contradictions and gaps it found rather than deciding them, because the
-value of writing two constraints on one page is that their conflict becomes visible before code
-exists.
-
-The page is living and the decision records are not. That split is the settled convention in mature
-proposal systems: Python's PEP 1 states that once resolution is reached "a PEP is considered a
-historical document rather than a living specification", with formal documentation of expected
-behavior maintained elsewhere, and Rust RFCs say accepted records should not be substantially
-changed. Applied here:
-
-- The subsystem page owns the current design. It is corrected in place whenever it stops being true.
-- An ADR owns why one option was chosen over others, at the time it was chosen. It is never
-  rewritten to match the present; it gains a status change or an amendment pointer instead.
-- Code owns exact current behavior. The page describes shape and boundaries, not field lists; see
-  [04 — Single Source of Truth](./04-single-source-of-truth.md).
-
-So the page links the ADR that owns each choice, and the ADR does not have to be revisited when the
-design moves on. A reader who wants to know how the subsystem works reads one page. A reader who
-wants to know why it works that way follows one link.
-
-Write the page when a subsystem exists and a unit of work would otherwise make a reader reconstruct
-it from the decision records. Do not create empty pages for subsystems that have not been built.
+Place all of it zone-first: `<project>/docs/guides/<topic>/runbooks/`,
+`<project>/docs/reference/<topic>/case-studies/`, diagnostics directly under
+`<project>/docs/reference/<topic>/`. If operational docs become hard to scan, improve the indexes
+inside each zone rather than adding a top-level operational bucket.
 
 ## Boundary tests
 
-Ask these questions before creating or moving a file:
+Ask before creating or moving a file:
 
-- If the reader is actively trying to finish work, it belongs in guides.
-- If the reader is comparing exact values, fields, statuses, or symptoms, it belongs in reference.
-- If the reader is trying to understand a subsystem, it belongs in explanation.
-- If the reader is asking why a choice was made, it belongs in decisions.
-- If the reader is asking what is being built next or what bounds it, it belongs in plan.
-- If the document needs multiple homes, choose the owner and link from the others.
+- Actively trying to finish work → guides.
+- Comparing exact values, fields, statuses, or symptoms → reference.
+- Trying to understand a subsystem → explanation.
+- Asking why a choice was made → decisions.
+- Asking what is being built next or what bounds it → plan.
+- Needs multiple homes → choose the owner and link from the others.
 
-The last rule is the most important. Cross-links are cheap. Duplicate facts are expensive. A guide
-can say "for accepted status values, see reference" and keep moving. A reference page can say "for
-why this status exists, see ADR-<number>" and avoid retelling history.
-
-When a page is hard to place, write its intended first sentence as a user need: "I need to deploy
-`<feature>`," "I need the exact status values," "I need to understand the subsystem," or "I need to
-know why this exists." The sentence usually names the zone.
+The last rule matters most. Cross-links are cheap; duplicate facts are expensive. When a page is hard
+to place, write its intended first sentence as a user need — "I need to deploy `<feature>`", "I need
+the exact status values", "I need to know why this exists". The sentence usually names the zone.
 
 ## Anti-patterns
 
-- Topic-first top level: `<project>/docs/<topic>/runbook.md`,
-  `<project>/docs/<topic>/decision.md`, and `<project>/docs/<topic>/overview.md` force readers to
-  inspect content to determine purpose.
-- README as junk drawer: a root docs README should be an index, not the canonical home for
+- Topic-first top level: a `<topic>/` directory as a sibling of the zones, holding a runbook, a
+  decision, and an overview together, so every reader must open files to infer intent.
+- README as junk drawer: the root docs README is an index into the zones, not the canonical home for
   decisions, procedures, and troubleshooting.
-- Guide as encyclopedia: task docs should link to lookup pages instead of embedding complete
-  reference tables.
-- ADR as tutorial: a decision record does not teach the whole system. It records the choice.
-- Explanation as policy: project-wide rules belong in the author-instructions file or an ADR, not
-  only in background prose.
-- Case study as runbook: a past event can inform a runbook, but the case study belongs in reference
-  and the repeatable procedure belongs in guides.
-- Decision hidden in guide: if a guide says "we always do X because Y," the durable why belongs in
-  an ADR and the guide should link to it.
-- Plan zone as a fifth topic folder: `plan/` is a second axis, not another place to file reference
-  or explanation material. If it holds anything a reader would consult after the work ships, that
-  content belongs in one of the four reader-need zones.
-- Subsystem page as decision record: a page that decides rather than describes leaves the choice
-  invisible to everyone who does not open that subsystem, and leaves nothing to supersede when the
-  choice is reversed.
-- ADR rewritten to match the present: an accepted record edited until it describes the current
-  design destroys the trail the record existed to keep, and the subsystem page already owns that
-  job.
+- Guide as encyclopedia: task docs embedding complete reference tables instead of linking them.
+- Explanation as policy: project-wide rules living only in background prose.
+- Case study as runbook: a past event informing a runbook is fine, but the event belongs in reference
+  and the repeatable procedure in guides.
+- Decision hidden in guide: a guide saying "we always do X because Y" when the durable why belongs in
+  an ADR the guide links.
+- Plan zone as a fifth topic folder: if `plan/` holds anything a reader would consult after the work
+  ships, that content belongs in one of the four reader-need zones.
 
 ## Sources
 
 - Diataxis: <https://diataxis.fr/>
 - How to use Diataxis: <https://diataxis.fr/how-to-use-diataxis/>
-- Python PEP 1, on a resolved PEP being a historical document rather than a living specification:
-  <https://peps.python.org/pep-0001/>
-- Rust RFC process, on not substantially changing accepted records:
-  <https://github.com/rust-lang/rfcs>

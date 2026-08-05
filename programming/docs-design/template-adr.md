@@ -1,32 +1,32 @@
 Copy this file into `<project>/docs/decisions/template.md`. Filled ADRs must stay at or below 350
 words. Keep each field brief; split separate decisions into separate ADRs.
 
-# ADR-NNNN: {Short Title}
+# ADR-NNNN: <short title naming the choice, not the task>
 
 ## Context and Problem Statement
 
-{2-3 sentences. What problem? Why does it matter?}
+<2-3 sentences. What problem? Why does it matter?>
 
 ## Considered Options
 
-- {Option 1}
-- {Option 2}
-- {Option 3}
+- <option 1>
+- <option 2>
+- <option 3>
 
 ## Decision Outcome
 
-Chosen option: `{Option 1}` — {one sentence: why}.
+Chosen option: `<option 1>` — <one sentence: why>.
 
 ## Consequences
 
-- Good: {positive trade-off}
-- Bad: {negative trade-off}
+- Good: <positive trade-off>
+- Bad: <negative trade-off>
 
 ## Status
 
-{Proposed | Accepted | Implemented | Deprecated | Superseded | Rejected}
+<Ideation | Proposed | Accepted | Implemented | Deprecated | Superseded | Rejected>
 
-{If Implemented: link to the code that enacts it. If Superseded: link to the successor. If
+<If Implemented: link to the code that enacts it. If Superseded: link to the successor. If
 Deprecated: say why it no longer applies. If a later ADR changes part of a decision that still
 stands, keep the status and add "Amended by ADR-NNNN — <what changed>" here, so no reader follows a
-stale detail.}
+stale detail.>
