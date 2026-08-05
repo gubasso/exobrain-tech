@@ -36,6 +36,8 @@ Owner: [02 — Lean ADRs](./02-lean-adrs.md).
 
 - [ ] The decision cleared the threshold: cross-cutting, hard to reverse, constraining, or rejecting a
       plausible alternative. A run of ADRs on one area means a subsystem page is missing.
+- [ ] The filename carries the `ADR-` prefix and a slug: `ADR-<number>-<decision>.md`. Templates and
+      index files in the decisions directory carry no prefix.
 - [ ] The filled body is at or below 350 words and uses the five template sections.
 - [ ] Exactly one `Status`, from `Ideation`, `Proposed`, `Accepted`, `Implemented`, `Deprecated`,
       `Superseded`, `Rejected`.

@@ -1,5 +1,7 @@
-Copy this file into `<project>/docs/decisions/template.md`. Filled ADRs must stay at or below 350
-words. Keep each field brief; split separate decisions into separate ADRs.
+Copy this file into `<project>/docs/decisions/template.md`, and name each filled record
+`ADR-<number>-<decision>.md` — the `ADR-` prefix is required, on the record but not on this template.
+Filled ADRs must stay at or below 350 words. Keep each field brief; split separate decisions into
+separate ADRs.
 
 # ADR-NNNN: <short title naming the choice, not the task>
 

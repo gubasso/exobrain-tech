@@ -122,8 +122,9 @@ plays the role; see [03 — Subsystem Pages](./03-subsystem-pages.md). Both work
 
 Every project that expects agent help should carry a `## Documentation Maintenance` section in its
 author-instructions file. Copy [template-docs-rules.md](./template-docs-rules.md) rather than
-restating this shelf, then state local exceptions such as a different filename or ADR numbering
-convention. The section is project-specific by design; a pasted copy of a generic shelf is another
+restating this shelf, then state local exceptions such as a different author-instructions filename or
+ADR numbering width. The `ADR-` filename prefix is not a local choice; see
+[02 — Lean ADRs](./02-lean-adrs.md). The section is project-specific by design; a pasted copy of a generic shelf is another
 always-loaded cost with no local information in it.
 
 Agents should update docs only when the change affects durable behavior, operations, or decisions, not

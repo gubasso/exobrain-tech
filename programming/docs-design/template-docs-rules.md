@@ -15,6 +15,8 @@ session pays for on every load.
   work before building it; a binding plan is project state, not a draft.
 - Keep the current design of a subsystem in `<project>/docs/explanation/<subsystem>.md`. It stays
   live; the ADRs it links stay frozen.
+- Name every ADR `ADR-<number>-<decision>.md`; the `ADR-` prefix is required, templates and index
+  files in the decisions directory are not.
 - Keep filled ADRs at or below 350 words with exactly one `Status`.
 - Never delete an accepted decision. Supersede it, deprecate it, or reject it; a partial change
   keeps the status and adds an `Amended by ADR-NNNN` line.
