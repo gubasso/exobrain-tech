@@ -4,8 +4,9 @@ Language-agnostic principles for organizing a software project's `docs/` directo
 when a project needs clear document ownership, lean decision records, operational docs that are easy
 to find, and source-of-truth rules that humans and LLM agents can follow.
 
-The pattern uses Diataxis zones, lean ADRs, single-source-of-truth placement, load-bearing comments,
-gitignored drafts, and tracking for perishable facts. It is intentionally small: enough structure to
+The pattern uses Diataxis zones for what exists and a plan zone for what is next, lean ADRs,
+single-source-of-truth placement, load-bearing comments, gitignored drafts, tracking for perishable
+facts, and a markdown house style that spends formatting on structure rather than decoration. It is intentionally small: enough structure to
 prevent drift, not enough to turn documentation into a separate process.
 
 ## How to use this shelf
@@ -14,7 +15,8 @@ prevent drift, not enough to turn documentation into a separate process.
 2. Apply the zone map from [01 — Diataxis Zones](./01-diataxis-zones.md).
 3. Copy [template-adr.md](./template-adr.md) into `<project>/docs/decisions/template.md`.
 4. Enforce the lean ADR rules from [02 — Lean ADRs](./02-lean-adrs.md).
-5. Use [99 — Checklist](./99-checklist.md) before merging documentation changes.
+5. Adopt the markdown house style from [10 — Lean Markdown](./10-lean-markdown.md).
+6. Use [99 — Checklist](./99-checklist.md) before merging documentation changes.
 
 LLM agents should load [AGENTS.md](./AGENTS.md) first for the digest, then read the source chapters
 that own the current change.
@@ -39,18 +41,23 @@ reference material. Leave broad explanation until the factual sources of truth a
 | 7        | [AI Agent Considerations](./07-ai-agent-considerations.md)     | Reduce context pollution with semantic names and tight docs.       |
 | 8        | [Tracking and Revalidation](./08-tracking-and-revalidation.md) | Track perishable facts and revalidate their sources on a cadence.  |
 | 9        | [Known Issues](./09-known-issues.md)                           | Track bugs in external systems under test; expand then collapse.   |
+| 10       | [Lean Markdown](./10-lean-markdown.md)                         | Spend markdown on structure; drop bold, italics, and decoration.   |
 | 99       | [Checklist](./99-checklist.md)                                 | Review checklist for docs changes.                                 |
 | Template | [ADR template](./template-adr.md)                              | Drop-in lean ADR template for project decisions.                   |
 
 ## Defaults
 
 - Put decisions in `<project>/docs/decisions/`.
+- Put scope, milestones, and open questions in `<project>/docs/plan/` when the project defines its
+  work before building it; a binding plan is project state, not a draft.
 - Put task docs and runbooks in `<project>/docs/guides/`.
 - Put lookup, diagnostics, and case studies in `<project>/docs/reference/`.
 - Put architecture overviews and conceptual background in `<project>/docs/explanation/`.
 - Keep filled ADRs at or below 350 words.
 - Never delete accepted decisions; supersede or reject them.
 - Keep drafts in `<project>/.draft/` or another gitignored workspace.
+- Use no bold and no italics; identifiers go in inline code and binding requirements in uppercase
+  RFC 8174 keywords.
 - Write each durable fact once and cross-link from everywhere else.
 - Track bugs in external systems under test as known-issue cases under
   `<project>/docs/reference/known-issues/`; expand while hot, collapse to one summary when resolved.

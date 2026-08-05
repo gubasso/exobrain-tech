@@ -1,17 +1,17 @@
 # 09 — Known Issues
 
-Projects that test or integrate **external systems they do not own** accumulate a special kind of
+Projects that test or integrate external systems they do not own accumulate a special kind of
 finding: a bug that lives in the system under test (a server, a client, a vendor API), not in this
 codebase. These findings are not decisions, runbooks, or background — they are diagnostics and case
 studies. They need a durable home, a status, and a lifecycle that lets a directory of evidence
-**expand while the issue is hot** and **collapse to one lean summary when it is resolved**.
+expand while the issue is hot and collapse to one lean summary when it is resolved.
 
 Without that home, the knowledge lives in memory and chat logs. The next time the symptom recurs,
 someone re-derives the whole investigation instead of grepping one id.
 
 ## Where it lives
 
-A known-issue case library is **reference** material (diagnostics, known symptoms, case studies —
+A known-issue case library is `reference` material (diagnostics, known symptoms, case studies —
 see [01 — Diataxis Zones](./01-diataxis-zones.md) and
 [06 — Operational Docs](./06-operational-docs.md)). Put it at:
 
@@ -19,13 +19,13 @@ see [01 — Diataxis Zones](./01-diataxis-zones.md) and
 <project>/docs/reference/known-issues/
 ```
 
-Do **not** create a top-level `<project>/docs/known-issues/` — that is the topic-sibling
+Do not create a top-level `<project>/docs/known-issues/` — that is the topic-sibling
 anti-pattern from chapter 01. Reader need (lookup) comes first; the topic (`known-issues`) comes
 after the zone.
 
 ## One case = one directory
 
-Each tracked issue is its own directory, keyed on an **internal** id — not the upstream bug number,
+Each tracked issue is its own directory, keyed on an internal id — not the upstream bug number,
 because the finding usually predates any filed bug and one finding can map to several upstream bugs.
 
 ```text
@@ -55,26 +55,26 @@ alternative when chronological sorting matters more than ADR symmetry — pick o
 open → investigating → mitigated | masked → monitoring → resolved → collapsed
 ```
 
-- **open / investigating** — reproduced and being root-caused; the test fails honestly.
-- **mitigated** — a _permanent, legitimate_ guard exists (a readiness gate, a precondition check).
+- `open` / `investigating` — reproduced and being root-caused; the test fails honestly.
+- `mitigated` — a permanent, legitimate guard exists (a readiness gate, a precondition check).
   Not a workaround; it stays after the bug is fixed.
-- **masked** — a _temporary_ workaround (retry, wait-loop, skip) is in the tree. It must be
+- `masked` — a temporary workaround (retry, wait-loop, skip) is in the tree. It must be
   revert-tracked (see below). `mitigated` and `masked` can co-exist on one case.
-- **monitoring** — the upstream fix is believed deployed; watching for recurrence.
-- **resolved** — fix **confirmed deployed** and any mask reverted. Triggers the collapse.
+- `monitoring` — the upstream fix is believed deployed; watching for recurrence.
+- `resolved` — fix confirmed deployed and any mask reverted. Triggers the collapse.
 
 ## Expand while hot, collapse when cold
 
 While the issue is live, the directory grows: investigation log, escalation report, raw evidence, a
 mask ledger. That sprawl is correct — it is a working lab notebook.
 
-When the issue is resolved, **collapse** the directory into a single `resolved/KI-<NNNN>-<slug>.md`
+When the issue is resolved, collapse the directory into a single `resolved/KI-<NNNN>-<slug>.md`
 summary and delete the hot directory. The summary keeps only four things:
 
-1. **Issue** — the externally-observable symptom (which tests, which signature, which environment).
-2. **Root cause** — the one-paragraph mechanism.
-3. **Resolution** — what fixed it, with proof it is deployed (commit/date).
-4. **How to recognize recurrence** — the exact signal + a one-line repro, so a future reader
+1. Issue — the externally-observable symptom (which tests, which signature, which environment).
+2. Root cause — the one-paragraph mechanism.
+3. Resolution — what fixed it, with proof it is deployed (commit/date).
+4. How to recognize recurrence — the exact signal + a one-line repro, so a future reader
    self-serves.
 
 The raw trail is not duplicated; it stays in version-control history (record the path in a field
@@ -86,13 +86,13 @@ RFC `Status: Final` and ADR `Superseded`.
 
 Three mechanisms, kept separate so they never blur:
 
-- **Honest-fail** — a test that must not hide the bug stays failing, with a `# KI-<NNNN>` comment
+- Honest-fail — a test that must not hide the bug stays failing, with a `# KI-<NNNN>` comment
   pointing at the case.
-- **Expected failure** — when an expected-failure marker is wanted, use the test runner's native
+- Expected failure — when an expected-failure marker is wanted, use the test runner's native
   mechanism with the id in the reason string, and prefer the strict form so the suite goes red the
   moment the external system is fixed (e.g. `xfail(reason="KI-<NNNN>: …", strict=True)`). That
   forces the case closed.
-- **Temporary mask** — carry the id at the code site
+- Temporary mask — carry the id at the code site
   (`# MASK KI-<NNNN>: … — revert at
   <condition>`) and route to the ledger.
 
@@ -103,9 +103,9 @@ the commit.
 
 ## Temporary masks must be revert-tracked
 
-A mask never hides a defect silently. Its `mask.md` records **What is masked / Why / Where / Revert
-Trigger / Revert Checklist**. The Revert Trigger is the exact condition — upstream fix _confirmed
-deployed_ and stability proven — that ends the mask; a green run that still carries the mask does
+A mask never hides a defect silently. Its `mask.md` records what is masked, why, where, the revert
+trigger, and the revert checklist. The Revert Trigger is the exact condition — upstream fix confirmed
+deployed and stability proven — that ends the mask; a green run that still carries the mask does
 not prove the underlying fix. This is the same discipline as a tracking file for perishable facts
 (see [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md)).
 

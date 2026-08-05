@@ -20,6 +20,27 @@ material. The exact name can vary, but the rule should be explicit in the author
 Do not rely on filename warnings such as `draft-final.md` inside shipped docs. Path ownership is
 clearer than prose labels. A reader should not need to open a file to know whether it is canonical.
 
+## Plans are not drafts
+
+Provisional is not the same as forward-looking. A document can describe work that has not happened
+yet and still be project state: the project's scope and appetite, its ordered milestones, and its
+register of open questions are commitments the team is currently working under, not exploration.
+They belong in `<project>/docs/plan/` and in version control. See
+[01 — Diataxis Zones](./01-diataxis-zones.md) for the zone.
+
+The test is not "is this finished" but "is this binding". A half-formed argument about how a
+subsystem might work is a draft. A statement that the next milestone is bounded at two weeks and
+excludes three named features is project state, however early it is.
+
+Keeping a plan in the gitignored workspace fails in a specific way. The plan is invisible to review,
+so a scope change never appears in a diff. It is invisible to version control, so the record of what
+the work taught you is lost with the working tree. And it is invisible to a fresh agent session,
+which then reconstructs intent from the specification and the decision records instead — the two
+artifacts that say what is true, not what is next.
+
+If exploration and plan are tangled in one draft, split them: promote the binding part to the plan
+zone and keep the rest in `.draft/` until it resolves.
+
 ## Promotion path
 
 Promotion is a rewrite, not a move. Start with `.draft/<topic>.md`, identify the reader need, then
@@ -69,7 +90,9 @@ was only a local note with no future value, delete it with the draft.
 - Moving a draft into docs without trimming it.
 - Keeping both the draft and the promoted document with overlapping claims.
 - Letting a draft become the only place a decision is recorded.
-- Using drafts as permanent backlog items instead of filing real work.
+- Using drafts as permanent backlog items instead of filing the work in the plan zone.
+- Keeping the milestone plan, the scope decision, the effort estimates, or the open-questions
+  register in a gitignored workspace, where review and version control cannot reach them.
 
 The danger is ambiguity. A reader should know whether a document is project state by looking at its
 path. If a draft has value, promote it. If it does not, delete it.
@@ -85,6 +108,7 @@ with truth.
 ## Checklist
 
 - [ ] Draft material stays outside `<project>/docs/`.
+- [ ] Binding forward-looking material is in `<project>/docs/plan/`, not in the drafts workspace.
 - [ ] The promotion target matches one reader need.
 - [ ] Decision records use the lean ADR template.
 - [ ] Supporting facts move to reference or explanation, not into the ADR body.

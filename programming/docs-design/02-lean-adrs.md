@@ -4,6 +4,29 @@ Architecture decision records preserve why a project chose one path over serious
 are not tutorials, meeting notes, or design novels. A useful ADR is short, statused, and durable
 enough that future maintainers can trust it.
 
+## When a choice earns an ADR
+
+Write an ADR when at least one of these holds:
+
+- The choice is cross-cutting: more than one area has to know about it.
+- It is expensive to reverse once code depends on it.
+- It constrains future work, so later decisions must be made inside it.
+- It rejects a plausible alternative that someone will otherwise propose again.
+
+Everything else belongs where the work is planned, or in the code and its tests. A choice that is
+local, obvious, and fully expressed by a type name or a function signature is not a decision record;
+see [00 — Overview](./00-overview.md).
+
+This threshold exists because the other rules in this chapter, applied without it, reward document
+count. The word cap says a record that will not fit should be split, and splitting is usually
+correct. But leanness enforced per file is unbounded in aggregate: a subsystem can be designed in
+350-word installments across a dozen records, each individually clean, with no single artifact
+stating what the subsystem is. A reader then has to reconstruct the design from the decisions, which
+is the work the design document was supposed to have done.
+
+The signal to watch is a run of consecutive ADRs about one area. When that appears, the missing
+artifact is a short design document that the decisions hang off, not another decision.
+
 ## Default template
 
 Use the drop-in [ADR template](./template-adr.md). A filled ADR has five sections:
@@ -57,10 +80,12 @@ ADR should say why those artifacts exist and which option they enact.
 
 Use this lifecycle:
 
-`Proposed -> Accepted -> Implemented -> Superseded | Deprecated | Rejected`
+`Ideation -> Proposed -> Accepted -> Implemented -> Superseded | Deprecated | Rejected`
 
-`Proposed` means the record is ready for review but not yet binding. `Accepted` means the project
-has chosen the direction. `Implemented` means the code, docs, or operations now enact the choice.
+`Ideation` means the record is a half-formed idea captured while it is fresh. It is not binding, it
+is not ready for review, and it may be incomplete or wrong. `Proposed` means the record is ready for
+review but not yet binding. `Accepted` means the project has chosen the direction. `Implemented`
+means the code, docs, or operations now enact the choice.
 `Superseded` means a later ADR replaced it. `Deprecated` means the decision no longer applies and
 no successor exists — the context evaporated (a feature was dropped, a dependency vanished) rather
 than a replacement being chosen. `Rejected` means the project explicitly decided not to take that
@@ -70,6 +95,25 @@ Every implemented ADR should link to the code, configuration, or documentation t
 there is a stable target. Every superseded ADR should link to the successor. Every deprecated ADR
 should say why it stopped applying. Every rejected ADR should explain enough that the same option
 is not reopened without new evidence.
+
+### Why the lifecycle needs a cheap entry
+
+`Ideation` exists to make the vocabulary usable. A lifecycle whose lowest state already means "ready
+for review" has no low-commitment entry, so every idea either waits outside the record entirely or
+enters as a decision. The observable symptom is a corpus that is almost entirely `Accepted`, with no
+`Proposed` and no `Rejected` — not because the project never hesitated, but because hesitation had
+nowhere to live. Oxide's RFD process solves this with explicit prediscussion and ideation states and
+the rule that notes are encouraged to be timely rather than polished; see
+<https://rfd.shared.oxide.computer/rfd/0001>.
+
+`Ideation` is the one status that may be deleted. A record that never left it never became project
+state, so the never-delete rule below does not apply to it. That is what makes the state cheap
+enough to use: entering costs nothing, and leaving costs nothing. Once a record moves to `Proposed`
+or beyond, the never-delete rule takes over permanently.
+
+Keep an ideation record short and honest about its own uncertainty. If it cannot yet name the
+options, it is a draft and belongs in the drafts workspace instead; see
+[05 — Drafts and Promotion](./05-drafts-and-promotion.md).
 
 Status changes are edits to history, not rewrites of history. When moving from `Accepted` to
 `Implemented`, keep the original context and outcome intact. Add the implementation link. When
@@ -83,7 +127,7 @@ old ADR describes, closes an item the old ADR deferred — without reversing it.
 `Superseded` would be false (the decision holds), but leaving it untouched misleads: a reader or
 agent loading it follows stale details as if current.
 
-Handle this with an **amendment pointer**: keep the status, and add a line under `## Status` in the
+Handle this with an amendment pointer: keep the status, and add a line under `## Status` in the
 form `Amended by ADR-NNNN — <one line: what changed>`. Edit the old body only where its wording
 would actively mislead; never rewrite it to pretend the later design was the original choice. The
 amending ADR owns the new reasoning and should name what it amends. `Amended by` is an annotation
@@ -94,11 +138,12 @@ on a status, not a status value — the status vocabulary stays closed.
 Do not delete accepted, implemented, superseded, or rejected ADRs. They are part of project history.
 Deleting them destroys context and makes old reviews, commits, and comments harder to understand.
 
-Deletion is appropriate for drafts that never became project state. Once an ADR is accepted, change
-its status instead of removing it. If the title was misleading, keep the file and clarify the
-decision outcome. If the decision was wrong, supersede it. If the context evaporated with no
-successor, deprecate it. If the project backed away before implementation, reject it. If a later
-ADR changed only part of it, add an amendment pointer (see _Amendments_ above).
+Deletion is appropriate for drafts and for `Ideation` records, neither of which ever became project
+state. Once an ADR reaches `Proposed`, change its status instead of removing it. If the title was
+misleading, keep the file and clarify the decision outcome. If the decision was wrong, supersede it.
+If the context evaporated with no successor, deprecate it. If the project backed away before
+implementation, reject it. If a later ADR changed only part of it, add an amendment pointer (see the
+amendments section above).
 
 Never-delete does not mean never-correct — and it does not mean never-mislead. Fix typos, broken
 links, and misleading wording. Correct metadata that was wrong when written. Do not edit an old ADR
@@ -140,6 +185,7 @@ Use MADR-minimal when review should show what was seriously considered.
 
 Use exactly one status value per ADR:
 
+- `Ideation`: captured while fresh; not binding, not yet ready for review, and deletable.
 - `Proposed`: open for review.
 - `Accepted`: chosen, not necessarily implemented.
 - `Implemented`: enacted by the project.

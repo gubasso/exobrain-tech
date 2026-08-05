@@ -23,6 +23,7 @@ See <https://diataxis.fr/> and <https://www.writethedocs.org/guide/writing/docs-
 ## Defaults
 
 - Use four documentation zones: decisions, guides, reference, and explanation.
+- Add a plan zone under `<project>/docs/plan/` when the project defines its work before building it.
 - Put architecture decisions in lean ADRs under `<project>/docs/decisions/`.
 - Keep filled ADRs at or below 350 words.
 - Never delete accepted decisions. Mark them superseded, deprecated, or rejected and link forward;
@@ -32,7 +33,9 @@ See <https://diataxis.fr/> and <https://www.writethedocs.org/guide/writing/docs-
 - Put cross-cutting architecture and conceptual background under `<project>/docs/explanation/`.
 - Keep project-wide authoring rules in `<project>/CLAUDE.md` or the local equivalent.
 - Keep code rationale in code comments only when the comment is load-bearing.
-- Keep drafts outside shipped docs, normally under `<project>/.draft/`.
+- Keep drafts outside shipped docs, normally under `<project>/.draft/`; a binding plan is project
+  state, not a draft.
+- Use no bold or italics; spend markdown on structure, not decoration.
 
 The point is not to force every project into a heavy documentation system. The point is to make
 common placement decisions boring. When a new doc appears, the maintainer should know where it
@@ -40,26 +43,41 @@ belongs before writing the second paragraph.
 
 ## Principles
 
-**Lean ADRs.** Architecture decision records are for the decision, not the whole debate. A useful
-ADR names the problem, lists serious options, records the chosen option, states consequences, and
-declares status. If the record cannot fit within 350 words, the project probably made multiple
-decisions and should split them.
+### Lean ADRs
 
-**Never-delete lifecycle.** Decision history is evidence. If a decision becomes wrong, mark it
-`Superseded` and link to the replacement; if its context evaporated with no successor, mark it
-`Deprecated`. If a later decision changes only part of it, keep the status and add an `Amended by`
-pointer so the old record cannot mislead. If the project considered and rejected an option, keep
-that rejection when it prevents repeated debate. Deletion is reserved for drafts that never became
-project state.
+Architecture decision records are for the decision, not the whole debate. A useful ADR names the
+problem, lists serious options, records the chosen option, states consequences, and declares status.
+If the record cannot fit within 350 words, the project probably made multiple decisions and should
+split them.
 
-**Single-source-of-truth placement.** Write once at the owning home and link from other places.
-Restatement creates drift. A README can point to the ADR. A guide can link to reference material. An
-agent digest can summarize a chapter, but the chapter remains the source.
+### Never-delete lifecycle
 
-**Comments as load-bearing documentation.** A comment earns its place when deleting it would confuse
-a future maintainer. Good comments explain why a surprising boundary exists, which invariant must be
-preserved, or which external constraint forced the shape. Comments that narrate obvious code should
-be removed or replaced with better names and types.
+Decision history is evidence. If a decision becomes wrong, mark it `Superseded` and link to the
+replacement; if its context evaporated with no successor, mark it `Deprecated`. If a later decision
+changes only part of it, keep the status and add an `Amended by` pointer so the old record cannot
+mislead. If the project considered and rejected an option, keep that rejection when it prevents
+repeated debate. Deletion is reserved for drafts and ideation records that never became project
+state.
+
+### Single-source-of-truth placement
+
+Write once at the owning home and link from other places. Restatement creates drift. A README can
+point to the ADR. A guide can link to reference material. An agent digest can summarize a chapter,
+but the chapter remains the source.
+
+### Comments as load-bearing documentation
+
+A comment earns its place when deleting it would confuse a future maintainer. Good comments explain
+why a surprising boundary exists, which invariant must be preserved, or which external constraint
+forced the shape. Comments that narrate obvious code should be removed or replaced with better names
+and types.
+
+### Lean markdown
+
+Spend markdown on structure and not on decoration. Headings, lists, tables, fenced code, and inline
+code carry meaning a reader and a parser can both use; bold and italics carry none, and dense
+emphasis makes a document harder to read rather than easier. See
+[10 — Lean Markdown](./10-lean-markdown.md).
 
 ## When to apply
 
@@ -76,8 +94,8 @@ explanation, or a recorded decision.
 
 Do not spend time on this structure for a throwaway spike with no readers beyond the author. Do not
 create empty directories to signal maturity. Do not write an ADR for a choice that is local,
-obvious, and fully expressed by a type name or function signature. Do not promote a draft just
-because it exists.
+obvious, and fully expressed by a type name or function signature; the threshold is in
+[02 — Lean ADRs](./02-lean-adrs.md). Do not promote a draft just because it exists.
 
 The pattern should reduce maintenance load. If applying it creates more documents than the project
 can keep truthful, shrink the set of documents. Keep the placement rules; reduce the inventory.

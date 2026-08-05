@@ -1,6 +1,6 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-07-26
+last-synced: 2026-08-05
 source-files:
   - 00-overview.md
   - 01-diataxis-zones.md
@@ -12,25 +12,28 @@ source-files:
   - 07-ai-agent-considerations.md
   - 08-tracking-and-revalidation.md
   - 09-known-issues.md
+  - 10-lean-markdown.md
   - 99-checklist.md
   - README.md
   - template-adr.md
-token-estimate: 1250
+token-estimate: 1450
 ---
 
 # AGENTS
 
 ## Scope
 
-Language-agnostic documentation design canon: Diataxis zones, lean ADRs, load-bearing comments,
-single-source-of-truth placement, draft promotion, operational docs, agent-aware maintenance,
-tracking and revalidation, and a review checklist for documentation changes.
+Language-agnostic documentation design canon: Diataxis zones plus a plan zone, lean ADRs,
+load-bearing comments, single-source-of-truth placement, draft promotion, operational docs,
+agent-aware maintenance, tracking and revalidation, a lean markdown house style, and a review
+checklist for documentation changes.
 
 ## Key Points
 
 ### Overview (00)
 
-- Default to four zones: decisions, guides, reference, explanation.
+- Default to four zones: decisions, guides, reference, explanation; add `plan/` when the project
+  defines its work before building it.
 - Use lean ADRs, never-delete lifecycle, SoT placement, and load-bearing comments.
 - Apply the pattern when projects have durable docs, multiple readers, or LLM agents in the loop.
 - Keep the root docs README as an index, not a junk drawer for durable rules.
@@ -41,12 +44,19 @@ tracking and revalidation, and a review checklist for documentation changes.
 - Explanation teaches mental models; decisions record why.
 - Use zone-first placement, then topic directories inside the zone.
 - Split documents that try to satisfy multiple reader needs.
+- Diataxis organizes what exists; a second axis, `<project>/docs/plan/`, owns what is next —
+  scope, milestones, open questions. It is the only zone whose contents are expected to go stale,
+  which is why its documents carry statuses and may serve more than one reader need.
 
 ### Lean ADRs (02)
 
+- Write an ADR only for a choice that is cross-cutting, hard to reverse, constraining, or rejects
+  a plausible alternative; a run of ADRs on one area means a design doc is missing.
 - Use the MADR-minimal sections: context, options, outcome, consequences, status.
 - Filled ADR bodies stay at or below 350 words.
-- Lifecycle is `Proposed -> Accepted -> Implemented -> Superseded | Deprecated | Rejected`.
+- Lifecycle is `Ideation -> Proposed -> Accepted -> Implemented -> Superseded | Deprecated |
+  Rejected`.
+- `Ideation` is the cheap, non-binding entry state and the only status that may be deleted.
 - `Superseded` has a successor; `Deprecated` has none (context evaporated).
 - Never delete accepted decisions — and never let one mislead: a decision changed only in part
   keeps its status and gains an `Amended by ADR-NNNN — <what changed>` line under `Status`; edit
@@ -71,6 +81,9 @@ tracking and revalidation, and a review checklist for documentation changes.
 ### Drafts and Promotion (05)
 
 - Drafts live outside shipped docs, normally in `<project>/.draft/`.
+- Provisional is not the same as forward-looking: a binding plan, scope decision, or
+  open-questions register is project state and belongs in `<project>/docs/plan/`, in version
+  control.
 - Promotion rewrites the draft into the right zone and then deletes the draft.
 - Split mixed drafts by reader need before promotion.
 - Promote rejected paths as rejected ADRs only when the rejection has future value.
@@ -86,6 +99,8 @@ tracking and revalidation, and a review checklist for documentation changes.
 
 - Documentation bloat is context pollution.
 - Semantic filenames and stable headings improve retrieval.
+- Keep always-loaded author-instruction files under 200 lines, ideally 50–100.
+- Give each unit of work one entry document that names the sources a session should load.
 - `CLAUDE.md` or equivalent author instructions should include documentation maintenance rules.
 - Agents should update docs for durable behavior, operations, or decisions, not every detail.
 - Split a large author-instructions file along the eager/lazy seam: subtree-local rules go to a
@@ -113,6 +128,18 @@ tracking and revalidation, and a review checklist for documentation changes.
 - Link code to a case with a marker/comment carrying the id; mask suppressions carry a revert
   trigger and checklist; a registry index + CI check keep references and directories in sync.
 
+### Lean Markdown (10)
+
+- Keep structural markdown (headings, lists, tables, fenced code with a language, inline code,
+  links); drop decorative markdown (bold, italics, bold lead-ins, emphasis as a heading).
+- Identifiers, paths, flags, and status values go in inline code; binding requirements go in
+  uppercase RFC 8174 keywords, in normative documents only.
+- The justification is signal discipline and readability, not tokens — emphasis is 1–2% of a
+  corpus; restatement and long repeated link paths dominate.
+- No formatter or linter can enforce it: dprint only picks the emphasis character, and
+  markdownlint has no rule against inline emphasis. Use a fence-aware project hook with an
+  `<!-- allow-emphasis: <reason> -->` escape hatch.
+
 ### Checklist (99)
 
 - Review placement, ADR length and status, draft handling, cross-links, agent readiness, known-issue
@@ -139,6 +166,7 @@ tracking and revalidation, and a review checklist for documentation changes.
 | Agent considerations         | `07-ai-agent-considerations.md`      |
 | Tracking and revalidation    | `08-tracking-and-revalidation.md`    |
 | Known issues (external bugs) | `09-known-issues.md`                 |
+| Markdown house style         | `10-lean-markdown.md`                |
 | Review checklist             | `99-checklist.md`                    |
 
 ## Maintenance Notes

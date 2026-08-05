@@ -5,7 +5,8 @@ or record an explicit exception in the owning source of truth.
 
 ## New or changed docs
 
-- [ ] The file has one primary reader need: task, lookup, understanding, or decision.
+- [ ] The file has one primary reader need: task, lookup, understanding, or decision. Plan-zone
+      documents are exempt: they may carry intent, scope, and status together.
 - [ ] The file lives in the matching zone from [01 — Diataxis Zones](./01-diataxis-zones.md).
 - [ ] The file does not restate a fact already owned elsewhere.
 - [ ] Cross-links point to the owning source instead of copying it.
@@ -23,8 +24,10 @@ See [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md).
 - [ ] New ADRs use the sections from [02 — Lean ADRs](./02-lean-adrs.md).
 - [ ] The filled ADR body is at or below 350 words.
 - [ ] The ADR has exactly one canonical `Status:`.
-- [ ] Status is one of `Proposed`, `Accepted`, `Implemented`, `Deprecated`, `Superseded`, or
-      `Rejected`.
+- [ ] Status is one of `Ideation`, `Proposed`, `Accepted`, `Implemented`, `Deprecated`,
+      `Superseded`, or `Rejected`.
+- [ ] The decision cleared the ADR threshold: cross-cutting, hard to reverse, constraining, or
+      rejecting a plausible alternative. A run of ADRs on one area means a design doc is missing.
 - [ ] Implemented ADRs link to the code, config, or docs that enact them when a stable target
       exists.
 - [ ] Superseded ADRs link to the successor; deprecated ADRs say why they stopped applying.
@@ -41,6 +44,8 @@ See [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md).
 - [ ] Step-by-step workflows and runbooks live in `<project>/docs/guides/`.
 - [ ] Lookup, diagnostics, and case studies live in `<project>/docs/reference/`.
 - [ ] Cross-cutting overview or architecture lives in `<project>/docs/explanation/`.
+- [ ] Binding forward-looking material — scope, milestones, open questions — lives in
+      `<project>/docs/plan/`, not in the gitignored drafts workspace.
 - [ ] Non-obvious local code rationale lives in code comments, not distant prose.
 - [ ] Behavior contracts are expressed by names, types, and tests where possible.
 - [ ] The file that owns the fact is clear enough that future edits have one target.
@@ -58,6 +63,17 @@ See [04 — Single Source of Truth](./04-single-source-of-truth.md).
 
 See [05 — Drafts and Promotion](./05-drafts-and-promotion.md).
 
+## Markdown style
+
+- [ ] The file contains no bold and no italics.
+- [ ] Identifiers, paths, flags, commands, and status values are inline code.
+- [ ] Binding requirements use uppercase RFC 8174 keywords, and only in normative documents.
+- [ ] Every fenced code block declares a language; use `text` when none applies.
+- [ ] No paragraph is doing a heading's job.
+- [ ] Any exception carries an `<!-- allow-emphasis: <reason> -->` comment.
+
+See [10 — Lean Markdown](./10-lean-markdown.md).
+
 ## Agent readiness
 
 - [ ] Filenames expose purpose before content is opened.
@@ -65,6 +81,8 @@ See [05 — Drafts and Promotion](./05-drafts-and-promotion.md).
 - [ ] `CLAUDE.md` or the local author-instructions file does not contradict the docs.
 - [ ] `AGENTS.md` digests summarize source files only.
 - [ ] Oversized ADRs, repeated tables, stale drafts, and broad summaries have been trimmed.
+- [ ] Always-loaded author-instruction files stay under 200 lines.
+- [ ] Work in flight has one entry document naming the sources a session should load.
 - [ ] Filenames can be understood from search results without opening the files.
 
 See [07 — AI Agent Considerations](./07-ai-agent-considerations.md).

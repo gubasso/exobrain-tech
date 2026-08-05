@@ -96,42 +96,72 @@ subtree-local rules into a nested author-instructions file scoped to where they 
 
 The pattern:
 
-- **Move** the subtree-local rules from the root author-instructions file into a nested one placed
-  in that subtree; it becomes the single home for those rules.
-- **Bridge** for the tool that reads only its own filename. Claude Code reads `CLAUDE.md`, not
+- Move the subtree-local rules from the root author-instructions file into a nested one placed in
+  that subtree; it becomes the single home for those rules.
+- Bridge for the tool that reads only its own filename. Claude Code reads `CLAUDE.md`, not
   `AGENTS.md`, and lazy-loads a nested `CLAUDE.md` only when it touches a file in that subtree. A
   one-line `<subtree>/CLAUDE.md` containing `@AGENTS.md` forwards the nested rules — an import path
   resolves relative to the importing file, so the sibling is `@AGENTS.md`, not a repo-root path.
-- **Point, don't import** from root: leave a plain link to the nested file in the root file. An
-  eager `@import` would pull the detail back into every session and defeat the split.
-- **Keep cross-cutting rules in root** — anything that applies while editing code _outside_ the
-  subtree stays where every session sees it.
+- Point, don't import, from root: leave a plain link to the nested file in the root file. An eager
+  `@import` would pull the detail back into every session and defeat the split.
+- Keep cross-cutting rules in root: anything that applies while editing code outside the subtree
+  stays where every session sees it.
 
-The caveat that decides what may move: **not every agent lazy-loads.** Some `AGENTS.md`-native tools
-(e.g. Codex) build their instruction chain eagerly from the repo root down to the working directory
-once at launch, so a nested file is invisible to a run started at the root. Move only rules used
-_inside_ the subtree; a rule needed while editing elsewhere must stay in root. The exact per-tool
-loading behavior (eager vs. lazy, import-path resolution) lives in
+The caveat that decides what may move is that not every agent lazy-loads. Some `AGENTS.md`-native
+tools (e.g. Codex) build their instruction chain eagerly from the repo root down to the working
+directory once at launch, so a nested file is invisible to a run started at the root. Move only
+rules used inside the subtree; a rule needed while editing elsewhere must stay in root. The exact
+per-tool loading behavior (eager vs. lazy, import-path resolution) lives in
 [Claude Code memory-file loading](../../tools/claude-code/memory-file-loading.md).
 
-This targets the _rules_ files (project author-instructions), and is orthogonal to the local
+This targets the rules files (project author-instructions), and is orthogonal to the local
 `AGENTS.md` digest role above, where a per-area `AGENTS.md` is a derived map, never a rules home. It
 is the same discipline as [04 — Single Source of Truth](./04-single-source-of-truth.md): one owning
 home per rule, a pointer from everywhere else — applied to the author-instruction files themselves.
+
+## Budget the always-loaded files
+
+An author-instructions file is paid for on every session, whether or not it is relevant, so its
+length is a standing tax rather than a one-time cost. Keep the root file under 200 lines, and aim
+for 50 to 100; push detail into path-scoped files using the seam above. Anthropic's guidance for
+`CLAUDE.md` sets the same bounds: <https://claude.com/blog/using-claude-md-files>.
+
+Two habits keep it there. Write each rule once and link rather than restate it, per
+[04 — Single Source of Truth](./04-single-source-of-truth.md). And keep the prose lean, per
+[10 — Lean Markdown](./10-lean-markdown.md) — a file that is paid for every session is the worst
+place for decorative formatting.
+
+## One entry document per unit of work
+
+A large documentation corpus cannot be loaded, and an agent told to "read the docs" will either
+truncate or drown. The fix is not a smaller corpus but a smaller entry: each unit of work should
+have exactly one document that names the sources needed for it, so a session reads that document
+plus the files it names and nothing else.
+
+This makes the entry document a context filter, and it is the reason the filter must name its
+sources explicitly rather than describing them. "See the specification" loads a corpus; "governed by
+`<spec-page>` and ADR-0013" loads two files.
+
+Where that entry document lives depends on the project. For work in flight it belongs in the plan
+zone from [01 — Diataxis Zones](./01-diataxis-zones.md). For a subsystem being maintained, the
+explanation page for that subsystem can play the role.
 
 ## Documentation maintenance instructions
 
 Every project that expects agent help should add a `## Documentation Maintenance` section to its
 author-instructions file. That section should say:
 
-- Use the Diataxis zones from this pattern.
+- Use the Diataxis zones from this pattern, plus the plan zone when the project has one.
 - Put decisions in lean ADRs and keep them at or below 350 words.
 - Never delete accepted decisions; supersede or reject them.
-- Keep drafts outside shipped docs.
+- Keep drafts outside shipped docs; a binding plan is project state, not a draft.
 - Write facts once at the owning home and cross-link elsewhere.
 - Do not paste filesystem trees into markdown; see
   [04 — Single Source of Truth](./04-single-source-of-truth.md).
 - Preserve placeholders in project-agnostic material.
+- Use no bold and no italics. Put identifiers, paths, flags, and status values in inline code, and
+  binding requirements in uppercase RFC 8174 keywords; see
+  [10 — Lean Markdown](./10-lean-markdown.md).
 
 These rules prevent well-meaning agents from creating sprawling summaries, duplicating facts, or
 promoting drafts without review. The rules also give reviewers a compact checklist to enforce. See
@@ -151,7 +181,7 @@ were updated."
 
 ## Sources
 
-> **Citation note:** the research below includes 2025–2026 work that may postdate an LLM reviewer's
+> Citation note: the research below includes 2025–2026 work that may postdate an LLM reviewer's
 > training cutoff — e.g. `arXiv:2510.21413` ("Context Engineering for AI Agents in Open-Source
 > Software", Mohsenimofidi et al.), verified real on 2026-06-15. Do not flag a citation as
 > fabricated for being future-dated; fetch and verify first.

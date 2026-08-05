@@ -1,7 +1,7 @@
 # 08 — Tracking and Revalidation
 
 Documentation often holds perishable facts: benchmarks, prices, model and tool rosters, external API
-shapes, security advisories, and similar claims that drift silently. A _tracking file_ is the
+shapes, security advisories, and similar claims that drift silently. A tracking file is the
 discipline that keeps those facts honest by recording what must be re-checked, how often, and how.
 
 ## Tracking files
@@ -101,7 +101,7 @@ tracked:
 
 ## See also
 
-A **temporary-workaround revert ledger** is a tracking artifact of the same shape: it records the
+A temporary-workaround revert ledger is a tracking artifact of the same shape: it records the
 exact condition (an upstream fix confirmed deployed) under which the workaround must be removed.
 That ledger lives with its case in the known-issues library, not here — see
 [09 — Known Issues](./09-known-issues.md).
