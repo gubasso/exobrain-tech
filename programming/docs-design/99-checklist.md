@@ -44,6 +44,8 @@ See [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md).
 - [ ] Step-by-step workflows and runbooks live in `<project>/docs/guides/`.
 - [ ] Lookup, diagnostics, and case studies live in `<project>/docs/reference/`.
 - [ ] Cross-cutting overview or architecture lives in `<project>/docs/explanation/`.
+- [ ] The current design of one subsystem lives in `<project>/docs/explanation/<subsystem>.md`, not
+      spread across the decision records.
 - [ ] Binding forward-looking material — scope, milestones, open questions — lives in
       `<project>/docs/plan/`, not in the gitignored drafts workspace.
 - [ ] Non-obvious local code rationale lives in code comments, not distant prose.
@@ -74,6 +76,46 @@ See [05 — Drafts and Promotion](./05-drafts-and-promotion.md).
 
 See [10 — Lean Markdown](./10-lean-markdown.md).
 
+## Plan and appetite
+
+- [ ] Every unit of work names an appetite, fixed before the design and stated in the project's
+      chosen unit.
+- [ ] The unit of work declares a non-negotiable core and a negotiable remainder, not one
+      undifferentiated scope list.
+- [ ] The core leaves room to cut inside the appetite; a core that fills the budget means the work
+      needs splitting.
+- [ ] Anticipated traps carry a pre-authorized escape, and unanticipated ones go to the
+      open-questions register rather than silently expanding scope.
+- [ ] Completion is objective: named tests pass unskipped.
+- [ ] Any appetite change is a committed edit citing the condition met — core only, and all
+      remaining work downhill — and what was cut first.
+- [ ] No unit of work was brought inside its appetite by dropping tests, review, or a security
+      control.
+
+See [11 — Appetite and Scope](./11-appetite-and-scope.md).
+
+## Plan zone and slices
+
+- [ ] The unit of work is one directory under `<project>/docs/plan/slices/` whose `README.md` is the
+      entry document, and it was committed before the work started.
+- [ ] The slice uses the fixed heading list and did not grow a section that belongs in `charter.md`,
+      an ADR, or a subsystem page.
+- [ ] `tasks.md` exists only because implementation crosses a context reset; `requirements.md` only
+      because acceptance is many-to-many onto tests; no `design.md` exists.
+- [ ] `Governed by` names individual files and records, never a directory, a zone, or "the docs".
+- [ ] Acceptance lines are EARS-phrased and each names a test; a hook fails when a named test cannot
+      be found, or the naming was dropped.
+- [ ] Every rabbit hole carries a pre-authorized escape rather than only a warning.
+- [ ] Any change to `Goal`, `Core`, `Appetite`, or `Acceptance` after the work started is a committed
+      edit with a `Revisions` line saying what was learned.
+- [ ] Open-questions entries name what they block, and closed ones left by becoming an ADR, a slice
+      revision, or a recorded measurement.
+- [ ] The current design of a subsystem lives in `<project>/docs/explanation/<subsystem>.md`, which
+      links the ADRs that own the choices rather than restating them.
+- [ ] No accepted ADR was rewritten to describe the present.
+
+See [12 — Plan and Slices](./12-plan-and-slices.md).
+
 ## Agent readiness
 
 - [ ] Filenames expose purpose before content is opened.
@@ -82,7 +124,8 @@ See [10 — Lean Markdown](./10-lean-markdown.md).
 - [ ] `AGENTS.md` digests summarize source files only.
 - [ ] Oversized ADRs, repeated tables, stale drafts, and broad summaries have been trimmed.
 - [ ] Always-loaded author-instruction files stay under 200 lines.
-- [ ] Work in flight has one entry document naming the sources a session should load.
+- [ ] Work in flight has one entry document naming the sources a session should load, and it is the
+      slice `README.md`.
 - [ ] Filenames can be understood from search results without opening the files.
 
 See [07 — AI Agent Considerations](./07-ai-agent-considerations.md).

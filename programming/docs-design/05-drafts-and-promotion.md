@@ -26,7 +26,8 @@ Provisional is not the same as forward-looking. A document can describe work tha
 yet and still be project state: the project's scope and appetite, its ordered milestones, and its
 register of open questions are commitments the team is currently working under, not exploration.
 They belong in `<project>/docs/plan/` and in version control. See
-[01 — Diataxis Zones](./01-diataxis-zones.md) for the zone.
+[01 — Diataxis Zones](./01-diataxis-zones.md) for the zone and
+[12 — Plan and Slices](./12-plan-and-slices.md) for the documents it holds.
 
 The test is not "is this finished" but "is this binding". A half-formed argument about how a
 subsystem might work is a draft. A statement that the next milestone is bounded at two weeks and

@@ -142,9 +142,14 @@ This makes the entry document a context filter, and it is the reason the filter 
 sources explicitly rather than describing them. "See the specification" loads a corpus; "governed by
 `<spec-page>` and ADR-0013" loads two files.
 
-Where that entry document lives depends on the project. For work in flight it belongs in the plan
-zone from [01 — Diataxis Zones](./01-diataxis-zones.md). For a subsystem being maintained, the
-explanation page for that subsystem can play the role.
+Where that entry document lives depends on the project. For work in flight it is
+`<project>/docs/plan/slices/<id>-<slug>/README.md`, whose `Governed by` section is the filter; the
+slice is bounded by [11 — Appetite and Scope](./11-appetite-and-scope.md) and shaped by
+[12 — Plan and Slices](./12-plan-and-slices.md). For a subsystem being maintained, the explanation
+page for that subsystem plays the role; see [01 — Diataxis Zones](./01-diataxis-zones.md).
+
+The two are the same mechanism at different timescales, and both work for the same reason: a filter
+that names its sources loads two files, while a filter that describes them loads a corpus.
 
 ## Documentation maintenance instructions
 
@@ -152,6 +157,12 @@ Every project that expects agent help should add a `## Documentation Maintenance
 author-instructions file. That section should say:
 
 - Use the Diataxis zones from this pattern, plus the plan zone when the project has one.
+- Give each unit of work a fixed appetite and a declared non-negotiable core; when the budget binds,
+  cut the remainder and stop to ask rather than extending; see
+  [11 — Appetite and Scope](./11-appetite-and-scope.md).
+- Work from the current slice and the sources its `Governed by` section names, and nothing else. Do
+  not create a sibling file in the slice directory unless its gate is met, and do not decide an open
+  question — record it; see [12 — Plan and Slices](./12-plan-and-slices.md).
 - Put decisions in lean ADRs and keep them at or below 350 words.
 - Never delete accepted decisions; supersede or reject them.
 - Keep drafts outside shipped docs; a binding plan is project state, not a draft.

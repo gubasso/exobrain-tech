@@ -25,7 +25,11 @@ stating what the subsystem is. A reader then has to reconstruct the design from 
 is the work the design document was supposed to have done.
 
 The signal to watch is a run of consecutive ADRs about one area. When that appears, the missing
-artifact is a short design document that the decisions hang off, not another decision.
+artifact is a short design document that the decisions hang off, not another decision. That document
+is the subsystem page in the explanation zone; see
+[01 — Diataxis Zones](./01-diataxis-zones.md). Writing it does not retire the decisions — it gives
+them somewhere to hang, so a later session reads one page and follows the links it needs instead of
+reconstructing the design from a dozen records.
 
 ## Default template
 
@@ -157,6 +161,21 @@ This mirrors the precedent of durable proposal systems: Rust RFCs
 <https://github.com/kubernetes/enhancements/blob/master/keps/sig-architecture/0000-kep-process/README.md>.
 Those systems preserve decision history because later readers need the trail, not just the latest
 state.
+
+### A record, not a specification
+
+Those same systems draw a second line that matters as much: the record freezes, and current truth
+lives somewhere else. PEP 1 states that once resolution is reached "a PEP is considered a historical
+document rather than a living specification", with expected behavior documented in the language and
+library references instead.
+
+Apply the same split here. An ADR says why one option was chosen over others, at the time it was
+chosen, and it keeps saying that forever. It is not the place a reader goes to learn how the
+subsystem works today — that is the subsystem page in the explanation zone, which is corrected in
+place whenever it stops being true; see [01 — Diataxis Zones](./01-diataxis-zones.md).
+
+The practical consequence is that an ADR left alone for two years is not stale. It is doing its job.
+Staleness is a property of documents that claim to describe the present, and an ADR does not.
 
 ## Comparisons
 

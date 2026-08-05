@@ -82,6 +82,11 @@ intent, scope, and status at once instead of one reader need.
 Work that is finished leaves the plan zone the way any fact does: the durable result moves to the
 zone that owns it, and the plan keeps only the pointer.
 
+What bounds a unit of work in this zone — the appetite, the non-negotiable core, and the conditions
+under which the appetite may change — is in [11 — Appetite and Scope](./11-appetite-and-scope.md).
+What documents the zone holds and what shape a unit of work takes on disk is in
+[12 — Plan and Slices](./12-plan-and-slices.md).
+
 ## Placement rules
 
 Put a document in `decisions/` when it records a choice the project may later revisit. It should be
@@ -102,6 +107,39 @@ allowed to be discursive, but it should link to ADRs instead of restating their 
 
 Operational material follows the same map. Runbooks are guides. Diagnostics and case studies are
 reference. See [06 — Operational Docs](./06-operational-docs.md).
+
+## Subsystem pages
+
+One explanation page per subsystem, `<project>/docs/explanation/<subsystem>.md`, is the zone's
+load-bearing artifact rather than an optional extra. It is the document
+[02 — Lean ADRs](./02-lean-adrs.md) points at when a run of decisions on one area shows that a
+design document is missing, and the document a slice's `Governed by` section names instead of
+listing eleven records; see [12 — Plan and Slices](./12-plan-and-slices.md).
+
+A subsystem page is one to three pages: what the subsystem is, its components and boundaries, the
+constraints that currently hold, and one diagram when a diagram earns its place. It ends with an
+`Unresolved` list naming contradictions and gaps it found rather than deciding them, because the
+value of writing two constraints on one page is that their conflict becomes visible before code
+exists.
+
+The page is living and the decision records are not. That split is the settled convention in mature
+proposal systems: Python's PEP 1 states that once resolution is reached "a PEP is considered a
+historical document rather than a living specification", with formal documentation of expected
+behavior maintained elsewhere, and Rust RFCs say accepted records should not be substantially
+changed. Applied here:
+
+- The subsystem page owns the current design. It is corrected in place whenever it stops being true.
+- An ADR owns why one option was chosen over others, at the time it was chosen. It is never
+  rewritten to match the present; it gains a status change or an amendment pointer instead.
+- Code owns exact current behavior. The page describes shape and boundaries, not field lists; see
+  [04 — Single Source of Truth](./04-single-source-of-truth.md).
+
+So the page links the ADR that owns each choice, and the ADR does not have to be revisited when the
+design moves on. A reader who wants to know how the subsystem works reads one page. A reader who
+wants to know why it works that way follows one link.
+
+Write the page when a subsystem exists and a unit of work would otherwise make a reader reconstruct
+it from the decision records. Do not create empty pages for subsystems that have not been built.
 
 ## Boundary tests
 
@@ -141,8 +179,18 @@ know why this exists." The sentence usually names the zone.
 - Plan zone as a fifth topic folder: `plan/` is a second axis, not another place to file reference
   or explanation material. If it holds anything a reader would consult after the work ships, that
   content belongs in one of the four reader-need zones.
+- Subsystem page as decision record: a page that decides rather than describes leaves the choice
+  invisible to everyone who does not open that subsystem, and leaves nothing to supersede when the
+  choice is reversed.
+- ADR rewritten to match the present: an accepted record edited until it describes the current
+  design destroys the trail the record existed to keep, and the subsystem page already owns that
+  job.
 
 ## Sources
 
 - Diataxis: <https://diataxis.fr/>
 - How to use Diataxis: <https://diataxis.fr/how-to-use-diataxis/>
+- Python PEP 1, on a resolved PEP being a historical document rather than a living specification:
+  <https://peps.python.org/pep-0001/>
+- Rust RFC process, on not substantially changing accepted records:
+  <https://github.com/rust-lang/rfcs>

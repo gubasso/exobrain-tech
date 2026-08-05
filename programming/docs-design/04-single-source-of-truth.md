@@ -31,6 +31,9 @@ of truth and belongs at the owning home.
 | Step-by-step workflows and runbooks    | `<project>/docs/guides/`                                     |
 | Lookup, diagnostics, and case studies  | `<project>/docs/reference/`                                  |
 | Cross-cutting overview or architecture | `<project>/docs/explanation/`                                |
+| Current design of one subsystem        | `<project>/docs/explanation/<subsystem>.md`                  |
+| Scope, milestones, and open questions  | `<project>/docs/plan/`                                       |
+| What one unit of work will produce     | `<project>/docs/plan/slices/<id>-<slug>/README.md`           |
 | Non-obvious code rationale             | Code comments                                                |
 | Behavior contracts                     | Type signatures and names                                    |
 
@@ -108,10 +111,18 @@ When two files disagree, use the placement table:
 
 - Project-wide editing rules beat chapter summaries.
 - ADRs beat explanation pages for why a decision was made.
+- Subsystem pages beat ADRs for what the design is now.
 - Reference pages beat guides for exact values.
 - Guides beat reference pages for task sequence.
 - Code beats prose for current behavior.
 - Load-bearing comments beat distant explanation for local invariants.
+- Slice documents beat everything for what is being built next, and nothing for what is true.
+
+The second and third rules are one rule seen from both sides, and the pair is what keeps either
+document from being edited into the other's job: a decision record that is rewritten to match the
+present has lost the history it existed to hold, and a subsystem page that is left stale to protect
+a record has stopped being worth reading. See [02 — Lean ADRs](./02-lean-adrs.md) and
+[01 — Diataxis Zones](./01-diataxis-zones.md).
 
 After choosing the owner, edit the non-owner file to link to it. Do not leave both claims in place.
 If the conflict reveals a changed decision, write or update an ADR and mark the older decision

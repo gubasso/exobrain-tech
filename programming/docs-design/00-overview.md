@@ -24,7 +24,13 @@ See <https://diataxis.fr/> and <https://www.writethedocs.org/guide/writing/docs-
 
 - Use four documentation zones: decisions, guides, reference, and explanation.
 - Add a plan zone under `<project>/docs/plan/` when the project defines its work before building it.
+- Bound each unit of work with a fixed appetite and a declared non-negotiable core; cut scope rather
+  than extending the budget.
+- Give each unit of work one directory under `<project>/docs/plan/slices/`, entered through its
+  `README.md`.
 - Put architecture decisions in lean ADRs under `<project>/docs/decisions/`.
+- Keep the current design of a subsystem in `<project>/docs/explanation/<subsystem>.md` and let it
+  stay live; the ADRs it links stay frozen.
 - Keep filled ADRs at or below 350 words.
 - Never delete accepted decisions. Mark them superseded, deprecated, or rejected and link forward;
   partially changed decisions keep their status and gain an `Amended by` pointer.
@@ -78,6 +84,21 @@ Spend markdown on structure and not on decoration. Headings, lists, tables, fenc
 code carry meaning a reader and a parser can both use; bold and italics carry none, and dense
 emphasis makes a document harder to read rather than easier. See
 [10 — Lean Markdown](./10-lean-markdown.md).
+
+### Fixed appetite, variable scope
+
+A unit of work is bounded by a budget chosen before its design, not by an estimate derived from one.
+When the budget binds, the scope is cut and the budget holds. Work whose outcome is genuinely
+non-negotiable is not exempt; it is sized so the guaranteed part fits with room to spare. See
+[11 — Appetite and Scope](./11-appetite-and-scope.md).
+
+### Records freeze, descriptions stay live
+
+A decision record says why one option was chosen, at the time it was chosen, and it is never
+rewritten to match the present. A subsystem page says how the design stands today, and is corrected
+whenever it stops being true. Keeping both jobs in one document is what produces either a record
+that has lost its history or a page nobody trusts. See
+[01 — Diataxis Zones](./01-diataxis-zones.md) and [02 — Lean ADRs](./02-lean-adrs.md).
 
 ## When to apply
 

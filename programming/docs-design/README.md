@@ -4,10 +4,11 @@ Language-agnostic principles for organizing a software project's `docs/` directo
 when a project needs clear document ownership, lean decision records, operational docs that are easy
 to find, and source-of-truth rules that humans and LLM agents can follow.
 
-The pattern uses Diataxis zones for what exists and a plan zone for what is next, lean ADRs,
-single-source-of-truth placement, load-bearing comments, gitignored drafts, tracking for perishable
-facts, and a markdown house style that spends formatting on structure rather than decoration. It is intentionally small: enough structure to
-prevent drift, not enough to turn documentation into a separate process.
+The pattern uses Diataxis zones for what exists and a plan zone for what is next, lean ADRs beside
+living subsystem pages, single-source-of-truth placement, load-bearing comments, gitignored drafts,
+tracking for perishable facts, a fixed appetite and one directory per unit of work, and a markdown
+house style that spends formatting on structure rather than decoration. It is intentionally small: enough structure to prevent drift, not
+enough to turn documentation into a separate process.
 
 ## How to use this shelf
 
@@ -16,7 +17,11 @@ prevent drift, not enough to turn documentation into a separate process.
 3. Copy [template-adr.md](./template-adr.md) into `<project>/docs/decisions/template.md`.
 4. Enforce the lean ADR rules from [02 — Lean ADRs](./02-lean-adrs.md).
 5. Adopt the markdown house style from [10 — Lean Markdown](./10-lean-markdown.md).
-6. Use [99 — Checklist](./99-checklist.md) before merging documentation changes.
+6. Bound units of work with [11 — Appetite and Scope](./11-appetite-and-scope.md) when the project
+   plans before it builds.
+7. Shape the plan zone with [12 — Plan and Slices](./12-plan-and-slices.md), and copy
+   [template-slice.md](./template-slice.md) for each unit of work.
+8. Use [99 — Checklist](./99-checklist.md) before merging documentation changes.
 
 LLM agents should load [AGENTS.md](./AGENTS.md) first for the digest, then read the source chapters
 that own the current change.
@@ -42,14 +47,23 @@ reference material. Leave broad explanation until the factual sources of truth a
 | 8        | [Tracking and Revalidation](./08-tracking-and-revalidation.md) | Track perishable facts and revalidate their sources on a cadence.  |
 | 9        | [Known Issues](./09-known-issues.md)                           | Track bugs in external systems under test; expand then collapse.   |
 | 10       | [Lean Markdown](./10-lean-markdown.md)                         | Spend markdown on structure; drop bold, italics, and decoration.   |
+| 11       | [Appetite and Scope](./11-appetite-and-scope.md)               | Fix the budget, vary the scope, and gate every change to it.       |
+| 12       | [Plan and Slices](./12-plan-and-slices.md)                     | One directory per unit of work, and what may live inside it.       |
 | 99       | [Checklist](./99-checklist.md)                                 | Review checklist for docs changes.                                 |
 | Template | [ADR template](./template-adr.md)                              | Drop-in lean ADR template for project decisions.                   |
+| Template | [Slice template](./template-slice.md)                          | Drop-in entry document for one unit of work.                       |
 
 ## Defaults
 
 - Put decisions in `<project>/docs/decisions/`.
 - Put scope, milestones, and open questions in `<project>/docs/plan/` when the project defines its
   work before building it; a binding plan is project state, not a draft.
+- Give every unit of work a fixed appetite and a declared non-negotiable core, and change the
+  appetite only by a committed edit that cites the condition met.
+- Give every unit of work one directory under `<project>/docs/plan/slices/`, with `README.md` as its
+  entry document and no sibling file that has not met its gate.
+- Put the current design of a subsystem in `<project>/docs/explanation/<subsystem>.md`; it stays
+  live, and the ADRs it links stay frozen.
 - Put task docs and runbooks in `<project>/docs/guides/`.
 - Put lookup, diagnostics, and case studies in `<project>/docs/reference/`.
 - Put architecture overviews and conceptual background in `<project>/docs/explanation/`.
