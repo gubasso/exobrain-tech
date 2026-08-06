@@ -1,6 +1,6 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-08-05
+last-synced: 2026-08-06
 source-files:
   - README.md
   - 00-foundations.md
@@ -20,7 +20,7 @@ source-files:
   - template-docs-rules.md
   - template-plan-zone.md
   - template-slice.md
-token-estimate: 1108
+token-estimate: 1145
 ---
 
 # AGENTS
@@ -60,6 +60,7 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 | A fact that will be wrong in a month                                    | `08-tracking-and-revalidation.md` |
 | A bug in an external system under test                                  | `09-known-issues.md`              |
 | May I use bold here?                                                    | `10-lean-markdown.md`             |
+| How do I stop a fixed-shape document's headings from drifting?          | `10-lean-markdown.md`             |
 | What do I check before merging a docs change?                           | `99-checklist.md`                 |
 | What does this shelf mean by `<term>`?                                  | `glossary.md`                     |
 
@@ -71,6 +72,7 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 - Drafts stay out of `docs/`; a binding plan is project state, not a draft.
 - No bold and no italics, anywhere.
 - Every fenced block declares a language.
+- A fixed-shape document carries its own `MD043` heading array; free-form documents carry none.
 - Never paste a tree of a directory that already exists.
 
 ## Maintenance

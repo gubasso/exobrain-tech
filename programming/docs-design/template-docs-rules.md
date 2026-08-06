@@ -24,6 +24,9 @@ session pays for on every load.
   appetite only by a committed edit citing the condition met.
 - Give every unit of work one directory under `<project>/docs/plan/slices/`, entered through its
   `README.md`, with no sibling file that has not met its gate.
+- Pin every fixed-shape document's headings with an `MD043` array in a `markdownlint-configure-file`
+  comment under its H1 — the slice `README.md` and `milestones.md` at minimum — and add a section by
+  amending that array, never by deleting the comment.
 - Until the current slice is implemented, do not add a specification page and do not open an ADR
   outside it. A question that arises goes to `<project>/docs/plan/open-questions.md`.
 - Work from the current slice and the sources its `Governed by` section names, and nothing else.
