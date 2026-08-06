@@ -274,16 +274,20 @@ ts=... level=error op=config.load err.kind=ConfigInvalid err.path=/home/user/.co
 
 When the default chain walk isn't enough, reach for a dedicated library:
 
-| Language | Library                                                                  | What it adds                                                   |
-| -------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| Rust     | [`miette`](https://docs.rs/miette/)                                      | Source-snippet rendering, ASCII art pointers, structured help. |
-| Rust     | [`color-eyre`](https://docs.rs/color-eyre/)                              | Colored `anyhow`-style chains with spantraces.                 |
-| Python   | [`rich.traceback`](https://rich.readthedocs.io/en/latest/traceback.html) | Colorized tracebacks with source lines.                        |
-| Go       | `errors.Is` / `errors.As` + custom formatter                             | Idiomatic chain walking.                                       |
-| Bash     | Custom `trap ERR` handler + `set -E`                                     | Linenumber + last command.                                     |
+| Language | Library                                                                  | What it adds                                                                |
+| -------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| Rust     | [`miette`](https://docs.rs/miette/)                                      | Rich diagnostics with codes, help, causes, and optional source spans.       |
+| Rust     | [`annotate-snippets`](https://docs.rs/annotate-snippets/)                | Focused source-span rendering; not a general renderer without source spans. |
+| Rust     | [`color-eyre`](https://docs.rs/color-eyre/)                              | Report and panic presentation with colored chains and spantraces.           |
+| Python   | [`rich.traceback`](https://rich.readthedocs.io/en/latest/traceback.html) | Colorized tracebacks with source lines.                                     |
+| Go       | `errors.Is` / `errors.As` + custom formatter                             | Idiomatic chain walking.                                                    |
+| Bash     | Custom `trap ERR` handler + `set -E`                                     | Linenumber + last command.                                                  |
 
 Gate the heavyweight ones behind a `--pretty-errors` flag or a debug build feature — they're for
-interactive humans, not for piping into another tool.
+interactive humans, not for piping into another tool. See
+[Rust 07 — Dependencies](../../languages/rust/cli-spec/07-dependencies.md#diagnostics-and-panics)
+for maintenance, centralized color-policy requirements, and global-hook conflicts before choosing
+a Rust renderer. This comparison does not adopt the Rust spec's proposed `miette` migration.
 
 ---
 
@@ -356,5 +360,6 @@ For every error variant, confirm:
 - [`curl` exit codes (append-only, ~90)](https://everything.curl.dev/cmdline/exitcode.html)
 - [BurntSushi: Error Handling in Rust](https://burntsushi.net/rust-error-handling/)
 - [Alexis King: Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
-- [`miette`](https://docs.rs/miette/) · [`color-eyre`](https://docs.rs/color-eyre/) ·
+- [`miette`](https://docs.rs/miette/) · [`annotate-snippets`](https://docs.rs/annotate-snippets/) ·
+  [`color-eyre`](https://docs.rs/color-eyre/) ·
   [`rich.traceback`](https://rich.readthedocs.io/en/latest/traceback.html)

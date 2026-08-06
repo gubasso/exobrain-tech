@@ -297,8 +297,10 @@ fn eprint_error(e: &app_template::error::AppError) {
 }
 ```
 
-The chain walk surfaces `#[source]` and `#[from]` causes. For prettier output in dev builds, gate
-`color-eyre` behind a feature flag.
+The chain walk surfaces `#[source]` and `#[from]` causes and remains the default. When a concrete
+need justifies a prettier renderer, choose from the
+[diagnostic comparison](./07-dependencies.md#diagnostics-and-panics). Pretty renderers must obey the
+centralized machine and color policy; do not assume a renderer's global hooks or detector does so.
 
 The split predates the exit-code argument: the Rust Book prescribes it for binary crates so the
 logic is testable and `main` is verifiable by inspection

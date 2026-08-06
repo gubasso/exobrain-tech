@@ -24,7 +24,12 @@ waive it in an ADR — don't ship with silent gaps.
 
 - [ ] Human-facing tools default to human-UX: stdout is command results; stderr carries prompts,
       progress, warnings, and terse error messages.
-- [ ] Human-UX color respects `NO_COLOR` / `FORCE_COLOR` / `--color {auto,always,never}`.
+- [ ] Human-facing tools default to polished, colorful terminal output; a general CLI offers
+      `--color {auto,always,never}` unless a recorded product constraint forbids that spelling.
+- [ ] Color is resolved once and follows the linked ladder, including active `FORCE_COLOR` winning
+      over active `NO_COLOR` and empty values remaining inert.
+- [ ] JSON, log, and non-terminal output contains no ANSI, cursor control, decorative glyphs,
+      progress, prompts, or table layout.
 - [ ] Human-UX progress/prompts auto-hide when stderr is not a TTY.
 - [ ] Human-UX non-interactive mode: `--yes` for confirmations; auto-fail-vs-prompt when stdin is
       not a TTY.

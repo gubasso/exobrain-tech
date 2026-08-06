@@ -34,8 +34,16 @@ spec references the general facing-category taxonomy and records only Rust idiom
   Serialization: `serde` + `serde_json` + `toml`. Self-documentation: `clap_complete` and
   `clap_mangen`. Paths: `camino`. Async: `tokio` (rt, macros). Tests: `assert_cmd` + `predicates`
   - `insta` + `tempfile`. Runner: `cargo nextest`.
-- Human-UX crates (`anstream`/`owo-colors`, `comfy-table`, `indicatif`, `inquire`/`dialoguer`) are
-  human-facing-only additions.
+- Human-facing color defaults to `anstyle` plus `anstream`; optional `owo-colors` is only an
+  ergonomic emitter with `supports-colors` disabled. Resolve one choice and apply it at the stream.
+- Tables: `comfy-table` auto-fits but is feature-frozen and seeking a maintainer; `tabled` needs an
+  explicit width and its `ansi` feature for colored cells. Use `unicode-width`, never byte/character
+  count.
+- Progress: `indicatif` fails closed on non-TTY/`TERM=dumb`; combine active bars with
+  `tracing-indicatif` and explicitly suppress them in machine mode. Prompts: choose richer,
+  solo-owned `inquire` or multi-owner, zeroizing-password `dialoguer` by need.
+- Diagnostics: `annotate-snippets` is span-only; `miette` supports spanless diagnostics;
+  `color-eyre` misses `NO_COLOR`. Global report and panic hooks make renderer selection exclusive.
 
 ### Directory Tree
 
@@ -110,7 +118,8 @@ spec references the general facing-category taxonomy and records only Rust idiom
 - Manage deps through Cargo's CLI only: `cargo add`/`cargo remove`/`cargo update`. Never hand-edit
   dependency names/versions/features in `Cargo.toml`. Commit `Cargo.lock` for binaries. (ADR-0001)
 - Current majors: `thiserror` 2, `toml` 1 (TOML spec 1.1), `anstream` 1.0.
-- Avoid: `env_logger`, `log`, `structopt`, `failure`, `confy`, `dirs`, `lazy_static`, `serde_yaml`.
+- Avoid: `env_logger`, `log`, `structopt`, `failure`, `confy`, `dirs`, `lazy_static`, `serde_yaml`,
+  unmaintained `ansi_term`, and maintenance-only legacy color crates as new defaults.
 - Prefer: `std::sync::LazyLock` over `once_cell`. `time` over `chrono` when possible.
 
 ### Naming and Visibility
@@ -129,21 +138,22 @@ spec references the general facing-category taxonomy and records only Rust idiom
 
 ## Source Map
 
-| Topic                                       | File                                                |
-| ------------------------------------------- | --------------------------------------------------- |
-| Canonical `src/` tree                       | `00-directory-tree.md`                              |
-| Single-crate vs workspace triggers          | `01-crate-layout.md`                                |
-| Four-edit rule, clap derive, help rendering | `02-subcommand-pattern.md`                          |
-| thiserror + anyhow stack, exit-code matrix  | `03-error-handling.md`                              |
-| tracing setup, file sink, verbosity         | `04-logging.md`                                     |
-| figment layered config, XDG, CLI overrides  | `05-config.md`                                      |
-| Curated dependency list, always vs UX-only  | `07-dependencies.md`                                |
-| Visibility, naming tables, doc comments     | `08-naming-and-visibility.md`                       |
-| Rust-specific style deltas                  | `09-coding-style.md`                                |
-| fd, bat, ripgrep, jj, cargo, helix patterns | `10-reference-projects.md`                          |
-| firecracker, cloud-hypervisor, youki, ruff  | `10-reference-projects.md`                          |
-| `main`/`run` boundary rule                  | `adr/0002-main-delegates-to-run.md`                 |
-| Why sysexits despite deprecation            | `adr/0003-keep-bsd-sysexits-despite-deprecation.md` |
+| Topic                                       | File                                                       |
+| ------------------------------------------- | ---------------------------------------------------------- |
+| Canonical `src/` tree                       | `00-directory-tree.md`                                     |
+| Single-crate vs workspace triggers          | `01-crate-layout.md`                                       |
+| Four-edit rule, clap derive, help rendering | `02-subcommand-pattern.md`                                 |
+| thiserror + anyhow stack, exit-code matrix  | `03-error-handling.md`                                     |
+| tracing setup, file sink, verbosity         | `04-logging.md`                                            |
+| figment layered config, XDG, CLI overrides  | `05-config.md`                                             |
+| Curated dependency list, always vs UX-only  | `07-dependencies.md`                                       |
+| Visibility, naming tables, doc comments     | `08-naming-and-visibility.md`                              |
+| Rust-specific style deltas                  | `09-coding-style.md`                                       |
+| fd, bat, ripgrep, jj, cargo, helix patterns | `10-reference-projects.md`                                 |
+| firecracker, cloud-hypervisor, youki, ruff  | `10-reference-projects.md`                                 |
+| `main`/`run` boundary rule                  | `adr/0002-main-delegates-to-run.md`                        |
+| Why sysexits despite deprecation            | `adr/0003-keep-bsd-sysexits-despite-deprecation.md`        |
+| Terminal color stack decision               | `adr/0004-use-anstyle-and-anstream-for-terminal-colour.md` |
 
 ## Maintenance Notes
 

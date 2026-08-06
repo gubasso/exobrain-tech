@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-07-31
+last-synced: 2026-08-06
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -51,7 +51,10 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 - Machine-output does not paginate by default; if output can be too large, document
   `--limit`/`--page`/`--cursor`/`--offset` in `--help`.
 - Verbosity: none=warn, `-v`=info, `-vv`=debug, `-vvv`=trace.
-- Respect `NO_COLOR`/`FORCE_COLOR` for human-UX; never color machine-output or log files.
+- Human-facing tools default to polished, colorful terminal output; explicit machine modes and
+  implicit non-terminal/log destinations are undecorated.
+- Resolve presentation once at startup for the actual destination stream. Active `FORCE_COLOR`
+  wins over active `NO_COLOR`; empty values are inert.
 
 ### Error Messages (02)
 
@@ -65,6 +68,8 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 - **Exit code = category; stderr + `err.kind` = instance** — this is what keeps the code set small.
 - Fine-grained spectrum: coarse (grep/diff `0/1/2`) → small-structured (gh `0/1/2/4`, sysexits;
   default) → fine (rsync ~15, curl ~90). Add a code only when a real consumer branches on it.
+- Rust pretty-renderer selection and its maintenance, color-policy, and global-hook caveats live in
+  the nested Rust CLI digest and dependency chapter.
 - **Append-only stability**: codes are a permanent API — never reassign, only append; consumers
   branch on `0`/non-zero or documented categories.
 - Sanctioned bare `1`: a read-only checker's `--strict` promoting `warn`→`1` (documented exception).

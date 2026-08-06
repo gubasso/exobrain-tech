@@ -85,25 +85,53 @@ the `--limit`, `--page`, `--cursor`, or `--offset` behavior in `--help` so an ag
 
 ### Color
 
-Color is a human-UX concern. Apply it only to human-facing renderers.
+Color is a human-UX concern. A new human-facing CLI should default to polished, colorful, structured
+output at a terminal. Machine-output and log-messages are unconditional undecorated modes: no ANSI
+escapes, cursor controls, decorative glyphs, progress, prompts, or table layout, even when their
+destination is a terminal. An explicit machine option such as `--json` therefore dominates every
+color override, including `FORCE_COLOR`.
 
-Respect the three established conventions. Precedence: **NO_COLOR > FORCE_COLOR (or CLICOLOR_FORCE)
+For human output, resolve this recommended ladder once at startup. **First match wins:**
 
-> isatty(stdout) check > CLICOLOR**.
+1. Machine-output or a log sink: color is **never** enabled.
+2. `FORCE_COLOR` is active: color is **on**.
+3. Explicit `--color=always` or `--color=never`: use that choice. `--color=auto` continues down the
+   ladder.
+4. Application configuration explicitly enables or disables color: use that choice.
+5. `NO_COLOR` is active: color is **off**.
+6. `TERM=dumb`: color is **off**.
+7. BSD `CLICOLOR_FORCE` is active and `TERM` names a color-capable terminal: color is **on**.
+8. The ecosystem extension `CLICOLOR=0`: color is **off**.
+9. The actual destination stream is not a terminal: color is **off**.
+10. Otherwise, color is **on** for a human-facing CLI.
 
-| Variable                           | Effect                                  |
-| ---------------------------------- | --------------------------------------- |
-| `NO_COLOR` (any non-empty value)   | Disable color absolutely.               |
-| `FORCE_COLOR` / `CLICOLOR_FORCE`   | Force color even when piped.            |
-| `CLICOLOR=0`                       | Disable color (weaker than `NO_COLOR`). |
-| `CLICOLOR=1` (default)             | Color when output is a TTY.             |
-| `--color {auto,always,never}` flag | Per-invocation override; wins over env. |
+This is a project recommendation that reconciles several convention families, not one universal
+standard. [NO_COLOR](https://no-color.org/) explicitly lets command-line arguments and application
+configuration override the variable. [FORCE_COLOR](https://force-color.org/) applies its override
+last, so active `FORCE_COLOR` wins over flags, configuration, and `NO_COLOR`. A project may omit the
+general `--color=auto|always|never` spelling only for a recorded product constraint, such as a
+passthrough wrapper that must not claim a child's flags.
 
-Default: `auto` — color when `stdout` is a TTY, off otherwise. Detect via `isatty(1)`. Never emit
-ANSI escapes into log-messages, machine-output, or a non-TTY stream by accident.
+Activation is an OS-string test, not boolean parsing: unset and empty values are inert; every
+non-empty value is active. Consequently `NO_COLOR=0` disables color, `FORCE_COLOR=0` forces color
+on, and simultaneous active `NO_COLOR` plus `FORCE_COLOR` produces color. Preserve non-UTF-8 values
+by reading OS strings rather than requiring Unicode.
 
-References: [NO_COLOR.org](https://no-color.org/), [force-color.org](https://force-color.org/),
-[Indicating CLI color preference (gist)](https://gist.github.com/scop/4d5902b98f0503abec3fcbb00b38aec3).
+Keep the convention families distinct. FreeBSD [`ls(1)`](https://man.freebsd.org/cgi/man.cgi?query=ls&sektion=1)
+is the presence-based source for `CLICOLOR` and `CLICOLOR_FORCE`; it does not define the later
+`CLICOLOR=0` ecosystem behavior. BSD `CLICOLOR_FORCE` still requires a color-capable `TERM`, while
+`FORCE_COLOR` does not. `TERM=dumb` is a separate portability rule documented by
+[Command Line Interface Guidelines](https://clig.dev/#colour).
+
+Terminal detection is stream-local. Test `stdout` for a successful result and `stderr` for a
+diagnostic, progress display, or prompt; never use stdout's terminal state as a proxy for stderr.
+Do not sniff `CI` or `GITHUB_ACTIONS`: a pipe is already handled by the destination-stream test,
+while a CI pseudo-terminal remains capable of displaying color.
+
+Carry the resolved choice to every renderer and enforce it at the destination stream, where escapes
+can be applied or stripped. Renderers must not reread the environment or make their own terminal
+decision. Multiple detectors in one run are an anti-pattern because they can disagree about
+environment semantics or inspect different streams.
 
 ### Tables, progress, prompts
 
@@ -112,12 +140,15 @@ prompt; missing required input is an error with a clear remediation path.
 
 Pick one library per concern; use it consistently.
 
-| Concern             | Rust                     | Python                       | Bash              |
-| ------------------- | ------------------------ | ---------------------------- | ----------------- |
-| Tables              | `comfy-table`, `tabled`  | `rich`, `tabulate`           | `column -t`       |
-| Progress / spinners | `indicatif`              | `rich.progress`, `tqdm`      | `pv`, custom `\r` |
-| Prompts             | `inquire`, `dialoguer`   | `questionary`, `rich.prompt` | `read`            |
-| Colors              | `anstream`, `owo-colors` | `rich`, `colorama`           | `tput`, raw ANSI  |
+| Concern             | Rust                                          | Python                       | Bash              |
+| ------------------- | --------------------------------------------- | ---------------------------- | ----------------- |
+| Tables              | `comfy-table`, `tabled`                       | `rich`, `tabulate`           | `column -t`       |
+| Progress / spinners | `indicatif`                                   | `rich.progress`, `tqdm`      | `pv`, custom `\r` |
+| Prompts             | `inquire`, `dialoguer`                        | `questionary`, `rich.prompt` | `read`            |
+| Colors              | `anstyle` + `anstream`; optional `owo-colors` | `rich`, `colorama`           | `tput`, raw ANSI  |
+
+The Rust choices and their maintenance tradeoffs are owned by
+[Rust 07 — Dependencies](../../languages/rust/cli-spec/07-dependencies.md#human-presentation).
 
 Progress and prompts go to `stderr`, never `stdout`. Progress should auto-hide if `stderr` is not a
 TTY.
@@ -143,9 +174,10 @@ Machine-facing tools never prompt by default. They fail loudly when required inp
 - Multi-line errors with stack traces dumped on stdout. Stack traces → log-messages (verbose mode),
   short human message → stderr, structured machine error → stderr (as JSON) with a non-zero exit
   code. Never mix an error into the stdout result, regardless of facing category.
-- ANSI escapes in piped output. Detect TTY for human-UX; never color machine-output.
-- Color-by-default in CI. CI rarely sets `NO_COLOR`; sniff `CI=true` or `GITHUB_ACTIONS=true` and
-  default to no color (or to FORCE_COLOR if the CI renders ANSI, e.g. GitHub Actions does).
+- ANSI escapes in piped output. Detect the actual destination stream for human-UX; never color
+  machine-output.
+- CI-specific color sniffing. The destination-stream rule already disables color on a pipe and
+  preserves it on a capable pseudo-terminal.
 - Asking interactive confirmation in a script that piped stdin from `/dev/null`. Detect and fail
   with a clear message.
 
@@ -338,7 +370,8 @@ Language-specific guides live alongside the matching language spec:
 - **Rust**:
   [`tech/languages/rust/cli-spec/04-logging.md`](../../languages/rust/cli-spec/04-logging.md) —
   `tracing` + `tracing-subscriber` + `tracing-appender` for the file sink. JSON via
-  `tracing-subscriber::fmt::layer().json()`. Color via `anstream` / `owo-colors`.
+  `tracing-subscriber::fmt::layer().json()`. For color, `anstyle` defines the style vocabulary and
+  `anstream` owns stream adaptation and stripping; `owo-colors` is optional formatting ergonomics.
 - **Python**:
   [`tech/languages/python/cli-spec/typer-patterns.md`](../../languages/python/cli-spec/typer-patterns.md)
   — `structlog` or `loguru` for structured records; `rich` for the human-UX layer.
@@ -362,6 +395,8 @@ Language-specific guides live alongside the matching language spec:
 - [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/index.html)
 - [NO_COLOR](https://no-color.org/) · [FORCE_COLOR](https://force-color.org/) ·
   [Indicating CLI color preference](https://gist.github.com/scop/4d5902b98f0503abec3fcbb00b38aec3)
+- [FreeBSD `ls(1)` environment conventions](https://man.freebsd.org/cgi/man.cgi?query=ls&sektion=1)
+- [Command Line Interface Guidelines: colour](https://clig.dev/#colour)
 - [logfmt format](https://brandur.org/logfmt) — origin of key=value structured logging
 - [Twelve-Factor App: Logs](https://12factor.net/logs) — for context on stdout-as-log-stream (the
   CLI default deliberately diverges)

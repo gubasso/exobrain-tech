@@ -16,15 +16,11 @@ Always:
 | Subscriber install (bin only) | `tracing-subscriber` (`env-filter`, `fmt`) |
 | Non-blocking file sink        | `tracing-appender`                         |
 
-Human-UX only:
-
-| Concern                           | Crate                                       |
-| --------------------------------- | ------------------------------------------- |
-| Pretty error formatter (optional) | `color-eyre` (dev builds)                   |
-| Color                             | `anstream`, `owo-colors`, or `nu-ansi-term` |
-| Tables                            | `comfy-table`, `tabled`                     |
-| Progress / spinners               | `indicatif`                                 |
-| Prompts                           | `inquire`, `dialoguer`                      |
+For human presentation, use `anstyle` as the style vocabulary and `anstream` as the one stream
+adapter and stripper. `owo-colors` is optional formatting ergonomics above that layer, with its
+`supports-colors` feature disabled. Tables, progress, prompts, diagnostics, and maintenance
+tradeoffs are selected in [07 — Dependencies](./07-dependencies.md#human-presentation); logging
+does not own a second presentation policy.
 
 ## Rules
 
@@ -38,6 +34,8 @@ Human-UX only:
   subscriber.
 - File-first logging is universal. Default `mirror_stderr` to `false` for machine-facing CLIs; for
   human-facing CLIs, set it from `--log-stderr`, verbosity policy, or config.
+- JSON and file/log sinks are unconditional no-decoration modes. Set `.with_ansi(false)` rather
+  than relying on terminal detection or an environment override.
 
 ## `src/logging.rs`
 
@@ -104,15 +102,20 @@ internals.
 
 ### Variant: human-readable text format
 
-For the file sink, prefer JSON (LLM-friendly). For the optional terminal mirror, keep the default
-pretty formatter, _but_ disable colors if `NO_COLOR` is set:
+For the file sink, prefer JSON (LLM-friendly). A minimal optional terminal mirror that implements
+only the published `NO_COLOR` activation rule is:
 
 ```rust
 fmt::layer()
     .with_writer(std::io::stderr)
-    .with_ansi(std::env::var("NO_COLOR").is_err())
+    .with_ansi(std::env::var_os("NO_COLOR").is_none_or(|v| v.is_empty()))
     .with_target(false)
 ```
+
+`var_os` preserves non-UTF-8 values, and an empty value is inert. A full human-facing CLI must not
+reread policy here: derive `with_ansi` from the presentation choice already resolved at startup so
+`FORCE_COLOR`, machine mode, `TERM`, and the actual stderr target are not independently decided in
+the logging layer.
 
 ### File rotation
 
@@ -158,7 +161,8 @@ consumers.
   ignores `RUST_LOG`.
 - Installing the subscriber inside a library. Libraries emit only.
 - Using `env_logger` or `log` directly. Both lack span support and structured fields.
-- Color in the JSON layer (`with_ansi(true)`). Bloats the file and confuses parsers.
+- Color in the JSON or file layer (`with_ansi(true)`). Machine and log sinks are unconditional
+  no-decoration modes; escapes bloat the output and confuse parsers.
 - Forgetting the `_guard` — the appender worker exits before the buffer flushes, and tail-end logs
   disappear.
 
