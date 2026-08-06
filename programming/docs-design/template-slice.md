@@ -49,7 +49,7 @@ slice is mis-shaped — split it before starting.}
 ## Done when
 
 {The objective completion condition: the named tests above pass unskipped, and the `milestones.md`
-row flips.}
+line flips.}
 
 ## Revisions
 
