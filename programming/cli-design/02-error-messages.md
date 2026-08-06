@@ -149,6 +149,21 @@ Reference: [`sysexits(3)`](https://man.freebsd.org/cgi/man.cgi?query=sysexits&se
 **Treat the matrix as part of the user-facing API.** Unit-test that each error variant maps to its
 declared code. Shell scripts depend on these.
 
+**The caveat, stated plainly.** That same `sysexits(3)` page says the interface "has been deprecated
+and is retained only for compatibility. Its use is discouraged," and that "the choice of an
+appropriate exit value is often ambiguous." Surveyed real-world CLIs mostly do not use these values —
+ripgrep, ruff, and fd define small domain code spaces instead. This guidance keeps sysexits anyway,
+because pre-agreed numbers are guessable to the scripts and coding agents that read them where a
+private numbering must be learned per tool. But the honest consequence is that **the exit code is
+worth less than the message.** Spend effort on the rendered diagnostic first. The reasoning, and the
+rule against pulling the numbers from a crate, are recorded in
+[Rust CLI spec ADR-0003](../../languages/rust/cli-spec/adr/0003-keep-bsd-sysexits-despite-deprecation.md).
+
+A process supervised by systemd or launchd is a further case: the manager's behaviour is a
+`0`-versus-nonzero decision plus whatever `SuccessExitStatus=`/`RestartPreventExitStatus=` name
+explicitly, so distinct categories buy nothing operationally unless the unit lists them. For a daemon,
+the journal message is the payload and the code is a breadcrumb.
+
 ### Codes are program-wide categories, not per-subcommand namespaces
 
 One taxonomy for the whole program. `78` means "config error" whether it came from `start`, `init`,

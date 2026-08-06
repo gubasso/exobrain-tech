@@ -111,6 +111,21 @@ Map every `AppError` variant onto a constant from that table.
 
 Don't use codes outside that set without writing them down. Shell scripts read your exit code.
 
+**Hand-roll the mapping; don't take the [`sysexits`](https://docs.rs/sysexits/) crate.** Its enum has
+sixteen variants — `0` and `64..=78` — with no arbitrary-`u8` variant and no `From<u8>`. The moment
+your program owns a code outside that range (a `--strict` mode's `1`, a wrapped child's `128+S`
+pass-through, a domain code like firecracker's signal range `148..=157`), the crate can express part
+of your taxonomy and not the rest, and ownership splits in two. One local enum keeps one source of
+truth. Firecracker and every project in the entry-point table below reached the same conclusion.
+
+**Know that sysexits is deprecated upstream.** FreeBSD's own
+[`sysexits(3)`](https://man.freebsd.org/cgi/man.cgi?query=sysexits&sektion=3) now says the interface
+"has been deprecated and is retained only for compatibility. Its use is discouraged," and notes that
+the choice of an appropriate value is often ambiguous. None of the reference projects in chapter 10
+use sysexits values. This spec keeps them anyway — see ADR-0003 for why — but the honest consequence
+is that **the code is worth less than the message.** Given a fixed budget, spend it on the rendered
+diagnostic before spending it on refining the taxonomy.
+
 ## Per-layer error type examples
 
 ### Domain error (`src/domain/widget.rs`)
@@ -189,23 +204,87 @@ let prefs = std::fs::read_to_string(&path)
 
 This is `riptask`'s approach (`src/error.rs:48-49`) and it's a good escape hatch.
 
-## Printing errors in `main`
+## The process boundary: `main` delegates, `run` does the work
+
+`main` returns `ExitCode` and contains no logic. The fallible program is a separate function — call
+it `run`, `try_main`, or `dispatch` — and `main` is a five-to-ten-line adapter that renders the error
+once and classifies it once. This is a rule, not a preference. See ADR-0002.
+
+### Why the split is forced
+
+Three facts compose:
+
+1. `ExitCode` does not implement `Try`. The `?` operator is illegal anywhere in a function whose
+   return type is `ExitCode`. A `main` that holds the logic must `match` every fallible call.
+2. `fn main() -> Result<(), E>` compiles, but `impl<T: Termination, E: Debug> Termination for
+   Result<T, E>` prints `Error: {err:?}` and returns `ExitCode::FAILURE` — always `1`, always the
+   `Debug` rendering. It structurally cannot emit `64`, `70`, or `78`.
+3. So you can have `?`, or a plain `main`, or specific exit codes — any two. The split buys all
+   three.
+
+Point 2 is the one people get wrong. `main() -> anyhow::Result<()>` is fine when "success versus
+generic failure" is the whole contract; it is the wrong top-level signature the moment a sysexits
+matrix exists. Verify against
+[`Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html) rather than assuming.
+
+### `run` takes its inputs as parameters
+
+`main` owns the connection to process globals — `std::env::args_os()`, and any env read that has to
+happen before the config layer. Everything past `main` receives what it needs as arguments. A `run`
+that reaches out to `args_os()` itself cannot be called twice, cannot be called with synthetic
+input, and turns "the arguments were parsed and validated" into a convention rather than a fact of
+the signature.
+
+```rust
+fn main() -> ExitCode {
+    let outcome = match arguments(std::env::args_os()) {
+        Ok(config) => run(&config),
+        Err(e) => Err(e),
+    };
+    match outcome { /* render, classify */ }
+}
+
+fn run(config: &Config) -> Result<(), AppError> { ... }   // not callable until parsing succeeded
+```
+
+The payoff is that the parser becomes a pure function of an iterator, so the whole argument grammar
+— missing flag, wrong order, relative path where an absolute one is required, trailing junk — is
+unit-testable without spawning a process. That is usually the only genuinely testable part of a thin
+binary.
+
+ripgrep (`run(flags::parse())`), ruff (`run(Args::parse_from(args))`), and the Rust Book all do
+this; the Book lists "calling the command line parsing logic with the argument values" among the
+responsibilities that stay in `main`. With `clap` this falls out for free, since `Cli::parse()`
+handles its own failures and exits — so `main` gains no second error path. With a hand-written
+parser that returns `Result`, accept the one extra match arm in `main` rather than pushing the
+`argv` read down.
+
+### `impl Termination` for your own type does not replace `run`
+
+`Termination` has been stable for user types since 1.61, and the release notes show a `GitBisectResult`
+enum doing exactly what an `exit_code()` mapping does. It is legitimate. It also does not remove the
+inner function, because `?` depends on `Try`, not on `Termination` — you end up with
+`fn main() -> Report { Report(run()) }` and the `match` relocated into `report()`. Rendering inside
+`report()` also hides a side effect in a conversion. Reach for it only when several binaries in one
+workspace share exactly the same reporting policy.
+
+### The shape
 
 ```rust
 fn main() -> std::process::ExitCode {
-    let cli = app_template::cli::Cli::parse();
-    let ctx = match app_template::context::AppContext::new(&cli) {
-        Ok(c) => c,
+    match run() {
+        Ok(()) => std::process::ExitCode::SUCCESS,
         Err(e) => {
             eprint_error(&e);
-            return std::process::ExitCode::from(e.exit_code());
+            std::process::ExitCode::from(e.exit_code())
         }
-    };
-    if let Err(e) = app_template::dispatch(&ctx, cli) {
-        eprint_error(&e);
-        return std::process::ExitCode::from(e.exit_code());
     }
-    std::process::ExitCode::SUCCESS
+}
+
+fn run() -> Result<(), AppError> {
+    let cli = app_template::cli::Cli::parse();
+    let ctx = app_template::context::AppContext::new(&cli)?;
+    app_template::dispatch(&ctx, cli)
 }
 
 fn eprint_error(e: &app_template::error::AppError) {
@@ -221,8 +300,76 @@ fn eprint_error(e: &app_template::error::AppError) {
 The chain walk surfaces `#[source]` and `#[from]` causes. For prettier output in dev builds, gate
 `color-eyre` behind a feature flag.
 
+The split predates the exit-code argument: the Rust Book prescribes it for binary crates so the
+logic is testable and `main` is verifiable by inspection
+([ch12-03](https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html)).
+Exit codes are the second, independent reason.
+
+### What real projects do
+
+Every widely-studied Rust binary splits. What varies is only the return types.
+
+| Project          | `main` returns             | Inner fn returns              | Error type                 | Code space                   |
+| ---------------- | -------------------------- | ----------------------------- | -------------------------- | ---------------------------- |
+| firecracker      | `ExitCode`                 | `Result<(), MainError>`       | `thiserror` enum           | `FcExitCode` enum + `From`   |
+| ruff             | `ExitCode`                 | `anyhow::Result<ExitStatus>`  | `anyhow`                   | `ExitStatus` enum + `From`   |
+| ripgrep          | `ExitCode`                 | `anyhow::Result<ExitCode>`    | `anyhow` + downcast        | `0`/`1`/`2`                  |
+| cargo            | `()`                       | `CliResult`                   | `anyhow` inside `CliError` | free `i32` on the error      |
+| fd               | `()`                       | `Result<ExitCode>`            | `anyhow`                   | own enum + `.exit()`         |
+| bat, hyperfine   | `()`                       | `Result<bool>` / `Result<()>` | `anyhow`                   | `0`/`1` via `process::exit`  |
+| cloud-hypervisor | `()`                       | `Result<(), Error>`           | `thiserror` enum           | `0`/`1` via `process::exit`  |
+| rust-analyzer    | `anyhow::Result<ExitCode>` | same                          | `anyhow`                   | `0`, or std's `1` on failure |
+
+Two patterns fall out. Projects needing more than two codes all introduce a **named code type**
+rather than bare integer constants at call sites. And projects whose exit code carries no contract
+(rust-analyzer: an LSP server; a GUI app) can accept `Termination for Result`'s exit `1` — that
+option is unavailable the moment a matrix is documented.
+
+This spec's default is the firecracker/ruff shape: `main -> ExitCode`, inner `-> Result<_, AppError>`,
+one `exit_code()` mapping, rendering at the boundary. Prefer returning `ExitCode` over
+`std::process::exit`, which skips destructors on every stack — relevant whenever the program holds
+child processes, file sinks, or a `WorkerGuard`. Enable `clippy::exit = "deny"` to enforce it.
+
+## Binaries a service manager supervises
+
+A daemon started by systemd, launchd, or a supervisor tree is a third audience alongside human and
+machine-facing, and the rules invert.
+
+**The exit code buys less than you think.** systemd's behaviour is a `0`-versus-nonzero decision plus
+whatever `SuccessExitStatus=`, `RestartPreventExitStatus=`, and `RestartForceExitStatus=` explicitly
+name. `64`, `70`, and `74` are behaviourally identical unless the unit lists them. Set those
+properties deliberately or accept that the codes are diagnostic breadcrumbs in `systemctl status`,
+not a control surface. `RestartPreventExitStatus=64 70` — never retry a usage error or an internal
+defect, do retry a transient I/O failure — is usually the useful pairing.
+
+**The message buys more.** The unit's `MainPID` has stderr wired to the journal, and that is the only
+place a failure can be explained. A supervised binary that classifies its error and prints nothing has
+built the less valuable half. Firecracker logs the error to its log face _and_ `eprintln!`s it before
+converting; copy that ordering — render, then classify.
+
+**Do not erase the cause on the way out.** The typed error from the layer below is the whole account
+of what happened; a supervisor that collapses it to a category has nothing left to write.
+
+## Anti-patterns
+
+| Anti-pattern                                | Why it fails                                                                                                                                                         |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Result<(), u8>` / `Result<(), (u8, &str)>` | Implements no `Error`, no `Display`, no `source()`. Nothing converts via `?`, so every call site needs a manual `map_err` — the type is what forces the erasure.     |
+| `.map_err(\|_\| EX_IOERR)`                  | Discards the `io::Error` that says whether it was `ENOENT`, `EACCES`, or `EISDIR`. Use `.map_err(AppError::ReadSpec)` and keep it as `#[source]`.                    |
+| `Result<T, ()>`                             | The API Guidelines condemn `()` as an error type by name. Use a named unit variant.                                                                                  |
+| Classification at each call site            | Thirteen independent `map_err`s each pick a code, so nobody can audit which codes a command can return. One exhaustive `match` in `exit_code()` is compiler-checked. |
+| `u8` as the code type                       | Admits 256 values where the matrix admits ten. A closed enum makes an off-taxonomy code unconstructible.                                                             |
+
+The failure mode these share is silent drift: the code compiles, the tests pass, and the taxonomy in
+the README stops describing the binary.
+
 ## Rules
 
+- `main` returns `ExitCode` and holds no logic. The fallible program is `run`. (ADR-0002)
+- No `std::process::exit` — return the `ExitCode` so destructors run. Enforce with
+  `clippy::exit = "deny"`.
+- Render the error chain before classifying it. A binary that returns a code and prints nothing has
+  shipped the less useful half.
 - No `panic!`, `.unwrap()`, `.expect()` outside `main`, tests, build scripts, and `LazyLock`
   initializers.
 - No catch-all `_ => 1` in `exit_code()`. Map every variant explicitly.

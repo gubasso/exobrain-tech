@@ -1,9 +1,11 @@
 //! Machine-facing binary entry point.
 //!
-//! Parses args, initializes file-first logging with no stderr mirror by default,
-//! builds `AppContext`, dispatches to the selected subcommand, maps the
-//! resulting `AppError` to a sysexits exit code, and emits structured errors to stderr.
-//! NO business logic here — if you find yourself writing logic, lift it into
+//! `main` is the process boundary and nothing else: it emits one structured error
+//! envelope and classifies it once. All the work — parsing args, initializing
+//! file-first logging with no stderr mirror by default, building `AppContext`,
+//! dispatching — lives in `run`, which returns `Result` so `?` is available. See
+//! ADR-0002 for why this split is forced rather than stylistic. NO business logic
+//! here OR in `run` — if you find yourself writing logic, lift it into
 //! `commands/`, `services/`, or `adapters/`.
 
 use clap::Parser;
@@ -26,29 +28,10 @@ use crate::context::AppContext;
 use crate::error::AppError;
 
 fn main() -> ExitCode {
-    let cli = Cli::parse();
-
-    if let Err(e) = logging::init(cli.global.verbose, false) {
-        print_init_error(&e);
-        return ExitCode::from(70); // EX_SOFTWARE
-    }
-
-    let ctx = match AppContext::new(&cli) {
-        Ok(c) => c,
-        Err(e) => {
-            print_error(&e);
-            return ExitCode::from(e.exit_code());
-        }
-    };
-
-    let result = match cli.command {
-        Commands::Example(args) => commands::example::run(&ctx, args),
-        // Commands::Doctor(args) => commands::doctor::run(&ctx, args),
-        // Commands::Init(args) => commands::init::run(&ctx, args),
-        // add one arm per subcommand
-    };
-
-    match result {
+    // `Cli::parse()` belongs here, not in `run`: `main` owns the connection to `argv`, and `run`
+    // receives what it needs. clap handles its own parse failures and exits, so this adds no
+    // second error path. See ADR-0002.
+    match run(Cli::parse()) {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
             print_error(&e);
@@ -57,18 +40,29 @@ fn main() -> ExitCode {
     }
 }
 
+fn run(cli: Cli) -> Result<(), AppError> {
+    // A logging failure arrives as `AppError::Other` and classifies to EX_SOFTWARE (70), so it
+    // needs no special case — that is the point of routing every failure through one type.
+    logging::init(cli.global.verbose, false)?;
+    let ctx = AppContext::new(&cli)?;
+
+    match cli.command {
+        Commands::Example(args) => commands::example::run(&ctx, args),
+        // Commands::Doctor(args) => commands::doctor::run(&ctx, args),
+        // Commands::Init(args) => commands::init::run(&ctx, args),
+        // add one arm per subcommand
+    }
+}
+
 // Error envelopes share one stable schema — {"ok":false,"error":{kind,message,exit_code}} — and go
 // to stderr with a non-zero exit code, honoring the universal Unix stdout/stderr contract (see the
 // channel matrix in cli-design/01-logging-and-output.md): stdout carries only the successful result,
 // errors go to stderr. This holds for machine-facing tools too — agents expect it.
-fn print_init_error(e: &anyhow::Error) {
-    // Logging failed before the subscriber was installed; sysexits EX_SOFTWARE (70).
-    eprintln!(
-        "{{\"ok\":false,\"error\":{{\"kind\":\"LogInit\",\"message\":{},\"exit_code\":70}}}}",
-        json_string(&e.to_string())
-    );
-}
-
+//
+// If this binary is supervised by systemd rather than invoked from a shell, this envelope is what
+// lands in the journal, and it is the more valuable half of the failure report — the manager itself
+// only distinguishes zero from non-zero. See 03-error-handling.md, "Binaries a service manager
+// supervises".
 fn print_error(e: &AppError) {
     eprintln!(
         "{{\"ok\":false,\"error\":{{\"kind\":\"{}\",\"message\":{},\"exit_code\":{}}}}}",

@@ -71,6 +71,9 @@ Copy the tree, drop the `.template` suffixes, rename `app_template` → your cra
   world. `services/` is optional — add it only when orchestration is reused.
 - Error stack: `thiserror` per-layer typed enums → top-level `AppError` → `exit_code()` mapped to
   BSD sysexits.
+- `main` returns `ExitCode`, holds no logic, renders the chain and classifies it. The fallible
+  program is `run`. `fn main() -> Result<_, _>` is disallowed — it exits `1` and `Debug`-dumps,
+  whatever your matrix says. (ADR-0002)
 - `tracing` + `tracing-subscriber` with `RUST_LOG`. **Default destination:
   `$XDG_STATE_HOME/<app>/<app>.log`** (file sink via `tracing-appender`). Terminal mirror is opt-in.
 - `figment` for layered config: defaults → user file → project file → env → CLI.

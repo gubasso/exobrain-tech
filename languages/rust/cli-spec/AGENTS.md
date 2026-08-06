@@ -1,6 +1,6 @@
 ---
 digest-of: languages/rust/cli-spec
-last-synced: 2026-07-10
+last-synced: 2026-08-06
 source-files:
   - 00-directory-tree.md
   - 01-crate-layout.md
@@ -63,6 +63,33 @@ spec references the general facing-category taxonomy and records only Rust idiom
 - `AppError::exit_code() -> u8` mapped to BSD sysexits. Unit-test every arm.
 - No `unwrap`/`expect` outside main, tests, build scripts, `LazyLock`.
 
+### The Process Boundary (ADR-0002)
+
+- `main` returns `ExitCode`, holds no logic, and owns two things: the connection to process globals
+  (`args_os()`), and rendering-then-classifying the error. The fallible program is `run`.
+- `run` receives its inputs as parameters and reads no process global, so its preconditions are
+  facts of the signature and the parser stays a pure, testable function of an iterator.
+- Forced, not stylistic: `ExitCode` does not implement `Try` (no `?` in `main`), and
+  `Termination for Result` hardcodes exit `1` plus a `Debug` dump, so `fn main() -> Result<_, _>`
+  cannot emit a sysexits code. Disallowed for any binary with a documented exit matrix.
+- No `std::process::exit` — return the `ExitCode` so destructors run. Enforce with
+  `clippy::exit = "deny"`. `impl Termination` for an owned type is permitted, not default: it still
+  needs `run`.
+- Service-manager-supervised binaries are a third audience beside human/machine-facing. systemd
+  distinguishes only zero from non-zero unless `SuccessExitStatus=`/`RestartPreventExitStatus=`/
+  `RestartForceExitStatus=` name a code, so the journal message is the payload and the code is a
+  breadcrumb. Render before classifying; never erase the cause on the way out.
+- Anti-patterns: `Result<(), u8>`, `Result<(), (u8, &str)>`, `Result<T, ()>`,
+  `.map_err(|_| CODE)`, and per-call-site code selection.
+
+### sysexits Caveat (ADR-0003)
+
+- Keep BSD sysexits as the default taxonomy, but know it is deprecated upstream by `sysexits(3)`
+  itself and unused by most reference projects. Consequence: the code is worth less than the
+  message; spend the budget on the diagnostic first.
+- Hand-roll the mapping. Do NOT take the `sysexits` crate: it admits only `0` and `64..=78`, so any
+  owned code outside that range splits the taxonomy across two sources.
+
 ### Logging
 
 - `tracing` for emission. `tracing-subscriber` with `EnvFilter` and `tracing-appender` for file
@@ -102,18 +129,21 @@ spec references the general facing-category taxonomy and records only Rust idiom
 
 ## Source Map
 
-| Topic                                       | File                          |
-| ------------------------------------------- | ----------------------------- |
-| Canonical `src/` tree                       | `00-directory-tree.md`        |
-| Single-crate vs workspace triggers          | `01-crate-layout.md`          |
-| Four-edit rule, clap derive, help rendering | `02-subcommand-pattern.md`    |
-| thiserror + anyhow stack, exit-code matrix  | `03-error-handling.md`        |
-| tracing setup, file sink, verbosity         | `04-logging.md`               |
-| figment layered config, XDG, CLI overrides  | `05-config.md`                |
-| Curated dependency list, always vs UX-only  | `07-dependencies.md`          |
-| Visibility, naming tables, doc comments     | `08-naming-and-visibility.md` |
-| Rust-specific style deltas                  | `09-coding-style.md`          |
-| fd, bat, ripgrep, jj, cargo, helix patterns | `10-reference-projects.md`    |
+| Topic                                       | File                                                |
+| ------------------------------------------- | --------------------------------------------------- |
+| Canonical `src/` tree                       | `00-directory-tree.md`                              |
+| Single-crate vs workspace triggers          | `01-crate-layout.md`                                |
+| Four-edit rule, clap derive, help rendering | `02-subcommand-pattern.md`                          |
+| thiserror + anyhow stack, exit-code matrix  | `03-error-handling.md`                              |
+| tracing setup, file sink, verbosity         | `04-logging.md`                                     |
+| figment layered config, XDG, CLI overrides  | `05-config.md`                                      |
+| Curated dependency list, always vs UX-only  | `07-dependencies.md`                                |
+| Visibility, naming tables, doc comments     | `08-naming-and-visibility.md`                       |
+| Rust-specific style deltas                  | `09-coding-style.md`                                |
+| fd, bat, ripgrep, jj, cargo, helix patterns | `10-reference-projects.md`                          |
+| firecracker, cloud-hypervisor, youki, ruff  | `10-reference-projects.md`                          |
+| `main`/`run` boundary rule                  | `adr/0002-main-delegates-to-run.md`                 |
+| Why sysexits despite deprecation            | `adr/0003-keep-bsd-sysexits-despite-deprecation.md` |
 
 ## Maintenance Notes
 

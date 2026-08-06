@@ -212,6 +212,71 @@ default-plugins/
 Copy: a separate `<app>-tile` (or `<app>-plugin-api`) crate when you support plugins — keeps the
 plugin ABI small and stable.
 
+## Daemons, supervisors, and VMMs
+
+Long-running processes started by a service manager rather than a shell. Study these when the binary
+you are writing is supervised — the entry-point discipline is the same, the audience is not. See
+[03 — Error handling · Binaries a service manager supervises](./03-error-handling.md#binaries-a-service-manager-supervises).
+
+### [`firecracker-microvm/firecracker`](https://github.com/firecracker-microvm/firecracker) — AWS microVM VMM
+
+**The reference implementation of this spec's error boundary**, arrived at independently. `main`
+delegates, `MainError` is a `thiserror` enum with `#[source]` chaining, and one `From` impl owns the
+whole mapping:
+
+```rust
+fn main() -> ExitCode {
+    let result = main_exec();
+    if let Err(err) = result {
+        error_unrestricted!("{err}");            // log face
+        eprintln!("Error: {err:?}");             // journal face
+        ExitCode::from(FcExitCode::from(err) as u8)
+    } else { ExitCode::SUCCESS }
+}
+fn main_exec() -> Result<(), MainError> { ... }
+impl From<MainError> for FcExitCode { ... }      // exhaustive match
+```
+
+Copy: the render-then-classify ordering; the hand-rolled `FcExitCode` enum (it carries signal-derived
+codes `148..=157`, which is why the `sysexits` crate was unusable); one `From` impl as the single
+audit surface for "which codes can this program return".
+
+### [`cloud-hypervisor/cloud-hypervisor`](https://github.com/cloud-hypervisor/cloud-hypervisor) — VMM
+
+A strong `thiserror` enum with 30-plus `#[source]`-chained variants, a bespoke `cli_print_error_chain`
+renderer — and exit codes of only `0` and `1`. **It invests everything in the message and nothing in
+the code**, which is a coherent choice when the consumer reads stderr rather than `$?`. It also
+cleans up its API socket before exiting, which is the argument against `process::exit` in miniature.
+
+Copy: the error-chain renderer. Don't copy the `process::exit(0|1)` boundary if your exit matrix is
+richer than "worked / didn't".
+
+### [`containers/youki`](https://github.com/containers/youki) — OCI runtime
+
+Relevant for the **pass-through** problem: `exec` and `run` must reproduce a contained process's exit
+status verbatim, which youki does with `std::process::exit(exit_code)` mid-`main`. That works, and it
+is exactly what `clippy::exit` warns about. A `GuestStatus(u8)` variant on your code enum reaching
+`ExitCode::from(u8)` gets the same result with a clean unwind.
+
+### [`astral-sh/ruff`](https://github.com/astral-sh/ruff) — linter
+
+The modern consensus form, and the closest thing to this spec's default:
+
+```rust
+fn main() -> ExitCode {
+    match run(Args::parse_from(args)) {
+        Ok(code) => code.into(),
+        Err(err) => report_error(&err),
+    }
+}
+pub enum ExitStatus { Success, Failure, Error }
+impl From<ExitStatus> for ExitCode { ... }
+```
+
+Copy: `report_error(&err) -> ExitCode`, which produces the rendering and the code in one boundary
+function; the separate `ExitStatus` type so the _success_ channel also carries a code (linting that
+found violations is not an error).
+
 ## Quick comparison
 
 | Project  | LOC   | Shape                                          | Key takeaway                            |
@@ -228,6 +293,15 @@ plugin ABI small and stable.
 | helix    | ~120k | workspace, ~8 crates                           | Dependency-direction boundaries.        |
 | atuin    | ~40k  | workspace, 4 crates                            | Bin + client + server + common.         |
 | zellij   | ~80k  | workspace                                      | Plugin ABI crate.                       |
+
+Supervised processes, compared on the axis that distinguishes them:
+
+| Project          | Domain      | Error type       | Codes                                | Renders the chain?        |
+| ---------------- | ----------- | ---------------- | ------------------------------------ | ------------------------- |
+| firecracker      | microVM VMM | `thiserror` enum | `FcExitCode` enum, incl. `148..=157` | Yes — log face and stderr |
+| cloud-hypervisor | VMM         | `thiserror` enum | `0`/`1` only                         | Yes — bespoke renderer    |
+| youki            | OCI runtime | `anyhow`         | child pass-through                   | Yes                       |
+| ruff             | linter      | `anyhow`         | `ExitStatus` enum                    | Yes — `report_error`      |
 
 ## What to copy from your own repos
 

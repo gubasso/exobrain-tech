@@ -1,9 +1,11 @@
 //! Binary entry point.
 //!
-//! Parses args, initializes logging, builds `AppContext`, dispatches to the
-//! selected subcommand, maps the resulting `AppError` to a sysexits exit code.
-//! NO business logic here — if you find yourself writing logic, lift it into
-//! `commands/`, `services/`, or `adapters/`.
+//! `main` is the process boundary and nothing else: it renders the error chain
+//! once and classifies it once. All the work — parsing args, initializing
+//! logging, building `AppContext`, dispatching — lives in `run`, which returns
+//! `Result` so `?` is available. See ADR-0002 for why this split is forced
+//! rather than stylistic. NO business logic here OR in `run` — if you find
+//! yourself writing logic, lift it into `commands/`, `services/`, or `adapters/`.
 
 use clap::Parser;
 use std::process::ExitCode;
@@ -24,32 +26,25 @@ use crate::context::AppContext;
 use crate::error::AppError;
 
 fn main() -> ExitCode {
-    let cli = Cli::parse();
-
-    if let Err(e) = logging::init(cli.global.verbose) {
-        eprintln!("app: failed to initialize logging: {e}");
-        return ExitCode::from(70); // EX_SOFTWARE
-    }
-
-    let ctx = match AppContext::new(&cli) {
-        Ok(c) => c,
-        Err(e) => {
-            print_error(&e);
-            return ExitCode::from(e.exit_code());
-        }
-    };
-
-    let result = match cli.command {
-        Commands::Example(args) => commands::example::run(&ctx, args),
-        // add one arm per subcommand
-    };
-
-    match result {
+    // `Cli::parse()` belongs here, not in `run`: `main` owns the connection to `argv`, and `run`
+    // receives what it needs. clap handles its own parse failures and exits, so this adds no
+    // second error path. See ADR-0002.
+    match run(Cli::parse()) {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
             print_error(&e);
             ExitCode::from(e.exit_code())
         }
+    }
+}
+
+fn run(cli: Cli) -> Result<(), AppError> {
+    logging::init(cli.global.verbose)?;
+    let ctx = AppContext::new(&cli)?;
+
+    match cli.command {
+        Commands::Example(args) => commands::example::run(&ctx, args),
+        // add one arm per subcommand
     }
 }
 

@@ -4,7 +4,7 @@ Rust guidance: general language notes and idioms, the axum web framework, and da
 (SQLx, chrono/serde datetimes) live as topic files here — the [`AGENTS.md`](./AGENTS.md) Source Map
 indexes them file by file. The once-per-project specs and the ship-it cookbook are the landmarks:
 
-**Start here to ship a project:** [cookbook](cookbook/README.md) — a one-file TLDR runbook that
+**Start here to ship a project:** [cookbook](./cookbook-ship-rust-project/README.md) — a one-file TLDR runbook that
 takes a crate from repo + remote to published, branch-protected, and CI-gated (scaffold → gates →
 branch security → CI → release/publish), footnoted to the deep-dive specs.
 
