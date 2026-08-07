@@ -45,7 +45,10 @@ session pays for on every load.
 - Track perishable facts in a machine-readable registry with a cadence and a `last_checked` date.
 - Use no bold and no italics. Put identifiers, paths, flags, and status values in inline code, and
   binding requirements in uppercase RFC 8174 keywords. Every fenced block declares a language.
-- Preserve `<angle>` placeholders in project-agnostic material.
+- Preserve lowercase `<angle>` placeholders in project-agnostic material.
+- Open every phase of a multi-phase guide with the artifacts it consumes and close it with the
+  artifacts it produces, each named as an upper-snake `<ANGLE>` token that appears in exactly one
+  outputs block and never carries a real value. Write the phase body as numbered actions.
 - Update docs when a change affects durable behavior, operations, or decisions — not for every
   implementation detail — and report the change by ownership: which source of truth changed, which
   links were added, which hooks passed.

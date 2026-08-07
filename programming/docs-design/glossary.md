@@ -16,6 +16,8 @@ second sentence, the definition belongs in the owning chapter instead.
   Rules: [06 — Appetite and Scope](./06-appetite-and-scope.md).
 - `ARID` — Avoid Repetition In Documentation: every durable fact has one owner and every other
   mention is a link. Rules: [00 — Foundations](./00-foundations.md).
+- `artifact token` — an upper-snake `<ANGLE>` name for one thing a phase of a guide produces.
+  Rules: [11 — Procedure Artifacts](./11-procedure-artifacts.md).
 - `author-instructions file` — the file a project's humans and agents load before editing, such as
   `CLAUDE.md` or `AGENTS.md`. Rules: [04 — Agent Context](./04-agent-context.md).
 - `baseline` — what users have today, which is what a reduced version is compared against.
@@ -53,6 +55,8 @@ second sentence, the definition belongs in the owning chapter instead.
   Rules: [07 — Plan and Slices](./07-plan-and-slices.md).
 - `honest-fail` — a test left failing so it does not hide a bug in an external system.
   Rules: [09 — Known Issues](./09-known-issues.md).
+- `inputs line` — the line under a phase heading naming the artifacts it consumes and where each was
+  produced. Rules: [11 — Procedure Artifacts](./11-procedure-artifacts.md).
 - `knowledge base` — a project whose product is its content tree of directories and markdown files
   rather than a codebase. Rules: [01 — Diataxis Zones](./01-diataxis-zones.md).
 - `known-issue case` — one tracked bug in a system the project does not own, filed as its own
@@ -63,8 +67,10 @@ second sentence, the definition belongs in the owning chapter instead.
   Rules: [09 — Known Issues](./09-known-issues.md).
 - `MUST` / `SHOULD` — normative keywords, binding only when capitalized; see
   <https://www.rfc-editor.org/rfc/rfc8174.txt>.
-- `placeholder` — an `<angle>` name standing in for anything project-specific.
-  Rules: [10 — Lean Markdown](./10-lean-markdown.md).
+- `outputs block` — the fenced list closing a phase of a guide, naming each artifact it produced.
+  Rules: [11 — Procedure Artifacts](./11-procedure-artifacts.md).
+- `placeholder` — a lowercase `<angle>` name standing in for anything project-specific, distinct from
+  an artifact token by case. Rules: [10 — Lean Markdown](./10-lean-markdown.md).
 - `plan zone` — the second-axis zone holding what the project builds next and what bounds it.
   Rules: [01 — Diataxis Zones](./01-diataxis-zones.md).
 - `pre-production gate` — the standing rule that no new specification page or outside ADR is opened
@@ -74,6 +80,8 @@ second sentence, the definition belongs in the owning chapter instead.
   Rules: [01 — Diataxis Zones](./01-diataxis-zones.md).
 - `promotion` — rewriting a draft into a durable document in its owning zone.
   Rules: [05 — Drafts and Promotion](./05-drafts-and-promotion.md).
+- `recipe form` — a guide phase written as numbered actions with commands in fences, rather than as
+  prose. Rules: [11 — Procedure Artifacts](./11-procedure-artifacts.md).
 - `Rejected` — a decision the project explicitly chose not to take.
   Rules: [02 — Lean ADRs](./02-lean-adrs.md).
 - `remainder` — the negotiable scope beyond the core, ordered so the least valuable is cut first.

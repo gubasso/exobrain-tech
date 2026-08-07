@@ -53,6 +53,9 @@ The zones are not content categories; they are reader promises. A guide promises
 completion. A reference page promises stable lookup and precise facts. An explanation promises context
 and trade-offs. A decision record promises the choice and its consequences.
 
+How a multi-phase guide keeps its half of that promise — naming what each phase produces and consumes
+— is [11 — Procedure Artifacts](./11-procedure-artifacts.md). This chapter only places the file.
+
 Treat the need as a mode, not a reader identity. The same maintainer is a learner in the morning, a
 task-doer during a release, and a reviewer in the afternoon. The path should tell them which mode the
 document supports before they read the first paragraph.

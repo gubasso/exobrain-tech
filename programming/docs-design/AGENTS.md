@@ -1,6 +1,6 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-08-06
+last-synced: 2026-08-07
 source-files:
   - README.md
   - 00-foundations.md
@@ -14,6 +14,7 @@ source-files:
   - 08-tracking-and-revalidation.md
   - 09-known-issues.md
   - 10-lean-markdown.md
+  - 11-procedure-artifacts.md
   - 99-checklist.md
   - glossary.md
   - template-adr.md
@@ -21,7 +22,7 @@ source-files:
   - template-heading-shapes.md
   - template-plan-zone.md
   - template-slice.md
-token-estimate: 1145
+token-estimate: 1230
 ---
 
 # AGENTS
@@ -31,7 +32,7 @@ token-estimate: 1145
 Language-agnostic documentation design canon. Ownership and placement of durable facts; the Diataxis
 zones plus a plan zone; the artifacts — decision records, subsystem pages, known-issue cases, tracking
 registries, slices; the process — drafts and promotion, appetite and scope, the plan zone; and the
-house style plus the pre-merge gate.
+house style, the producer-consumer shape of a guide, plus the pre-merge gate.
 
 ## How to use this shelf
 
@@ -63,6 +64,8 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 | May I use bold here?                                                    | `10-lean-markdown.md`             |
 | How do I stop a fixed-shape document's headings from drifting?          | `10-lean-markdown.md`             |
 | Where does the heading array live, and what applies it?                 | `10-lean-markdown.md`             |
+| How does a reader know which step produced the value this step wants?   | `11-procedure-artifacts.md`       |
+| What do I call the values a guide carries between its phases?           | `11-procedure-artifacts.md`       |
 | What do I check before merging a docs change?                           | `99-checklist.md`                 |
 | What does this shelf mean by `<term>`?                                  | `glossary.md`                     |
 
@@ -76,6 +79,8 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 - Every fenced block declares a language.
 - A fixed shape has one `MD043` heading array in one file, applied by one hook entry; documents carry
   no lint configuration and free-form documents are not gated.
+- A multi-phase guide names what each phase consumes and produces, and no artifact token ever carries
+  a real value.
 - Never paste a tree of a directory that already exists.
 
 ## Maintenance

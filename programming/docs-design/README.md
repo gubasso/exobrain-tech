@@ -32,6 +32,7 @@ reviewed, indexed, and superseded when it stops being true.
 | 8        | [Tracking and Revalidation](./08-tracking-and-revalidation.md) | Track perishable facts and revalidate their sources on a cadence.    |
 | 9        | [Known Issues](./09-known-issues.md)                           | Track bugs in external systems under test; expand then collapse.     |
 | 10       | [Lean Markdown](./10-lean-markdown.md)                         | Spend markdown on structure, and gate the shapes that are contracts. |
+| 11       | [Procedure Artifacts](./11-procedure-artifacts.md)             | Name what each phase of a guide produces and what it consumes.       |
 | 99       | [Checklist](./99-checklist.md)                                 | The pre-merge review gate for a documentation diff.                  |
 |          | [Glossary](./glossary.md)                                      | One sentence per term, each naming the chapter that owns it.         |
 | Template | [ADR](./template-adr.md)                                       | Drop-in lean ADR.                                                    |
@@ -45,8 +46,8 @@ reviewed, indexed, and superseded when it stops being true.
 Read the chapters in number order. Ownership comes before location, so the zone chapter can be a
 placement map rather than a re-argument; the frozen record and the living description are adjacent
 because their whole doctrine is the contrast between them; the agent constraint precedes the process
-chapters that build on it; and style and the review gate come last, applied to material you already
-know how to produce.
+chapters that build on it; and style, the one document shape that is a guide's rather than a record's,
+and the review gate come last, applied to material you already know how to produce.
 
 An agent should not read the shelf linearly. Load [AGENTS.md](./AGENTS.md), find the owning chapter in
 its routing table, and read that chapter plus the sources it names — the corpus load is exactly what

@@ -124,6 +124,21 @@ Owner: [10 — Lean Markdown](./10-lean-markdown.md).
       rather than trusting a checklist for two failures the linter reports as success.
 - [ ] No document carries a `markdownlint-configure-file` comment.
 
+## Procedures
+
+Owner: [11 — Procedure Artifacts](./11-procedure-artifacts.md).
+
+- [ ] A guide with more than one phase names, at every phase, what it consumes and what it produces.
+- [ ] Each artifact token is upper-snake in angle brackets, names the artifact rather than the step,
+      and appears in exactly one outputs block.
+- [ ] No token carries a real or realistic value, and no example configuration block shows one.
+- [ ] Each outputs block is the last element of its section and is not a heading, and a phase that
+      produces nothing says so rather than staying silent.
+- [ ] Each inputs line names a producer for every token it lists; a citation of a later phase is a
+      recorded exception, cross-linked both ways.
+- [ ] Phases are numbered actions with commands in fenced blocks, not prose describing commands.
+- [ ] Reference, explanation, and decision records carry no tokens, and any exempted guide records why.
+
 ## Verification
 
 - [ ] Cross-links pass the project's link-check hook, and relative links resolve.
