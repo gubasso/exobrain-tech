@@ -32,7 +32,7 @@ file is the deduplicated superset, grouped by subject.
 - [libkrun #538 — security-model discussion](https://github.com/libkrun/libkrun/discussions/538)
 - [libkrunfw — Transparent Socket Impersonation patch](https://github.com/libkrun/libkrunfw/tree/main/patches)
 - [containers/crun](https://github.com/containers/crun)
-- [crun — `krun.1` manpage (openSUSE)](https://manpages.opensuse.org/Tumbleweed/crun/krun.1.en.html)
+- [crun — `krun.1` manpage (Arch)](https://man.archlinux.org/man/krun.1.en)
 - [rust-vmm — shared VMM crates](https://github.com/rust-vmm)
 - [The `containers/` organization](https://github.com/containers)
 - [Apple — `container` repository](https://github.com/apple/container)

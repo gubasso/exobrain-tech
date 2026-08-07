@@ -118,7 +118,7 @@ emoji; never size columns with `str::len()` or `.chars().count()`.
 [`indicatif`](https://github.com/console-rs/indicatif) remains the default for progress and
 spinners. Its stderr draw target automatically hides when stderr is not a terminal or `TERM=dumb`.
 Normal `tracing` or `log` writes can corrupt an active bar; use
-[`tracing-indicatif`](https://github.com/console-rs/tracing-indicatif) when tracing and bars coexist,
+[`tracing-indicatif`](https://github.com/emersonford/tracing-indicatif) when tracing and bars coexist,
 not the unhealthy [`indicatif-log-bridge`](https://docs.rs/indicatif-log-bridge/).
 
 `indicatif` inherits `console`'s independent cached color policy: `NO_COLOR` handling is Unix-only,

@@ -273,7 +273,7 @@ host networking, the `firecracker-pilot` trust path) in exchange for no security
 
 - [libkrun/libkrun](https://github.com/libkrun/libkrun)
 - [libkrun/krunvm](https://github.com/libkrun/krunvm)
-- [crun `krun.1` manpage](https://manpages.opensuse.org/Tumbleweed/crun/krun.1.en.html)
+- [crun `krun.1` manpage](https://man.archlinux.org/man/krun.1.en)
 - [libkrun discussion #538 — security model](https://github.com/libkrun/libkrun/discussions/538)
 - [Red Hat Developer — Supercharging AI isolation: microVMs with RamaLama and libkrun (Jul 2025)](https://developers.redhat.com/articles/2025/07/02/supercharging-ai-isolation-microvms-ramalama-libkrun)
 - [Fedora FEDORA-2025-f8be7978e3 — libkrun (rust-openssl dependency roll)](https://linuxsecurity.com/advisories/fedora/fedora-41-libkrun-2025-f8be7978e3-security-advisory-updates-rh8lbifoalx6)

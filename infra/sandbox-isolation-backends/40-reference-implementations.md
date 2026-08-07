@@ -178,7 +178,7 @@ orchestration was chosen over a heavier stack see
 - [libkrun/krunvm](https://github.com/libkrun/krunvm) — bare microVM launcher over libkrun.
 - [`containers/` org](https://github.com/containers) — crun and the broader container-tools OCI
   ecosystem.
-- [crun `krun.1` manpage (openSUSE Tumbleweed)](https://manpages.opensuse.org/Tumbleweed/crun/krun.1.en.html)
+- [crun `krun.1` manpage (Arch)](https://man.archlinux.org/man/krun.1.en)
   — the `crun --krun` runtime handler.
 - [Red Hat Developer — Supercharging AI isolation: microVMs with RamaLama and libkrun (Jul 2025)](https://developers.redhat.com/articles/2025/07/02/supercharging-ai-isolation-microvms-ramalama-libkrun)
   — production use of the stack for inference workloads.

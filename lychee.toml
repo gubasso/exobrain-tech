@@ -112,6 +112,9 @@ exclude = [
   "^https?://docs\\.python-cerberus\\.org",
   "^https?://calyptus\\.co",
   "^https?://git-annex\\.branchable\\.com",
+  # Serves an unterminated 301 loop back to the same URL (never resolves,
+  # in a browser or otherwise); the page itself is still the right citation.
+  "^https?://docs\\.oracle\\.com/en-us/iaas",
 
   # --- Confirmed dead links (404/410), kept in prose as historical refs ---
   # Personal/aspirational repos that returned 404 (moved, renamed, or private).
@@ -121,4 +124,11 @@ exclude = [
   "^https?://(www\\.)?cassidy\\.codes",
   "^https?://(www\\.)?hiddentools\\.dev",
   "^https?://(www\\.)?shadows\\.brumm\\.af",
+  # Domain no longer resolves at all; kept as an entry in a quoted icon-site
+  # thread, where renumbering the list would misquote the source.
+  "^https?://(www\\.)?getloaf\\.io",
+  # Individual articles that 404 while the host is fine; cited by title next
+  # to live alternatives, so the citation stays and only the path is excluded.
+  "^https?://ubiq\\.co/database-blog/create-pivot-table-postgresql",
+  "^https?://(www\\.)?techtarget\\.com/searchapparchitecture/tip/Docs-as-Code-explained",
 ]

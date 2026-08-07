@@ -344,7 +344,7 @@ Full annotated bibliography: [90-references.md](./90-references.md).
 - [rust-vmm](https://github.com/rust-vmm) — shared VMM crates libkrun derives from.
 - [containers/crun](https://github.com/containers/crun) — the OCI runtime.
 - [containers/ org](https://github.com/containers) — Podman, crun, libkrun, Buildah, Skopeo.
-- [crun `krun.1` manpage](https://manpages.opensuse.org/Tumbleweed/crun/krun.1.en.html) —
+- [crun `krun.1` manpage](https://man.archlinux.org/man/krun.1.en) —
   `crun --krun` invocation contract.
 - [libkrun/krunvm](https://github.com/libkrun/krunvm) — reference CLI built on libkrun.
 - [libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/main/patches) — Transparent Socket
