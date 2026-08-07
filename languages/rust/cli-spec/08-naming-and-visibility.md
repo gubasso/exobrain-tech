@@ -123,6 +123,48 @@ Avoid:
 - Fallible variants: `try_<verb>` returns `Result`.
 - I/O methods: `read_<x>`, `write_<x>`. Pure transforms: `parse_<x>`, `render_<x>`, `format_<x>`.
 
+## Where the function lives
+
+> General principle:
+> [04 — Coding Style · Constructor placement](../../../programming/cli-design/04-coding-style-rust-zig.md#6-constructor-placement)
+> for the specificity test. This is the Rust application.
+
+Three cases, in order — stop at the first that matches:
+
+| Shape                                                                                     | Placement                        | Example in a CLI                                       |
+| ----------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------ |
+| Takes `&self` / `&mut self` / `self`                                                      | Method                           | `ctx.paths()`, `args.into_request()`                   |
+| No receiver; converts one settled domain type into another                                | Associated fn on the output type | `XdgPaths::resolve(env)`, `HiArgs::from_low_args(low)` |
+| No receiver; consumes raw outside-world shape, or is one stage of a module-owned pipeline | Free fn in that module           | `flags::parse()`, `commands::dispatch::classify(argv)` |
+
+The trap is row 2 swallowing row 3. "It builds exactly one type" is **not** the discriminator —
+`C-CONV-SPECIFIC` puts a conversion on the most specific type involved, and `&[OsString]` or `&[u8]`
+is the least specific type in any CLI. There is nothing on the input side to hang it on, and no pull
+toward the output side either. That is why `rustc_parse::new_parser_from_file` builds a `Parser` as a
+free function and `serde_json::from_str` builds a caller-chosen `T` — and why ripgrep keeps
+`flags::parse` free while putting `from_low_args` on `HiArgs`, in the same pipeline.
+
+Argv classification in a CLI is always row 3:
+
+```rust
+// yes — the module owns the pipeline; both stages read as a pair
+let invocation = commands::dispatch::classify(env.args())?;
+let outcome = commands::dispatch::dispatch(&ctx, invocation)?;
+
+// no — Invocation::classify restates a noun the module already carries, and
+// Invocation::dispatch would make inert classified data depend on every handler
+```
+
+`C-METHOD` does not argue against this. It governs receivers, and every payoff it lists (no import,
+autoborrowing, rustdoc discoverability) is a payoff of `self`. `Invocation::classify(argv)` is
+receiver-free: same import, no autoref, and in a binary crate with no library target, no rustdoc
+audience. Keeping the stage in its module keeps the routing dependency pointed one way — the module
+knows the handlers, the data type knows nothing.
+
+If a function does move onto a type, `C-CTOR` fixes the name: `from_<source>` for a conversion
+constructor, or a domain verb (`File::open`, `TcpStream::connect`). Not `try_new`, which is reserved
+for a general fallible constructor.
+
 ## Doc comments
 
 - Every `pub` and `pub(crate)` item carries a `///` comment. Even if it just restates the name —

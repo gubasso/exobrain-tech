@@ -146,12 +146,55 @@ Free functions remain correct for work that is **materially broader** than const
 - Multi-step orchestration.
 - Workflows coordinating peer types as equals.
 - Pure transformations that don't produce one dominant target type.
+- **Boundary stages** that take the outside world's raw shape — argv, bytes, a file path, an
+  environment snapshot — rather than a settled domain type. See the specificity test below.
 
 **Input count does not change ownership. Purpose does.**
 
 Names that describe the construction source: `from_parts`, `from_<source>`, `new`, `with_<thing>`,
 `try_new`. Avoid `build_<X>` / `make_<X>` / `create_<X>` when the method really is an associated
 constructor — those names suggest a free function and produce trivial wrapper services.
+
+### The specificity test
+
+"It constructs one target type" is necessary, not sufficient. The Rust API Guidelines' `C-CONV-SPECIFIC`
+rule places a conversion **on the most specific type involved** — and specificity, not direction, is what
+decides. `str` carries a UTF-8 invariant that `&[u8]` does not, which is why the conversion lives on
+`str` and never as `[u8]::to_str`.
+
+So ask which side is more specific:
+
+| Input side                                                 | Placement                        | Example                             |
+| ---------------------------------------------------------- | -------------------------------- | ----------------------------------- |
+| A settled domain type; the output is the more specific one | Associated fn on the output type | `HiArgs::from_low_args(LowArgs)`    |
+| The output type is caller-chosen or generic                | Free fn in the namespace         | `serde_json::from_str::<T>`         |
+| Raw outside-world shape; neither side is specific          | Free fn in the owning module     | `rustc_parse::new_parser_from_file` |
+
+Boundary parsers in Rust's own tree land on the free-function side even though each builds one named
+type. `rustc_parse::new_parser_from_file` returns a `Parser`; ripgrep's `flags::parse` and
+`parse_low_raw` consume `OsString` argv and return `HiArgs`/`LowArgs` — yet ripgrep still puts
+`from_low_args` **on** `HiArgs`, because that one step is a settled-type-to-settled-type conversion.
+The split is the test, applied twice in the same pipeline.
+
+Zig reaches the same answer without the vocabulary: it has no methods, only decls namespaced in a
+struct, and `x.f(a)` is rewritten to `T.f(x, a)`. The question collapses to "which namespace?", and
+std answers it identically — `std.zig.Ast.parse` sits on the type (the file _is_ the type, via
+`const Ast = @This()`), while `std.json.parseFromSlice` sits at namespace level because the produced
+type is caller-chosen.
+
+### Receiver-free is not a method
+
+`C-METHOD` ("functions with a clear receiver are methods") governs receivers only. Its stated payoffs
+— no import needed, autoborrowing, rustdoc discoverability, clearer ownership — are all payoffs of
+`self`. A receiver-free associated function collects none of them: you still write the type name, you
+still get no autoref, and in a binary crate with no library target there is no rustdoc audience to
+discover it.
+
+What remains is the module path, which is real information. `commands::dispatch::classify` names the
+pipeline stage; `Invocation::classify` restates a noun the module already carries — the redundancy
+Zig's style guide names directly ("the name of the thing should not be encoded in the name of the
+thing"). When the module is the unit of meaning and the function is one of its stages, keep the stage
+in the module.
 
 ### Builder + finalizer
 
@@ -370,7 +413,16 @@ When in doubt about where new code belongs, ask in this order:
 - [Alexis King — Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
 - [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/) — especially `C-CTOR` and
   `C-GETTER`.
+- [Rust API Guidelines — Predictability](https://rust-lang.github.io/api-guidelines/predictability.html)
+  — `C-METHOD`, `C-CTOR`, and `C-CONV-SPECIFIC`, the three rules the specificity test rests on.
+- [`rustc_parse`](https://github.com/rust-lang/rust/blob/master/compiler/rustc_parse/src/lib.rs) —
+  `new_parser_from_file` and friends as free functions that build one named type.
+- [ripgrep `crates/core/flags/`](https://github.com/BurntSushi/ripgrep/tree/master/crates/core/flags)
+  — `parse` free, `HiArgs::from_low_args` associated, in one pipeline.
 - [Zig Language Reference](https://ziglang.org/documentation/master/)
+- [`std.zig.Ast`](https://github.com/ziglang/zig/blob/master/lib/std/zig/Ast.zig) and
+  [`std.json`](https://github.com/ziglang/zig/blob/master/lib/std/json.zig) — the same split, in a
+  language with no methods.
 - [`http::Response::from_parts`](https://docs.rs/http/latest/http/response/struct.Response.html#method.from_parts)
   — the constructor-placement idiom.
 - [Tokio runtime builder](https://docs.rs/tokio/latest/tokio/runtime/struct.Builder.html) —

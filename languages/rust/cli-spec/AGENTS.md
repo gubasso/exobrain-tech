@@ -1,6 +1,6 @@
 ---
 digest-of: languages/rust/cli-spec
-last-synced: 2026-08-06
+last-synced: 2026-08-07
 source-files:
   - 00-directory-tree.md
   - 01-crate-layout.md
@@ -128,6 +128,12 @@ spec references the general facing-category taxonomy and records only Rust idiom
   `<Layer>Error`.
 - Every `pub`/`pub(crate)` item has a `///` doc comment. Module headers with purpose and
   non-purpose.
+- Function placement, first match wins: has a receiver -> method; no receiver but converts one
+  settled domain type to another -> associated fn on the output (`XdgPaths::resolve`,
+  `HiArgs::from_low_args`); no receiver and consumes raw outside-world shape or is one stage of a
+  module-owned pipeline -> free fn (`flags::parse`, `commands::dispatch::classify`). "Builds one
+  type" is not the test; `C-CONV-SPECIFIC` is, and `&[OsString]` is the least specific type in a CLI.
+  `C-METHOD` governs receivers only. Argv classification is always the free-function case.
 
 ### Coding Style
 

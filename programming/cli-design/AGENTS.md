@@ -1,6 +1,6 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-08-06
+last-synced: 2026-08-07
 source-files:
   - 00-architecture.md
   - 01-logging-and-output.md
@@ -86,7 +86,12 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 
 - Explicit errors; parse don't validate; newtypes for domain primitives.
 - Composition over inheritance; free functions when no state.
-- Constructor placement: assembly belongs on the produced type.
+- Constructor placement: assembly belongs on the produced type — but "builds one type" is not the
+  test. `C-CONV-SPECIFIC` places a conversion on the most specific type involved, so a boundary stage
+  taking raw argv/bytes stays a free function in its module (`rustc_parse::new_parser_from_file`,
+  ripgrep `flags::parse`) while a settled-type-to-settled-type step goes on the output
+  (`HiArgs::from_low_args`). `C-METHOD` governs receivers only; a receiver-free associated fn
+  collects none of its payoffs. Zig splits the same way (`Ast.parse` vs `json.parseFromSlice`).
 - Files <=400 LOC. Comments say why, not what. Module headers state purpose and non-purpose.
 - Strict lints project-wide; per-line allow only with justification.
 
