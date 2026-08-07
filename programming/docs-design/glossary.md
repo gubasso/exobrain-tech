@@ -46,6 +46,9 @@ second sentence, the definition belongs in the owning chapter instead.
   assertion. Rules: [07 — Plan and Slices](./07-plan-and-slices.md).
 - `entry document` — the single document a session reads first for one unit of work or one
   subsystem. Rules: [04 — Agent Context](./04-agent-context.md).
+- `fixed-shape document` — a document whose heading list is a contract other documents, tools, and
+  sessions rely on, so it is gated rather than allowed to grow.
+  Rules: [10 — Lean Markdown](./10-lean-markdown.md).
 - `Governed by` — the slice heading that names, individually, every source a session must load.
   Rules: [07 — Plan and Slices](./07-plan-and-slices.md).
 - `honest-fail` — a test left failing so it does not hide a bug in an external system.
@@ -79,6 +82,8 @@ second sentence, the definition belongs in the owning chapter instead.
   work started. Rules: [07 — Plan and Slices](./07-plan-and-slices.md).
 - `scope hammering` — forcefully questioning a design or use case in order to cut scope and finish
   inside the budget. Rules: [06 — Appetite and Scope](./06-appetite-and-scope.md).
+- `shape config` — the one file holding a fixed shape's `MD043` heading array, applied to that shape's
+  documents by one hook entry. Rules: [10 — Lean Markdown](./10-lean-markdown.md).
 - `shelf` — one topic directory of numbered chapters in this knowledge base.
   Rules: [README](./README.md).
 - `slice` — one vertical unit of work: end to end, bounded by an appetite, demonstrable when done.

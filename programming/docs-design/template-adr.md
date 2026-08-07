@@ -1,8 +1,12 @@
-Copy this file into `<project>/docs/decisions/template.md`, and name each filled record
+# Template — ADR
+
+Copy the block below into `<project>/docs/decisions/template.md`, and name each filled record
 `ADR-<number>-<decision>.md` — the `ADR-` prefix is required, on the record but not on this template.
 Filled ADRs must stay at or below 350 words. Keep each field brief; split separate decisions into
-separate ADRs.
+separate ADRs. The five sections below are a fixed shape shared by every record and by this template;
+[the heading-shape template](./template-heading-shapes.md) ships the gate that holds it.
 
+```markdown
 # ADR-NNNN: <short title naming the choice, not the task>
 
 ## Context and Problem Statement
@@ -32,3 +36,4 @@ Chosen option: `<option 1>` — <one sentence: why>.
 Deprecated: say why it no longer applies. If a later ADR changes part of a decision that still
 stands, keep the status and add "Amended by ADR-NNNN — <what changed>" here, so no reader follows a
 stale detail.>
+```
