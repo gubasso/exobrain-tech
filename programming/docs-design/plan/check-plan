@@ -25,9 +25,6 @@ QUESTIONS="$PLAN_DIR/open-questions.md"
 LANES=(backlog todo doing review closed)
 ACTIVE_LANES=(doing review)
 
-# Optional: at most this many entries in doing.yml. 0 disables the check.
-WIP_LIMIT="${PLAN_WIP_LIMIT:-0}"
-
 status=0
 
 fail() { # fail <location> <message>
@@ -301,16 +298,6 @@ if [ -f "$QUESTIONS" ]; then
     [ "$open_count" -gt 0 ] ||
       fail "$loc" "stale: every slice it blocks is closed — this question should have exited"
   done < <(grep -n '^[[:space:]]*Blocks:' "$QUESTIONS" || true)
-fi
-
-# Optional work-in-progress ceiling.
-if [ "$WIP_LIMIT" -gt 0 ]; then
-  doing=0
-  for id in "${ALL_IDS[@]}"; do
-    [ "${LANE_OF[$id]}" = "doing" ] && doing=$((doing + 1))
-  done
-  [ "$doing" -le "$WIP_LIMIT" ] ||
-    fail "$LANE_DIR/doing.yml" "$doing slices in flight, limit is $WIP_LIMIT"
 fi
 
 exit "$status"

@@ -86,7 +86,6 @@ dependency edge greppable, which a block sequence would lose.
 ```bash
 ./check-plan example                 # the worked example
 ./check-plan docs/plan               # a real project; this is the default path
-PLAN_WIP_LIMIT=1 ./check-plan docs/plan
 ```
 
 Failures name the file and line, so the fix is one edit away:
