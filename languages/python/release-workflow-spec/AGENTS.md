@@ -1,7 +1,6 @@
 ---
 digest-of: languages/python/release-workflow-spec
 last-synced: 2026-07-10
-source-files:
 token-estimate: 250
 ---
 
@@ -25,13 +24,6 @@ and bash shelves.
 - **Distribution:** the published wheels + sdist _are_ the distribution (no separate binary-dist
   tool).
 - **Setup:** `runbook.md` is the per-new-project skeleton; `develop`/`master` model as elsewhere.
-
-## Source Map
-
-| Topic                          | File         |
-| ------------------------------ | ------------ |
-| Skeleton index + role map      | `README.md`  |
-| Per-new-project setup skeleton | `runbook.md` |
 
 ## Maintenance Notes
 

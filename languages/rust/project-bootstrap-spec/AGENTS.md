@@ -1,12 +1,6 @@
 ---
 digest-of: languages/rust/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - runbook.md
 token-estimate: 700
 ---
 
@@ -55,22 +49,11 @@ out of scope — it hands off to `../release-workflow-spec/`.
   to `../release-workflow-spec/` (release-plz, Trusted Publishing, cargo-dist). Bootstrap stops at a
   crate that builds, formats, lints, and audits clean.
 
-## Source Map
-
-| Topic                                                           | File                         |
-| --------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related   | `README.md`                  |
-| Ordered Rust overlay steps (the _what_/_in what order_)         | `runbook.md`                 |
-| `cargo new`, `Cargo.toml` baseline, `rust-toolchain.toml` + Nix | `00-toolchain-and-layout.md` |
-| `rustfmt` / `clippy -D warnings` / `cargo-deny`·`cargo-audit`   | `01-quality-gates.md`        |
-| CLI bootstrap-time ordering (args, errors, logging, config)     | `cli-project.md`             |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Release handoff (release-plz, Trusted
   Publishing, cargo-dist): `../release-workflow-spec/`. Detailed CLI structure: `../cli-spec/`.
-- `library-project.md` and `web-service.md` are declared followup kinds; add them (and refresh
-  `source-files`) when those kinds are bootstrapped.
+- `library-project.md` and `web-service.md` are declared followup kinds; add them when those kinds are bootstrapped.
 - Automation contract lives in general `07-automation-with-cog.md` — the runbook owns the _what_,
   `bootstrap-rust` (cog) the _how_.
 - No conflicts among the current source files.

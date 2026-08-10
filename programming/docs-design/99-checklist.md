@@ -11,7 +11,8 @@ Owner: [00 — Foundations](./00-foundations.md).
 
 - [ ] Every durable fact touched by the change has exactly one owner, and the reviewer can name it.
 - [ ] No file restates a fact another file owns; non-owners link instead.
-- [ ] Cross-links name the reason to follow them, and no index replicates a directory tree.
+- [ ] Cross-links name the reason to follow them, and no passage indexes the filesystem for its own
+      sake; a listing that stays earns it by what its entries teach.
 - [ ] The current design of a subsystem is in `<project>/docs/explanation/<subsystem>.md`, not spread
       across decision records; see [03 — Subsystem Pages](./03-subsystem-pages.md).
 - [ ] Comments added with the change are load-bearing, and behavior contracts are carried by names,
@@ -89,7 +90,8 @@ Owner: [04 — Agent Context](./04-agent-context.md).
 
 - [ ] Filenames and headings expose purpose from search results, without opening the file.
 - [ ] The author-instructions file does not contradict the docs and stays under 200 lines.
-- [ ] Any `AGENTS.md` digest summarizes source files only and introduces no new guidance.
+- [ ] Any `AGENTS.md` digest summarizes the area's knowledge, introduces no new guidance, and keeps
+      no index of the directory.
 - [ ] Work in flight has one entry document naming the sources a session should load.
 
 ## Reference artifacts

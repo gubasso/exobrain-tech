@@ -1,13 +1,6 @@
 ---
 digest-of: languages/nix
 last-synced: 2026-07-10
-source-files:
-  - 01-language-basics.md
-  - 02-flakes.md
-  - 03-flake-outputs.md
-  - 04-nixos-and-modules.md
-  - 05-tooling-gotchas-resources.md
-  - README.md
 token-estimate: 450
 ---
 
@@ -40,20 +33,9 @@ focus only; Nix-as-a-tool (install, devshells, templates, migration) lives in `t
 - **Gotchas**: flakes only see git-tracked files; pure eval (no time/env/network); `//` is shallow;
   unstable vs release branch; eval ≠ build ≠ runtime.
 
-## Source Map
-
-| Topic                                                            | File                              |
-| ---------------------------------------------------------------- | --------------------------------- |
-| Shelf index + mental model                                       | `README.md`                       |
-| Language syntax (values, functions, operators, `lib`/`builtins`) | `01-language-basics.md`           |
-| Flake structure, inputs/outputs, `eachDefaultSystem`, commands   | `02-flakes.md`                    |
-| Flake output schema + real package/app examples                  | `03-flake-outputs.md`             |
-| NixOS module system + Home Manager                               | `04-nixos-and-modules.md`         |
-| Tooling, ecosystem inputs, gotchas, resources                    | `05-tooling-gotchas-resources.md` |
-
 ## Maintenance Notes
 
 - Cross-references `tools/nix/` (tool usage) — keep the language/tool split intact.
-- Regenerate when any source file here changes or new topic files are added.
+- Regenerate when the area's knowledge changes.
 - Authored as a TLDR study shelf, not a full manual; intentionally omits deep derivation internals
   (see Nix Pills, linked in `05-...`).

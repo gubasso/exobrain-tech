@@ -1,14 +1,6 @@
 ---
 digest-of: systems/linux/opensuse
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - linux-opensuse.md
-  - opensuse-build-service-obs.md
-  - opensuse-tumbleweed-installation-settings.md
-  - opensuse-tumbleweed-minimal-workable-antivirus-antimalware-setup-clamav.md
-  - opensuse-tumbleweed-partition-table.md
-  - sles-cloud.md
 token-estimate: 300
 ---
 
@@ -31,22 +23,9 @@ partition / install reference, ClamAV setup, SLES cloud notes.
 - **ClamAV**: minimal antivirus setup.
 - **SLES cloud**: cloud-specific note.
 
-## Source Map
-
-| Topic                       | File                                                                         |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| openSUSE index              | `README.md`                                                                  |
-| General openSUSE notes      | `linux-opensuse.md`                                                          |
-| OBS upstream-URL index      | `opensuse-build-service-obs.md`                                              |
-| Tumbleweed install settings | `opensuse-tumbleweed-installation-settings.md`                               |
-| Tumbleweed partition table  | `opensuse-tumbleweed-partition-table.md`                                     |
-| Minimal ClamAV setup        | `opensuse-tumbleweed-minimal-workable-antivirus-antimalware-setup-clamav.md` |
-| SLES cloud                  | `sles-cloud.md`                                                              |
-
 ## Maintenance Notes
 
-- Keep the index aligned with the current markdown notes.
-- Regenerate when any source file in this directory changes.
+- Regenerate when the area's knowledge changes.
 - For OBS/`osc` deep reference, point readers at `tools/osc-obs/` rather than
   duplicating content here — `opensuse-build-service-obs.md` is intentionally an upstream-URL index
   plus a pointer (the older walkthrough sections were removed on 2026-06-09 to keep DRY).

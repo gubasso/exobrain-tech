@@ -1,12 +1,6 @@
 ---
 digest-of: programming/testing
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - test-anti-patterns.md
-  - test-report-templates.md
-  - testing-principles.md
-  - testing-tool-matrix.md
 token-estimate: 600
 ---
 
@@ -73,15 +67,6 @@ Testing principles, anti-pattern catalog, per-language tool matrix, and output t
 - Network HTTP: fake at adapter trait or recording library.
 - Database: sqlite tempfile in-process.
 - Environment: `env_clear` + curated env.
-
-## Source Map
-
-| Topic                                                       | File                       |
-| ----------------------------------------------------------- | -------------------------- |
-| Principles, pyramid, what-to-mock table                     | `testing-principles.md`    |
-| Lint rule catalog TR-001 through TR-042                     | `test-anti-patterns.md`    |
-| Per-language tool matrix and install snippets               | `testing-tool-matrix.md`   |
-| MANIFEST, FINDINGS, REFACTOR_PLAN, TOOLING_REPORT skeletons | `test-report-templates.md` |
 
 ## Maintenance Notes
 

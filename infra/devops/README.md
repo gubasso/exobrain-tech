@@ -24,7 +24,8 @@
 
 ## CI / CD
 
-- [github-actions-ci-cd.md](./github-actions-ci-cd.md)
+- [github-actions-ci-cd.md](./github-actions-ci-cd.md) — retired page; it now redirects to the
+  release-workflow shelf and the Rust release spec that superseded it.
 
 ## Proxy / Reverse Proxy
 

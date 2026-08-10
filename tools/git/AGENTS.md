@@ -1,18 +1,6 @@
 ---
 digest-of: tools/git
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - cmds-examples.md
-  - diffs.md
-  - feature-lifecycle-git-commands.md
-  - feature-lifecycle.md
-  - git-commit-signing-with-ssh-git-commit-s-cheatsheet.md
-  - git-qa.md
-  - github.md
-  - gitolite.md
-  - glab-auth.md
-  - rebase-workflow.md
 token-estimate: 300
 ---
 
@@ -34,19 +22,6 @@ diffs, and repo administration; subtrees cover branch protection and workflow-sp
   credential-helper setup.
 - **Workflows**: Rebase and origin-state runbooks for repeatable branch operations.
 - **Comparison material**: Diffs and command examples complement the workflow guides.
-
-## Source Map
-
-| Topic                                  | File / Subtree                                                        |
-| -------------------------------------- | --------------------------------------------------------------------- |
-| Command examples and conflict handling | `cmds-examples.md`, `diffs.md`                                        |
-| Feature lifecycle and branch commands  | `feature-lifecycle*.md`                                               |
-| Commit signing and QA notes            | `git-commit-signing-with-ssh-git-commit-s-cheatsheet.md`, `git-qa.md` |
-| GitHub, Gitolite setup                 | `github.md`, `gitolite.md`                                            |
-| `gh` / `glab` authentication           | `gh-auth.md`, `glab-auth.md`                                          |
-| Rebase workflow reference              | `rebase-workflow.md`                                                  |
-| Branch protection workflows            | `branch-protection/`                                                  |
-| Workflow runbooks                      | `workflows/`                                                          |
 
 ## Maintenance Notes
 

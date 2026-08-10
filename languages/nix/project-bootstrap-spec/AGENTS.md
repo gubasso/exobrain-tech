@@ -1,12 +1,6 @@
 ---
 digest-of: languages/nix/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - flake-project.md
-  - runbook.md
 token-estimate: 700
 ---
 
@@ -54,16 +48,6 @@ is general `03-local-dev-environment.md` and `tools/nix`.
   ships an executable), `checks` for the gates, and optional `nixosModules` / `homeManagerModules`.
   Overlay-only and module-only are followup kinds.
 
-## Source Map
-
-| Topic                                                             | File                         |
-| ----------------------------------------------------------------- | ---------------------------- |
-| Binding index, scope (flake as deliverable), kinds list, related  | `README.md`                  |
-| Ordered Nix overlay steps (the _what_/_in what order_)            | `runbook.md`                 |
-| `nix flake init`, outputs harness, nixpkgs pin + `.lock`, layout  | `00-toolchain-and-layout.md` |
-| `nixpkgs-fmt`/`alejandra`, `statix`, `deadnix`, `nix flake check` | `01-quality-gates.md`        |
-| Standard flake ordering (`packages`/`devShells`/`apps`/`checks`)  | `flake-project.md`           |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Language detail (flake syntax, output
@@ -71,7 +55,7 @@ is general `03-local-dev-environment.md` and `tools/nix`.
   `04-nixos-and-modules.md`, `05-tooling-gotchas-resources.md`). Nix-as-a-tool:
   `../../../tools/nix/`.
 - `overlay-project.md` (overlay-only) and `module-project.md` (module-only) are declared followup
-  kinds; add them (and refresh `source-files`) when they land.
+  kinds; add them when they land.
 - Re-verify default-tool choices (`nixpkgs-fmt` vs `alejandra`, `git-hooks.nix`) against upstream on
   a cadence when regenerating.
 - No conflicts among the current source files.

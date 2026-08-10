@@ -1,18 +1,6 @@
 ---
 digest-of: languages/python
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - django-code-review-guide.md
-  - install-local-python-module-with-cli-access-in-a-virtual-environment.md
-  - pydantic-mixins-with-enums.md
-  - pydantic-validators.md
-  - pytest-conftest-fixture.md
-  - python-eve.md
-  - python-flask.md
-  - python-mongo.md
-  - python-poetry.md
-  - python.md
 token-estimate: 400
 ---
 
@@ -39,21 +27,6 @@ conventions.
 - **Packaging**: local Python module with CLI access in a virtualenv; Poetry deps, lockfile export,
   container-deploy patterns.
 - **Frameworks**: Eve, Flask, MongoDB integration notes.
-
-## Source Map
-
-| Topic                       | File                                                                      |
-| --------------------------- | ------------------------------------------------------------------------- |
-| Django review heuristics    | `django-code-review-guide.md`                                             |
-| General Python notes        | `python.md`                                                               |
-| Pydantic enum mixins        | `pydantic-mixins-with-enums.md`                                           |
-| Pydantic validators         | `pydantic-validators.md`                                                  |
-| pytest conftest/fixture     | `pytest-conftest-fixture.md`                                              |
-| Local module + CLI in venv  | `install-local-python-module-with-cli-access-in-a-virtual-environment.md` |
-| Poetry (deps + environment) | `python-poetry.md`                                                        |
-| Flask, Eve, MongoDB         | `python-flask.md`, `python-eve.md`, `python-mongo.md`                     |
-| CLI project spec            | `cli-spec/` (separate AGENTS.md)                                          |
-| Release workflow (stub)     | `release-workflow-spec/` (release-please / PyPI Trusted Publishing)       |
 
 ## Maintenance Notes
 

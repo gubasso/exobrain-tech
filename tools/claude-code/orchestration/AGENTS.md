@@ -1,10 +1,6 @@
 ---
 digest-of: tools/claude-code/orchestration
 last-synced: 2026-07-10
-source-files:
-  - .gitkeep
-  - README.md
-  - multi-repo-commit-contract.md
 token-estimate: 250
 ---
 
@@ -39,14 +35,6 @@ proof-of-delegation, lock files, review-loop handoff, and verdict/severity model
 - Verdicts: `APPROVED`, `APPROVED_WITH_CONDITIONS`, `CHANGES_REQUIRED`, `REJECTED`.
 - Severities: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`.
 - Categories: correctness, security, performance, reliability, maintainability, compatibility.
-
-## Source Map
-
-| Topic                                                 | File                        |
-| ----------------------------------------------------- | --------------------------- |
-| Directory overview / index                            | `README.md`                 |
-| Sandbox probe, delegation, locks, review-loop handoff | `orchestration-patterns.md` |
-| Verdict enum, severity levels, finding categories     | `verdict-model.md`          |
 
 ## Maintenance Notes
 

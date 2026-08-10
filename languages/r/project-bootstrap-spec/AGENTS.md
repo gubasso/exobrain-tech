@@ -1,13 +1,6 @@
 ---
 digest-of: languages/r/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - analysis-project.md
-  - package-project.md
-  - runbook.md
 token-estimate: 800
 ---
 
@@ -59,24 +52,12 @@ analysis). Publishing (CRAN) is out of scope — it hands off to a later release
   `bootstrap-taskrunner` wire the gates. The steps here are the SoT; cog owns the _how_ (general
   `07-automation-with-cog.md`).
 
-## Source Map
-
-| Topic                                                                    | File                         |
-| ------------------------------------------------------------------------ | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related            | `README.md`                  |
-| Ordered R overlay steps (the _what_/_in what order_)                     | `runbook.md`                 |
-| `usethis` scaffold, `DESCRIPTION`, `renv`, R version pin + Nix           | `00-toolchain-and-layout.md` |
-| `styler`/`air`, `lintr`, `testthat`, `R CMD check`, pre-commit, `oysteR` | `01-quality-gates.md`        |
-| Package bootstrap ordering (`DESCRIPTION`, `R/`, roxygen2, devtools)     | `package-project.md`         |
-| Analysis bootstrap ordering (`renv`, `targets`, Quarto/R Markdown)       | `analysis-project.md`        |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Existing R notes (Rscript, R Markdown,
   CRAN, citations): `../R.md`. Dev environment host:
   `../../../tools/nix/02-per-project-devshell.md`.
-- Other kinds (Shiny app, `{golem}`/`{plumber}` service) are declared followups; add the file (and
-  refresh `source-files`) when that kind is bootstrapped.
+- Other kinds (Shiny app, `{golem}`/`{plumber}` service) are declared followups; add the file when that kind is bootstrapped.
 - Formatter is a pick-one choice (`styler` vs `air`); note it rather than defaulting when
   regenerating. The R tooling (`air`, `renv`, `targets`) moves — re-verify choices on a cadence.
 - No conflicts among the current source files.

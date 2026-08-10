@@ -1,12 +1,6 @@
 ---
 digest-of: languages/css/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - runbook.md
-  - stylesheet-library.md
 token-estimate: 850
 ---
 
@@ -61,22 +55,12 @@ it hands off to the release phase.
   `bootstrap-taskrunner` (build/lint recipes), `bootstrap-ci`. The runbook steps are the SoT — see
   general `07-automation-with-cog.md`.
 
-## Source Map
-
-| Topic                                                                     | File                         |
-| ------------------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related             | `README.md`                  |
-| Ordered CSS overlay steps (the _what_/_in what order_)                    | `runbook.md`                 |
-| pnpm/npm, Node-in-devShell, ITCSS/BEM/tokens, PostCSS/Sass, Vite, layout  | `00-toolchain-and-layout.md` |
-| `stylelint` / `prettier` / visual regression + pre-commit wiring          | `01-quality-gates.md`        |
-| Design-system/library ordering (tokens, theming, dist build, npm package) | `stylesheet-library.md`      |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Broader CSS/Less/Sass reference notes:
   `../`. Browser/platform CSS notes: `../../../platforms/webdev/css/`.
 - `app-embedded-stylesheet.md` (stylesheets bundled into an app rather than published) is a declared
-  followup kind; add it (and refresh `source-files`) when it lands.
+  followup kind; add it when it lands.
 - Front-end tooling defaults (`pnpm`, `postcss-preset-env`, Vite, stylelint configs) move fast —
   re-verify the default-tool choices against upstream when regenerating.
 - No conflicts among the current source files.

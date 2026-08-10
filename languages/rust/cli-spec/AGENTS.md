@@ -1,18 +1,6 @@
 ---
 digest-of: languages/rust/cli-spec
 last-synced: 2026-08-07
-source-files:
-  - 00-directory-tree.md
-  - 01-crate-layout.md
-  - 02-subcommand-pattern.md
-  - 03-error-handling.md
-  - 04-logging.md
-  - 05-config.md
-  - 07-dependencies.md
-  - 08-naming-and-visibility.md
-  - 09-coding-style.md
-  - 10-reference-projects.md
-  - README.md
 token-estimate: 800
 ---
 
@@ -142,27 +130,9 @@ spec references the general facing-category taxonomy and records only Rust idiom
 - Clippy pedantic + nursery as warn. `unwrap_used` and `expect_used` as warn.
 - CI lint: `rg 'println!|eprintln!' src/ --glob '!src/ui/**' --glob '!src/main.rs'`.
 
-## Source Map
-
-| Topic                                       | File                                                       |
-| ------------------------------------------- | ---------------------------------------------------------- |
-| Canonical `src/` tree                       | `00-directory-tree.md`                                     |
-| Single-crate vs workspace triggers          | `01-crate-layout.md`                                       |
-| Four-edit rule, clap derive, help rendering | `02-subcommand-pattern.md`                                 |
-| thiserror + anyhow stack, exit-code matrix  | `03-error-handling.md`                                     |
-| tracing setup, file sink, verbosity         | `04-logging.md`                                            |
-| figment layered config, XDG, CLI overrides  | `05-config.md`                                             |
-| Curated dependency list, always vs UX-only  | `07-dependencies.md`                                       |
-| Visibility, naming tables, doc comments     | `08-naming-and-visibility.md`                              |
-| Rust-specific style deltas                  | `09-coding-style.md`                                       |
-| fd, bat, ripgrep, jj, cargo, helix patterns | `10-reference-projects.md`                                 |
-| firecracker, cloud-hypervisor, youki, ruff  | `10-reference-projects.md`                                 |
-| `main`/`run` boundary rule                  | `adr/0002-main-delegates-to-run.md`                        |
-| Why sysexits despite deprecation            | `adr/0003-keep-bsd-sysexits-despite-deprecation.md`        |
-| Terminal color stack decision               | `adr/0004-use-anstyle-and-anstream-for-terminal-colour.md` |
-
 ## Maintenance Notes
 
 - Chapter 06 (testing) is a subdirectory; load directly when reviewing test strategy.
 - Templates in `templates/` provide bootstrap skeletons; not digested here.
+- The spec's own decision records live in `adr/` and are cited by number in the sections above.
 - Regenerate when any chapter file changes or crate ecosystem shifts.

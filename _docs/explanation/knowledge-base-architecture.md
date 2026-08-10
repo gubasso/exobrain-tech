@@ -48,21 +48,21 @@ Every substantial content area carries an `AGENTS.md` **digest**: a concise map 
 knowledge, loaded first by an agent (human or LLM) before it reads the underlying files. A digest is
 a map, never the source of truth — the content files own the knowledge; the digest summarizes them.
 
-A digest carries frontmatter that ties it to its sources and declares when it was last synced, so
-staleness is visible:
+A digest carries frontmatter naming the area it maps and the date it was last reconciled with that
+area, so staleness is visible:
 
 ```yaml
 ---
 digest-of: <path/to/this/area>
 last-synced: <YYYY-MM-DD>
-source-files:
-  - <file-a.md>
-  - <file-b.md>
 token-estimate: <approx tokens>
 ---
 ```
 
-Regenerate a digest when any listed source file changes or a new file is added. When a digest and a
+Regenerate a digest when the area's knowledge changes. A digest keeps no index of the directory: the
+filesystem owns what exists, and a checked-in list drifts on the next add or rename. It names a file
+when it has something to say about it. See
+[ADR-0007](../decisions/ADR-0007-filesystem-owns-disk-state.md). When a digest and a
 source file disagree, the source file wins and the digest is regenerated. Copy
 [`../reference/agents-digest-template.md`](../reference/agents-digest-template.md) into a content
 area as its `AGENTS.md` to start one.

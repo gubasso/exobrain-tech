@@ -1,14 +1,6 @@
 ---
 digest-of: tools/git/branch-protection
 last-synced: 2026-07-24
-source-files:
-  - README.md
-  - github-web-ui.md
-  - gitlab-web-ui.md
-  - workflow.md
-  - first-run-enablement.md
-  - github-app-token.md
-  - master-promotion.md
 token-estimate: 600
 ---
 
@@ -51,18 +43,6 @@ the canonical strategy doc, first-run host toggles, and copy-into-project CI tem
 - **Layout**: `github/` holds the release-promote workflow template; `gitlab/` holds the
   release-promote CI template. Manual host configuration lives in `github-web-ui.md` and
   `gitlab-web-ui.md`.
-
-## Source Map
-
-| Topic                              | File / Subtree                            |
-| ---------------------------------- | ----------------------------------------- |
-| Canonical workflow strategy        | `workflow.md`                             |
-| Enable Actions/CI + write perms    | `first-run-enablement.md`                 |
-| GitHub App token (why + setup)     | `github-app-token.md`                     |
-| Master promotion (fast-forward)    | `master-promotion.md`                     |
-| Point-and-click runbooks           | `github-web-ui.md`, `gitlab-web-ui.md`    |
-| GitHub release-promote workflow    | `github/workflows/release-promote.yml`    |
-| GitLab release-promote CI template | `gitlab/ci/release-promote.gitlab-ci.yml` |
 
 ## Maintenance Notes
 

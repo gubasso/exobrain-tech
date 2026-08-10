@@ -1,13 +1,6 @@
 ---
 digest-of: languages/javascript/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - runbook.md
-  - web-app.md
 token-estimate: 800
 ---
 
@@ -57,24 +50,12 @@ orderings (CLI, web-app). Publishing/deploy is out of scope — it hands off to
   `dev`/`build`/`preview` scripts and git-ignored `dist/`; follow sibling framework review guides.
   Deployment is release-phase.
 
-## Source Map
-
-| Topic                                                           | File                         |
-| --------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related   | `README.md`                  |
-| Ordered JS overlay steps (the _what_/_in what order_)           | `runbook.md`                 |
-| npm/pnpm, `package.json` init, ESM, `src/` layout, TS, Node pin | `00-toolchain-and-layout.md` |
-| prettier / eslint / vitest·jest / `tsc --noEmit` / `npm audit`  | `01-quality-gates.md`        |
-| Node CLI ordering (`bin` + shebang, arg parsing, exit, logging) | `cli-project.md`             |
-| Web-app ordering (Vite scaffold, gate reconciliation, scripts)  | `web-app.md`                 |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Release handoff (Changesets, npm
   publish): `../release-workflow-spec/`. Nix devShell host:
   `../../../tools/nix/02-per-project-devshell.md`.
-- `library-project.md` (an npm-published package) is a declared followup kind; add it (and refresh
-  `source-files`) when it lands.
+- `library-project.md` (an npm-published package) is a declared followup kind; add it when it lands.
 - The Node tooling landscape (`vite`, `vitest`, flat eslint) moves fast — re-verify the default-tool
   choices against upstream on a cadence when regenerating.
 - No conflicts among the current source files.

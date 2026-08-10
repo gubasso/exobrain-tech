@@ -1,16 +1,6 @@
 ---
 digest-of: infra/sandbox-isolation-backends
 last-synced: 2026-07-10
-source-files:
-  - 00-threat-model-and-principles.md
-  - 10-runtimes-catalog.md
-  - 20-decision-libkrun-linux.md
-  - 30-libkrun-vs-firecracker.md
-  - 40-reference-implementations.md
-  - 50-native-orchestration-decision.md
-  - 60-podman-libkrun-operational-notes.md
-  - 90-references.md
-  - README.md
 token-estimate: 600
 ---
 
@@ -47,20 +37,6 @@ rootless-Podman + `crun --krun` stack. Not tied to any specific product.
   under `--runtime krun`.
 - **Egress** under libkrun's TSI networking is enforced _inside_ the guest (nftables allowlist),
   because TSI removes the host-side network plumbing.
-
-## Source Map
-
-| Topic                                        | File                                     |
-| -------------------------------------------- | ---------------------------------------- |
-| Index and reading order                      | `README.md`                              |
-| Threat model, premises, residual surface     | `00-threat-model-and-principles.md`      |
-| Per-option runtime/VMM catalog + matrix      | `10-runtimes-catalog.md`                 |
-| libkrun Linux decision and justification     | `20-decision-libkrun-linux.md`           |
-| libkrun vs bare Firecracker (flake-pilot)    | `30-libkrun-vs-firecracker.md`           |
-| Reference implementations / prior art        | `40-reference-implementations.md`        |
-| Native parsing vs heavyweight orchestrator   | `50-native-orchestration-decision.md`    |
-| podman+krun operational notes & known issues | `60-podman-libkrun-operational-notes.md` |
-| Consolidated bibliography                    | `90-references.md`                       |
 
 ## Maintenance Notes
 

@@ -63,19 +63,35 @@ whether readers should edit the generated output, the source file, or neither.
 
 ## Structure is owned by the filesystem
 
-Directory structure is a durable fact and the filesystem already owns it. Index files — `README.md`,
-`CLAUDE.md`, `AGENTS.md`, and equivalents — explain what a directory is for: its purpose, domains,
-concepts, and rules. They do not reproduce a tree of every file and subdirectory. A pasted tree
-drifts the moment a file is added, renamed, or removed, and the stale copy then competes with the
-real structure.
+The filesystem owns its own state, and no document reproduces it as an end in itself. Directory
+structure, filenames, and what a directory currently contains are durable facts the listing already
+holds. A hand-maintained second copy drifts on the next add, rename, or delete, and the stale copy
+then competes with the real structure.
 
-When a listing genuinely aids discovery, give each entry a purpose, not a bare path. A line naming
-`./docker.md` as daemon setup and daily commands tells the reader why to open the file; a line
-carrying only the path restates what the directory listing already shows.
+What is forbidden is a shape, not a syntax: an index of the directory, kept because a directory ought
+to have an index. A table of contents of the tree, a topic-to-filename table, a `source-files`
+frontmatter list — the objective of each is to mirror what is on disk, so each is `ls` output under
+version control, complete or wrong, with a regeneration ritual attached to service its decay.
 
-A tree describing a layout the reader should create in their own project is a specification, not a
-duplicated fact, and is allowed. A tree of a directory that already exists is a duplicated fact and
-is forbidden.
+Naming files and directories in prose is normal and stays. So does a list, a table, or a full tree
+whose entries carry their own payload: what that directory reserves, what that file specifies, its
+domain, its scope, why to open it. There the enumeration is the vehicle and the knowledge is the
+cargo, and the document would be poorer without it. Use one where it earns its place, and justify it
+the same way any other content is justified — not because the directory exists.
+
+The test is what a change to the tree would cost. Strip the paths out and read what is left. If the
+passage still teaches, it was documentation that happened to name files. If nothing survives, it was
+the listing, and adding a file will oblige an edit that restores no knowledge.
+
+The heading is usually the tell, and is worth choosing deliberately. `Source map`, `Contents`, and
+`Files` promise an inventory, so a section under one of them is judged as an inventory and generally
+fails. `Directory domains` promises something else — what each part of the tree reserves, and what
+belongs there — and a tree or table under that heading passes on the strength of what it says. Name
+the section after the knowledge it carries, and the shape follows.
+
+Two shapes never come into question. A tree or layout describing what the reader should create in
+their own project is a specification, not a copy of anything. A generated table of contents of a
+document's own headings is not disk state and belongs to its generator.
 
 ## Cross-link discipline
 

@@ -1,20 +1,6 @@
 ---
 digest-of: programming/cli-design
 last-synced: 2026-08-07
-source-files:
-  - 00-architecture.md
-  - 01-logging-and-output.md
-  - 02-error-messages.md
-  - 03-config-precedence.md
-  - 04-coding-style-rust-zig.md
-  - 05-designing-for-llm-agents.md
-  - 06-preflight-and-health-checks.md
-  - 08-naming-and-docs.md
-  - 10-reference-projects.md
-  - 11-xdg-scaffolding.md
-  - 12-config-generation-from-types.md
-  - 99-checklist.md
-  - README.md
 token-estimate: 1720
 ---
 
@@ -191,23 +177,6 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 - Pre-ship sanity check across architecture, logging, errors, config, coding style, LLM agents,
   naming, testing, regression safeguards, CI, and wrapper specifics.
 
-## Source Map
-
-| Topic                                                                     | File                                 |
-| ------------------------------------------------------------------------- | ------------------------------------ |
-| Facing category, parse/runtime shape, AppContext                          | `00-architecture.md`                 |
-| Message types, log schema, channel matrix                                 | `01-logging-and-output.md`           |
-| Error anatomy, sysexits, error layering                                   | `02-error-messages.md`               |
-| 5-layer config merge, XDG, provenance                                     | `03-config-precedence.md`            |
-| 18 coding-style rules                                                     | `04-coding-style-rust-zig.md`        |
-| CLI+Skill+AGENTS.md model, agent-facing patterns                          | `05-designing-for-llm-agents.md`     |
-| Preflight guards + doctor aggregation (hard/soft)                         | `06-preflight-and-health-checks.md`  |
-| Surface discrimination, visibility, naming tables, help generation, docs  | `08-naming-and-docs.md`              |
-| Organizational patterns from 12 CLIs                                      | `10-reference-projects.md`           |
-| Scaffold/`init` without mutating config; when to delete `init`; xdg-ninja | `11-xdg-scaffolding.md`              |
-| Generate config examples from types; copy-don't-scaffold                  | `12-config-generation-from-types.md` |
-| Pre-ship checklist                                                        | `99-checklist.md`                    |
-
 ## Maintenance Notes
 
 - Chapters 07 (CLI wrapper design) and 09 (testing & quality) are subdirectories not included as
@@ -215,4 +184,4 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   include light category-scoping tags.
 - Language-specific specs (`rust/cli-spec/`, `python/cli-spec/`, `bash/cli-spec/`) apply these
   principles to concrete ecosystems.
-- Regenerate when any chapter file changes or new chapters are added.
+- Regenerate when the shelf's knowledge changes.

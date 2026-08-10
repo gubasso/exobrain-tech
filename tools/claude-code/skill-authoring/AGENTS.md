@@ -1,11 +1,6 @@
 ---
 digest-of: tools/claude-code/skill-authoring
 last-synced: 2026-07-10
-source-files:
-  - .gitkeep
-  - README.md
-  - skill-spec.md
-  - skill-style.md
 token-estimate: 600
 ---
 
@@ -63,15 +58,6 @@ authoring skills.
 - Degradation: bare `agent-helper` call (no stale `_tmp` fallback); `agent-helper require <cmd>...`
   capability gate; `agent-helper --version`; soft deps warn, hard deps fail closed.
 - Testing: every subcommand gets a bats suite; highest-risk gets adversarial fixtures.
-
-## Source Map
-
-| Topic                                                         | File                         |
-| ------------------------------------------------------------- | ---------------------------- |
-| Directory overview / index                                    | `README.md`                  |
-| Official frontmatter fields, substitutions, token budgets     | `skill-spec.md`              |
-| House style, description pattern, body conventions, templates | `skill-style.md`             |
-| Script extraction rule, orchestrator model, msg contract      | `skill-script-extraction.md` |
 
 ## Maintenance Notes
 

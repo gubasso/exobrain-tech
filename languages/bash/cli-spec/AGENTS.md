@@ -1,9 +1,6 @@
 ---
 digest-of: languages/bash/cli-spec
 last-synced: 2026-07-23
-source-files:
-  - README.md
-  - bash-cli-project-specs.md
 token-estimate: 650
 ---
 
@@ -51,13 +48,6 @@ installation, distribution, and Bash idioms for the general facing-category taxo
   CLI.
 - **Non-negotiables**: Namespaced functions, XDG-aware installer, trap cleanup, agent-facing surface
   (`help`/usage, `--json`, `doctor`, `init`, completion, man-via-subcommand, exit codes).
-
-## Source Map
-
-| Topic                                                         | File                        |
-| ------------------------------------------------------------- | --------------------------- |
-| Overview and TL;DR                                            | `README.md`                 |
-| Full spec: layout, strict mode, modules, testing, install, CI | `bash-cli-project-specs.md` |
 
 ## Maintenance Notes
 

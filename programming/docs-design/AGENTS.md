@@ -1,28 +1,6 @@
 ---
 digest-of: programming/docs-design
 last-synced: 2026-08-10
-source-files:
-  - README.md
-  - 00-foundations.md
-  - 01-diataxis-zones.md
-  - 02-lean-adrs.md
-  - 03-subsystem-pages.md
-  - 04-agent-context.md
-  - 05-drafts-and-promotion.md
-  - 06-appetite-and-scope.md
-  - 07-plan-and-slices.md
-  - 08-tracking-and-revalidation.md
-  - 09-known-issues.md
-  - 10-lean-markdown.md
-  - 11-procedure-artifacts.md
-  - 99-checklist.md
-  - glossary.md
-  - template-adr.md
-  - template-docs-rules.md
-  - template-heading-shapes.md
-  - template-plan-zone.md
-  - template-slice.md
-  - plan/README.md
 token-estimate: 1230
 ---
 
@@ -47,7 +25,7 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 | ----------------------------------------------------------------------- | --------------------------------- |
 | Two files state the same fact — which one wins?                         | `00-foundations.md`               |
 | Should this be a comment, a name, a test, or a doc?                     | `00-foundations.md`               |
-| May I paste a directory tree?                                           | `00-foundations.md`               |
+| May I reproduce what a directory contains?                              | `00-foundations.md`               |
 | Where does this document go?                                            | `01-diataxis-zones.md`            |
 | Is this the product, or is it about the product?                        | `01-diataxis-zones.md`            |
 | Does the docs root go in `docs/` or `_docs/`?                           | `01-diataxis-zones.md`            |
@@ -83,11 +61,11 @@ sources it names. Do not read the shelf linearly — that is the corpus load
   no lint configuration and free-form documents are not gated.
 - A multi-phase guide names what each phase consumes and produces, and no artifact token ever carries
   a real value.
-- Never paste a tree of a directory that already exists.
+- The filesystem owns its own state: nothing indexes a directory because it has contents; a tree,
+  list, or table stays when its entries carry their own payload.
 
 ## Maintenance
 
-- Regenerate when any source file changes.
+- Regenerate when the shelf's knowledge changes.
 - This file is a map and never a rules home; introduce no rule here that a chapter does not own.
 - When this file and a chapter disagree, the chapter is authoritative.
-- Keep `source-files` ordering stable so context loaders can diff revisions predictably.

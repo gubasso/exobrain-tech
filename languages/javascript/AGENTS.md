@@ -1,15 +1,6 @@
 ---
 digest-of: languages/javascript
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - javascript-js.md
-  - node-npm.md
-  - react-code-review-guide.md
-  - svelte-code-review-guide.md
-  - svelte.md
-  - typescript-code-review-guide.md
-  - typescript.md
 token-estimate: 350
 ---
 
@@ -34,20 +25,6 @@ plus general language and framework references.
 - **TypeScript notes** (`typescript.md`): TypeScript-specific patterns and references.
 - **Node/npm** (`node-npm.md`): Node.js and npm package management notes.
 - **Svelte** (`svelte.md`): Svelte framework patterns and references.
-
-## Source Map
-
-| Topic                    | File                                                           |
-| ------------------------ | -------------------------------------------------------------- |
-| JS review heuristics     | `code-review-guide.md`                                         |
-| TS review heuristics     | `typescript-code-review-guide.md`                              |
-| React review heuristics  | `react-code-review-guide.md`                                   |
-| Svelte review heuristics | `svelte-code-review-guide.md`                                  |
-| General JS patterns      | `javascript-js.md`                                             |
-| TypeScript patterns      | `typescript.md`                                                |
-| Node.js / npm            | `node-npm.md`                                                  |
-| Svelte framework         | `svelte.md`                                                    |
-| Release workflow (stub)  | `release-workflow-spec/` (Changesets + npm Trusted Publishing) |
 
 ## Maintenance Notes
 

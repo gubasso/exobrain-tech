@@ -1,13 +1,6 @@
 ---
 digest-of: languages/rust
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - axum.md
-  - datetime-serde-sqlx-chrono.md
-  - patterns.md
-  - rust.md
-  - sqlx.md
 token-estimate: 500
 ---
 
@@ -41,24 +34,10 @@ carries its own nested digest).
   release specs. It is the sanctioned SoT/DRY exception (repo `AGENTS.md`; ADR-0002) — do **not**
   de-duplicate it against the specs. Own nested `AGENTS.md`.
 
-## Source Map
-
-| Topic                            | File                            |
-| -------------------------------- | ------------------------------- |
-| Rust index                       | `README.md`                     |
-| Axum web framework               | `axum.md`                       |
-| Bootstrap (sub-shelf)            | `project-bootstrap-spec/`       |
-| Release & publishing (sub-shelf) | `release-workflow-spec/`        |
-| Ship-it cookbook (sub-shelf)     | `cookbook/`                     |
-| DateTime + serde + SQLx + chrono | `datetime-serde-sqlx-chrono.md` |
-| General Rust patterns            | `patterns.md`                   |
-| General Rust notes               | `rust.md`                       |
-| SQLx patterns                    | `sqlx.md`                       |
-
 ## Maintenance Notes
 
 - `cli-spec/`, `project-bootstrap-spec/`, and `release-workflow-spec/` each have their own digest
   and are not expanded here.
 - The former top-level `code-review-guide.md` was migrated out of this repo into the cog skill-refs
   corpus; it is no longer a source file here.
-- Regenerate when any top-level Rust markdown file changes or new ones are added.
+- Regenerate when the area's knowledge changes.

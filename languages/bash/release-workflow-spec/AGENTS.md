@@ -1,15 +1,6 @@
 ---
 digest-of: languages/bash/release-workflow-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-versioning-and-source-of-truth.md
-  - 01-conventional-commits-and-changelog.md
-  - 02-makefile-gnu-standards.md
-  - 03-ci-release-workflow.md
-  - 04-install-sh-and-aur.md
-  - 05-obs-multi-distro.md
-  - 06-release-ritual-and-alternatives.md
-  - README.md
 token-estimate: 900
 ---
 
@@ -88,18 +79,6 @@ distribution channels (`install.sh`, AUR, OBS for `.rpm`/`.deb`).
 - Alternatives noted (when to pick): release-please, GoReleaser, nfpm (attach `.rpm`/`.deb` to the
   Release with no hosted repo), Fedora COPR, self-hosted repos, OBS-Arch (additive to AUR, never a
   substitute).
-
-## Source Map
-
-| Topic                                             | File                                       |
-| ------------------------------------------------- | ------------------------------------------ |
-| Divergence note, VERSION SoT, overview, SemVer    | `00-versioning-and-source-of-truth.md`     |
-| Conventional Commits + git-cliff changelog        | `01-conventional-commits-and-changelog.md` |
-| GNU Makefile: PREFIX/DESTDIR, `dist`, `uninstall` | `02-makefile-gnu-standards.md`             |
-| Tag-triggered Actions release job + provenance    | `03-ci-release-workflow.md`                |
-| `install.sh` curl installer + AUR packages        | `04-install-sh-and-aur.md`                 |
-| OBS setup, `_service`/`.spec`/`debian.*`, install | `05-obs-multi-distro.md`                   |
-| Release ritual, files checklist, alternatives     | `06-release-ritual-and-alternatives.md`    |
 
 ## Maintenance Notes
 

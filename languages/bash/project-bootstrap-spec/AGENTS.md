@@ -1,12 +1,6 @@
 ---
 digest-of: languages/bash/project-bootstrap-spec
 last-synced: 2026-07-23
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - runbook.md
 token-estimate: 850
 ---
 
@@ -58,23 +52,12 @@ shfmt/shellcheck/bats gates) and the CLI implementation-kind ordering. Distribut
   `bootstrap-taskrunner` wire the gates; `bootstrap-ci` covers CI. The runbook steps are the SoT;
   see general `07-automation-with-cog.md`.
 
-## Source Map
-
-| Topic                                                         | File                         |
-| ------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related | `README.md`                  |
-| Ordered Bash overlay steps (the _what_/_in what order_)       | `runbook.md`                 |
-| Layout, shebang, strict mode, ShellCheck structure, Nix pin   | `00-toolchain-and-layout.md` |
-| `shfmt` / `shellcheck` (also security) / `bats` + pre-commit  | `01-quality-gates.md`        |
-| CLI bootstrap ordering (layout, `getopts`, subcommands, help) | `cli-project.md`             |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Release/distribution handoff (tag,
   git-cliff changelog, Makefile, `install.sh`, AUR, OBS): `../release-workflow-spec/`. Detailed Bash
   CLI structure: `../cli-spec/`.
-- `library-project.md` (a sourced function library) is a declared followup kind; add it (and refresh
-  `source-files`) when it lands.
+- `library-project.md` (a sourced function library) is a declared followup kind; add it when it lands.
 - Re-verify the default-tool flags (`shfmt`, `shellcheck -S style`, `bats-core`) against upstream on
   a cadence when regenerating.
 - No conflicts among the current source files.

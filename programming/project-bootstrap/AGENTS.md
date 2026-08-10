@@ -1,17 +1,6 @@
 ---
 digest-of: programming/project-bootstrap
 last-synced: 2026-07-10
-source-files:
-  - 00-bootstrap-model.md
-  - 01-repository-foundation.md
-  - 02-governance-and-docs.md
-  - 03-local-dev-environment.md
-  - 04-quality-gates.md
-  - 05-ci-and-release-readiness.md
-  - 06-security-baseline.md
-  - 07-automation-with-cog.md
-  - README.md
-  - runbook.md
 token-estimate: 700
 ---
 
@@ -52,26 +41,10 @@ bindings overlay it with concrete tooling, and it hands off to the later `releas
   hand-off); 06 security baseline (secrets hygiene, dependency audit, OpenSSF Scorecard); 07
   automation with cog (the contract and domain→helper map).
 
-## Source Map
-
-| Topic                                                              | File                             |
-| ------------------------------------------------------------------ | -------------------------------- |
-| Hub index, three-layer model, how-to-use, bindings, TL;DR          | `README.md`                      |
-| Ordered 8-step spine (the _what_ / _in what order_)                | `runbook.md`                     |
-| Once-per-project phase, three-layer ownership, one-owner-per-fact  | `00-bootstrap-model.md`          |
-| `.gitignore`, SPDX `LICENSE` (dual-licensing), `README` skeleton   | `01-repository-foundation.md`    |
-| `CLAUDE.md`, `AGENTS.md` convention, ADR scaffold, README-as-index | `02-governance-and-docs.md`      |
-| Nix devShell + `.envrc` (direnv), `.editorconfig`                  | `03-local-dev-environment.md`    |
-| Formatter, linter, pre-commit hooks, task runner                   | `04-quality-gates.md`            |
-| First CI workflow, branch protection, release hand-off             | `05-ci-and-release-readiness.md` |
-| Secrets hygiene, dependency review/audit, OpenSSF Scorecard        | `06-security-baseline.md`        |
-| SoT-vs-cog contract, domain→helper map, `Automate:` annotations    | `07-automation-with-cog.md`      |
-
 ## Maintenance Notes
 
-- This is a **generated digest**; regenerate it (updating `last-synced`, `source-files`, and
-  `token-estimate`) whenever any chapter, the README, or the runbook changes. Do not add guidance
-  absent from the sources.
+- This is a **generated digest**; regenerate it (updating `last-synced` and `token-estimate`)
+  whenever the shelf's knowledge changes. Do not add guidance absent from the sources.
 - Related trees are referenced, not owned: `../release-workflow/` (next phase),
   `../../tools/git/branch-protection/` (platform runbooks/rulesets), and `../docs-design/` (the
   single-source-of-truth and Diátaxis standards this shelf obeys).

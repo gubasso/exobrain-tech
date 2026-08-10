@@ -176,6 +176,34 @@ repos:
         types: [markdown]
         entry: '^\s*\[[^\]]+\]:\s+(?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/|<)[^\s/:#]+\.[A-Za-z0-9]+'
 
+  # --- No document indexes the filesystem (ADR-0007; pre-commit, local) ---
+  #
+  # The filesystem is the source of truth for what exists, so nothing enumerates
+  # a directory because it has contents. The rule bars a shape, not a syntax: a
+  # list, table, or full tree is fine wherever its entries carry their own
+  # payload, and that judgment lives in
+  # programming/docs-design/00-foundations.md — it cannot be linted.
+  #
+  # These two shapes can, because each is an index by construction:
+  #   - a `source-files:` frontmatter key holding a digest's file list
+  #   - a `Source Map` / `Source map` heading, which names the banned objective
+  # A section that genuinely maps the tree gets a heading naming the knowledge it
+  # carries — `## Directory domains`, saying what each part reserves — and passes.
+  #
+  # pygrep is built into pre-commit — no external dependency, no devShell entry.
+  - repo: local
+    hooks:
+      - id: no-source-files-frontmatter
+        name: no file-list frontmatter (the filesystem owns what exists)
+        language: pygrep
+        types: [markdown]
+        entry: '^source-files:'
+      - id: no-source-map-section
+        name: no topic-to-filename source map section
+        language: pygrep
+        types: [markdown]
+        entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
+
   # --- Spelling (report-only) ---
   #
   # `language: system` because upstream ships this hook as `language: python`

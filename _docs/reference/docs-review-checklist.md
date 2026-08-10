@@ -8,9 +8,9 @@ unchecked, fix it or record an explicit exception in the owning source of truth.
 - [ ] The file has one primary reader need: task, lookup, understanding, or decision.
 - [ ] The file lives in the matching zone (or, for knowledge, in the right content directory).
 - [ ] The file does not restate a fact already owned elsewhere; cross-links point to the owner.
-- [ ] No hand-maintained file tree is pasted into markdown; index files explain purpose, and any
-      listing gives each entry a purpose rather than a bare path (an auto-generated ToC is the
-      allowed exception).
+- [ ] No passage indexes the filesystem for its own sake — no tree, topic-to-filename table, or
+      file-list frontmatter kept because the directory has contents. Any listing that stays earns it
+      by what its entries teach. A generated in-page ToC is exempt.
 - [ ] Project-agnostic material uses `<angle>` placeholders for project-specific names.
 
 ## ADRs
@@ -31,8 +31,8 @@ unchecked, fix it or record an explicit exception in the owning source of truth.
 ## Agent readiness
 
 - [ ] Filenames and headings expose purpose and can be understood from search results.
-- [ ] Every affected content area's `AGENTS.md` digest was regenerated from its sources and
-      introduces no new rules.
+- [ ] Every affected content area's `AGENTS.md` digest reflects the area's current knowledge,
+      introduces no new rules, and keeps no index of the directory.
 - [ ] Oversized ADRs, repeated tables, and stale drafts were trimmed.
 
 ## Verification

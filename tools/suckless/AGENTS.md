@@ -1,9 +1,6 @@
 ---
 digest-of: tools/suckless
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - patch-strategies.md
 token-estimate: 400
 ---
 
@@ -53,13 +50,6 @@ dwm-specific gotchas.
 - `drawbar()` and `buttonpress()` are highest-conflict functions.
 - Event handler array: append entries, do not replace.
 - Makefile changes: usually just `-l<lib>` additions to `LIBS`.
-
-## Source Map
-
-| Topic                                                                      | File                  |
-| -------------------------------------------------------------------------- | --------------------- |
-| Overview                                                                   | `README.md`           |
-| Reject files, conflict patterns, manual application, stacking, dwm gotchas | `patch-strategies.md` |
 
 ## Maintenance Notes
 

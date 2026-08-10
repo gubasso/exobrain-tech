@@ -40,13 +40,15 @@ Write each durable fact once at its owning home and link from everywhere else. R
 A README points to the ADR; a guide links to a reference page; a digest summarizes an area but the
 area's files stay authoritative. Resolve a conflict by editing the non-owner to link to the owner.
 
-Let the filesystem own structure. The directory listing is the source of truth for what exists;
-index files (`README.md`, `AGENTS.md`) explain a directory's _purpose_ — its domains, concepts, and
-rules — and never maintain a parallel copy of the file tree, which drifts the moment a file is added
-or renamed. When a listing genuinely aids discovery, give each entry a purpose
-(`- [docker](./docker.md) — daemon setup and daily commands`), not a bare path the filesystem already
-shows. The one exception is a block a tool regenerates from the tree — an auto-generated table of
-contents — where the generator, not a human, owns the copy and keeps it in sync.
+Let the filesystem own its own state. The directory listing is the source of truth for what exists,
+so no document keeps an index of it — not a tree of the directory, a topic-to-filename table, or a
+frontmatter file list, whose objective is to mirror what is on disk and which is wrong the moment a
+file moves. Naming files in prose is normal, and a list, table, or full tree belongs anywhere its
+entries carry their own payload: what a directory reserves, what a file specifies, its scope. Strip
+the paths out and read what is left — if nothing teaches, it was the index. A generated table of
+contents of a page's own headings is not disk state and belongs to its generator.
+`programming/docs-design/00-foundations.md` owns the rule; see
+[ADR-0007](../decisions/ADR-0007-filesystem-owns-disk-state.md).
 
 ## Drafts
 
@@ -57,8 +59,9 @@ promoting. No draft is the only home for a real decision.
 ## AGENTS.md digests
 
 Each substantial content area carries an `AGENTS.md` digest — a map of that area, loaded first,
-derived from the area's files, never the source of truth. It declares its sources and a
-`last-synced` date so staleness is visible, and is regenerated when a source changes. See
+derived from the area's files, never the source of truth. It declares a `last-synced` date so
+staleness is visible, and is regenerated when the area's knowledge changes. It carries no inventory
+of the directory. See
 [AGENTS.md digest template](./agents-digest-template.md) and
 [Knowledge-base architecture](../explanation/knowledge-base-architecture.md).
 

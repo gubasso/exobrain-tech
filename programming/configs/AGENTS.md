@@ -1,13 +1,6 @@
 ---
 digest-of: programming/configs
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - dockerfile-review.md
-  - github-actions-review.md
-  - markdown-formatting-toolchain.md
-  - markdown-review.md
-  - yaml-toml-review.md
 token-estimate: 300
 ---
 
@@ -45,15 +38,6 @@ YAML, and TOML.
   `[important]`.
 - TOML: table-of-tables vs array-of-tables confusion -> `[blocking]`.
 - Both: secrets committed -> `[blocking]`. Orphan config -> `[suggestion]`.
-
-## Source Map
-
-| Topic                                   | File                       |
-| --------------------------------------- | -------------------------- |
-| Dockerfile/Containerfile/docker-compose | `dockerfile-review.md`     |
-| GitHub Actions workflows                | `github-actions-review.md` |
-| Markdown files                          | `markdown-review.md`       |
-| YAML and TOML files                     | `yaml-toml-review.md`      |
 
 ## Maintenance Notes
 

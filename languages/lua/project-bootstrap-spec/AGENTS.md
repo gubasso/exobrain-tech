@@ -1,12 +1,6 @@
 ---
 digest-of: languages/lua/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - rock-library.md
-  - runbook.md
 token-estimate: 750
 ---
 
@@ -54,22 +48,12 @@ rockspec metadata) is a later release phase, out of scope here.
   `bootstrap-precommit` and `bootstrap-taskrunner` wire the gates; `bootstrap-ci` continues the
   general spine. The notes are the SoT; see general `07-automation-with-cog.md`.
 
-## Source Map
-
-| Topic                                                           | File                         |
-| --------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related   | `README.md`                  |
-| Ordered Lua overlay steps (the _what_/_in what order_)          | `runbook.md`                 |
-| Runtime (5.x vs LuaJIT), LuaRocks/rockspec, `require` tree, Nix | `00-toolchain-and-layout.md` |
-| `stylua` / `luacheck` / `busted` + pre-commit wiring            | `01-quality-gates.md`        |
-| Rock-library bootstrap ordering (rockspec, module tree, build)  | `rock-library.md`            |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Runtime/devShell host:
   `../../../tools/nix/02-per-project-devshell.md`. Lua reference notes: `../README.md`.
 - `cli-project.md` (standalone Lua tool) and `neovim-plugin.md` (Neovim runtime plugin) are declared
-  followup kinds; add them (and refresh `source-files`) when they land.
+  followup kinds; add them when they land.
 - Re-verify the default-tool choices (`stylua`, `luacheck`, `busted`, LuaRocks) and runtime guidance
   against upstream when regenerating.
 - No conflicts among the current source files.

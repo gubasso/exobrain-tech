@@ -1,12 +1,6 @@
 ---
 digest-of: systems/linux/ricing
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - color-management.md
-  - gtk-qt-ui-coherence-x11-window-managers.md
-  - picom-troubleshooting.md
-  - programming-fonts.md
 token-estimate: 200
 ---
 
@@ -25,19 +19,7 @@ rofi-related theme organization.
 - **Programming fonts**: font selection reference.
 - **Rofi**: theme index and organization.
 
-## Source Map
-
-| Topic                 | File / Subtree                               |
-| --------------------- | -------------------------------------------- |
-| Ricing index          | `README.md`                                  |
-| Color management      | `color-management.md`                        |
-| Color system subtree  | `colors/`                                    |
-| GTK/Qt UI coherence   | `gtk-qt-ui-coherence-x11-window-managers.md` |
-| Picom troubleshooting | `picom-troubleshooting.md`                   |
-| Programming fonts     | `programming-fonts.md`                       |
-| Rofi subtree          | `rofi/`                                      |
-
 ## Maintenance Notes
 
 - `colors/` and `rofi/` are nested note groups without their own digests.
-- Regenerate when any ricing note changes or new ones are added.
+- Regenerate when the area's knowledge changes.

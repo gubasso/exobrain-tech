@@ -1,11 +1,6 @@
 ---
 digest-of: programming/design-decisions/config-state-ownership
 last-synced: 2026-07-24
-source-files:
-  - README.md
-  - 01-placement-xdg-fhs.md
-  - 02-patterns.md
-  - 03-anti-patterns-and-case-studies.md
 token-estimate: 720
 ---
 
@@ -68,15 +63,6 @@ CLI-implementation recipe (how `init`/scaffold avoids mutating config) lives in
   project path — machine-local and non-portable, which is precisely why it is
   state, not data; making keys portable is a deliberate later step.
 - `xdg-ninja` audits `$HOME` for violations — run it as the conformance check.
-
-## Source Map
-
-| Topic                                          | File                                   |
-| ---------------------------------------------- | -------------------------------------- |
-| The one-writer rule, TL;DR, author checklist   | `README.md`                            |
-| XDG/FHS placement + spec-conformance rules     | `01-placement-xdg-fhs.md`              |
-| Config/state split, drop-ins, read-only config | `02-patterns.md`                       |
-| Anti-patterns, incidents, `dctl`, xdg-ninja    | `03-anti-patterns-and-case-studies.md` |
 
 ## Maintenance Notes
 

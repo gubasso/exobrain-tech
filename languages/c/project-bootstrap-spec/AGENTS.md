@@ -1,13 +1,6 @@
 ---
 digest-of: languages/c/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - library-project.md
-  - runbook.md
 token-estimate: 750
 ---
 
@@ -58,24 +51,12 @@ install/distribution, and versioning are out of scope — they are release-phase
   SoT-vs-cog contract lives in general `07-automation-with-cog.md` — the runbook owns the _what_,
   cog the _how_.
 
-## Source Map
-
-| Topic                                                              | File                         |
-| ------------------------------------------------------------------ | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related      | `README.md`                  |
-| Ordered C overlay steps (the _what_/_in what order_)               | `runbook.md`                 |
-| Layout, CMake/Meson, gcc/clang, C standard, Nix devShell           | `00-toolchain-and-layout.md` |
-| clang-format / clang-tidy·cppcheck / ASan·UBSan / test fw + hooks  | `01-quality-gates.md`        |
-| CLI bootstrap-time ordering (entry point, args, exit codes)        | `cli-project.md`             |
-| Library bootstrap-time ordering (header API, targets, ABI hygiene) | `library-project.md`         |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/` (general runbook, `04-quality-gates.md`,
   `06-security-baseline.md`, `07-automation-with-cog.md`). Toolchain hosting:
   `../../../tools/nix/02-per-project-devshell.md`.
-- `daemon-project.md` and other implementation kinds are declared followups; add them (and refresh
-  `source-files`) when they land.
+- `daemon-project.md` and other implementation kinds are declared followups; add them when they land.
 - Re-verify build-system, compiler, and gate-tool defaults against upstream on a cadence when
   regenerating.
 - No conflicts among the current source files.

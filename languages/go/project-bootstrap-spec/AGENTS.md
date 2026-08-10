@@ -1,13 +1,6 @@
 ---
 digest-of: languages/go/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - runbook.md
-  - web-service.md
 token-estimate: 800
 ---
 
@@ -55,22 +48,11 @@ service). Do the general steps first, then this overlay.
   `bootstrap-taskrunner` wire gates; `bootstrap-ci` for CI. These chapters are the SoT; the
   SoT-vs-cog contract lives in general `07-automation-with-cog.md`.
 
-## Source Map
-
-| Topic                                                                | File                         |
-| -------------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related        | `README.md`                  |
-| Ordered Go overlay steps (the _what_/_in what order_)                | `runbook.md`                 |
-| `go mod init`, module path, `cmd/`/`internal/`/`pkg/`, version + Nix | `00-toolchain-and-layout.md` |
-| `gofmt`·`goimports` / `go vet`·`golangci-lint` / `-race` / vulncheck | `01-quality-gates.md`        |
-| CLI bootstrap ordering (command layout, flags/cobra, exit, config)   | `cli-project.md`             |
-| HTTP-service ordering (server, routing, middleware, shutdown)        | `web-service.md`             |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Nix devShell host:
   `../../../tools/nix/02-per-project-devshell.md`.
-- `library-project.md` is a declared followup kind; add it (and refresh `source-files`) when a Go
+- `library-project.md` is a declared followup kind; add it when a Go
   library is bootstrapped.
 - The Go `release-workflow-spec/` (release & publishing phase — binary distribution via release
   archives, `go install`, GoReleaser; container images and deploy manifests) is **intentionally

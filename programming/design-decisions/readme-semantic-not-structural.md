@@ -38,8 +38,9 @@ replicate disk state.**
   (`<!--TOC-->` … `<!--TOC-->`, `<!-- toc -->` … `<!-- tocstop -->`) lists the page's own headings
   and is tool-produced, so it is allowed and left to the generator (not hand-trimmed). This covers
   in-page heading ToCs only, not hand-written sibling-file enumerations.
-- **Exempt:** `AGENTS.md` digests, whose job is to summarize and map sources (including a file-level
-  `Source Map`).
+- **Exemption withdrawn:** `AGENTS.md` digests were once exempt on the grounds that mapping sources
+  is their job. They are not exempt. A digest maps knowledge, not files; see
+  [ADR-0007](../../_docs/decisions/ADR-0007-filesystem-owns-disk-state.md).
 
 ## Consequences
 
@@ -55,3 +56,6 @@ replicate disk state.**
 Accepted. Operative rule lives in the repo's `AGENTS.md` ("README Content Rule"), which
 also reconciles the older "README = index file" wording to mean a _semantic_ index. Enforced across
 the repository as part of the SoT sweep.
+
+Amended by [ADR-0007](../../_docs/decisions/ADR-0007-filesystem-owns-disk-state.md) — the `AGENTS.md`
+digest exemption is withdrawn.

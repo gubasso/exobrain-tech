@@ -18,8 +18,9 @@ context (Linux-Foundation-stewarded; see the
 [AGENTS.md guide](https://www.morphllm.com/agents-md-guide)).
 
 When you adopt it, fix the schema up front: required frontmatter (`digest-of`, `last-synced`,
-`source-files`, `token-estimate`) and stable body headings, regenerated from sources rather than
-hand-edited. Because it is generated, it is the _only_ machine-authored artifact the repo trusts;
+`token-estimate`) and stable body headings, regenerated from sources rather than hand-edited. The
+digest keeps no index of the directory; the filesystem owns what exists, and a checked-in file list
+drifts on the next add or rename. Because it is generated, it is the _only_ machine-authored artifact the repo trusts;
 everything else is human-authored.
 
 ## ADR scaffold
@@ -31,8 +32,8 @@ itself.
 
 ## README-as-index discipline
 
-Every directory's `README.md` is its index — it routes to the files in and under it, and does not
-duplicate their content. This keeps navigation deterministic and prevents the drift that
+Every directory's `README.md` is its index — it defines what the area is for and what belongs in it,
+and routes by meaning. It may name the files under it, but not merely to list them. This keeps navigation deterministic and prevents the drift that
 [single source of truth](../docs-design/00-foundations.md) warns against. This shelf's
 [hub README](./README.md) is an example.
 

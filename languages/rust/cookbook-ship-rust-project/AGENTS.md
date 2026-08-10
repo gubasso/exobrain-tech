@@ -1,7 +1,6 @@
 ---
 digest-of: languages/rust/cookbook
 last-synced: 2026-07-24
-source-files:
 token-estimate: 400
 ---
 
@@ -30,12 +29,6 @@ ADR-0002).
 - **GitHub-primary**, GitLab covered as a short closing section.
 - Regeneration of the cookbook is human-authored (it is prose the maintainer owns), but this
   `AGENTS.md` digest is the LLM-generated artifact for the directory.
-
-## Source Map
-
-| Topic                                    | File        |
-| ---------------------------------------- | ----------- |
-| The full ordered ship-it runbook + notes | `README.md` |
 
 ## Maintenance Notes
 

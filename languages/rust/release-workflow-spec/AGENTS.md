@@ -1,15 +1,6 @@
 ---
 digest-of: languages/rust/release-workflow-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-branch-model-and-release-plz.md
-  - 01-crate-metadata.md
-  - 02-api-tokens-and-scopes.md
-  - 03-trusted-publishing-oidc.md
-  - 04-release-plz-config.md
-  - 05-binary-distribution-cargo-dist.md
-  - 06-helper-scripts.md
-  - 07-semver-yank-rollback.md
 token-estimate: 650
 ---
 
@@ -49,21 +40,6 @@ merged).
   shell + PowerShell + Homebrew-tap installers; cargo-binstall works for free; AUR/OBS are
   downstream/manual.
 - **Local alt:** cargo-release (imperative, no bot; dry-run by default).
-
-## Source Map
-
-| Topic                                                      | File                                   |
-| ---------------------------------------------------------- | -------------------------------------- |
-| Index, TL;DR, setup pointer                                | `README.md`                            |
-| Branch model + tag-based `master` promote (flow + example) | `00-branch-model-and-release-plz.md`   |
-| Cargo.toml required/recommended fields, lean tarball       | `01-crate-metadata.md`                 |
-| Token endpoint + crate scopes, hygiene                     | `02-api-tokens-and-scopes.md`          |
-| Trusted Publishing / OIDC, filenames, enforcement, GitLab  | `03-trusted-publishing-oidc.md`        |
-| release-plz.toml + `release-plz.yml` CI + SemVer gate      | `04-release-plz-config.md`             |
-| cargo-dist binaries in `release.yml`, downstream channels  | `05-binary-distribution-cargo-dist.md` |
-| Portable publish/dry-run/release scripts                   | `06-helper-scripts.md`                 |
-| SemVer policy, yank, fix-forward                           | `07-semver-yank-rollback.md`           |
-| Per-new-project ordered manual steps                       | `runbook.md`                           |
 
 ## Maintenance Notes
 

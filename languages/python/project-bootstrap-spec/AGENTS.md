@@ -1,13 +1,6 @@
 ---
 digest-of: languages/python/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - library-project.md
-  - runbook.md
 token-estimate: 650
 ---
 
@@ -50,22 +43,11 @@ library). Publishing is out of scope — it hands off to `../release-workflow-sp
   The SoT-vs-cog contract lives in general `07-automation-with-cog.md` — the runbook owns the
   _what_, cog the _how_.
 
-## Source Map
-
-| Topic                                                            | File                         |
-| ---------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related    | `README.md`                  |
-| Ordered Python overlay steps (the _what_/_in what order_)        | `runbook.md`                 |
-| `uv`, `pyproject.toml` PEP 621, src layout, version pin + Nix    | `00-toolchain-and-layout.md` |
-| `ruff` / `mypy`·`pyright` / `pytest` / `pip-audit` + pre-commit  | `01-quality-gates.md`        |
-| CLI bootstrap-time ordering (entry point, args, logging, config) | `cli-project.md`             |
-| Library/PyPI bootstrap-time ordering (API, `py.typed`, docs)     | `library-project.md`         |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Release handoff (PyPI Trusted
   Publishing): `../release-workflow-spec/`. Detailed CLI structure: `../cli-spec/`.
-- `web-service.md` is a declared followup kind; add it (and refresh `source-files`) when it lands.
+- `web-service.md` is a declared followup kind; add it when it lands.
 - The Python packaging landscape (`uv`, `ruff`) moves fast — re-verify the default-tool choices
   against upstream on a cadence when regenerating.
 - No conflicts among the current source files.

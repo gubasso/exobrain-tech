@@ -1,14 +1,6 @@
 ---
 digest-of: systems/linux/archlinux
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - boot-loader.md
-  - install.md
-  - keymap-us-altgr-intl.md
-  - postinstall.md
-  - reinstall-luks-lvm.md
-  - ssh-agent.md
 token-estimate: 200
 ---
 
@@ -26,18 +18,6 @@ SSH agent guidance.
 - **Boot loader**: boot loader configuration notes.
 - **Postinstall**: follow-up setup notes.
 - **Keymap and SSH agent**: TTY keymap and SSH agent setup references.
-
-## Source Map
-
-| Topic                         | File                      |
-| ----------------------------- | ------------------------- |
-| Arch index                    | `README.md`               |
-| Boot loader                   | `boot-loader.md`          |
-| Fresh install                 | `install.md`              |
-| US AltGr-International keymap | `keymap-us-altgr-intl.md` |
-| Postinstall                   | `postinstall.md`          |
-| Reinstall with LUKS/LVM       | `reinstall-luks-lvm.md`   |
-| SSH agent                     | `ssh-agent.md`            |
 
 ## Maintenance Notes
 

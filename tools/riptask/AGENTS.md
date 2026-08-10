@@ -1,9 +1,6 @@
 ---
 digest-of: tools/riptask
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - commands.md
 token-estimate: 500
 ---
 
@@ -42,13 +39,6 @@ authoritative; these notes capture stable patterns.
 - `tsk new` reads the git working-tree diff for AI context **only when `-t` is omitted**; passing
   both `-t` and `-d` bypasses that, so the caller must read repo state itself.
 - Non-zero exit means the issue was NOT created — do not swallow stderr.
-
-## Source Map
-
-| Topic                                                 | File          |
-| ----------------------------------------------------- | ------------- |
-| Overview and purpose                                  | `README.md`   |
-| Preflight, command overview, full `tsk new` reference | `commands.md` |
 
 ## Maintenance Notes
 

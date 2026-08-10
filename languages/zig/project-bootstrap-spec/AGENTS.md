@@ -1,13 +1,6 @@
 ---
 digest-of: languages/zig/project-bootstrap-spec
 last-synced: 2026-07-10
-source-files:
-  - 00-toolchain-and-layout.md
-  - 01-quality-gates.md
-  - README.md
-  - cli-project.md
-  - library-project.md
-  - runbook.md
 token-estimate: 950
 ---
 
@@ -64,24 +57,12 @@ Shipping prebuilt/cross-compiled binaries and publishing/tagging are release-pha
   skills apply: `bootstrap-nix`, `bootstrap-precommit`, `bootstrap-taskrunner`, `bootstrap-ci`
   (general `07-automation-with-cog.md`).
 
-## Source Map
-
-| Topic                                                           | File                         |
-| --------------------------------------------------------------- | ---------------------------- |
-| Binding index, how-to-use, implementation-kinds list, related   | `README.md`                  |
-| Ordered Zig overlay steps (the _what_/_in what order_)          | `runbook.md`                 |
-| `zig init`, `build.zig` + `build.zig.zon`, layout, pin + Nix    | `00-toolchain-and-layout.md` |
-| `zig fmt` / `zig build test` / compile-time safety + pre-commit | `01-quality-gates.md`        |
-| CLI bootstrap ordering (exe step, args, exit codes, run/test)   | `cli-project.md`             |
-| Library bootstrap ordering (module export, manifest, consumers) | `library-project.md`         |
-
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/`. Nix devShell template:
   `../../../tools/nix/templates/zig/`. Compiler resolution: `../anyzig-workflow.md`; broader Zig
   refs: `../README.md`.
-- `web-service.md` and other implementation kinds are declared followups; add them (and refresh
-  `source-files`) when they land.
+- `web-service.md` and other implementation kinds are declared followups; add them when they land.
 - Zig is pre-1.0 and moves fast — re-verify `zig init` behavior, manifest keys, and the built-in
   gates against upstream on a cadence when regenerating.
 - No conflicts among the current source files.

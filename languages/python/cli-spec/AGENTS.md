@@ -1,15 +1,6 @@
 ---
 digest-of: languages/python/cli-spec
 last-synced: 2026-07-10
-source-files:
-  - README.md
-  - config-precedence-python.md
-  - error-handling-python.md
-  - logging-python.md
-  - parse-cli-options-examples.py
-  - subcommand-pattern-python.md
-  - symbol-visibility-python.md
-  - typer-patterns.md
 token-estimate: 500
 ---
 
@@ -51,19 +42,6 @@ callbacks.
   (cross-module `_name` import). Auto-exempt union families, entry points, pytest fixtures/hooks;
   `# visibility: public` for dynamic cases. Resolve relative + module-qualified imports; rename with
   token-aware tooling.
-
-## Source Map
-
-| Topic                                        | File                            |
-| -------------------------------------------- | ------------------------------- |
-| Stack defaults, TL;DR                        | `README.md`                     |
-| Typer subcommand structure, dispatch         | `subcommand-pattern-python.md`  |
-| Layered exceptions, sysexits, error boundary | `error-handling-python.md`      |
-| File-first structlog setup                   | `logging-python.md`             |
-| Typer patterns, Pydantic validators          | `typer-patterns.md`             |
-| 5-layer config loader, pydantic-settings     | `config-precedence-python.md`   |
-| Runnable validation examples                 | `parse-cli-options-examples.py` |
-| Leading-underscore visibility enforcement    | `symbol-visibility-python.md`   |
 
 ## Maintenance Notes
 

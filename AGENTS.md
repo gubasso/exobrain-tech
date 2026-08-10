@@ -80,16 +80,13 @@ A fenced code block is still right for illustration. The line is whether the rea
 the thing and run it: if yes it is a file, because a fence cannot be validated and an unenforced
 artifact reads as verified.
 
-## Source map
+## Filesystem state
 
-| Topic                        | File                                                               |
-| ---------------------------- | ------------------------------------------------------------------ |
-| KB index                     | `README.md`                                                        |
-| Zone index                   | `_docs/README.md`                                                  |
-| ADR template                 | `_docs/decisions/template.md`                                      |
-| Governance decision          | `_docs/decisions/ADR-0001-documentation-governance.md`             |
-| Delegation architecture ADR  | `_docs/decisions/ADR-0002-in-session-subagent-delegation.md`       |
-| Self-containment ADR         | `_docs/decisions/ADR-0003-self-containment.md`                     |
-| Docs-vs-library boundary ADR | `_docs/decisions/ADR-0004-docs-vs-library-boundary.md`             |
-| ADR status vocabulary ADR    | `_docs/decisions/ADR-0005-adr-status-vocabulary-and-amendments.md` |
-| Executable artifacts ADR     | `_docs/decisions/ADR-0006-executable-artifacts-in-the-library.md`  |
+Non-negotiable: the filesystem owns its own state, and no document indexes it. Forbidden is the
+enumeration kept because the directory exists — a table of contents of the tree, a topic-to-filename
+table, a `source-files` list. Naming files in prose is normal, and a list, table, or full tree is
+welcome wherever its entries carry their own payload: what a directory reserves, what a file
+specifies, its domain and scope. Justify it like any other content, not by the directory's existence.
+The test: strip the paths out and read what is left — if nothing teaches, it was the listing. A
+layout a reader is told to create in their own project is a specification, not a copy, and stays.
+`programming/docs-design/00-foundations.md` owns the full rule; ADR-0007 records the decision.

@@ -1,12 +1,6 @@
 ---
 digest-of: programming/release-workflow
 last-synced: 2026-07-10
-source-files:
-  - 00-branch-model.md
-  - 01-release-automation.md
-  - 03-tooling-by-ecosystem.md
-  - 04-workflow-file-conventions.md
-  - README.md
 token-estimate: 650
 ---
 
@@ -46,17 +40,6 @@ implement (rust + bash full; python + JS stubs). Mirrors the `cli-design/` → `
   creates the tag with `GITHUB_TOKEN` (no workflow retrigger), run promote as a `needs:` job in the
   same run reading the tool's output; when a human pushes the tag, use a separate `on: push: tags`
   release-promote workflow.
-
-## Source Map
-
-| Topic                                            | File                              |
-| ------------------------------------------------ | --------------------------------- |
-| Index, TL;DR defaults, binding links             | `README.md`                       |
-| Branch model, promotion, who-writes-master       | `00-branch-model.md`              |
-| Release-PR invariant, SemVer, changelog          | `01-release-automation.md`        |
-| Trusted Publishing / OIDC, enforcement, fallback | `02-trusted-publishing-oidc.md`   |
-| Per-ecosystem tools + the promotion wiring       | `03-tooling-by-ecosystem.md`      |
-| Publish vs binary-dist workflow files, filenames | `04-workflow-file-conventions.md` |
 
 ## Maintenance Notes
 

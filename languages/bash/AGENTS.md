@@ -1,11 +1,6 @@
 ---
 digest-of: languages/bash
 last-synced: 2026-07-23
-source-files:
-  - README.md
-  - cli-spec/AGENTS.md
-  - project-bootstrap-spec/AGENTS.md
-  - release-workflow-spec/AGENTS.md
 token-estimate: 300
 ---
 
@@ -26,15 +21,6 @@ specs. Bash review heuristics live in the owning specs rather than in a separate
   `install.sh`, AUR, OBS, and release runbook guidance.
 - **Review routing**: use the child digests and owning specs for Bash review heuristics; cross-link
   instead of copying rules into this top-level digest.
-
-## Source Map
-
-| Topic                                                        | File                                           |
-| ------------------------------------------------------------ | ---------------------------------------------- |
-| Top-level Bash index                                         | `README.md`                                    |
-| CLI project spec and Bash review heuristics                  | `cli-spec/` (separate AGENTS.md)               |
-| Project bootstrap ordering and quality gates                 | `project-bootstrap-spec/` (separate AGENTS.md) |
-| Release workflow (tag → GitHub Release → install.sh/AUR/OBS) | `release-workflow-spec/` (separate AGENTS.md)  |
 
 ## Maintenance Notes
 
