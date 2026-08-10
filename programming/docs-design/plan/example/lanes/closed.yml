@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: closed
+slices:
+  - id: "002"
+    slug: secure-session-storage
+    appetite: 3 sessions
+    needs: []
+    outcome: done
+    note: gave the state namespace its first durable artifacts

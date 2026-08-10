@@ -1,0 +1,316 @@
+#!/usr/bin/env bash
+# Validate a project's plan zone: lane files, the slice directories they index,
+# and the dependency graph across them.
+#
+# Scope split, deliberate: JSON Schema owns the *shape* of one file (field
+# names, types, the closed-lane discriminator) and a stock `check-jsonschema`
+# hook applies it. This script owns everything a single-file schema cannot see —
+# an id in two lanes, a `needs` edge pointing nowhere, a cycle, a slice
+# directory with no entry, a cached appetite that has drifted from its slice.
+#
+# No external dependency beyond coreutils, grep and awk. A `yq` dependency would
+# make the plan zone unreadable without a tool installed, and the plan zone is
+# the one thing a reader consults before anything else is set up. The price is
+# that the parser accepts a canonical subset of YAML rather than all of it, and
+# says so when the input leaves that subset.
+#
+# Usage: check-plan [PLAN_DIR]        (default: docs/plan)
+set -euo pipefail
+
+PLAN_DIR="${1:-docs/plan}"
+LANE_DIR="$PLAN_DIR/lanes"
+SLICE_DIR="$PLAN_DIR/slices"
+QUESTIONS="$PLAN_DIR/open-questions.md"
+
+LANES=(backlog todo doing review closed)
+ACTIVE_LANES=(doing review)
+
+# Optional: at most this many entries in doing.yml. 0 disables the check.
+WIP_LIMIT="${PLAN_WIP_LIMIT:-0}"
+
+status=0
+
+fail() { # fail <location> <message>
+  printf '%s: %s\n' "$1" "$2" >&2
+  status=1
+}
+
+[ -d "$LANE_DIR" ] || {
+  fail "$LANE_DIR" "lane directory not found"
+  exit 1
+}
+
+# ---------------------------------------------------------------------------
+# Parse
+#
+# Canonical form, one entry per slice:
+#
+#   lane: todo
+#   slices:
+#     - id: "009"
+#       slug: release-readiness
+#       appetite: 1 session
+#       needs: ["006", "007"]
+#
+# Sequence-valued fields (`needs`, `tags`) are flow style on one line. That is
+# not a parser shortcut: it keeps the whole dependency edge greppable, which is
+# the property the single-file line format had and this format otherwise loses.
+# ---------------------------------------------------------------------------
+
+parse_lane() { # parse_lane <file> -> records: line US id US key US value
+  awk '
+    function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t]+$/, "", s); return s }
+    function unquote(s) {
+      if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/) { s = substr(s, 2, length(s) - 2) }
+      return s
+    }
+    /^[ \t]*#/ { next }
+    /^[ \t]*$/ { next }
+    # top-level scalar, e.g. `lane: todo`
+    /^[A-Za-z_]+:/ {
+      key = $0; sub(/:.*$/, "", key)
+      val = $0; sub(/^[A-Za-z_]+:[ \t]*/, "", val)
+      if (key == "slices") { next }
+      printf "%d\037\037%s\037%s\n", NR, key, unquote(trim(val))
+      next
+    }
+    # entry head, e.g. `  - id: "009"`
+    /^[ \t]*-[ \t]+id:/ {
+      val = $0; sub(/^[ \t]*-[ \t]+id:[ \t]*/, "", val)
+      id = unquote(trim(val))
+      printf "%d\037%s\037%s\037%s\n", NR, id, "id", id
+      next
+    }
+    # entry field, e.g. `    slug: release-readiness`
+    /^[ \t]+[a-z_]+:/ {
+      if (id == "") { printf "%d\037\037!orphan-field\037%s\n", NR, $0; next }
+      key = $0; sub(/^[ \t]+/, "", key); sub(/:.*$/, "", key)
+      val = $0; sub(/^[ \t]+[a-z_]+:[ \t]*/, "", val)
+      printf "%d\037%s\037%s\037%s\n", NR, id, key, trim(val)
+      next
+    }
+    { printf "%d\037%s\037!unparsed\037%s\n", NR, id, $0 }
+  ' "$1"
+}
+
+flow_list() { # flow_list <raw> -> space-separated ids, or the token !badlist
+  local raw="$1"
+  case "$raw" in
+    "[]" | "") printf '' ;;
+    \[*\])
+      printf '%s' "${raw:1:${#raw}-2}" |
+        tr ',' '\n' |
+        sed 's/^[[:space:]]*//; s/[[:space:]]*$//; s/^"//; s/"$//; s/^'\''//; s/'\''$//' |
+        grep -v '^$' | tr '\n' ' '
+      ;;
+    *) printf '!badlist' ;;
+  esac
+}
+
+declare -A LANE_OF SLUG_OF APPETITE_OF NEEDS_OF OUTCOME_OF SUCC_OF LINE_OF
+ALL_IDS=()
+
+for lane in "${LANES[@]}"; do
+  file="$LANE_DIR/$lane.yml"
+  if [ ! -f "$file" ]; then
+    fail "$file" "missing lane file (all five lanes must exist, even when empty)"
+    continue
+  fi
+
+  declared_lane=""
+  index=0
+  while IFS=$'\037' read -r ln id key val; do
+    loc="$file:$ln"
+    case "$key" in
+      '!orphan-field') fail "$loc" "field outside any entry: $val" ;;
+      '!unparsed') fail "$loc" "not in canonical form: $val" ;;
+      lane) declared_lane="$val" ;;
+      id)
+        index=$((index + 1))  # position is the ranking; nothing else records it
+        if [ -n "${LANE_OF[$id]:-}" ]; then
+          fail "$loc" "id $id already appears in ${LANE_OF[$id]}.yml — a slice lives in exactly one lane"
+        else
+          ALL_IDS+=("$id")
+        fi
+        LANE_OF[$id]="$lane"
+        LINE_OF[$id]="$loc"
+        NEEDS_OF[$id]=""
+        ;;
+      slug) SLUG_OF[$id]="$val" ;;
+      appetite) APPETITE_OF[$id]="$val" ;;
+      note | tags) ;;
+      outcome) OUTCOME_OF[$id]="$val" ;;
+      succeeded_by) SUCC_OF[$id]="$val" ;;
+      needs)
+        parsed="$(flow_list "$val")"
+        if [ "$parsed" = "!badlist" ]; then
+          fail "$loc" "needs must be a flow sequence on one line, e.g. needs: [\"006\", \"007\"]"
+        else
+          NEEDS_OF[$id]="$parsed"
+        fi
+        ;;
+      *) fail "$loc" "unknown field '$key' (the schema owns the field list)" ;;
+    esac
+  done < <(parse_lane "$file")
+
+  if [ "$declared_lane" != "$lane" ]; then
+    fail "$file" "lane: '$declared_lane' does not match the file name '$lane'"
+  fi
+done
+
+# ---------------------------------------------------------------------------
+# Cross-file checks
+# ---------------------------------------------------------------------------
+
+is_closed() { [ "${LANE_OF[$1]:-}" = "closed" ]; }
+
+# Slug and directory agreement, both directions.
+for id in "${ALL_IDS[@]}"; do
+  slug="${SLUG_OF[$id]:-}"
+  loc="${LINE_OF[$id]}"
+  [ -n "$slug" ] || {
+    fail "$loc" "entry $id has no slug"
+    continue
+  }
+  dir="$SLICE_DIR/$id-$slug"
+  if [ ! -d "$dir" ]; then
+    fail "$loc" "no slice directory $dir"
+    continue
+  fi
+
+  readme="$dir/README.md"
+  if [ ! -f "$readme" ]; then
+    fail "$dir" "slice directory has no README.md"
+    continue
+  fi
+
+  # Appetite is owned by the slice; the lane entry caches it.
+  slice_appetite="$(awk '
+    /^## Appetite[ \t]*$/ { grab = 1; next }
+    grab && /^##/ { exit }
+    grab && NF { sub(/^[ \t]+/, ""); sub(/[ \t]+$/, ""); print; exit }
+  ' "$readme")"
+  if [ -n "$slice_appetite" ] && [ "$slice_appetite" != "${APPETITE_OF[$id]:-}" ]; then
+    fail "$loc" "appetite cache: entry says '${APPETITE_OF[$id]:-}', $readme says '$slice_appetite'"
+  fi
+done
+
+if [ -d "$SLICE_DIR" ]; then
+  while IFS= read -r dir; do
+    base="$(basename "$dir")"
+    id="${base%%-*}"
+    if [ -z "${LANE_OF[$id]:-}" ]; then
+      fail "$dir" "slice directory has no entry in any lane"
+    fi
+  done < <(find "$SLICE_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
+fi
+
+# Dependency edges: existence, self-reference, and the gate.
+for id in "${ALL_IDS[@]}"; do
+  loc="${LINE_OF[$id]}"
+  for need in ${NEEDS_OF[$id]:-}; do
+    if [ "$need" = "$id" ]; then
+      fail "$loc" "slice $id needs itself"
+      continue
+    fi
+    if [ -z "${LANE_OF[$need]:-}" ]; then
+      fail "$loc" "needs $need, which is in no lane"
+      continue
+    fi
+    for active in "${ACTIVE_LANES[@]}"; do
+      if [ "${LANE_OF[$id]}" = "$active" ] && ! is_closed "$need"; then
+        fail "$loc" "in $active.yml but needs $need, which is still ${LANE_OF[$need]}"
+      fi
+    done
+  done
+done
+
+# Cycles, by Kahn's algorithm over the needs edges.
+declare -A INDEGREE
+for id in "${ALL_IDS[@]}"; do INDEGREE[$id]=0; done
+for id in "${ALL_IDS[@]}"; do
+  for need in ${NEEDS_OF[$id]:-}; do
+    [ -n "${LANE_OF[$need]:-}" ] && [ "$need" != "$id" ] || continue
+    INDEGREE[$id]=$((INDEGREE[$id] + 1))
+  done
+done
+remaining=${#ALL_IDS[@]}
+progress=1
+declare -A REMOVED
+while [ "$progress" -eq 1 ]; do
+  progress=0
+  for id in "${ALL_IDS[@]}"; do
+    [ -n "${REMOVED[$id]:-}" ] && continue
+    [ "${INDEGREE[$id]}" -eq 0 ] || continue
+    REMOVED[$id]=1
+    remaining=$((remaining - 1))
+    progress=1
+    for other in "${ALL_IDS[@]}"; do
+      for need in ${NEEDS_OF[$other]:-}; do
+        [ "$need" = "$id" ] && INDEGREE[$other]=$((INDEGREE[$other] - 1))
+      done
+    done
+  done
+done
+if [ "$remaining" -gt 0 ]; then
+  cycle=""
+  for id in "${ALL_IDS[@]}"; do
+    [ -n "${REMOVED[$id]:-}" ] || cycle="$cycle $id"
+  done
+  fail "$LANE_DIR" "dependency cycle among:$cycle"
+fi
+
+# Terminal-lane consistency.
+for id in "${ALL_IDS[@]}"; do
+  loc="${LINE_OF[$id]}"
+  outcome="${OUTCOME_OF[$id]:-}"
+  succ="${SUCC_OF[$id]:-}"
+  if is_closed "$id"; then
+    [ -n "$outcome" ] || fail "$loc" "closed entry $id has no outcome"
+  elif [ -n "$outcome" ]; then
+    fail "$loc" "outcome on a non-closed entry"
+  fi
+  if [ -n "$succ" ] && [ -z "${LANE_OF[$succ]:-}" ]; then
+    fail "$loc" "succeeded_by $succ, which is in no lane"
+  fi
+done
+
+# Open questions: the block edge, and its expiry.
+if [ -f "$QUESTIONS" ]; then
+  while IFS=: read -r ln raw; do
+    ids="$(printf '%s' "$raw" |
+      sed 's/^[[:space:]]*Blocks:[[:space:]]*//; s/[[:space:]]*—.*$//' |
+      tr ',' '\n' | tr -d ' ' | grep -v '^$' || true)"
+    loc="$QUESTIONS:$ln"
+    if [ -z "$ids" ]; then
+      fail "$loc" "Blocks: names no slice id (grammar: Blocks: 004, 005 — why)"
+      continue
+    fi
+    open_count=0
+    for id in $ids; do
+      if [ -z "${LANE_OF[$id]:-}" ]; then
+        fail "$loc" "blocks $id, which is in no lane"
+        continue
+      fi
+      is_closed "$id" || open_count=$((open_count + 1))
+      for active in "${ACTIVE_LANES[@]}"; do
+        [ "${LANE_OF[$id]}" = "$active" ] &&
+          fail "$loc" "blocks $id, which is already in $active.yml"
+      done
+    done
+    [ "$open_count" -gt 0 ] ||
+      fail "$loc" "stale: every slice it blocks is closed — this question should have exited"
+  done < <(grep -n '^[[:space:]]*Blocks:' "$QUESTIONS" || true)
+fi
+
+# Optional work-in-progress ceiling.
+if [ "$WIP_LIMIT" -gt 0 ]; then
+  doing=0
+  for id in "${ALL_IDS[@]}"; do
+    [ "${LANE_OF[$id]}" = "doing" ] && doing=$((doing + 1))
+  done
+  [ "$doing" -le "$WIP_LIMIT" ] ||
+    fail "$LANE_DIR/doing.yml" "$doing slices in flight, limit is $WIP_LIMIT"
+fi
+
+exit "$status"

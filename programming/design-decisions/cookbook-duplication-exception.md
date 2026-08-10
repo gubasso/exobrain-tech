@@ -48,5 +48,5 @@ should collapse their inlined snippets to links.
 
 ## Status
 
-Accepted. Operative rule lives in CLAUDE.md (path: `../../../CLAUDE.md`) ("Cookbook Exception to SoT").
+Accepted. Operative rule lives in the repo's `AGENTS.md` ("Cookbook Exception to SoT").
 First instance: the Rust ship-it cookbook (path: `../../languages/rust/cookbook/README.md`).

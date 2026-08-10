@@ -21,4 +21,4 @@ Chosen option: **reserve `_docs/` for the product's own metadata — knowledge l
 
 ## Status
 
-Accepted. The repository structure already reflects it; enacted by the boundary rules in `AGENTS.md` and `CLAUDE.md`.
+Accepted. The repository structure already reflects it; enacted by the boundary rules in `AGENTS.md`.

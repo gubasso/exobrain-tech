@@ -1,6 +1,6 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-08-07
+last-synced: 2026-08-10
 source-files:
   - README.md
   - 00-foundations.md
@@ -22,6 +22,7 @@ source-files:
   - template-heading-shapes.md
   - template-plan-zone.md
   - template-slice.md
+  - plan/README.md
 token-estimate: 1230
 ---
 
@@ -59,6 +60,7 @@ sources it names. Do not read the shelf linearly — that is the corpus load
 | How big is this unit of work, and may that change?                      | `06-appetite-and-scope.md`        |
 | What files may a unit of work have, and what headings?                  | `07-plan-and-slices.md`           |
 | What shape does a plan, a milestone line, or a task list take?          | `07-plan-and-slices.md`           |
+| What shape does the plan record itself take, and what validates it?     | `plan/README.md`                  |
 | A fact that will be wrong in a month                                    | `08-tracking-and-revalidation.md` |
 | A bug in an external system under test                                  | `09-known-issues.md`              |
 | May I use bold here?                                                    | `10-lean-markdown.md`             |

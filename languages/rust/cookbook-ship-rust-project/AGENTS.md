@@ -13,7 +13,7 @@ A single-file, TLDR "ship a Rust project" cookbook: the ordered, copy-paste path
 git remote to a published, branch-protected, CI-gated crate. It **intentionally inlines** snippets
 that live canonically in the Rust `project-bootstrap-spec/`, `release-workflow-spec/`, `cli-spec/`
 shelves and in `tools/git/branch-protection/` + `tools/nix/`, footnoting each to its owner. This
-duplication is the sanctioned cookbook exception to the repo's SoT/DRY rule (repo `CLAUDE.md`;
+duplication is the sanctioned cookbook exception to the repo's SoT/DRY rule (repo `AGENTS.md`;
 ADR-0002).
 
 ## Key Points

@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: review
+slices:
+  - id: "003"
+    slug: supervised-child-runtime
+    appetite: 3 sessions
+    needs: ["002"]

@@ -475,7 +475,7 @@ Branch model, release-plz/OIDC, and metadata are identical. Differences:
 ## Footnotes
 
 [^rule]: Cookbook duplication is a sanctioned exception to the repo's SoT/DRY rule — see
-    CLAUDE.md (path: `../../../../CLAUDE.md`) and
+    the repo's `AGENTS.md` and
     [ADR-0002](../../../programming/design-decisions/cookbook-duplication-exception.md).
 
 [^gen-bootstrap]: [General project-bootstrap](../../../programming/project-bootstrap/README.md) —

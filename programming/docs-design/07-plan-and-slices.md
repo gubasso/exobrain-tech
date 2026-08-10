@@ -24,6 +24,12 @@ ceremony is indistinguishable from diligence until you count.
 both short enough that they are read rather than skimmed. Use the drop-in
 [plan-zone template](./template-plan-zone.md) for all three.
 
+> **Being superseded.** The single-file `milestones.md` record described below is being replaced by
+> one YAML file per kanban lane, validated by a schema and a cross-file linter. Those artifacts are
+> written, gated, and available now in [`plan/`](./plan/); this chapter's prose has not caught up.
+> Read the chapter for the reasoning — ownership, appetite, endings, the slice shape — and `plan/`
+> for the record format itself.
+
 ### `milestones.md`
 
 Two sections, live work first. One line per slice, ordered by id inside its section, in a fixed grammar:

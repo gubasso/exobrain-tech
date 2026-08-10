@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: doing
+slices:
+  - id: "004"
+    slug: profile-composition
+    appetite: 4 sessions
+    needs: ["002"]

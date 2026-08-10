@@ -45,4 +45,4 @@ Accepted
 
 Enacted across `programming/docs-design/02-lean-adrs.md`, `template-adr.md`,
 `_docs/decisions/template.md`, `_docs/reference/docs-conventions.md`,
-`AGENTS.md`, and `CLAUDE.md`.
+and `AGENTS.md`.

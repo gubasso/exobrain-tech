@@ -40,6 +40,7 @@ reviewed, indexed, and superseded when it stops being true.
 | Template | [Plan zone](./template-plan-zone.md)                           | Drop-in charter, milestones, and open-questions skeletons.           |
 | Template | [Docs rules](./template-docs-rules.md)                         | Drop-in maintenance block for a project's author-instructions.       |
 | Template | [Heading shapes](./template-heading-shapes.md)                 | Drop-in `MD043` arrays and the hook entries that apply them.         |
+| Artifact | [Plan zone](./plan/)                                           | Working lane schema, cross-file linter, and a validated example.     |
 
 ## Reading
 

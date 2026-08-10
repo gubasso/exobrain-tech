@@ -52,6 +52,6 @@ replicate disk state.**
 
 ## Status
 
-Accepted. Operative rule lives in CLAUDE.md (path: `../../../CLAUDE.md`) ("README Content Rule"), which
+Accepted. Operative rule lives in the repo's `AGENTS.md` ("README Content Rule"), which
 also reconciles the older "README = index file" wording to mean a _semantic_ index. Enforced across
 the repository as part of the SoT sweep.

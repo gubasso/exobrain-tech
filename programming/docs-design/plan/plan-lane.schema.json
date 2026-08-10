@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plan lane file",
+  "description": "One kanban lane of a project's plan zone. The file name is the lane; the sequence order is the human ranking within it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lane", "slices"],
+  "properties": {
+    "lane": {
+      "description": "Must equal the file's basename. A cache of the file name so a pasted fragment is self-describing.",
+      "enum": ["backlog", "todo", "doing", "review", "closed"]
+    },
+    "slices": {
+      "description": "Ordered highest-priority first. Position is the ranking; there is no priority field.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/slice" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["lane"],
+        "properties": { "lane": { "const": "closed" } }
+      },
+      "then": {
+        "properties": {
+          "slices": {
+            "items": {
+              "required": ["outcome"]
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "slices": {
+            "items": {
+              "not": { "required": ["outcome"] }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]{3}$",
+      "description": "Quoted. Unquoted 007 is octal 7 under YAML 1.1."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "slice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "slug", "appetite"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "slug": {
+          "$ref": "#/$defs/slug",
+          "description": "Cache of the slice directory's suffix. Never edited here."
+        },
+        "appetite": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Cache of the slice README's Appetite section. Never edited here; changing a budget is a slice revision."
+        },
+        "needs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "uniqueItems": true,
+          "description": "Ids that must be closed before this slice may enter doing."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/slug" },
+          "uniqueItems": true,
+          "description": "Free board labels. Presentation only; nothing gates on a tag."
+        },
+        "outcome": {
+          "enum": ["done", "cut", "reshaped"],
+          "description": "Required in closed.yml, forbidden elsewhere. The lane no longer carries the terminal distinction, so the entry must."
+        },
+        "succeeded_by": {
+          "$ref": "#/$defs/id",
+          "description": "Required when outcome is reshaped, forbidden otherwise."
+        },
+        "note": {
+          "type": "string",
+          "description": "Free prose. Nothing parses it."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["outcome"],
+            "properties": { "outcome": { "const": "reshaped" } }
+          },
+          "then": { "required": ["succeeded_by"] },
+          "else": { "not": { "required": ["succeeded_by"] } }
+        }
+      ]
+    }
+  }
+}

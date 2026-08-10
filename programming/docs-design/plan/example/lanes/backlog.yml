@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: backlog
+slices:
+  - id: "013"
+    slug: oauth-hardening
+    appetite: 2 sessions
+    needs: ["009"]
+    tags: [security]
+    note: waits on the release gate landing first
