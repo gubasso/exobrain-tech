@@ -4,9 +4,10 @@ Copy the block below into `<project>/docs/plan/slices/<id>-<slug>/README.md`. Co
 before the work starts. Keep the heading list exactly as it is: it is the shape the project's
 `slice-readme` heading gate checks, and the H1 varies per slice. The gate is one configuration file
 plus one hook entry, shipped in [the heading-shape template](./template-heading-shapes.md) and
-explained in [10 — Lean Markdown](./10-lean-markdown.md#gating-a-fixed-heading-shape). Do not add
+explained in
+[08 — Lean Markdown](../docs-design/08-lean-markdown.md#gating-a-fixed-heading-shape). Do not add
 `tasks.md`, `requirements.md`, or any other sibling file unless the gate in
-[07 — Plan and Slices](./07-plan-and-slices.md) is met.
+[02 — Plan and Slices](./02-plan-and-slices.md) is met.
 
 ````markdown
 # <id> — {Short Title}

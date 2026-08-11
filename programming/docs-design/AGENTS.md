@@ -1,71 +1,55 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-08-10
-token-estimate: 1230
+last-synced: 2026-08-11
+token-estimate: 650
 ---
 
 # AGENTS
 
 ## Scope
 
-Language-agnostic documentation design canon. Ownership and placement of durable facts; the Diataxis
-zones plus a plan zone; the artifacts — decision records, subsystem pages, known-issue cases, tracking
-registries, slices; the process — drafts and promotion, appetite and scope, the plan zone; and the
-house style, the producer-consumer shape of a guide, plus the pre-merge gate.
+Language-agnostic documentation design canon: ownership and placement of durable facts, reader-need
+zones, decision records, subsystem pages, agent context, drafts, reference maintenance, markdown
+mechanics, procedure artifacts, and the documentation review gate.
+
+Planning scope, slices, and the plan record route to [project management](../project-management/AGENTS.md).
 
 ## How to use this shelf
 
-Load this file, find the owning chapter in the routing table below, then read that chapter and the
-sources it names. Do not read the shelf linearly — that is the corpus load
-[04 — Agent Context](./04-agent-context.md) forbids.
+Load this file, find the owning chapter below, then read that chapter and the sources it names. Do not
+read the shelf linearly; [04 — Agent Context](./04-agent-context.md) owns focused loading.
 
 ## Rule ownership
 
-| Question the agent arrives with                                         | Owning file                       |
-| ----------------------------------------------------------------------- | --------------------------------- |
-| Two files state the same fact — which one wins?                         | `00-foundations.md`               |
-| Should this be a comment, a name, a test, or a doc?                     | `00-foundations.md`               |
-| May I reproduce what a directory contains?                              | `00-foundations.md`               |
-| Where does this document go?                                            | `01-diataxis-zones.md`            |
-| Is this the product, or is it about the product?                        | `01-diataxis-zones.md`            |
-| Does the docs root go in `docs/` or `_docs/`?                           | `01-diataxis-zones.md`            |
-| What does a runbook, case study, or diagnostic page contain?            | `01-diataxis-zones.md`            |
-| Does this choice deserve an ADR, and what shape?                        | `02-lean-adrs.md`                 |
-| What status does this decision carry now?                               | `02-lean-adrs.md`                 |
-| Where is the current design of a subsystem written?                     | `03-subsystem-pages.md`           |
-| What should a session load, and how large may an always-loaded file be? | `04-agent-context.md`             |
-| Where do scratch notes live, and how do they ship?                      | `05-drafts-and-promotion.md`      |
-| How big is this unit of work, and may that change?                      | `06-appetite-and-scope.md`        |
-| What files may a unit of work have, and what headings?                  | `07-plan-and-slices.md`           |
-| What shape does a plan, a milestone line, or a task list take?          | `07-plan-and-slices.md`           |
-| What shape does the plan record itself take, and what validates it?     | `plan/README.md`                  |
-| A fact that will be wrong in a month                                    | `08-tracking-and-revalidation.md` |
-| A bug in an external system under test                                  | `09-known-issues.md`              |
-| May I use bold here?                                                    | `10-lean-markdown.md`             |
-| How do I stop a fixed-shape document's headings from drifting?          | `10-lean-markdown.md`             |
-| Where does the heading array live, and what applies it?                 | `10-lean-markdown.md`             |
-| How does a reader know which step produced the value this step wants?   | `11-procedure-artifacts.md`       |
-| What do I call the values a guide carries between its phases?           | `11-procedure-artifacts.md`       |
-| What do I check before merging a docs change?                           | `99-checklist.md`                 |
-| What does this shelf mean by `<term>`?                                  | `glossary.md`                     |
+| Question the agent arrives with                                    | Owning file                       |
+| ------------------------------------------------------------------ | --------------------------------- |
+| Which artifact owns a fact, and may a directory be enumerated?     | `00-foundations.md`               |
+| Where does a document or operational artifact go?                  | `01-diataxis-zones.md`            |
+| Is this the product, or is it about the product?                   | `01-diataxis-zones.md`            |
+| Does this choice deserve an ADR, and what lifecycle applies?       | `02-lean-adrs.md`                 |
+| Where is the current design of a subsystem written?                | `03-subsystem-pages.md`           |
+| What should a session load, and how large may an entry file be?    | `04-agent-context.md`             |
+| Where do scratch notes live, and how do they ship?                 | `05-drafts-and-promotion.md`      |
+| How is a perishable fact tracked and revalidated?                  | `06-tracking-and-revalidation.md` |
+| How is an external-system bug recorded and retired?                | `07-known-issues.md`              |
+| Which markdown constructs carry structure, and how is shape gated? | `08-lean-markdown.md`             |
+| How does a guide name values crossing phase boundaries?            | `09-procedure-artifacts.md`       |
+| What must pass before a documentation change merges?               | `99-checklist.md`                 |
+| What does this shelf mean by a documentation term?                 | `glossary.md`                     |
 
 ## Non-negotiables
 
-- One owner per durable fact; every other mention is a link.
-- Docs never live inside the product: `docs/` for a codebase, `_docs/` for a knowledge base.
+- One owner per durable fact; every other mention links to it.
+- Use `docs/` for documentation about a codebase and `_docs/` for documentation about a knowledge
+  base; product content does not live under that root.
 - Never delete an accepted decision; supersede, deprecate, reject, or amend it.
-- Drafts stay out of `docs/`; a binding plan is project state, not a draft.
-- No bold and no italics, anywhere.
-- Every fenced block declares a language.
-- A fixed shape has one `MD043` heading array in one file, applied by one hook entry; documents carry
-  no lint configuration and free-form documents are not gated.
-- A multi-phase guide names what each phase consumes and produces, and no artifact token ever carries
-  a real value.
-- The filesystem owns its own state: nothing indexes a directory because it has contents; a tree,
-  list, or table stays when its entries carry their own payload.
+- Drafts stay out of the docs root; promotion rewrites them for the owning reader need.
+- Use no bold or italics, and give every fenced block a language.
+- A fixed shape has one `MD043` array applied by one hook; free-form documents are not gated.
+- A multi-phase guide names what each phase consumes and produces; artifact tokens carry no real value.
+- The filesystem owns its state; a tree, list, or table stays only when its entries teach something.
 
 ## Maintenance
 
-- Regenerate when the shelf's knowledge changes.
-- This file is a map and never a rules home; introduce no rule here that a chapter does not own.
-- When this file and a chapter disagree, the chapter is authoritative.
+- Regenerate when this shelf's knowledge changes.
+- This digest is a map, never a rules home; the owning chapter wins on disagreement.

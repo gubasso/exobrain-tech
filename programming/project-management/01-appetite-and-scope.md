@@ -1,9 +1,9 @@
-# 06 — Appetite and Scope
+# 01 — Appetite and Scope
 
 A unit of work needs a bound, or it grows until it feels finished. This chapter defines that unit,
 defines the bound, and — the part most methods leave to taste — states when the bound may move and what
 it takes to move it. The rules are independent of how a project files its plan documents; what the plan
-zone holds is in [07 — Plan and Slices](./07-plan-and-slices.md).
+zone holds is in [02 — Plan and Slices](./02-plan-and-slices.md).
 
 ## The unit of work
 
@@ -17,7 +17,7 @@ Demonstrable means completion is an objective condition — named tests pass uns
 judgment call.
 
 A slice is also the unit of agent context: it is the entry document a session loads, along with the
-sources it names and nothing else; see [04 — Agent Context](./04-agent-context.md).
+sources it names and nothing else; see [04 — Agent Context](../docs-design/04-agent-context.md).
 
 ## Appetite is a budget, not an estimate
 
@@ -162,7 +162,7 @@ of revision never becomes visible and the shaping problem behind it is never dia
 revised in a diff is reviewable, greppable, and countable across slices — and a project whose slices
 routinely extend has learned something about how it shapes work, which it can only learn if the changes
 are on record. Committed is not the same as frozen; the revision rule for the rest of the slice is in
-[07 — Plan and Slices](./07-plan-and-slices.md).
+[02 — Plan and Slices](./02-plan-and-slices.md).
 
 ## Anti-patterns
 
@@ -192,7 +192,8 @@ statement of why that mode is expensive.
 
 Two answers, and neither is that the objection is wrong. First, the subsystem page is where design-level
 work is recorded and reviewed, so it does not depend on a slice existing to hold it; see
-[03 — Subsystem Pages](./03-subsystem-pages.md). Second, a slice MAY be shaped around an abstraction
+[03 — Subsystem Pages](../docs-design/03-subsystem-pages.md). Second, a slice MAY be shaped around an
+abstraction
 when it still meets the definition — when a named test at the new boundary passes unskipped, "replace
 the mailer with an interface two callers use" is demonstrable and vertical enough to qualify. What the
 definition rules out is the slice with no demonstrable end at all, not the slice whose demonstrable end

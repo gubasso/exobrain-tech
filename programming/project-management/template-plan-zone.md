@@ -3,7 +3,7 @@
 Copy each block below into the named file under `<project>/docs/plan/`. Create only the documents the
 project actually maintains; an empty charter is worse than no charter. The slice entry document has its
 own template — see [template-slice.md](./template-slice.md). Rules for all three are in
-[07 — Plan and Slices](./07-plan-and-slices.md).
+[02 — Plan and Slices](./02-plan-and-slices.md).
 
 ## `charter.md`
 
@@ -62,7 +62,7 @@ shape; that file is history, not a status surface.
 These three headings are a fixed shape, and the project gates them so no fourth section arrives. The
 gate is one configuration file plus one hook entry, shipped in
 [the heading-shape template](./template-heading-shapes.md) and explained in
-[10 — Lean Markdown](./10-lean-markdown.md#gating-a-fixed-heading-shape).
+[08 — Lean Markdown](../docs-design/08-lean-markdown.md#gating-a-fixed-heading-shape).
 
 Derive whatever can be derived from the slices themselves so this cannot silently disagree with them.
 
@@ -82,4 +82,4 @@ Exit: <ADR | slice revision | measurement>, <what specifically closes it>.
 ```
 
 An entry that blocks nothing is a note, and notes belong in the drafts workspace; see
-[05 — Drafts and Promotion](./05-drafts-and-promotion.md).
+[05 — Drafts and Promotion](../docs-design/05-drafts-and-promotion.md).

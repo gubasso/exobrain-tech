@@ -3,7 +3,7 @@
 LLM agents consume documentation differently from humans, but they suffer from the same failure modes:
 unclear ownership, stale repetition, vague names, and oversized context. A docs system that is easy
 for a maintainer to navigate is usually easier for an agent to use. This chapter states the audience
-constraint that the process chapters after it build on.
+constraint consumed by documentation and project-management practices.
 
 ## Context pollution
 
@@ -60,7 +60,7 @@ bounds: <https://claude.com/blog/using-claude-md-files>.
 
 Two habits keep it there: write each rule once and link rather than restate it, and keep the prose
 lean. A file paid for every session is the worst place for decorative formatting; see
-[10 — Lean Markdown](./10-lean-markdown.md).
+[08 — Lean Markdown](./08-lean-markdown.md).
 
 ## Modular author-instructions for large subtrees
 
@@ -115,7 +115,8 @@ and nothing else.
 That is the whole argument, and it is why the filter MUST name its sources rather than describe them.
 Where the entry document lives depends on the timescale. For work in flight it is the slice
 `README.md`, whose `Governed by` section is the filter; see
-[07 — Plan and Slices](./07-plan-and-slices.md). For a subsystem being maintained, the subsystem page
+[02 — Plan and Slices](../project-management/02-plan-and-slices.md). For a subsystem being maintained,
+the subsystem page
 plays the role; see [03 — Subsystem Pages](./03-subsystem-pages.md). Both work for the same reason.
 
 ## Maintenance instructions

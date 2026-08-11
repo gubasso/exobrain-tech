@@ -19,24 +19,24 @@ lint:
 # Verify every executable artifact the library ships (ADR-0006).
 test: test-plan
 
-# programming/docs-design/plan/ — the plan-zone schema and linter.
+# programming/project-management/plan/ — the plan-zone schema and linter.
 #   1. the schema is valid JSON Schema draft 2020-12
 #   2. the worked example satisfies the schema
 #   3. the linter is shellcheck-clean
 #   4. the linter accepts the worked example
 test-plan:
     nix develop --command check-jsonschema --check-metaschema \
-        programming/docs-design/plan/plan-lane.schema.json
+        programming/project-management/plan/plan-lane.schema.json
     nix develop --command check-jsonschema \
-        --schemafile programming/docs-design/plan/plan-lane.schema.json \
-        programming/docs-design/plan/example/lanes/backlog.yml \
-        programming/docs-design/plan/example/lanes/todo.yml \
-        programming/docs-design/plan/example/lanes/doing.yml \
-        programming/docs-design/plan/example/lanes/review.yml \
-        programming/docs-design/plan/example/lanes/closed.yml
-    nix develop --command shellcheck programming/docs-design/plan/check-plan
-    nix develop --command programming/docs-design/plan/check-plan \
-        programming/docs-design/plan/example
+        --schemafile programming/project-management/plan/plan-lane.schema.json \
+        programming/project-management/plan/example/lanes/backlog.yml \
+        programming/project-management/plan/example/lanes/todo.yml \
+        programming/project-management/plan/example/lanes/doing.yml \
+        programming/project-management/plan/example/lanes/review.yml \
+        programming/project-management/plan/example/lanes/closed.yml
+    nix develop --command shellcheck programming/project-management/plan/check-plan
+    nix develop --command programming/project-management/plan/check-plan \
+        programming/project-management/plan/example
 
 # Nothing to compile for a knowledge base.
 build:

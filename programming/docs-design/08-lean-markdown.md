@@ -1,4 +1,4 @@
-# 10 — Lean Markdown
+# 08 — Lean Markdown
 
 Markdown is the house format for project documentation and should stay that way. The rule this chapter
 adds is narrower: keep the constructs that carry structure, drop the inline emphasis that only carries
@@ -102,7 +102,7 @@ Some documents are not free-form prose: their heading list is the contract. A sl
 status surface, a decision record, and every template a project ships are all read by tools and sessions
 that assume the headings are where the shape says they are. `MD043 required-headings` is the check that
 holds that shape, and this section owns how it is wired. Which documents have a fixed shape is owned
-elsewhere: [07 — Plan and Slices](./07-plan-and-slices.md) for the plan zone,
+elsewhere: [02 — Plan and Slices](../project-management/02-plan-and-slices.md) for the plan zone,
 [02 — Lean ADRs](./02-lean-adrs.md) for decision records.
 
 Four facts about the rule decide the wiring, and none of them is visible from the rule's name.
@@ -118,9 +118,9 @@ tree. Its configuration is per shape, not per project.
 There is no per-glob rule configuration. markdownlint scopes configuration by directory and by nothing
 else: a `.markdownlint-cli2.*` or `.markdownlint.*` file applies to the directory it sits in and every
 subdirectory below it, merging with the versions above it. There is no `overrides` key and no way to
-attach a rule to a glob. A directory config therefore cannot separate a slice entry document from the
-`tasks.md` beside it, or a status surface from the charter in the same folder, so it cannot express a
-shape that is narrower than a subtree.
+attach a rule to a glob. A directory config therefore cannot separate a decision record from other
+decision-directory material, a slice entry document from the `tasks.md` beside it, or a status surface
+from the charter in the same folder, so it cannot express a shape that is narrower than a subtree.
 
 `--config <file>` loads any configuration file as the base for a run, and the directory config the tool
 discovers is merged over that base. This is the one seam that takes a filter, because the file set for
@@ -128,27 +128,22 @@ the run is chosen outside the configuration.
 
 So the array lives in one shape config, and the hook that runs the linter chooses which files it applies
 to. One file per shape, named so the tool accepts it — the name MUST end with a supported configuration
-name, so `slice-readme.markdownlint-cli2.jsonc` works and `slice-readme.jsonc` does not:
+name, so `adr.markdownlint-cli2.jsonc` works and `adr.jsonc` does not:
 
 ```jsonc
-// .markdownlint/slice-readme.markdownlint-cli2.jsonc
-// Heading shape for a slice entry document. The hook that names this file owns
-// which documents it applies to.
+// .markdownlint/adr.markdownlint-cli2.jsonc
+// Heading shape for a decision record. The hook that names this file owns which
+// documents it applies to. The leading `*` matches the varying ADR title.
 {
   "config": {
     "MD043": {
       "headings": [
         "*",
-        "## Goal",
-        "## Appetite",
-        "## Core",
-        "## In scope",
-        "## Out of scope",
-        "## Governed by",
-        "## Acceptance",
-        "## Rabbit holes",
-        "## Done when",
-        "## Revisions"
+        "## Context and Problem Statement",
+        "## Considered Options",
+        "## Decision Outcome",
+        "## Consequences",
+        "## Status"
       ]
     }
   }
@@ -161,10 +156,10 @@ hook already needed:
 
 ```yaml
 - id: markdownlint-cli2
-  alias: md-slice-readme
-  name: markdownlint (slice entry heading shape)
-  files: '^docs/plan/slices/[^/]+/README\.md$'
-  args: ['--config', '.markdownlint/slice-readme.markdownlint-cli2.jsonc']
+  alias: md-adr
+  name: markdownlint (decision record heading shape)
+  files: '^docs/decisions/(ADR-.*|template)\.md$'
+  args: ['--config', '.markdownlint/adr.markdownlint-cli2.jsonc']
 ```
 
 A shape config is an overlay, not a replacement. Every other rule still comes from the project config
@@ -187,14 +182,14 @@ The array is a complete ordered list. An extra heading, a missing heading, and a
 the failure names the heading it did not expect:
 
 ```text
-docs/plan/milestones.md:26 error MD043/required-headings Required heading structure
-  [Expected: [None]; Actual: ## bogus heading]
+docs/decisions/ADR-0042-storage-boundary.md:31 error MD043/required-headings Required heading
+  structure [Expected: [None]; Actual: ## Alternatives revisited]
 ```
 
-Where one heading's text varies per instance — a slice entry document whose H1 carries that slice's id
-and title — use `*`, which matches exactly one heading of any level and any text. `+` matches one or
-more. A slice shape therefore opens with `*` and fixes everything after it, which is also what lets one
-shape config cover a record and the template it was copied from.
+Where one heading's text varies per instance — an ADR whose H1 carries that record's number and title —
+use `*`, which matches exactly one heading of any level and any text. `+` matches one or more. An ADR
+shape therefore opens with `*` and fixes everything after it, which is also what lets one shape config
+cover a record and the template it was copied from.
 
 Gate the documents whose shape is a contract, and nothing else. A wiki page, a guide, and a README are
 supposed to grow a heading when they have something new to say; gating them converts every honest

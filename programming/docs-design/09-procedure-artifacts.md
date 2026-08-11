@@ -1,4 +1,4 @@
-# 11 — Procedure Artifacts
+# 09 — Procedure Artifacts
 
 A guide promises sequence and completion, and [01 — Diataxis Zones](./01-diataxis-zones.md) places it
 on that promise without saying how its body is built. This chapter gives a multi-phase guide four
@@ -39,7 +39,7 @@ upper-snake token in angle brackets.
 
 Case is the whole discriminator against the other angle-bracket name this shelf uses. A `placeholder`
 is lowercase and stands in for anything project-specific — `<project>`, `<host>`, `<subsystem>` — and
-belongs to [10 — Lean Markdown](./10-lean-markdown.md). An artifact token is upper-snake and asserts
+belongs to [08 — Lean Markdown](./08-lean-markdown.md). An artifact token is upper-snake and asserts
 more: that some phase produces this, and that the guide says which. A project already spending
 upper-snake angle names on something else picks a different delimiter for one of the two and records
 the choice, because the two meanings cannot share a spelling.
@@ -113,7 +113,7 @@ about to do is usually the paragraph an inputs line and an outputs block replace
 Nothing in the usual toolchain checks this. An outputs block is an ordinary fenced `text` block, so a
 fence-language rule covers its declaration and nothing more, and `MD043` gates a fixed heading list
 while a guide is deliberately not a fixed-shape document; see
-[10 — Lean Markdown](./10-lean-markdown.md).
+[08 — Lean Markdown](./08-lean-markdown.md).
 
 What a project-local hook can check, once the corpus has settled, is one relation: every upper-snake
 token appearing anywhere in the tree also appears in some outputs block. Two legitimate cases fail that

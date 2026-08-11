@@ -41,3 +41,6 @@ illustration; the line is whether a reader is expected to copy the thing and run
 Accepted. Enacted by `programming/docs-design/plan/`, the plan-zone hooks in
 `.pre-commit-config.yaml`, the `test` recipe in `justfile`, and the validator packages in
 `flake.nix`.
+
+Amended by [ADR-0008](./ADR-0008-separate-documentation-design-from-project-management.md) — the
+plan-zone artifacts and their gates moved to `programming/project-management/plan/`.

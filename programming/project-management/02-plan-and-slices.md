@@ -1,7 +1,8 @@
-# 07 — Plan and Slices
+# 02 — Plan and Slices
 
-[01 — Diataxis Zones](./01-diataxis-zones.md) adds a plan zone for what is next.
-[06 — Appetite and Scope](./06-appetite-and-scope.md) says what bounds a unit of work inside it. This
+[00 — The Plan Zone as a Second Axis](./00-plan-zone-as-a-second-axis.md) explains why the plan zone
+holds what is next. [01 — Appetite and Scope](./01-appetite-and-scope.md) says what bounds a unit of
+work inside it. This
 chapter says what documents the zone holds and what shape the unit of work takes on disk.
 
 The shape is deliberately small. Every artifact has to survive one question: what does a reader or an
@@ -57,7 +58,8 @@ re-aligned by hand every time a slug or a note changes width, and a note long en
 the row past any sane line length. The raw file is what an agent session and a `git diff` actually read,
 and a table gets harder to read there the more slices the project has. The list costs nothing to
 maintain, diffs one line per change, and greps cleanly by id or by status. A table is still the right
-instrument for a comparison or an exact mapping; see [10 — Lean Markdown](./10-lean-markdown.md). A
+instrument for a comparison or an exact mapping; see
+[08 — Lean Markdown](../docs-design/08-lean-markdown.md). A
 growing status surface is neither.
 
 The grammar is fixed so it can still be parsed: em dash separators, fields in that order, the note
@@ -90,7 +92,8 @@ it be read rather than skimmed — by arithmetic, not by bad writing. When it do
 wholesale to `<project>/docs/plan/milestones-closed.md` and leave one link behind. That file is history,
 not a second status surface: a slice that leaves `milestones.md` is no longer part of what a reader
 consults to know where the work stands. It is the same one-way door
-[09 — Known Issues](./09-known-issues.md) opens when a resolved case collapses out of its hot directory.
+[07 — Known Issues](../docs-design/07-known-issues.md) opens when a resolved case collapses out of its
+hot directory.
 
 `milestones.md` SHOULD derive whatever it can from the slices themselves so it cannot silently disagree
 with them. A status surface maintained by hand goes stale between the moment the work changes and the
@@ -103,7 +106,8 @@ away in `milestones.md`.
 Its two sections are a fixed shape and the project MUST gate them, with the exact list `# Milestones`,
 `## in flight`, `## closed`. The gate is what stops the third section — a `## backlog`, a `## someday`,
 a per-status split — from arriving as a small helpful edit and turning the single status surface back
-into a plan. See [10 — Lean Markdown](./10-lean-markdown.md#gating-a-fixed-heading-shape) for the
+into a plan. See
+[08 — Lean Markdown](../docs-design/08-lean-markdown.md#gating-a-fixed-heading-shape) for the
 mechanism; [the heading-shape template](./template-heading-shapes.md) ships the array and the hook
 entry. A project that has moved `## closed` out to `milestones-closed.md` drops that heading from its
 array.
@@ -162,7 +166,7 @@ The additional files are gated, and the gates are prohibitions rather than permi
 - `requirements.md` MUST NOT exist unless acceptance maps many-to-many onto tests, or spans more than
   one test lane, so a flat list in `README.md` can no longer be audited by reading it.
 - `design.md` MUST NOT exist. Current subsystem design is owned by the explanation zone; see
-  [03 — Subsystem Pages](./03-subsystem-pages.md).
+  [03 — Subsystem Pages](../docs-design/03-subsystem-pages.md).
 
 State them this way because a slice directory looks like an invitation to fill it. Tools trained on
 other spec-driven workflows will produce a full set of files unprompted, and a positive rule does not
@@ -198,12 +202,12 @@ same EARS phrasing. It replaces the flat list in `README.md`; the two MUST NOT b
 `README.md` has a fixed heading list, and the project MUST gate it so it cannot drift into a second
 charter. The gate is one `MD043` heading array, opening with `*` because the H1 varies per slice, held
 in one file and applied to every slice entry document by one hook entry; the mechanism is in
-[10 — Lean Markdown](./10-lean-markdown.md#gating-a-fixed-heading-shape), and
+[08 — Lean Markdown](../docs-design/08-lean-markdown.md#gating-a-fixed-heading-shape), and
 [the heading-shape template](./template-heading-shapes.md) ships it filled in. The headings:
 
 ```text
 Goal          One sentence naming the observable outcome. Not the mechanism.
-Appetite      The fixed budget, in the project's chosen unit. See chapter 06.
+Appetite      The fixed budget, in the project's chosen unit. See chapter 01.
 Core          The non-negotiable outcome this slice guarantees. Never cut.
 In scope      The negotiable remainder, ordered so the least valuable is cut first.
 Out of scope  Explicit no-gos for this slice.
@@ -215,7 +219,7 @@ Revisions     One line per change to this document after the work started.
 ```
 
 `Core` and `In scope` are separate headings because
-[06 — Appetite and Scope](./06-appetite-and-scope.md) requires the non-negotiable outcome to be declared
+[01 — Appetite and Scope](./01-appetite-and-scope.md) requires the non-negotiable outcome to be declared
 apart from the remainder that funds it. Collapsing them into one scope list is the everything-is-core
 anti-pattern with better formatting.
 
@@ -227,7 +231,8 @@ Use the drop-in [slice template](./template-slice.md).
 ## Governed by is the context filter
 
 An agent session loads `README.md` and the sources `Governed by` names. Nothing else. This is the
-concrete form of the one-entry-document rule in [04 — Agent Context](./04-agent-context.md), and it
+concrete form of the one-entry-document rule in
+[04 — Agent Context](../docs-design/04-agent-context.md), and it
 works because it names sources instead of describing them.
 
 A `Governed by` entry that names a whole directory is a defect. If the session needs the directory, the
@@ -262,7 +267,8 @@ combination:
 The value is that the opening keyword declares which kind of requirement follows before the content is
 read, and that the unwanted-behaviour pattern gives error cases a named slot instead of leaving them to
 be remembered. It is the same discipline as the uppercase keywords in
-[10 — Lean Markdown](./10-lean-markdown.md), one level up: normativity carried by a fixed vocabulary
+[08 — Lean Markdown](../docs-design/08-lean-markdown.md), one level up: normativity carried by a fixed
+vocabulary
 rather than by tone.
 
 Two honest limits. EARS constrains phrasing, not correctness — a precisely phrased wrong requirement
@@ -301,7 +307,7 @@ updated when what it describes has not shipped yet, which is exactly a slice's c
 life; see <https://www.industrialempathy.com/posts/design-docs-at-google/>. A plan that cannot absorb
 what implementation taught is a plan that quietly stops being read.
 
-The revision rule is the same one [06 — Appetite and Scope](./06-appetite-and-scope.md) applies to the
+The revision rule is the same one [01 — Appetite and Scope](./01-appetite-and-scope.md) applies to the
 appetite. A change to `Goal`, `Core`, `Appetite`, or `Acceptance` after the work has started MUST be a
 committed edit that adds one line under `Revisions` naming what changed and what was learned that
 changed it. Cutting the remainder is not a revision; it is the designed response to a binding appetite

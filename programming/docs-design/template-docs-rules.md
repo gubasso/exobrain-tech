@@ -1,9 +1,10 @@
 # Template — docs rules
 
 Copy this block into `<project>/CLAUDE.md` or the local author-instructions file under a
-`## Documentation Maintenance` heading. Link this shelf rather than pasting it, then state local
-exceptions below the block. Drop any rule the project has no artifact for; an unused rule is noise a
-session pays for on every load.
+`## Documentation Maintenance` heading. Link the documentation-design shelf and, when the planning
+rules remain, the project-management shelf rather than pasting either one; then state local exceptions
+below the block. Drop any rule the project has no artifact for; an unused rule is noise a session pays
+for on every load.
 
 ```markdown
 ## Documentation Maintenance

@@ -4,7 +4,7 @@ Working drop-ins for a project's plan zone: a JSON Schema that defines one kanba
 dependency-free linter that checks everything spanning two files. Copy them; they are not a
 dependency, and nothing here runs against your project from this repository.
 
-> **Status.** These artifacts implement the lane-based plan record. [07 — Plan and Slices](../07-plan-and-slices.md) still documents the previous single-file `milestones.md` record,
+> **Status.** These artifacts implement the lane-based plan record. [02 — Plan and Slices](../02-plan-and-slices.md) still documents the previous single-file `milestones.md` record,
 > and the chapters are being rewritten to match. Where the two disagree, treat these artifacts as
 > the newer design and the chapter as the one currently described in prose. The record format itself
 > is unaffected by that gap: the schema and the linter are gated in this repository and are correct

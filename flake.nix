@@ -42,7 +42,7 @@
             pkgs.committed
 
             # The plan-zone artifacts this KB ships as canonical sources
-            # (`programming/docs-design/`) are executable text, not prose, so
+            # (`programming/project-management/plan/`) are executable text, not prose, so
             # they are verified here rather than trusted:
             #   check-jsonschema : the lane schema against draft 2020-12, and
             #                      the worked example against the schema. It is

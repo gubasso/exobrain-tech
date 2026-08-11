@@ -24,11 +24,10 @@ Owner: [01 — Diataxis Zones](./01-diataxis-zones.md).
 
 - [ ] The docs root matches the project's product: `docs/` for a codebase, `_docs/` for a knowledge
       base, and nothing that is product content sits under it.
-- [ ] Each file has one primary reader need and lives in the matching zone. Plan-zone documents are
-      exempt: they may carry intent, scope, and status together.
+- [ ] Each durable file has one primary reader need and lives in the matching zone; the plan exception
+      is owned by the [project-management checklist](../project-management/99-checklist.md).
 - [ ] Operational material is zone-first: runbooks and setup in guides, diagnostics and case studies in
       reference, never a topic directory beside the zones.
-- [ ] Binding forward-looking material lives in `<project>/docs/plan/`, not in the drafts workspace.
 - [ ] The root docs README is still an index.
 
 ## Decisions
@@ -56,34 +55,6 @@ Owner: [05 — Drafts and Promotion](./05-drafts-and-promotion.md).
 - [ ] Promotion rewrote the draft into one zone rather than moving it, and removed temporary reasoning.
 - [ ] The draft is deleted or remains clearly local and ignored.
 
-## Plan and slices
-
-Owners: [06 — Appetite and Scope](./06-appetite-and-scope.md) and
-[07 — Plan and Slices](./07-plan-and-slices.md).
-
-- [ ] The unit of work names an appetite fixed before the design, in the project's one chosen unit.
-- [ ] It declares a non-negotiable core apart from a negotiable remainder, and the core leaves room to
-      cut inside the appetite.
-- [ ] It is one directory under `<project>/docs/plan/slices/` with `README.md` as the entry document,
-      committed before the work started, using the fixed heading list.
-- [ ] `tasks.md` exists only because implementation crosses a context reset and restates nothing from
-      `README.md`; `requirements.md` only because acceptance is many-to-many onto tests; no `design.md`
-      exists.
-- [ ] `Governed by` names individual files and records, never a directory, a zone, or "the docs".
-- [ ] Acceptance lines are EARS-phrased and each names a test, and a hook fails when a named test
-      cannot be found — or the naming was dropped.
-- [ ] Every rabbit hole carries a pre-authorized escape rather than only a warning.
-- [ ] Any change to `Goal`, `Core`, `Appetite`, or `Acceptance` after the work started is a committed
-      edit with a `Revisions` line saying what was learned; any appetite change also cites the
-      condition met and what was cut first.
-- [ ] No unit of work was brought inside its appetite by dropping tests, review, or a security control.
-- [ ] Status lives only in `milestones.md`, using the closed vocabulary, and open-questions entries name
-      what they block.
-- [ ] `milestones.md` puts live work first: every terminal status sits under `## closed`, every slice
-      appears in exactly one section, and `## closed` is still short enough to scroll.
-- [ ] The slice `README.md` and `milestones.md` each have a heading shape under `.markdownlint/`, and a
-      new section was added by amending that array rather than by removing the shape from the hook.
-
 ## Agent readiness
 
 Owner: [04 — Agent Context](./04-agent-context.md).
@@ -96,8 +67,8 @@ Owner: [04 — Agent Context](./04-agent-context.md).
 
 ## Reference artifacts
 
-Owners: [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md) and
-[09 — Known Issues](./09-known-issues.md).
+Owners: [06 — Tracking and Revalidation](./06-tracking-and-revalidation.md) and
+[07 — Known Issues](./07-known-issues.md).
 
 - [ ] Perishable facts have an owner, a cadence, and an up-to-date `last_checked` entry.
 - [ ] A bug in an external system under test is a case under
@@ -108,7 +79,7 @@ Owners: [08 — Tracking and Revalidation](./08-tracking-and-revalidation.md) an
 
 ## Markdown
 
-Owner: [10 — Lean Markdown](./10-lean-markdown.md).
+Owner: [08 — Lean Markdown](./08-lean-markdown.md).
 
 - [ ] The file contains no bold and no italics.
 - [ ] Identifiers, paths, flags, commands, and status values are inline code.
@@ -128,7 +99,7 @@ Owner: [10 — Lean Markdown](./10-lean-markdown.md).
 
 ## Procedures
 
-Owner: [11 — Procedure Artifacts](./11-procedure-artifacts.md).
+Owner: [09 — Procedure Artifacts](./09-procedure-artifacts.md).
 
 - [ ] A guide with more than one phase names, at every phase, what it consumes and what it produces.
 - [ ] Each artifact token is upper-snake in angle brackets, names the artifact rather than the step,

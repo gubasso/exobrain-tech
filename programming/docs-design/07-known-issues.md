@@ -1,4 +1,4 @@
-# 09 — Known Issues
+# 07 — Known Issues
 
 Projects that test or integrate external systems they do not own accumulate a special kind of finding:
 a bug that lives in the system under test, not in this codebase. These are diagnostics and case
@@ -85,7 +85,7 @@ A mask never hides a defect silently. Its `mask.md` records what is masked, why,
 trigger, and the revert checklist. The revert trigger is the exact condition — upstream fix confirmed
 deployed and stability proven — that ends the mask; a green run that still carries the mask does not
 prove the underlying fix. This is the same discipline as a tracking file for perishable facts; see
-[08 — Tracking and Revalidation](./08-tracking-and-revalidation.md).
+[06 — Tracking and Revalidation](./06-tracking-and-revalidation.md).
 
 ## The registry index
 

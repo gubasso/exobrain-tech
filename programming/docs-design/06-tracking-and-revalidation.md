@@ -1,4 +1,4 @@
-# 08 — Tracking and Revalidation
+# 06 — Tracking and Revalidation
 
 Documentation often holds perishable facts: benchmarks, prices, model and tool rosters, external API
 shapes, security advisories. A tracking file keeps those facts honest by recording what must be
@@ -23,7 +23,7 @@ update one of them so there is still a single owner.
 
 A temporary-workaround revert ledger is a tracking artifact of the same shape, recording the exact
 condition under which a workaround must be removed. That ledger lives with its case; see
-[09 — Known Issues](./09-known-issues.md).
+[07 — Known Issues](./07-known-issues.md).
 
 ## When to track
 

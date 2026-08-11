@@ -270,7 +270,7 @@ repos:
   # repository proves they run. `language: system` throughout: flake.nix is the
   # single provider, as for dprint, typos and committed above.
   #
-  # programming/docs-design/plan/ — the plan-zone schema and its linter. The
+  # programming/project-management/plan/ — the plan-zone schema and its linter. The
   # split between them is deliberate and mirrored here: check-jsonschema owns
   # the shape of one lane file, check-plan owns every fact spanning two.
   - repo: local
@@ -279,23 +279,23 @@ repos:
         name: plan lane schema is valid JSON Schema 2020-12
         entry: check-jsonschema --check-metaschema
         language: system
-        files: '^programming/docs-design/plan/plan-lane\.schema\.json$'
+        files: '^programming/project-management/plan/plan-lane\.schema\.json$'
         pass_filenames: true
 
       - id: plan-schema-example
         name: plan worked example matches the schema
         entry: >-
           check-jsonschema --schemafile
-          programming/docs-design/plan/plan-lane.schema.json
+          programming/project-management/plan/plan-lane.schema.json
         language: system
-        files: '^programming/docs-design/plan/example/lanes/.*\.yml$'
+        files: '^programming/project-management/plan/example/lanes/.*\.yml$'
         pass_filenames: true
 
       - id: plan-linter-shellcheck
         name: shellcheck (plan-zone linter)
         entry: shellcheck
         language: system
-        files: '^programming/docs-design/plan/check-plan$'
+        files: '^programming/project-management/plan/check-plan$'
         pass_filenames: true
 
       # pass_filenames: false — every rule this script has is cross-file, so
@@ -304,10 +304,10 @@ repos:
       - id: plan-linter-self-test
         name: plan linter accepts its own worked example
         entry: >-
-          programming/docs-design/plan/check-plan
-          programming/docs-design/plan/example
+          programming/project-management/plan/check-plan
+          programming/project-management/plan/example
         language: system
-        files: '^programming/docs-design/plan/'
+        files: '^programming/project-management/plan/'
         pass_filenames: false
 
   # --- Meta: keep the config itself honest ---
