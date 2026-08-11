@@ -36,7 +36,7 @@ commit time; review verifies that the acceptance assertion actually reached it.
 
 The story carries what its work session must act on: goal, scope, sources, amended specs,
 acceptance, tasks, and revisions. The lane entry carries what only the board needs: type, points,
-dependencies, labels, outcome, and close date.
+dependencies, epic membership, labels, outcome, and close date.
 
 Specs carry no inverse list of stories. Repository history already connects a spec line to the
 commit and story id without creating a second index that can drift.

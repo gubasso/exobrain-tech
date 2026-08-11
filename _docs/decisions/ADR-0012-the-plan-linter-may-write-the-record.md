@@ -34,3 +34,6 @@ not constrain a gated artifact to read-only behavior.
 
 Implemented by [the plan linter](../../programming/project-management/plan/check-plan) and its
 [test harness](../../programming/project-management/plan/test-check-plan).
+
+Amended by [ADR-0015](./ADR-0015-closed-is-an-append-only-log.md) — the writer's scope extends to
+`closed.yml`, ordered by close date.

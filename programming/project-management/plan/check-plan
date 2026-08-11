@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Validate a project's plan zone and optionally repair legal ranking.
+# Validate a project's plan zone and optionally repair the orders it can derive:
+# legal ranking in backlog and todo, and close-date sequence in closed.
 # JSON Schema owns one lane file's shape. This script owns cross-file facts.
 set -euo pipefail
 
@@ -17,6 +18,7 @@ esac
 PLAN_DIR="${1:-docs/plan}"
 LANE_DIR="$PLAN_DIR/lanes"
 STORY_DIR="$PLAN_DIR/stories"
+EPIC_DIR="$PLAN_DIR/epics"
 QUESTIONS="$PLAN_DIR/open-questions.md"
 LANES=(backlog todo doing review closed)
 WORK_LANES=(doing review)
@@ -31,6 +33,12 @@ fail() { # fail <location> <message>
 rank_fail() { # rank_fail <location> <message>
   printf '%s: %s\n' "$1" "$2" >&2
   rank_status=1
+}
+
+# A third class, for a fact the writer can repair on request. It reaches the
+# reader and never reaches an exit code, so a repairable order is not a gate.
+warn() { # warn <location> <message>
+  printf '%s: warning: %s\n' "$1" "$2" >&2
 }
 
 [ -d "$LANE_DIR" ] || {
@@ -82,7 +90,7 @@ flow_list() { # flow_list <raw> -> space-separated ids, or !badlist
 }
 
 declare -A LANE_OF SLUG_OF TYPE_OF NEEDS_OF OUTCOME_OF CLOSED_OF SUCC_OF LINE_OF
-declare -A INDEX_OF BLOCKED_OF
+declare -A INDEX_OF BLOCKED_OF EPIC_OF
 ALL_IDS=()
 
 for lane in "${LANES[@]}"; do
@@ -115,6 +123,8 @@ for lane in "${LANES[@]}"; do
       slug) SLUG_OF[$id]="$val" ;;
       type) TYPE_OF[$id]="$val" ;;
       points) ;;
+      # The schema owns the slug pattern; this only records the reference.
+      epic) EPIC_OF[$id]="$val" ;;
       note | tags) ;;
       outcome) OUTCOME_OF[$id]="$val" ;;
       closed) CLOSED_OF[$id]="$val" ;;
@@ -137,6 +147,32 @@ done
 
 is_closed() { [ "${LANE_OF[$1]:-}" = closed ]; }
 
+# Amends declares an outbound obligation, so every path it names must resolve.
+# A story and an epic make the same promise and are held to the same check.
+check_amends() { # check_amends <document>
+  local doc="$1" ln path
+  # Only the leading inline-code token of an Amends list item is a spec path; an
+  # identifier inside the assertion that follows is prose, and `None` is not a list.
+  while IFS=: read -r ln path; do
+    [ -n "$path" ] || continue
+    case "$path" in
+      /*)
+        fail "$doc:$ln" "Amends path must be project-relative, not absolute: $path"
+        continue
+        ;;
+    esac
+    [ -e "$(dirname "$(dirname "$PLAN_DIR")")/$path" ] ||
+      fail "$doc:$ln" "Amends path does not exist: $path"
+  done < <(awk '
+    /^## Amends[ \t]*$/ { in_amends=1; next }
+    in_amends && /^## / { exit }
+    in_amends && /^[ \t]*-[ \t]+`[^`]+`/ {
+      match($0, /`[^`]+`/)
+      print NR ":" substr($0, RSTART + 1, RLENGTH - 2)
+    }
+  ' "$doc")
+}
+
 # Story filename agreement, both directions, plus story-content checks.
 for id in "${ALL_IDS[@]}"; do
   slug="${SLUG_OF[$id]:-}"
@@ -148,26 +184,7 @@ for id in "${ALL_IDS[@]}"; do
     continue
   fi
 
-  # Only the leading inline-code token of an Amends list item is a spec path; an
-  # identifier inside the assertion that follows is prose, and `None` is not a list.
-  while IFS=: read -r ln path; do
-    [ -n "$path" ] || continue
-    case "$path" in
-      /*)
-        fail "$story:$ln" "Amends path must be project-relative, not absolute: $path"
-        continue
-        ;;
-    esac
-    [ -e "$(dirname "$(dirname "$PLAN_DIR")")/$path" ] ||
-      fail "$story:$ln" "Amends path does not exist: $path"
-  done < <(awk '
-    /^## Amends[ \t]*$/ { in_amends=1; next }
-    in_amends && /^## / { exit }
-    in_amends && /^[ \t]*-[ \t]+`[^`]+`/ {
-      match($0, /`[^`]+`/)
-      print NR ":" substr($0, RSTART + 1, RLENGTH - 2)
-    }
-  ' "$story")
+  check_amends "$story"
 
   case "${TYPE_OF[$id]:-}" in
     story | spike)
@@ -194,6 +211,36 @@ if [ -d "$STORY_DIR" ]; then
     fi
   done < <(find "$STORY_DIR" -maxdepth 1 -type f -name '*.md' | sort)
 fi
+
+# Epics are named like stories, and share their id space so that one id names one
+# thing anywhere in the zone. This scan builds the map references resolve
+# against, and is the only place an epic's own id is read.
+declare -A EPIC_FILE_OF
+if [ -d "$EPIC_DIR" ]; then
+  while IFS= read -r doc; do
+    base="$(basename "$doc" .md)"
+    if [[ ! "$base" =~ ^([0-9]{3})-([a-z0-9]+(-[a-z0-9]+)*)$ ]]; then
+      fail "$doc" "epic file name must be <id>-<slug>.md with a three-digit id"
+      continue
+    fi
+    epic_id="${BASH_REMATCH[1]}"
+    [ -z "${EPIC_FILE_OF[$epic_id]:-}" ] ||
+      fail "$doc" "epic id $epic_id already names ${EPIC_FILE_OF[$epic_id]}"
+    [ -z "${LANE_OF[$epic_id]:-}" ] ||
+      fail "$doc" "epic id $epic_id is already a story entry in ${LANE_OF[$epic_id]}.yml"
+    EPIC_FILE_OF[$epic_id]="$doc"
+    check_amends "$doc"
+  done < <(find "$EPIC_DIR" -maxdepth 1 -type f -name '*.md' | sort)
+fi
+
+# An entry's epic is a gated reference. The reverse does not hold: an epic no
+# entry carries is a first spec draft, so nothing scans back from the document.
+for id in "${ALL_IDS[@]}"; do
+  epic="${EPIC_OF[$id]:-}"
+  [ -n "$epic" ] || continue
+  [ -n "${EPIC_FILE_OF[$epic]:-}" ] ||
+    fail "${LINE_OF[$id]}" "epic $epic has no document under $EPIC_DIR"
+done
 
 # Dependency edges, cross-lane gates, and terminal consistency.
 for id in "${ALL_IDS[@]}"; do
@@ -333,6 +380,22 @@ for lane in backlog todo; do
   done
 done
 
+# closed.yml is an append-only log, so its order is its close dates. A date out
+# of sequence is repairable rather than wrong, so it warns and never gates.
+mapfile -t closed_ids < <(lane_ids closed)
+previous=""
+previous_id=""
+for id in "${closed_ids[@]}"; do
+  current="${CLOSED_OF[$id]:-}"
+  [ -n "$current" ] || continue
+  if [ -n "$previous" ] && [[ "$current" < "$previous" ]]; then
+    warn "${LINE_OF[$id]}" \
+      "closed $current sits below $previous on $previous_id; closed.yml is an append-only log (--rank-fix restores it)"
+  fi
+  previous="$current"
+  previous_id="$id"
+done
+
 stable_toposort() { # stable_toposort <ids...>
   local -a left=("$@") out=() next=()
   local id need blocked chosen
@@ -358,7 +421,15 @@ desired_lane_order() { # desired_lane_order <lane>
   local lane="$1" id
   local -a ids=() yes=() no=()
   mapfile -t ids < <(lane_ids "$lane")
-  if [ "$lane" = todo ]; then
+  if [ "$lane" = closed ]; then
+    # An append-only log orders by close date, not by dependency. The sort is
+    # stable on the current position, so one day's closes keep their order.
+    {
+      for id in "${ids[@]}"; do
+        printf '%s\t%s\t%s\n' "${CLOSED_OF[$id]:-}" "${INDEX_OF[$id]}" "$id"
+      done
+    } | sort -t"$(printf '\t')" -k1,1 -k2,2n | cut -f3
+  elif [ "$lane" = todo ]; then
     for id in "${ids[@]}"; do
       if eligible "$id"; then yes+=("$id"); else no+=("$id"); fi
     done
@@ -436,7 +507,7 @@ case "$MODE" in
     ;;
   fix)
     [ "$status" -eq 0 ] || exit "$status"
-    for lane in backlog todo; do
+    for lane in backlog todo closed; do
       mapfile -t desired < <(desired_lane_order "$lane")
       rewrite_lane "$lane" "${desired[@]}"
     done

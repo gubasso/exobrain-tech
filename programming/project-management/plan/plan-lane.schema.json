@@ -77,6 +77,10 @@
           "uniqueItems": true,
           "description": "Ids that must be closed before this story is eligible."
         },
+        "epic": {
+          "$ref": "#/$defs/id",
+          "description": "Id of one epic document at docs/plan/epics/<id>-<slug>.md. Ids are unique across stories and epics alike, so one id names one thing. Single-valued and never a sequencing fact."
+        },
         "tags": {
           "type": "array",
           "items": { "$ref": "#/$defs/slug" },

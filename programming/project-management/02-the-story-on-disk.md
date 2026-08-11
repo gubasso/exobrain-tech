@@ -40,6 +40,9 @@ The project applies the drop-in heading gate from
 [the heading-shape template](./template-heading-shapes.md). `check-plan` additionally requires a
 fenced block under `Example` for `story` and `spike`; it is optional for `chore`.
 
+An epic borrows this grammar for the end state a set of stories reaches, minus the headings that
+obligate a work session; see [06 — Epics](./06-epics.md).
+
 ## Write the difference
 
 Lean is placement, not length. A sentence still needed after the story closes belongs to its

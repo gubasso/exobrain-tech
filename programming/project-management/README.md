@@ -13,11 +13,13 @@ validation, derived views, and the handoff from planned change to durable docume
 | 03       | [The Plan Record](./03-the-plan-record.md)                       | Where does work sit, wait, and rank?                     |
 | 04       | [Gating the Plan](./04-gating-the-plan.md)                       | What validates and derives from the record?              |
 | 05       | [Specs and Stories](./05-specs-and-stories.md)                   | Where does accepted behavior become durable state?       |
+| 06       | [Epics](./06-epics.md)                                           | What holds a multi-story goal together?                  |
 | 99       | [Checklist](./99-checklist.md)                                   | What must pass before a planning change merges?          |
 |          | [Glossary](./glossary.md)                                        | Where is each planning term owned?                       |
 | Template | [Plan zone](./template-plan-zone.md)                             | How does a project instantiate the record?               |
 | Template | [Story](./template-story.md)                                     | How does one work entry begin?                           |
-| Template | [Heading shapes](./template-heading-shapes.md)                   | How is the story heading contract gated?                 |
+| Template | [Epic](./template-epic.md)                                       | How does a goal larger than one story begin?             |
+| Template | [Heading shapes](./template-heading-shapes.md)                   | How are the fixed heading contracts gated?               |
 | Artifact | [Plan record](./plan/)                                           | Which copyable files validate the plan?                  |
 
 The [documentation-design shelf](../docs-design/README.md) owns the durable specs, ADRs, subsystem
@@ -25,6 +27,8 @@ pages, and markdown mechanisms that govern or result from stories.
 
 ## Adoption
 
-Start with the second-axis boundary, copy the plan-zone and story templates, then copy the schema
+Start with the second-axis boundary, copy the plan-zone and story templates, then copy the schemas
 and linter. Keep lane membership and ranking in the record, keep the implementing session's
-obligations in the story, and promote accepted behavior to its durable owner.
+obligations in the story, and promote accepted behavior to its durable owner. Epics and the config
+file are optional: add an epic when one goal outgrows a single story, and a config when a script
+needs a parameter the record cannot supply.

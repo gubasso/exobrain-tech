@@ -22,6 +22,10 @@ Sequence position is the human ranking. `needs` is a flow sequence of ids that m
 `closed.yml` before the dependent story may enter `doing` or `review`. Closed entries also carry
 `outcome` and an ISO `closed` date; a `reshaped` outcome names `succeeded_by`.
 
+An entry may also carry `epic`, naming by id a document that holds an end state several stories
+reach. Ids are unique across stories and epics alike, so one id names one thing. It is a gated
+reference and never a sequencing fact; see [06 — Epics](./06-epics.md).
+
 ## Eligibility and legal ranking
 
 An entry is eligible when every id in `needs` is in `closed.yml` and no open question blocks it.
@@ -32,10 +36,16 @@ Two rules keep ranking consistent with that predicate:
 
 The first entry in `todo.yml` is therefore the work to start. Promotion from backlog remains a
 human choice. Ordering inside a set of equally legal entries is also a human choice; the machine
-owns legality, not priority.
+owns legality, not priority, and a legal order a human or an agent chose is never disturbed.
 
-`doing` and `review` already require every dependency closed and no blocking question, so ranking
-there is attention order. `closed.yml` is completion history and is never re-ranked.
+`doing` and `review` already require every dependency closed and no blocking question, so the two
+rules are satisfied there by the lane gate alone. Position still reads top-first: the topmost entry
+of `doing.yml` is the work in flight, and it is the current story whenever that lane is occupied.
+
+`closed.yml` is the exception, and is an append-only log rather than a queue. Its order is its close
+dates, ascending, with a day's closes keeping the order they were written in. A date out of sequence
+is reported and never gated, because the writer can restore it; see
+[04 — Gating the Plan](./04-gating-the-plan.md).
 
 ## Blocking is a badge
 

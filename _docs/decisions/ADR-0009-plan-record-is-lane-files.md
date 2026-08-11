@@ -31,3 +31,9 @@ respect dependencies, and `todo` keeps eligible entries ahead of ineligible entr
 
 Implemented by [03 — The Plan Record](../../programming/project-management/03-the-plan-record.md)
 and the [plan artifacts](../../programming/project-management/plan/).
+
+Amended by [ADR-0014](./ADR-0014-an-epic-is-a-field-and-a-document.md) — an entry may carry one
+gated reference to an epic document.
+
+Amended by [ADR-0015](./ADR-0015-closed-is-an-append-only-log.md) — `closed.yml` is ordered by
+close date rather than unordered.

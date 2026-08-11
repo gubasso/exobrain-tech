@@ -22,7 +22,11 @@ chapters, then state local exceptions below the block.
   cut the ordered remainder first, and split work that exceeds three points.
 - Gate every fixed heading contract with one `MD043` array applied by one hook entry. Let the
   project-management heading-shape template own the document list.
-- Work from the current story and the individual sources its `Governed by` section names.
+- Record a goal larger than one story as one epic at `docs/plan/epics/<id>-<slug>.md`, carry
+  membership as `epic:` on the lane entry, and never list member stories in the epic. Stories and
+  epics share one id sequence, so an id names one thing.
+- Work from the current story — the topmost entry of `doing.yml`, else the topmost of `todo.yml` —
+  and the individual sources its `Governed by` section names.
 - Keep durable behavior in capability specs. A story names changed specs under `Amends`, and the
   accepted assertions reach those specs in the same commit as the behavior.
 - Write each durable fact once at its owning home and cross-link from everywhere else.

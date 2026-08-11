@@ -6,6 +6,7 @@ stories:
     type: story
     points: 2
     needs: []
+    epic: "014"
     outcome: done
     closed: "2026-08-01"
     note: gave the state namespace its first durable artifacts

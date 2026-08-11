@@ -19,15 +19,16 @@ lint:
 # Verify every executable artifact the library ships (ADR-0006).
 test: test-plan
 
-# programming/project-management/plan/ — the plan-zone schema and linter.
-#   1. the schema is valid JSON Schema draft 2020-12
-#   2. the worked example satisfies the schema
+# programming/project-management/plan/ — the plan-zone schemas and linter.
+#   1. both schemas are valid JSON Schema draft 2020-12
+#   2. the worked example satisfies them, lane files and config alike
 #   3. the linter is shellcheck-clean
-#   4. the linter accepts the worked example
+#   4. the linter accepts the worked example, including its epic
 #   5. the writer and content gate satisfy their behavioral tests
 test-plan:
     nix develop --command check-jsonschema --check-metaschema \
-        programming/project-management/plan/plan-lane.schema.json
+        programming/project-management/plan/plan-lane.schema.json \
+        programming/project-management/plan/plan-config.schema.json
     nix develop --command check-jsonschema \
         --schemafile programming/project-management/plan/plan-lane.schema.json \
         programming/project-management/plan/example/lanes/backlog.yml \
@@ -35,6 +36,9 @@ test-plan:
         programming/project-management/plan/example/lanes/doing.yml \
         programming/project-management/plan/example/lanes/review.yml \
         programming/project-management/plan/example/lanes/closed.yml
+    nix develop --command check-jsonschema \
+        --schemafile programming/project-management/plan/plan-config.schema.json \
+        programming/project-management/plan/example/config.yml
     nix develop --command shellcheck programming/project-management/plan/check-plan \
         programming/project-management/plan/test-check-plan
     nix develop --command programming/project-management/plan/check-plan \

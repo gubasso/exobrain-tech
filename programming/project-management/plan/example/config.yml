@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=../plan-config.schema.json
+iteration:
+  start: "2026-07-06"
+  length_days: 14

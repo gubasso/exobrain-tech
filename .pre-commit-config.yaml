@@ -276,10 +276,10 @@ repos:
   - repo: local
     hooks:
       - id: plan-schema-metaschema
-        name: plan lane schema is valid JSON Schema 2020-12
+        name: plan schemas are valid JSON Schema 2020-12
         entry: check-jsonschema --check-metaschema
         language: system
-        files: '^programming/project-management/plan/plan-lane\.schema\.json$'
+        files: '^programming/project-management/plan/plan-(lane|config)\.schema\.json$'
         pass_filenames: true
 
       # pass_filenames: false — a schema edit invalidates every lane file, not
@@ -297,6 +297,18 @@ repos:
           programming/project-management/plan/example/lanes/closed.yml
         language: system
         files: '^programming/project-management/plan/(plan-lane\.schema\.json|example/lanes/.*\.yml)$'
+        pass_filenames: false
+
+      # The config carries what a plan-zone script needs and cannot derive from
+      # the record, so it is schema-owned for the same reason a lane file is.
+      - id: plan-config-example
+        name: plan worked example config matches the schema
+        entry: >-
+          check-jsonschema --schemafile
+          programming/project-management/plan/plan-config.schema.json
+          programming/project-management/plan/example/config.yml
+        language: system
+        files: '^programming/project-management/plan/(plan-config\.schema\.json|example/config\.yml)$'
         pass_filenames: false
 
       - id: plan-linter-shellcheck

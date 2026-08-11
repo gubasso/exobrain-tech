@@ -35,7 +35,8 @@ does not predict elapsed time, agent effort, diff size, file count, or task coun
 Each story names a non-negotiable `Core` and an ordered `In scope` remainder. When the work exceeds
 what one story can carry, cut the least valuable remainder first; never cut correctness, tests,
 review, or security. If the core alone requires more than three points, split the guarantee before
-work begins.
+work begins. A split leaves each piece carrying its own goal and none carrying the goal they share;
+[06 — Epics](./06-epics.md) is where that shared end state lives.
 
 Changes to the story after work begins remain visible in `Revisions`. Cutting planned remainder is
 the normal response and needs no revision entry; changing the goal, core, acceptance, or other
@@ -48,8 +49,8 @@ It is derived and never stored. `cut` delivers no value to count, and `reshaped`
 its successor.
 
 Read velocity as the number of judgments one reviewer can accept per iteration. More agent
-throughput raises the review queue, not this capacity. The charter declares the iteration cadence;
-changing that cadence restarts the series.
+throughput raises the review queue, not this capacity. The charter states the cadence for a reader
+and `config.yml` carries it in the form a script reads; changing it restarts the series.
 
 Planning against velocity and calibrating the scale are separate practices and are not specified by
 this shelf.
