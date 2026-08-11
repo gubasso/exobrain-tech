@@ -1,13 +1,16 @@
 # yaml-language-server: $schema=../plan-lane.schema.json
 lane: todo
-slices:
-  - id: "009"
-    slug: release-readiness
-    appetite: 1 session
-    needs: ["006"]
-    tags: [release]
+stories:
 
   - id: "006"
     slug: proxy-guide
-    appetite: 1 session
-    needs: ["003"]
+    type: chore
+    points: 1
+    needs: ["002"]
+
+  - id: "009"
+    slug: release-readiness
+    type: story
+    points: 2
+    needs: ["006"]
+    tags: [release]

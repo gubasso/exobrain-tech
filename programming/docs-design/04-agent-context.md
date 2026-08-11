@@ -102,7 +102,7 @@ and nothing else.
    session                                session
      │                                      │
      ▼                                      ▼
-   plan/slices/007-rate-limit/README.md    "read the docs"
+   plan/stories/007-rate-limit.md          "read the docs"
      │                                      │
      │  Governed by:                        ├─► docs/guides/**
      ├─► docs/explanation/auth.md           ├─► docs/reference/**
@@ -113,10 +113,10 @@ and nothing else.
 ```
 
 That is the whole argument, and it is why the filter MUST name its sources rather than describe them.
-Where the entry document lives depends on the timescale. For work in flight it is the slice
-`README.md`, whose `Governed by` section is the filter; see
-[02 — Plan and Slices](../project-management/02-plan-and-slices.md). For a subsystem being maintained,
-the subsystem page
+Where the entry document lives depends on the timescale. For work in flight it is the story file,
+whose `Governed by` section is the filter; see
+[02 — The Story on Disk](../project-management/02-the-story-on-disk.md). For a subsystem being
+maintained, the subsystem page
 plays the role; see [03 — Subsystem Pages](./03-subsystem-pages.md). Both work for the same reason.
 
 ## Maintenance instructions

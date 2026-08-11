@@ -88,6 +88,12 @@ formatter. Give it an escape hatch that costs a sentence in the diff rather than
 `<!-- allow-emphasis: <reason> -->` comment on the preceding line, so a genuine exception is a recorded
 decision.
 
+Use the same fence-aware shape for coordinate references in story files. Strip fenced blocks and
+inline code, reject line-range forms such as `path.md 41:65`, and permit a deliberate exception only
+after `<!-- allow-coordinate: <reason> -->`. The hook is story-scoped because evidence-oriented
+documents may legitimately carry coordinates after their prose already states the claim; review
+enforces that semantic boundary everywhere else.
+
 One related check is worth adding once the rule holds: `MD046` set to `fenced`, paired with the
 project's own rule that every fence declares a language. A second, `MD043`, fixes a document's exact
 heading list; it carries enough mechanism to need its own section below.
@@ -98,11 +104,11 @@ shortens the sentence that carried it.
 
 ## Gating a fixed heading shape
 
-Some documents are not free-form prose: their heading list is the contract. A slice entry document, a
-status surface, a decision record, and every template a project ships are all read by tools and sessions
+Some documents are not free-form prose: their heading list is the contract. A story entry document, a
+decision record, and every template a project ships are all read by tools and sessions
 that assume the headings are where the shape says they are. `MD043 required-headings` is the check that
 holds that shape, and this section owns how it is wired. Which documents have a fixed shape is owned
-elsewhere: [02 — Plan and Slices](../project-management/02-plan-and-slices.md) for the plan zone,
+elsewhere: [02 — The Story on Disk](../project-management/02-the-story-on-disk.md) for the plan zone,
 [02 — Lean ADRs](./02-lean-adrs.md) for decision records.
 
 Four facts about the rule decide the wiring, and none of them is visible from the rule's name.
@@ -119,8 +125,8 @@ There is no per-glob rule configuration. markdownlint scopes configuration by di
 else: a `.markdownlint-cli2.*` or `.markdownlint.*` file applies to the directory it sits in and every
 subdirectory below it, merging with the versions above it. There is no `overrides` key and no way to
 attach a rule to a glob. A directory config therefore cannot separate a decision record from other
-decision-directory material, a slice entry document from the `tasks.md` beside it, or a status surface
-from the charter in the same folder, so it cannot express a shape that is narrower than a subtree.
+decision-directory material or a story document from other plan prose, so it cannot express a shape
+that is narrower than a subtree.
 
 `--config <file>` loads any configuration file as the base for a run, and the directory config the tool
 discovers is merged over that base. This is the one seam that takes a filter, because the file set for

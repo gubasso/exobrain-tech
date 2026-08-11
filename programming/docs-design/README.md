@@ -31,7 +31,8 @@ from code, chat history, or old issues.
 | Template | [Docs rules](./template-docs-rules.md)                         | Integrate documentation maintenance into author instructions.       |
 | Template | [Heading shapes](./template-heading-shapes.md)                 | Gate the ADR heading contract with a live hook.                     |
 
-The [project-management shelf](../project-management/README.md) owns forward-looking work, slices, and the plan record.
+The [project-management shelf](../project-management/README.md) owns forward-looking work, stories,
+and the lane record.
 
 ## Reading
 

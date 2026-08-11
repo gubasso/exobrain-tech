@@ -1,48 +1,28 @@
 # 00 — The Plan Zone as a Second Axis
 
-This shelf owns planning and executing work—intent, scope, slices, and the plan record—while
-documentation design owns the durable artifacts produced by completed work.
+Why is planning not a fifth documentation need? Documentation describes what exists; a plan records
+intent over time, so it crosses every reader-need zone without belonging to any of them.
 
-## The plan zone
+## The second axis
 
-Diataxis organizes what exists: all four reader needs are asked about a system that is already there.
-It does not model intent over time, and does not claim to. A project that defines its artifacts before
-implementing them needs a home for what is being built next, what bounds it, and what is still
-undecided — material that is not a task, not lookup, not a mental model, and not a settled decision.
+Diátaxis separates guides, reference, explanation, and decisions by the reader's need. Each asks
+about a system that already exists. A project also needs a place for what it will build next, what
+bounds that work, and which unanswered questions prevent it.
 
 ```text
-               what exists  (Diataxis)
-┌──────────────────────────┬──────────────────────────┐
-│ guides/                  │ reference/               │
-│ "what do I do next?"     │ "what is the exact       │
-│                          │  value, field, symptom?" │
-├──────────────────────────┼──────────────────────────┤
-│ explanation/             │ decisions/               │
-│ "how does this area      │ "why did the project     │
-│  fit together?"          │  choose this shape?"     │
-└──────────────────────────┴──────────────────────────┘
-                  ▲
-                  │  all four are asked about a system
-                  │  that is already there
-─ ─ ─ ─ ─ ─ ─ ─ ─ ┼ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   second axis: intent
-                  │
-┌─────────────────┴─────────────────────────────────────┐
-│ plan/                                                 │
-│ "what are we building next, and what bounds it?"      │
-│ the only zone whose contents are expected to go stale │
-└───────────────────────────────────────────────────────┘
+what exists:  guides | reference | explanation | decisions
+intent:       plan
 ```
 
-The plan zone is the only zone whose contents are expected to become false. A guide that stops being
-true is a bug; a milestone that stops being current is the normal course of the work. That is why plan
-documents carry statuses and the other four do not, and why a plan document may serve intent, scope,
-and status at once instead of one reader need. Work that finishes leaves the zone the way any fact
-does: the durable result moves to the zone that owns it and the plan keeps only the pointer.
+The plan zone is allowed to become false as work moves. A guide becoming false is a defect; a lane
+entry moving is the record doing its job. Durable results leave the plan zone for the documentation
+zone that owns them, while the closed story remains a historical account of the bargain.
 
-What bounds a unit of work is in [01 — Appetite and Scope](./01-appetite-and-scope.md); what documents
-the zone holds is in [02 — Plan and Slices](./02-plan-and-slices.md).
+The unit and its budget are defined in
+[01 — Stories and Estimation](./01-stories-and-estimation.md). Its on-disk form is defined in
+[02 — The Story on Disk](./02-the-story-on-disk.md), and coordination belongs to
+[03 — The Plan Record](./03-the-plan-record.md).
 
 ## Sources
 
-- Diataxis: <https://diataxis.fr/>
-- How to use Diataxis: <https://diataxis.fr/how-to-use-diataxis/>
+- Diátaxis: <https://diataxis.fr/>

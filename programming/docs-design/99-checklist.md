@@ -63,7 +63,7 @@ Owner: [04 — Agent Context](./04-agent-context.md).
 - [ ] The author-instructions file does not contradict the docs and stays under 200 lines.
 - [ ] Any `AGENTS.md` digest summarizes the area's knowledge, introduces no new guidance, and keeps
       no index of the directory.
-- [ ] Work in flight has one entry document naming the sources a session should load.
+- [ ] Work in flight has one story document naming the sources a session should load.
 
 ## Reference artifacts
 
@@ -96,6 +96,8 @@ Owner: [08 — Lean Markdown](./08-lean-markdown.md).
 - [ ] A project with repository-invariant tests gates that absence and the hook-to-shape wiring there,
       rather than trusting a checklist for two failures the linter reports as success.
 - [ ] No document carries a `markdownlint-configure-file` comment.
+- [ ] References state the claim their source establishes and use stable anchors instead of line
+      coordinates, except evidence citations whose carrying prose is already self-contained.
 
 ## Procedures
 

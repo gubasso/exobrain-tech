@@ -19,13 +19,13 @@ name in the author-instructions file.
 ## Plans are not drafts
 
 Provisional is not the same as forward-looking. A document can describe work that has not happened yet
-and still be project state: the project's scope and appetite, its ordered milestones, and its register
-of open questions are commitments the team is currently working under, not exploration. They belong in
+and still be project state: the project's scope, ranked lane entries, and register of open questions
+are commitments the team is currently working under, not exploration. They belong in
 `<project>/docs/plan/` and in version control.
 
 The test is not "is this finished" but "is this binding". A half-formed argument about how a subsystem
-might work is a draft. A statement that the next milestone is bounded at two weeks and excludes three
-named features is project state, however early it is.
+might work is a draft. A ranked story with a declared core and explicit exclusions is project state,
+however early it is.
 
 Keeping a plan in the gitignored workspace fails in three specific ways. The plan is invisible to
 review, so a scope change never appears in a diff. It is invisible to version control, so the record of
@@ -83,7 +83,7 @@ with no future value, delete it with the draft.
 - Shipping `<project>/docs/drafts/` as a semi-official holding area.
 - Moving a draft into docs without trimming it, or keeping both with overlapping claims.
 - Letting a draft become the only place a decision is recorded.
-- Keeping the milestone plan, the scope decision, or the open-questions register in a gitignored
+- Keeping the lane record, the scope decision, or the open-questions register in a gitignored
   workspace, where review and version control cannot reach them.
 - Using drafts as a bypass around review: one large draft merged at the end of a project usually
   contains several decisions, procedures, and reference facts tangled together. Promote incrementally.

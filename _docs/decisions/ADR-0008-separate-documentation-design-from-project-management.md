@@ -37,6 +37,13 @@ to `programming/project-management/plan/` without behavior changes.
 
 ## Status
 
+Amended by [ADR-0009](./ADR-0009-plan-record-is-lane-files.md),
+[ADR-0010](./ADR-0010-the-unit-is-a-story-in-one-file.md),
+[ADR-0011](./ADR-0011-a-story-is-a-diff-a-spec-is-a-state.md), and
+[ADR-0012](./ADR-0012-the-plan-linter-may-write-the-record.md) — the deferred XP redesign landed, so
+the slice unit, the appetite method, and chapters 01 and 02 named above are superseded by stories,
+points, the lane-file record, and the writing linter. The shelf split itself is unchanged.
+
 Implemented by the [documentation-design shelf](../../programming/docs-design/README.md), the
 [project-management shelf](../../programming/project-management/README.md), and the
 [plan artifacts](../../programming/project-management/plan/).

@@ -1,7 +1,7 @@
 # Open questions
 
-## Q-004 — Which storage backend?
+## Q-004 — Which identity claim is stable?
 
-Raised: 2026-08-01.
-Blocks: 006 — the guide cannot be written before the backend is chosen.
-Exit: an ADR.
+Raised: 2026-08-01 while reviewing provider variance.
+Blocks: 013 — hardening must key sessions on a stable claim.
+Exit: an ADR naming the claim and its fallback.

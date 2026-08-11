@@ -1,35 +1,36 @@
 #!/usr/bin/env bash
-# Validate a project's plan zone: lane files, the slice directories they index,
-# and the dependency graph across them.
-#
-# Scope split, deliberate: JSON Schema owns the *shape* of one file (field
-# names, types, the closed-lane discriminator) and a stock `check-jsonschema`
-# hook applies it. This script owns everything a single-file schema cannot see —
-# an id in two lanes, a `needs` edge pointing nowhere, a cycle, a slice
-# directory with no entry, a cached appetite that has drifted from its slice.
-#
-# No external dependency beyond coreutils, grep and awk. A `yq` dependency would
-# make the plan zone unreadable without a tool installed, and the plan zone is
-# the one thing a reader consults before anything else is set up. The price is
-# that the parser accepts a canonical subset of YAML rather than all of it, and
-# says so when the input leaves that subset.
-#
-# Usage: check-plan [PLAN_DIR]        (default: docs/plan)
+# Validate a project's plan zone and optionally repair legal ranking.
+# JSON Schema owns one lane file's shape. This script owns cross-file facts.
 set -euo pipefail
+
+MODE=check
+case "${1:-}" in
+  --rank-fix) MODE=fix; shift ;;
+  --rank-slots) MODE=slots; shift ;;
+  --help)
+    printf 'usage: check-plan [--rank-fix|--rank-slots] [PLAN_DIR]\n'
+    exit 0
+    ;;
+  --*) printf 'check-plan: unknown option %s\n' "$1" >&2; exit 2 ;;
+esac
 
 PLAN_DIR="${1:-docs/plan}"
 LANE_DIR="$PLAN_DIR/lanes"
-SLICE_DIR="$PLAN_DIR/slices"
+STORY_DIR="$PLAN_DIR/stories"
 QUESTIONS="$PLAN_DIR/open-questions.md"
-
 LANES=(backlog todo doing review closed)
-ACTIVE_LANES=(doing review)
-
+WORK_LANES=(doing review)
 status=0
+rank_status=0
 
 fail() { # fail <location> <message>
   printf '%s: %s\n' "$1" "$2" >&2
   status=1
+}
+
+rank_fail() { # rank_fail <location> <message>
+  printf '%s: %s\n' "$1" "$2" >&2
+  rank_status=1
 }
 
 [ -d "$LANE_DIR" ] || {
@@ -37,60 +38,36 @@ fail() { # fail <location> <message>
   exit 1
 }
 
-# ---------------------------------------------------------------------------
-# Parse
-#
-# Canonical form, one entry per slice:
-#
-#   lane: todo
-#   slices:
-#     - id: "009"
-#       slug: release-readiness
-#       appetite: 1 session
-#       needs: ["006", "007"]
-#
-# Sequence-valued fields (`needs`, `tags`) are flow style on one line. That is
-# not a parser shortcut: it keeps the whole dependency edge greppable, which is
-# the property the single-file line format had and this format otherwise loses.
-# ---------------------------------------------------------------------------
-
-parse_lane() { # parse_lane <file> -> records: line US id US key US value
+parse_lane() { # parse_lane <file> -> line US id US key US value
   awk '
     function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t]+$/, "", s); return s }
     function unquote(s) {
-      if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/) { s = substr(s, 2, length(s) - 2) }
+      if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/) s = substr(s, 2, length(s) - 2)
       return s
     }
-    /^[ \t]*#/ { next }
-    /^[ \t]*$/ { next }
-    # top-level scalar, e.g. `lane: todo`
+    /^[ \t]*#/ || /^[ \t]*$/ { next }
     /^[A-Za-z_]+:/ {
       key = $0; sub(/:.*$/, "", key)
       val = $0; sub(/^[A-Za-z_]+:[ \t]*/, "", val)
-      if (key == "slices") { next }
-      printf "%d\037\037%s\037%s\n", NR, key, unquote(trim(val))
-      next
+      if (key == "stories") next
+      printf "%d\037\037%s\037%s\n", NR, key, unquote(trim(val)); next
     }
-    # entry head, e.g. `  - id: "009"`
     /^[ \t]*-[ \t]+id:/ {
       val = $0; sub(/^[ \t]*-[ \t]+id:[ \t]*/, "", val)
       id = unquote(trim(val))
-      printf "%d\037%s\037%s\037%s\n", NR, id, "id", id
-      next
+      printf "%d\037%s\037id\037%s\n", NR, id, id; next
     }
-    # entry field, e.g. `    slug: release-readiness`
     /^[ \t]+[a-z_]+:/ {
       if (id == "") { printf "%d\037\037!orphan-field\037%s\n", NR, $0; next }
       key = $0; sub(/^[ \t]+/, "", key); sub(/:.*$/, "", key)
       val = $0; sub(/^[ \t]+[a-z_]+:[ \t]*/, "", val)
-      printf "%d\037%s\037%s\037%s\n", NR, id, key, trim(val)
-      next
+      printf "%d\037%s\037%s\037%s\n", NR, id, key, unquote(trim(val)); next
     }
     { printf "%d\037%s\037!unparsed\037%s\n", NR, id, $0 }
   ' "$1"
 }
 
-flow_list() { # flow_list <raw> -> space-separated ids, or the token !badlist
+flow_list() { # flow_list <raw> -> space-separated ids, or !badlist
   local raw="$1"
   case "$raw" in
     "[]" | "") printf '' ;;
@@ -104,7 +81,8 @@ flow_list() { # flow_list <raw> -> space-separated ids, or the token !badlist
   esac
 }
 
-declare -A LANE_OF SLUG_OF APPETITE_OF NEEDS_OF OUTCOME_OF SUCC_OF LINE_OF
+declare -A LANE_OF SLUG_OF TYPE_OF NEEDS_OF OUTCOME_OF CLOSED_OF SUCC_OF LINE_OF
+declare -A INDEX_OF BLOCKED_OF
 ALL_IDS=()
 
 for lane in "${LANES[@]}"; do
@@ -123,25 +101,28 @@ for lane in "${LANES[@]}"; do
       '!unparsed') fail "$loc" "not in canonical form: $val" ;;
       lane) declared_lane="$val" ;;
       id)
-        index=$((index + 1))  # position is the ranking; nothing else records it
+        index=$((index + 1))
         if [ -n "${LANE_OF[$id]:-}" ]; then
-          fail "$loc" "id $id already appears in ${LANE_OF[$id]}.yml — a slice lives in exactly one lane"
+          fail "$loc" "id $id already appears in ${LANE_OF[$id]}.yml"
         else
           ALL_IDS+=("$id")
         fi
         LANE_OF[$id]="$lane"
+        INDEX_OF[$id]="$index"
         LINE_OF[$id]="$loc"
         NEEDS_OF[$id]=""
         ;;
       slug) SLUG_OF[$id]="$val" ;;
-      appetite) APPETITE_OF[$id]="$val" ;;
+      type) TYPE_OF[$id]="$val" ;;
+      points) ;;
       note | tags) ;;
       outcome) OUTCOME_OF[$id]="$val" ;;
+      closed) CLOSED_OF[$id]="$val" ;;
       succeeded_by) SUCC_OF[$id]="$val" ;;
       needs)
         parsed="$(flow_list "$val")"
         if [ "$parsed" = "!badlist" ]; then
-          fail "$loc" "needs must be a flow sequence on one line, e.g. needs: [\"006\", \"007\"]"
+          fail "$loc" 'needs must be a flow sequence on one line, e.g. needs: ["006", "007"]'
         else
           NEEDS_OF[$id]="$parsed"
         fi
@@ -150,80 +131,143 @@ for lane in "${LANES[@]}"; do
     esac
   done < <(parse_lane "$file")
 
-  if [ "$declared_lane" != "$lane" ]; then
+  [ "$declared_lane" = "$lane" ] ||
     fail "$file" "lane: '$declared_lane' does not match the file name '$lane'"
-  fi
 done
 
-# ---------------------------------------------------------------------------
-# Cross-file checks
-# ---------------------------------------------------------------------------
+is_closed() { [ "${LANE_OF[$1]:-}" = closed ]; }
 
-is_closed() { [ "${LANE_OF[$1]:-}" = "closed" ]; }
-
-# Slug and directory agreement, both directions.
+# Story filename agreement, both directions, plus story-content checks.
 for id in "${ALL_IDS[@]}"; do
   slug="${SLUG_OF[$id]:-}"
   loc="${LINE_OF[$id]}"
-  [ -n "$slug" ] || {
-    fail "$loc" "entry $id has no slug"
-    continue
-  }
-  dir="$SLICE_DIR/$id-$slug"
-  if [ ! -d "$dir" ]; then
-    fail "$loc" "no slice directory $dir"
+  [ -n "$slug" ] || { fail "$loc" "entry $id has no slug"; continue; }
+  story="$STORY_DIR/$id-$slug.md"
+  if [ ! -f "$story" ]; then
+    fail "$loc" "no story file $story"
     continue
   fi
 
-  readme="$dir/README.md"
-  if [ ! -f "$readme" ]; then
-    fail "$dir" "slice directory has no README.md"
-    continue
-  fi
+  # Only the leading inline-code token of an Amends list item is a spec path; an
+  # identifier inside the assertion that follows is prose, and `None` is not a list.
+  while IFS=: read -r ln path; do
+    [ -n "$path" ] || continue
+    case "$path" in
+      /*)
+        fail "$story:$ln" "Amends path must be project-relative, not absolute: $path"
+        continue
+        ;;
+    esac
+    [ -e "$(dirname "$(dirname "$PLAN_DIR")")/$path" ] ||
+      fail "$story:$ln" "Amends path does not exist: $path"
+  done < <(awk '
+    /^## Amends[ \t]*$/ { in_amends=1; next }
+    in_amends && /^## / { exit }
+    in_amends && /^[ \t]*-[ \t]+`[^`]+`/ {
+      match($0, /`[^`]+`/)
+      print NR ":" substr($0, RSTART + 1, RLENGTH - 2)
+    }
+  ' "$story")
 
-  # Appetite is owned by the slice; the lane entry caches it.
-  slice_appetite="$(awk '
-    /^## Appetite[ \t]*$/ { grab = 1; next }
-    grab && /^##/ { exit }
-    grab && NF { sub(/^[ \t]+/, ""); sub(/[ \t]+$/, ""); print; exit }
-  ' "$readme")"
-  if [ -n "$slice_appetite" ] && [ "$slice_appetite" != "${APPETITE_OF[$id]:-}" ]; then
-    fail "$loc" "appetite cache: entry says '${APPETITE_OF[$id]:-}', $readme says '$slice_appetite'"
-  fi
+  case "${TYPE_OF[$id]:-}" in
+    story | spike)
+      if ! awk '
+        /^## Example[ \t]*$/ { in_example=1; next }
+        in_example && /^## / { exit }
+        in_example && /^```/ { found=1 }
+        END { exit !found }
+      ' "$story"; then
+        fail "$story" "## Example has no fenced block; type ${TYPE_OF[$id]:-} must show its outcome"
+      fi
+      ;;
+  esac
 done
 
-if [ -d "$SLICE_DIR" ]; then
-  while IFS= read -r dir; do
-    base="$(basename "$dir")"
+if [ -d "$STORY_DIR" ]; then
+  while IFS= read -r story; do
+    base="$(basename "$story" .md)"
     id="${base%%-*}"
     if [ -z "${LANE_OF[$id]:-}" ]; then
-      fail "$dir" "slice directory has no entry in any lane"
+      fail "$story" "story file has no entry in any lane"
+    elif [ "$base" != "$id-${SLUG_OF[$id]:-}" ]; then
+      fail "$story" "story file name does not match entry $id: expected $id-${SLUG_OF[$id]:-}.md"
     fi
-  done < <(find "$SLICE_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
+  done < <(find "$STORY_DIR" -maxdepth 1 -type f -name '*.md' | sort)
 fi
 
-# Dependency edges: existence, self-reference, and the gate.
+# Dependency edges, cross-lane gates, and terminal consistency.
 for id in "${ALL_IDS[@]}"; do
   loc="${LINE_OF[$id]}"
   for need in ${NEEDS_OF[$id]:-}; do
     if [ "$need" = "$id" ]; then
-      fail "$loc" "slice $id needs itself"
+      fail "$loc" "story $id needs itself"
       continue
     fi
     if [ -z "${LANE_OF[$need]:-}" ]; then
       fail "$loc" "needs $need, which is in no lane"
       continue
     fi
-    for active in "${ACTIVE_LANES[@]}"; do
-      if [ "${LANE_OF[$id]}" = "$active" ] && ! is_closed "$need"; then
-        fail "$loc" "in $active.yml but needs $need, which is still ${LANE_OF[$need]}"
+    for work_lane in "${WORK_LANES[@]}"; do
+      if [ "${LANE_OF[$id]}" = "$work_lane" ] && ! is_closed "$need"; then
+        fail "$loc" "in $work_lane.yml but needs $need, which is still ${LANE_OF[$need]}"
       fi
     done
   done
+
+  if is_closed "$id"; then
+    [ -n "${OUTCOME_OF[$id]:-}" ] || fail "$loc" "closed entry $id has no outcome"
+    [ -n "${CLOSED_OF[$id]:-}" ] || fail "$loc" "closed entry $id has no closed date"
+  else
+    [ -z "${OUTCOME_OF[$id]:-}" ] || fail "$loc" "outcome on a non-closed entry"
+    [ -z "${CLOSED_OF[$id]:-}" ] || fail "$loc" "closed date on a non-closed entry"
+  fi
+  succ="${SUCC_OF[$id]:-}"
+  [ -z "$succ" ] || [ -n "${LANE_OF[$succ]:-}" ] ||
+    fail "$loc" "succeeded_by $succ, which is in no lane"
 done
 
-# Cycles, by Kahn's algorithm over the needs edges.
-declare -A INDEGREE
+# Open questions supply the second half of eligibility.
+if [ -f "$QUESTIONS" ]; then
+  while IFS=: read -r ln raw; do
+    ids="$(printf '%s' "$raw" |
+      sed 's/^[[:space:]]*Blocks:[[:space:]]*//; s/[[:space:]]*—.*$//' |
+      tr ',' '\n' | tr -d ' ' | grep -v '^$' || true)"
+    loc="$QUESTIONS:$ln"
+    if [ -z "$ids" ]; then
+      fail "$loc" "Blocks: names no story id (grammar: Blocks: 004, 005 — why)"
+      continue
+    fi
+    open_count=0
+    for id in $ids; do
+      if [ -z "${LANE_OF[$id]:-}" ]; then
+        fail "$loc" "blocks $id, which is in no lane"
+        continue
+      fi
+      BLOCKED_OF[$id]=1
+      is_closed "$id" || open_count=$((open_count + 1))
+      for work_lane in "${WORK_LANES[@]}"; do
+        [ "${LANE_OF[$id]}" = "$work_lane" ] &&
+          fail "$loc" "blocks $id, which is already in $work_lane.yml"
+      done
+    done
+    [ "$open_count" -gt 0 ] || fail "$loc" "stale: every story it blocks is closed"
+  done < <(grep -n '^[[:space:]]*Blocks:' "$QUESTIONS" || true)
+
+  # A question with no Blocks line would otherwise be invisible to every check
+  # above, so the rule that a question blocking nothing belongs in drafts is
+  # enforced here, over question sections rather than over Blocks lines.
+  while IFS=$'\t' read -r ln heading; do
+    fail "$QUESTIONS:$ln" "question '$heading' has no Blocks: line; a question that blocks nothing belongs in drafts"
+  done < <(awk '
+    /^## / { if (section && !blocks) printf "%d\t%s\n", line, title
+             section=1; blocks=0; line=NR; title=substr($0, 4); next }
+    section && /^[ \t]*Blocks:/ { blocks=1 }
+    END { if (section && !blocks) printf "%d\t%s\n", line, title }
+  ' "$QUESTIONS")
+fi
+
+# Cycles, by Kahn's algorithm over all needs edges.
+declare -A INDEGREE REMOVED
 for id in "${ALL_IDS[@]}"; do INDEGREE[$id]=0; done
 for id in "${ALL_IDS[@]}"; do
   for need in ${NEEDS_OF[$id]:-}; do
@@ -233,11 +277,10 @@ for id in "${ALL_IDS[@]}"; do
 done
 remaining=${#ALL_IDS[@]}
 progress=1
-declare -A REMOVED
 while [ "$progress" -eq 1 ]; do
   progress=0
   for id in "${ALL_IDS[@]}"; do
-    [ -n "${REMOVED[$id]:-}" ] && continue
+    [ -z "${REMOVED[$id]:-}" ] || continue
     [ "${INDEGREE[$id]}" -eq 0 ] || continue
     REMOVED[$id]=1
     remaining=$((remaining - 1))
@@ -251,53 +294,152 @@ while [ "$progress" -eq 1 ]; do
 done
 if [ "$remaining" -gt 0 ]; then
   cycle=""
-  for id in "${ALL_IDS[@]}"; do
-    [ -n "${REMOVED[$id]:-}" ] || cycle="$cycle $id"
-  done
+  for id in "${ALL_IDS[@]}"; do [ -n "${REMOVED[$id]:-}" ] || cycle="$cycle $id"; done
   fail "$LANE_DIR" "dependency cycle among:$cycle"
 fi
 
-# Terminal-lane consistency.
-for id in "${ALL_IDS[@]}"; do
-  loc="${LINE_OF[$id]}"
-  outcome="${OUTCOME_OF[$id]:-}"
-  succ="${SUCC_OF[$id]:-}"
-  if is_closed "$id"; then
-    [ -n "$outcome" ] || fail "$loc" "closed entry $id has no outcome"
-  elif [ -n "$outcome" ]; then
-    fail "$loc" "outcome on a non-closed entry"
-  fi
-  if [ -n "$succ" ] && [ -z "${LANE_OF[$succ]:-}" ]; then
-    fail "$loc" "succeeded_by $succ, which is in no lane"
-  fi
+eligible() { # eligible <id>
+  local id="$1" need
+  [ -z "${BLOCKED_OF[$id]:-}" ] || return 1
+  for need in ${NEEDS_OF[$id]:-}; do is_closed "$need" || return 1; done
+}
+
+lane_ids() { # lane_ids <lane>
+  local lane="$1" id
+  for id in "${ALL_IDS[@]}"; do
+    [ "${LANE_OF[$id]}" = "$lane" ] && printf '%s %s\n' "${INDEX_OF[$id]}" "$id"
+  done | sort -n | cut -d' ' -f2
+}
+
+# Ranking checks: R2 in backlog and todo; R1 in todo only.
+for lane in backlog todo; do
+  mapfile -t ids < <(lane_ids "$lane")
+  seen_ineligible=0
+  for id in "${ids[@]}"; do
+    if [ "$lane" = todo ]; then
+      if eligible "$id"; then
+        [ "$seen_ineligible" -eq 0 ] ||
+          rank_fail "${LINE_OF[$id]}" "eligible story $id sits below an ineligible story"
+      else
+        seen_ineligible=1
+      fi
+    fi
+    for need in ${NEEDS_OF[$id]:-}; do
+      if [ "${LANE_OF[$need]:-}" = "$lane" ] &&
+        [ "${INDEX_OF[$id]}" -lt "${INDEX_OF[$need]}" ]; then
+        rank_fail "${LINE_OF[$id]}" "story $id sits above dependency $need in $lane.yml"
+      fi
+    done
+  done
 done
 
-# Open questions: the block edge, and its expiry.
-if [ -f "$QUESTIONS" ]; then
-  while IFS=: read -r ln raw; do
-    ids="$(printf '%s' "$raw" |
-      sed 's/^[[:space:]]*Blocks:[[:space:]]*//; s/[[:space:]]*—.*$//' |
-      tr ',' '\n' | tr -d ' ' | grep -v '^$' || true)"
-    loc="$QUESTIONS:$ln"
-    if [ -z "$ids" ]; then
-      fail "$loc" "Blocks: names no slice id (grammar: Blocks: 004, 005 — why)"
-      continue
-    fi
-    open_count=0
-    for id in $ids; do
-      if [ -z "${LANE_OF[$id]:-}" ]; then
-        fail "$loc" "blocks $id, which is in no lane"
-        continue
-      fi
-      is_closed "$id" || open_count=$((open_count + 1))
-      for active in "${ACTIVE_LANES[@]}"; do
-        [ "${LANE_OF[$id]}" = "$active" ] &&
-          fail "$loc" "blocks $id, which is already in $active.yml"
+stable_toposort() { # stable_toposort <ids...>
+  local -a left=("$@") out=() next=()
+  local id need blocked chosen
+  while [ "${#left[@]}" -gt 0 ]; do
+    chosen=""
+    for id in "${left[@]}"; do
+      blocked=0
+      for need in ${NEEDS_OF[$id]:-}; do
+        for candidate in "${left[@]}"; do [ "$need" = "$candidate" ] && blocked=1; done
       done
+      if [ "$blocked" -eq 0 ]; then chosen="$id"; break; fi
     done
-    [ "$open_count" -gt 0 ] ||
-      fail "$loc" "stale: every slice it blocks is closed — this question should have exited"
-  done < <(grep -n '^[[:space:]]*Blocks:' "$QUESTIONS" || true)
-fi
+    [ -n "$chosen" ] || return 1
+    out+=("$chosen")
+    next=()
+    for id in "${left[@]}"; do [ "$id" = "$chosen" ] || next+=("$id"); done
+    left=("${next[@]}")
+  done
+  printf '%s\n' "${out[@]}"
+}
 
-exit "$status"
+desired_lane_order() { # desired_lane_order <lane>
+  local lane="$1" id
+  local -a ids=() yes=() no=()
+  mapfile -t ids < <(lane_ids "$lane")
+  if [ "$lane" = todo ]; then
+    for id in "${ids[@]}"; do
+      if eligible "$id"; then yes+=("$id"); else no+=("$id"); fi
+    done
+    [ "${#yes[@]}" -eq 0 ] || stable_toposort "${yes[@]}"
+    [ "${#no[@]}" -eq 0 ] || stable_toposort "${no[@]}"
+  else
+    [ "${#ids[@]}" -eq 0 ] || stable_toposort "${ids[@]}"
+  fi
+}
+
+rewrite_lane() { # rewrite_lane <lane> <ordered ids...>
+  local lane="$1"; shift
+  local file="$LANE_DIR/$lane.yml" line current="" id
+  local -a header=()
+  declare -A blocks=()
+  while IFS= read -r line || [ -n "$line" ]; do
+    if [[ "$line" =~ ^[[:space:]]*-[[:space:]]+id:[[:space:]]*[\"\']?([0-9]{3}) ]]; then
+      current="${BASH_REMATCH[1]}"
+    fi
+    if [ -z "$current" ]; then
+      header+=("$line")
+    else
+      blocks[$current]+="$line"$'\n'
+    fi
+  done < "$file"
+  tmp="$(mktemp "${file}.rank.XXXXXX")"
+  for line in "${header[@]}"; do printf '%s\n' "$line" >> "$tmp"; done
+  for id in "$@"; do printf '%s' "${blocks[$id]}" >> "$tmp"; done
+  # Capture restores the final newline the read loop consumed; a source file
+  # without one must stay without one, or legal input is not byte-identical.
+  if [ -n "$(tail -c 1 "$file")" ]; then truncate -s -1 "$tmp"; fi
+  if ! cmp -s "$file" "$tmp"; then mv "$tmp" "$file"; else rm "$tmp"; fi
+}
+
+report_slots() { # report_slots <lane>
+  local lane="$1" id need candidate blocked chosen position=1
+  local -a left=() candidates=() next=()
+  mapfile -t left < <(lane_ids "$lane")
+  printf '%s.yml\n' "$lane"
+  while [ "${#left[@]}" -gt 0 ]; do
+    candidates=()
+    for id in "${left[@]}"; do
+      blocked=0
+      for need in ${NEEDS_OF[$id]:-}; do
+        for candidate in "${left[@]}"; do [ "$need" = "$candidate" ] && blocked=1; done
+      done
+      if [ "$lane" = todo ]; then
+        any_eligible=0
+        for candidate in "${left[@]}"; do eligible "$candidate" && any_eligible=1; done
+        [ "$any_eligible" -eq 0 ] || eligible "$id" || blocked=1
+      fi
+      [ "$blocked" -eq 1 ] || candidates+=("$id")
+    done
+    printf '  %d:' "$position"
+    printf ' %s' "${candidates[@]}"
+    printf '\n'
+    # Advance with a legal entry, so the reported slots compose into an order
+    # that is actually legal rather than replaying the current file order.
+    chosen="${candidates[0]:-${left[0]}}"
+    next=()
+    for id in "${left[@]}"; do [ "$id" = "$chosen" ] || next+=("$id"); done
+    left=("${next[@]}")
+    position=$((position + 1))
+  done
+}
+
+case "$MODE" in
+  check)
+    [ "$status" -eq 0 ] && [ "$rank_status" -eq 0 ]
+    ;;
+  slots)
+    [ "$status" -eq 0 ] || exit "$status"
+    report_slots backlog
+    report_slots todo
+    ;;
+  fix)
+    [ "$status" -eq 0 ] || exit "$status"
+    for lane in backlog todo; do
+      mapfile -t desired < <(desired_lane_order "$lane")
+      rewrite_lane "$lane" "${desired[@]}"
+    done
+    "$0" "$PLAN_DIR"
+    ;;
+esac

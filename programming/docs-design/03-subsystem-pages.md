@@ -3,8 +3,8 @@
 One explanation page per subsystem, `<project>/docs/explanation/<subsystem>.md`, owns that
 subsystem's current design. It is the explanation zone's load-bearing artifact rather than an optional
 extra: it is what [02 — Lean ADRs](./02-lean-adrs.md) points at when a run of decisions on one area
-shows a design document is missing, and what a slice's `Governed by` section names instead of listing
-eleven records.
+shows a design document is missing, and what a story's `Governed by` section names instead of
+listing eleven records.
 
 ## What the page holds
 

@@ -1,9 +1,8 @@
 # Template — plan zone
 
-Copy each block below into the named file under `<project>/docs/plan/`. Create only the documents the
-project actually maintains; an empty charter is worse than no charter. The slice entry document has its
-own template — see [template-slice.md](./template-slice.md). Rules for all three are in
-[02 — Plan and Slices](./02-plan-and-slices.md).
+Copy each block into the named path under `<project>/docs/plan/`. The complete record uses all five
+lane files even when one is empty. Start work with [the story template](./template-story.md), and
+copy the [schema and linter](./plan/) beside the plan.
 
 ## `charter.md`
 
@@ -12,74 +11,94 @@ own template — see [template-slice.md](./template-slice.md). Rules for all thr
 
 ## What this is for
 
-<Two or three sentences. The outcome the project exists to produce, not the mechanism.>
+<The outcome the project exists to produce.>
 
 ## Pillars
 
-- <A property every slice is judged against.>
-- <Another.>
+- <A property every story is judged against.>
 
 ## No-gos
 
-- <Something this project will not do, and the reason.>
-- <Another.>
+- <Something this project will not do, and why.>
 
-## Appetite unit
+## Iteration
 
-<Calendar time | human review passes | implementation sessions.> One unit, kept for the project's life.
+<A cadence such as two weeks. Keep one cadence; changing it restarts the velocity series.>
 ```
 
-Two pages at most. Revised per release, never per slice.
+## `lanes/backlog.yml`
 
-## `milestones.md`
-
-```markdown
-# Milestones
-
-The single status surface. A reader consults this and nothing else to know where the work stands.
-
-One line per slice, ordered by id inside its section:
-`<id> <slug> — <status> — <appetite>[ — <note>]`.
-
-Two sections, live work first. A slice moves to `## closed` when its status becomes terminal —
-`done`, `cut`, or `reshaped` — and never moves back.
-
-## in flight
-
-- 002 <slug> — active — <n>
-- 003 <slug> — shaped — <n>
-
-## closed
-
-- 001 <slug> — done — <n>
+```yaml
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: backlog
+stories: []
 ```
 
-Status is one of `shaped`, `active`, `done`, `cut`, or `reshaped`. A `reshaped` line names its
-successor id in the note. A `cut` line names what was cut. When `## closed` outgrows scrolling, move it
-wholesale to `milestones-closed.md`, leave one link, and drop `## closed` from the milestones heading
-shape; that file is history, not a status surface.
+## `lanes/todo.yml`
 
-These three headings are a fixed shape, and the project gates them so no fourth section arrives. The
-gate is one configuration file plus one hook entry, shipped in
-[the heading-shape template](./template-heading-shapes.md) and explained in
-[08 — Lean Markdown](../docs-design/08-lean-markdown.md#gating-a-fixed-heading-shape).
+```yaml
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: todo
+stories:
+  - id: "<id>"
+    slug: <slug>
+    type: <story | spike | chore>
+    points: <1 | 2 | 3>
+    needs: []
+```
 
-Derive whatever can be derived from the slices themselves so this cannot silently disagree with them.
+## `lanes/doing.yml`
+
+```yaml
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: doing
+stories: []
+```
+
+## `lanes/review.yml`
+
+```yaml
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: review
+stories: []
+```
+
+## `lanes/closed.yml`
+
+```yaml
+# yaml-language-server: $schema=../plan-lane.schema.json
+lane: closed
+stories:
+  - id: "<id>"
+    slug: <slug>
+    type: <story | spike | chore>
+    points: <1 | 2 | 3>
+    outcome: <done | cut | reshaped>
+    closed: <yyyy-mm-dd>
+```
+
+## `stories/`
+
+```text
+stories/
+  007-rate-limit.md       the story; always
+  007-rate-limit/         artifacts; only when needed
+```
+
+The optional sibling directory holds traces, fixtures, and diagram sources. It never holds a
+second narrative document. This is a layout a project creates, not an index of repository state.
 
 ## `open-questions.md`
 
 ```markdown
 # Open questions
 
-Triage, not a queue. Every entry names what it blocks and leaves by one of three exits: an ADR, a
-`Revisions` line in a slice, or a recorded measurement.
+## Q-001 — <the question?>
 
-## Q-001 — <the question, as a question>
-
-Blocks: <the slice id and heading, the decision, or the acceptance line this holds up>.
 Raised: <when and in what context>.
-Exit: <ADR | slice revision | measurement>, <what specifically closes it>.
+Blocks: <004, 005> — <why these ids cannot proceed>.
+Exit: <ADR | story revision | measurement>, <what closes it>.
 ```
 
-An entry that blocks nothing is a note, and notes belong in the drafts workspace; see
-[05 — Drafts and Promotion](../docs-design/05-drafts-and-promotion.md).
+`Blocks:` is a comma-separated id list before an optional em dash and reason. A question that
+blocks nothing belongs in the drafts workspace.

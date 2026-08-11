@@ -1,42 +1,42 @@
 ---
 digest-of: programming/project-management
 last-synced: 2026-08-11
-token-estimate: 450
+token-estimate: 620
 ---
 
 # AGENTS
 
 ## Scope
 
-Language-agnostic planning and work-execution canon: intent over time, appetite and scope, slices, plan
-records, templates, executable validation artifacts, and the project-management review gate.
+Language-agnostic planning and work-execution canon: story shape and estimation, lane coordination,
+validation, derived views, and the boundary between planned change and durable specifications.
 
-Documentation ownership, agent-context, subsystem-page, and markdown mechanics route to
+Documentation ownership and markdown mechanics route to
 [documentation design](../docs-design/AGENTS.md).
 
 ## Rule ownership
 
-| Question the agent arrives with                                       | Owning file                                  |
-| --------------------------------------------------------------------- | -------------------------------------------- |
-| Why is planning a second axis rather than a fifth documentation need? | `00-plan-zone-as-a-second-axis.md`           |
-| How is a unit of work bounded, cut, extended, or reshaped?            | `01-appetite-and-scope.md`                   |
-| Which plan documents exist, and what shape does a slice take?         | `02-plan-and-slices.md`                      |
-| What is the current lane record, and what validates it?               | `plan/README.md`                             |
-| How do I start a plan zone or one slice entry?                        | `template-plan-zone.md`, `template-slice.md` |
-| Where do the slice and milestones heading arrays and hooks live?      | `template-heading-shapes.md`                 |
-| What must pass before a planning change merges?                       | `99-checklist.md`                            |
-| What does this shelf mean by a planning term?                         | `glossary.md`                                |
+| Question the agent arrives with                             | Owning file                                  |
+| ----------------------------------------------------------- | -------------------------------------------- |
+| Why is planning a second axis?                              | `00-plan-zone-as-a-second-axis.md`           |
+| What is a story and what do points count?                   | `01-stories-and-estimation.md`               |
+| How is one story placed and written?                        | `02-the-story-on-disk.md`                    |
+| How do lanes, dependencies, questions, and ranking compose? | `03-the-plan-record.md`                      |
+| What validates the record and what views derive from it?    | `04-gating-the-plan.md`                      |
+| How do acceptance assertions become durable specs?          | `05-specs-and-stories.md`                    |
+| How does a project instantiate the plan or a story?         | `template-plan-zone.md`, `template-story.md` |
+| Where is the story heading contract wired?                  | `template-heading-shapes.md`                 |
+| What must pass before a planning change merges?             | `99-checklist.md`                            |
+| What does this shelf mean by a planning term?               | `glossary.md`                                |
 
 ## Non-negotiables
 
-- Fix an appetite before designing the slice; protect the core by cutting the ordered remainder first.
-- A slice is one directory with one entry `README.md`; additional files exist only when their gates are
-  met.
-- `Governed by` names individual governing specs and ADRs, never a directory or a whole zone.
-- Acceptance names objective tests, rabbit holes name escapes, and material revisions remain visible.
-- Plan status has one owner, open questions name what they block, and finished durable results leave
-  the plan zone.
-- The lane schema owns one file's shape; the linter owns cross-file coherence.
+- Points count irreducible human judgment; work above three points splits.
+- A story is one Markdown file; a same-name directory holds only non-narrative artifacts.
+- The lane files own coordination and the story owns what its work session must act on.
+- Ranking respects dependencies, and eligible `todo` entries precede ineligible ones.
+- `Governed by` states individual source claims, and `Amends` names specs left changed.
+- The schema owns one lane's shape; `check-plan` owns cross-file coherence.
 
 ## Maintenance
 

@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=../plan-lane.schema.json
 lane: review
-slices:
+stories:
   - id: "003"
     slug: supervised-child-runtime
-    appetite: 3 sessions
+    type: spike
+    points: 3
     needs: ["002"]

@@ -24,6 +24,7 @@ test: test-plan
 #   2. the worked example satisfies the schema
 #   3. the linter is shellcheck-clean
 #   4. the linter accepts the worked example
+#   5. the writer and content gate satisfy their behavioral tests
 test-plan:
     nix develop --command check-jsonschema --check-metaschema \
         programming/project-management/plan/plan-lane.schema.json
@@ -34,9 +35,11 @@ test-plan:
         programming/project-management/plan/example/lanes/doing.yml \
         programming/project-management/plan/example/lanes/review.yml \
         programming/project-management/plan/example/lanes/closed.yml
-    nix develop --command shellcheck programming/project-management/plan/check-plan
+    nix develop --command shellcheck programming/project-management/plan/check-plan \
+        programming/project-management/plan/test-check-plan
     nix develop --command programming/project-management/plan/check-plan \
         programming/project-management/plan/example
+    nix develop --command programming/project-management/plan/test-check-plan
 
 # Nothing to compile for a knowledge base.
 build:

@@ -1,31 +1,30 @@
 # Project Management
 
-This shelf owns planning and executing work: intent over time, bounded units of work, slices, the plan
-record, and the executable artifacts that validate it.
-
-The [documentation-design shelf](../docs-design/README.md) owns the durable specs, ADRs, subsystem pages, and reference material that govern or result from slices.
+Language-agnostic planning and work execution: intent over time, bounded stories, lane records,
+validation, derived views, and the handoff from planned change to durable documentation.
 
 ## Chapters and support
 
-| #        | Chapter or support                                               | One-line hook                                                         |
-| -------- | ---------------------------------------------------------------- | --------------------------------------------------------------------- |
-| 00       | [Plan Zone as a Second Axis](./00-plan-zone-as-a-second-axis.md) | Separate perishable intent from documentation about what exists.      |
-| 01       | [Appetite and Scope](./01-appetite-and-scope.md)                 | Fix the budget, vary the scope, and gate every change to it.          |
-| 02       | [Plan and Slices](./02-plan-and-slices.md)                       | Shape the plan zone and one bounded directory per unit of work.       |
-| 99       | [Checklist](./99-checklist.md)                                   | Review scope, slices, plan coherence, and completion handoff.         |
-|          | [Glossary](./glossary.md)                                        | Resolve planning terms at the chapter that defines each one.          |
-| Template | [Plan zone](./template-plan-zone.md)                             | Start a charter, status surface, and open-question register.          |
-| Template | [Slice](./template-slice.md)                                     | Start one work entry with scope, sources, acceptance, and revisions.  |
-| Template | [Heading shapes](./template-heading-shapes.md)                   | Gate slice and milestones headings with live hook selectors.          |
-| Artifact | [Plan record](./plan/)                                           | Validate lane files and cross-file plan coherence with working tools. |
+| #        | Chapter or support                                               | Reader question                                          |
+| -------- | ---------------------------------------------------------------- | -------------------------------------------------------- |
+| 00       | [Plan Zone as a Second Axis](./00-plan-zone-as-a-second-axis.md) | Why is planning separate from reader-need documentation? |
+| 01       | [Stories and Estimation](./01-stories-and-estimation.md)         | What is the work unit and what do points count?          |
+| 02       | [The Story on Disk](./02-the-story-on-disk.md)                   | What shape does a story take and how is it written?      |
+| 03       | [The Plan Record](./03-the-plan-record.md)                       | Where does work sit, wait, and rank?                     |
+| 04       | [Gating the Plan](./04-gating-the-plan.md)                       | What validates and derives from the record?              |
+| 05       | [Specs and Stories](./05-specs-and-stories.md)                   | Where does accepted behavior become durable state?       |
+| 99       | [Checklist](./99-checklist.md)                                   | What must pass before a planning change merges?          |
+|          | [Glossary](./glossary.md)                                        | Where is each planning term owned?                       |
+| Template | [Plan zone](./template-plan-zone.md)                             | How does a project instantiate the record?               |
+| Template | [Story](./template-story.md)                                     | How does one work entry begin?                           |
+| Template | [Heading shapes](./template-heading-shapes.md)                   | How is the story heading contract gated?                 |
+| Artifact | [Plan record](./plan/)                                           | Which copyable files validate the plan?                  |
 
-Read the second-axis model first, then choose the work bound, learn the on-disk slice and plan shape,
-and finish with the review checklist. Methods, stories, and measurements may be added later; this shelf
-does not claim they exist yet.
+The [documentation-design shelf](../docs-design/README.md) owns the durable specs, ADRs, subsystem
+pages, and markdown mechanisms that govern or result from stories.
 
-## Adopting this shelf
+## Adoption
 
-Choose one appetite unit, copy only the plan files the project maintains, use the slice and heading
-templates where their gates apply, and copy the executable plan artifacts when adopting the lane record.
-Keep the plan truthful while work is active, and promote completed durable results to their owning
-documentation zones.
+Start with the second-axis boundary, copy the plan-zone and story templates, then copy the schema
+and linter. Keep lane membership and ranking in the record, keep the implementing session's
+obligations in the story, and promote accepted behavior to its durable owner.

@@ -12,7 +12,8 @@ Language-agnostic documentation design canon: ownership and placement of durable
 zones, decision records, subsystem pages, agent context, drafts, reference maintenance, markdown
 mechanics, procedure artifacts, and the documentation review gate.
 
-Planning scope, slices, and the plan record route to [project management](../project-management/AGENTS.md).
+Planning scope, stories, and the lane record route to
+[project management](../project-management/AGENTS.md).
 
 ## How to use this shelf
 

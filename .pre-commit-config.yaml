@@ -282,24 +282,32 @@ repos:
         files: '^programming/project-management/plan/plan-lane\.schema\.json$'
         pass_filenames: true
 
+      # pass_filenames: false — a schema edit invalidates every lane file, not
+      # only the staged ones, so the hook names the full fixture itself and
+      # triggers on the schema as well as on the fixtures.
       - id: plan-schema-example
         name: plan worked example matches the schema
         entry: >-
           check-jsonschema --schemafile
           programming/project-management/plan/plan-lane.schema.json
+          programming/project-management/plan/example/lanes/backlog.yml
+          programming/project-management/plan/example/lanes/todo.yml
+          programming/project-management/plan/example/lanes/doing.yml
+          programming/project-management/plan/example/lanes/review.yml
+          programming/project-management/plan/example/lanes/closed.yml
         language: system
-        files: '^programming/project-management/plan/example/lanes/.*\.yml$'
-        pass_filenames: true
+        files: '^programming/project-management/plan/(plan-lane\.schema\.json|example/lanes/.*\.yml)$'
+        pass_filenames: false
 
       - id: plan-linter-shellcheck
         name: shellcheck (plan-zone linter)
         entry: shellcheck
         language: system
-        files: '^programming/project-management/plan/check-plan$'
+        files: '^programming/project-management/plan/(check-plan|test-check-plan)$'
         pass_filenames: true
 
       # pass_filenames: false — every rule this script has is cross-file, so
-      # handing it one changed path would let a slice rename slip through
+      # handing it one changed path would let a story rename slip through
       # whenever the lane file happened not to be staged.
       - id: plan-linter-self-test
         name: plan linter accepts its own worked example

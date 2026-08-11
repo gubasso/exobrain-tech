@@ -15,6 +15,11 @@ ARID does not forbid short summaries. The test is disposability: if deleting a s
 canonical fact intact and discoverable, it is a summary; if deleting it removes the only current
 statement of the rule, it has become a source of truth and belongs at the owning home.
 
+Comprehension is not a durable fact. A carrying sentence may restate a source's conclusion so the
+reader understands the claim before following its link. The disposability test still decides the
+boundary: delete the sentence, and the canonical claim must remain intact and discoverable. Copying
+the source's full argument would create a second owner and fails ARID.
+
 ## Placement
 
 A durable fact gets exactly one home. Ask these questions in order and stop at the first yes.
@@ -119,7 +124,7 @@ When two files disagree, this ladder decides the owner:
 - Guides beat reference pages for task sequence.
 - Code beats prose for current behavior.
 - Load-bearing comments beat distant explanation for local invariants.
-- Slice documents beat everything for what is being built next, and nothing for what is true.
+- Story documents beat everything for what is being built next, and nothing for what is true.
 
 The second and third rules are one rule seen from both sides, and the pair keeps either document from
 being edited into the other's job; see [02 — Lean ADRs](./02-lean-adrs.md) and

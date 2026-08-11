@@ -15,7 +15,7 @@ words. Keep each field brief; split separate decisions into separate ADRs.
 
 ## Decision Outcome
 
-Chosen option: **{Option 1}** — {one sentence: why}.
+Chosen option: {Option 1} — {one sentence: why}.
 
 ## Consequences
 

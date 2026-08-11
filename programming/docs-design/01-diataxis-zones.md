@@ -47,7 +47,7 @@ never under `_docs/` — the boundary only holds if it holds in both directions.
 | Reference   | `<project>/docs/reference/`   | What is the exact value, field, command, or symptom? | Schemas, option tables, diagnostics, case studies |
 | Explanation | `<project>/docs/explanation/` | How does this area fit together?                     | Architecture, subsystem pages, design forces      |
 | Decisions   | `<project>/docs/decisions/`   | Why did the project choose this shape?               | Lean ADRs                                         |
-| Plan        | `<project>/docs/plan/`        | What are we building next, and what bounds it?       | Charter, milestones, open questions, slices       |
+| Plan        | `<project>/docs/plan/`        | What are we building next, and what bounds it?       | Charter, lanes, open questions, stories           |
 
 The zones are not content categories; they are reader promises. A guide promises sequence and
 completion. A reference page promises stable lookup and precise facts. An explanation promises context
