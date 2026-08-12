@@ -51,6 +51,15 @@
             pkgs.typos
             pkgs.committed
 
+            # The freshness advisory in `.envrc` and the `update-plan-xp`
+            # recipe read flake.lock and ask GitHub how far the pin has drifted.
+            # Both tools are common enough to be on a developer's PATH already,
+            # which is exactly why they are named here: an undeclared tool that
+            # happens to resolve is the ambient-PATH failure described above,
+            # working on the machine that wrote it and nowhere else.
+            pkgs.jq
+            pkgs.curl
+
             # This repository keeps a plan record whose format and linter belong
             # to a separate project. check-jsonschema validates `_docs/plan/`
             # against the schemas the pinned plan-xp package provides, and the

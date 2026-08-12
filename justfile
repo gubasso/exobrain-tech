@@ -44,6 +44,23 @@ test-plan:
         _docs/plan/config.yml'
     nix develop --command check-plan _docs/plan
 
+# Move the pinned plan-xp revision to the current `develop` tip, then prove the
+# record still passes the linter that arrived with it.
+#
+# The lock is what pins the gate, so this changes what `test-plan` means and
+# belongs in a commit of its own. Clearing the cached verdict retires the
+# advisory in `.envrc` straight away rather than a day later; the path comes
+# from that file because the direnv layout directory is the user's to place.
+update-plan-xp:
+    @old=$(jq -r '.nodes["plan-xp"].locked.rev' flake.lock); \
+    nix flake update plan-xp; \
+    new=$(jq -r '.nodes["plan-xp"].locked.rev' flake.lock); \
+    rm -f "${PLAN_XP_FRESHNESS_CACHE:-/nonexistent}"; \
+    if [ "$old" = "$new" ]; then echo "plan-xp: already current ($old)"; exit 0; fi; \
+    echo "plan-xp: $old -> $new"; \
+    echo "changes: https://github.com/gubasso/plan-xp/compare/$old...$new"; \
+    just test-plan
+
 # Nothing to compile for a knowledge base.
 build:
     @echo "no build: exobrain-tech ships documents and drop-in artifacts, not binaries"
