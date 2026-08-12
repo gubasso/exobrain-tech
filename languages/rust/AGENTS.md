@@ -27,8 +27,7 @@ carries its own nested digest).
   the general `programming/release-workflow/` shelf — release-plz on `develop`, `master`
   promotion onto the release tag, crates.io Trusted Publishing (register `release-plz.yml`, not
   `release.yml`), crate metadata, token scopes, helper scripts, SemVer/yank, cargo-dist binary
-  distribution, and a per-new-project runbook. Own nested `AGENTS.md`. (Formerly split into a
-  separate `crates-io-publishing/` shelf — now merged.)
+  distribution, and a per-new-project runbook. Own nested `AGENTS.md`.
 - **Cookbook**: the `cookbook/` sub-shelf is a single-file, TLDR ship-it runbook (scaffold → quality
   gates → branch security → CI → release/publish) that inlines and footnotes the bootstrap and
   release specs. It is the sanctioned SoT/DRY exception (repo `AGENTS.md`; ADR-0002) — do **not**

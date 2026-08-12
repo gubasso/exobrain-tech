@@ -7,4 +7,4 @@ indexes them file by file.
 
 See also: [`../sandbox-isolation-backends/`](../sandbox-isolation-backends/README.md) — the
 canonical reference for KVM-class microVM isolation (libkrun / `crun --krun`), including the
-rootless podman+krun operational notes and the `\n`-mangling bug that previously lived here.
+rootless podman+krun operational notes and the `\n`-mangling bug.
