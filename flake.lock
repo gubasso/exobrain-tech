@@ -60,11 +60,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786549439,
-        "narHash": "sha256-ZQT5TMnLAGo0VdHizh41VWy8b07IkcmgLqweRUBSzh0=",
+        "lastModified": 1786566685,
+        "narHash": "sha256-5sF0xHt8DAZIEp5vRQwj15UNqOBybwCZMKATuRuJ5XM=",
         "owner": "gubasso",
         "repo": "plan-xp",
-        "rev": "6e6b3c41196229e9640bcab7a801a005d9c60a1a",
+        "rev": "d7916e5689831775568f2365782d7500c0b04b35",
         "type": "github"
       },
       "original": {
