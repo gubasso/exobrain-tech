@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/gubasso/plan-xp/develop/share/schema/plan-lane.schema.json
+lane: closed
+stories:
+  - id: "001"
+    slug: the-terminal-output-toolbox
+    type: story
+    points: 3
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-08-12"
+    note: written in the drafts workspace, landed with the plan-xp split

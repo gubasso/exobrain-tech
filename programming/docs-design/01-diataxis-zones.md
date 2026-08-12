@@ -63,8 +63,27 @@ document supports before they read the first paragraph.
 A project may add topic directories inside a zone when volume requires it, as
 `<project>/docs/guides/<topic>/`. The topic comes after the reader need, never before it.
 
-The rationale for treating the plan zone as a second axis, and the mechanics it carries, are owned by
-[00 — The Plan Zone as a Second Axis](../project-management/00-plan-zone-as-a-second-axis.md).
+### Why the plan is a second axis, not a fifth need
+
+The first four zones each ask about a system that already exists. The plan asks about one that does
+not yet: what the project will build next, what bounds that work, and which unanswered questions
+prevent it. That is a different axis, not a fifth reader need, and it crosses every one of the four
+without belonging to any.
+
+```text
+what exists:  guides | reference | explanation | decisions
+intent:       plan
+```
+
+The consequence that matters is asymmetric, and it is why the zone is listed here rather than left
+to a project's own invention. A guide becoming false is a defect. A lane entry moving is the record
+doing its job. The plan zone is allowed to become false as work moves, which is exactly why no
+durable fact may live there: a result that outlives the work leaves for the zone that owns it, while
+the closed story stays a historical account of the bargain.
+
+What the record inside the zone looks like — lanes, entries, ranking, epics, and the gates over them
+— is not this shelf's to specify. It is a method with its own tooling, and it lives at
+[plan-xp](https://github.com/gubasso/plan-xp).
 
 ## Operational material
 

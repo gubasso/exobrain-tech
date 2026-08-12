@@ -108,8 +108,8 @@ Some documents are not free-form prose: their heading list is the contract. A st
 decision record, and every template a project ships are all read by tools and sessions
 that assume the headings are where the shape says they are. `MD043 required-headings` is the check that
 holds that shape, and this section owns how it is wired. Which documents have a fixed shape is owned
-elsewhere: [02 — The Story on Disk](../project-management/02-the-story-on-disk.md) for the plan zone,
-[02 — Lean ADRs](./02-lean-adrs.md) for decision records.
+elsewhere: [plan-xp's story and epic headings](https://github.com/gubasso/plan-xp/blob/develop/docs/reference/story-headings.md)
+for the plan zone, [02 — Lean ADRs](./02-lean-adrs.md) for decision records.
 
 Four facts about the rule decide the wiring, and none of them is visible from the rule's name.
 

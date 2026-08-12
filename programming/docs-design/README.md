@@ -31,8 +31,10 @@ from code, chat history, or old issues.
 | Template | [Docs rules](./template-docs-rules.md)                         | Integrate documentation maintenance into author instructions.       |
 | Template | [Heading shapes](./template-heading-shapes.md)                 | Gate the ADR heading contract with a live hook.                     |
 
-The [project-management shelf](../project-management/README.md) owns forward-looking work, stories,
-and the lane record.
+Forward-looking work — stories, epics, and the lane record that ranks them — is a method with its
+own tooling and is not part of this shelf. It lives at [plan-xp](https://github.com/gubasso/plan-xp), which this
+repository consumes as a pinned `flake.nix` input; see
+[ADR-0017](../../_docs/decisions/ADR-0017-the-planning-method-moves-to-plan-xp.md).
 
 ## Reading
 

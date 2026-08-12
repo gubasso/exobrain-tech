@@ -45,7 +45,4 @@ Four properties are load-bearing:
 
 ## Status
 
-Accepted. Enacted by
-[06 — Epics](../../programming/project-management/06-epics.md), the `epic` property in
-[the lane schema](../../programming/project-management/plan/plan-lane.schema.json), and the epic
-checks in [the plan linter](../../programming/project-management/plan/check-plan).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).

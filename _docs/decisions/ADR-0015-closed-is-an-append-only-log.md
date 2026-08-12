@@ -37,7 +37,6 @@ fails, still moves whole line blocks, and is still never invoked from a hook.
 
 ## Status
 
-Accepted. Amends ADR-0012 by extending the writer's scope to a third lane. Enacted by
-[03 — The Plan Record](../../programming/project-management/03-the-plan-record.md),
-[04 — Gating the Plan](../../programming/project-management/04-gating-the-plan.md), and
-[the plan linter](../../programming/project-management/plan/check-plan).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).
+
+Amends ADR-0012 by extending the writer's scope to a third lane.

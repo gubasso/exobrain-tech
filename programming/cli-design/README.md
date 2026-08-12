@@ -29,6 +29,7 @@ details.
 | 10 | [Reference projects](./10-reference-projects.md)                     | Organizational patterns from well-studied CLIs (language-agnostic takeaways).                                                                 |
 | 11 | [XDG scaffolding & `init`](./11-xdg-scaffolding.md)                  | Scaffold a project and prepare dirs without ever writing to `$XDG_CONFIG_HOME`; `init` reuses the `doctor` probes.                            |
 | 12 | [Config generation from types](./12-config-generation-from-types.md) | Generate annotated config examples + JSON Schema from the config types; freshness via pre-commit `--check`; copy-don't-scaffold.              |
+| 13 | [Terminal output toolbox](./13-terminal-output-toolbox.md)           | What draws a chart, a board, or a graph in a terminal, what it costs, and where a shell needs no help.                                        |
 | 99 | [Checklist](./99-checklist.md)                                       | One-page sanity check before shipping a CLI.                                                                                                  |
 
 ## Language-specific implementation

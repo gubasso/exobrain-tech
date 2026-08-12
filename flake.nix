@@ -4,10 +4,20 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+
+    # The planning method this repository uses, and the linter that gates its
+    # record. It is a tool dependency of the same class as shellcheck below, not
+    # an external source of knowledge: ADR-0018 states that reading, and
+    # flake.lock pinning a concrete revision is what keeps it true while the
+    # branch itself moves.
+    plan-xp = {
+      url = "github:gubasso/plan-xp/develop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs, flake-utils }:
+    { self, nixpkgs, flake-utils, plan-xp }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -41,28 +51,30 @@
             pkgs.typos
             pkgs.committed
 
-            # The plan-zone artifacts this KB ships as canonical sources
-            # (`programming/project-management/plan/`) are executable text, not prose, so
-            # they are verified here rather than trusted:
-            #   check-jsonschema : the lane schema against draft 2020-12, and
-            #                      the worked example against the schema. It is
-            #                      also the upstream pre-commit hook a project
-            #                      adopting the method wires up, so the version
-            #                      that validates the shipped copy is the same
-            #                      one that will validate a project's.
-            #   shellcheck       : the shipped `check-plan` linter must be clean
-            #                      before it is published as a drop-in.
-            #   shfmt            : canonical shell formatting for the same file,
-            #                      so a copied artifact does not drift in style.
+            # This repository keeps a plan record whose format and linter belong to
+            # a separate project. check-jsonschema validates `_docs/plan/` against
+            # the schemas the pinned plan-xp package provides, and the linter
+            # itself comes from that same package rather than from a file in this
+            # tree — see ADR-0017 for the split and ADR-0018 for why a lock-pinned
+            # public input is a tool dependency rather than an external one.
             #
-            # No Python packaging tool is needed for any of this. Nix supplies
-            # check-jsonschema as a binary on PATH, which is why neither poetry
-            # nor uv appears here — this repo has no Python project to manage.
+            # shellcheck and shfmt left with the hook they served. A devShell entry
+            # with no gate behind it is the assertion-without-a-gate the charter
+            # forbids; `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is
+            # the story that brings both back, with a hook.
             pkgs.check-jsonschema
-            pkgs.shellcheck
-            pkgs.shfmt
+
+            # The plan linter and the two schemas that gate `_docs/plan/`. They
+            # come from the pinned input rather than from a copy in this tree,
+            # because a copy would be the duplication AGENTS.md forbids and a
+            # copy that drifts from the version the gate runs is worse than
+            # none.
+            plan-xp.packages.${system}.default
           ];
-          shellHook = ''echo "dev shell ready"'';
+          shellHook = ''
+            export PLAN_XP_SCHEMA_DIR="${plan-xp.packages.${system}.default}/share/plan-xp/schema"
+            echo "dev shell ready"
+          '';
         };
       }
     );

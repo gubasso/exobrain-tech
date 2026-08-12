@@ -1,8 +1,8 @@
 # Pre-commit hooks for Markdown knowledge bases / docs repos.
 #
-# Mostly markdown, but not only: a bucket may ship an executable artifact a
-# reader copies and runs, and ADR-0006 requires this repository to gate such an
-# artifact rather than assert it. Those gates live at the end of this file.
+# Mostly markdown, but not only: this repository keeps a plan record whose format
+# a tool owns, and ADR-0006 requires a shipped or consumed artifact to be gated
+# rather than asserted. Those gates live at the end of this file.
 #
 # Design goals:
 #   - Autofix where possible; gate where not. Sane defaults, not bureaucratic.
@@ -18,6 +18,10 @@
 #   single provider — enter the shell (`direnv allow`, or `nix develop
 #   --command ...` when non-interactive) before running them. Adding another
 #   such hook means adding its package to the devShell in the same change.
+#   The three plan-record hooks at the end are in this class twice over: their
+#   tools come from the pinned plan-xp input rather than from nixpkgs, so a
+#   commit made outside the shell cannot see them. Each says so rather than
+#   dying on a bare ENOENT.
 #
 # Tooling stack (and what each owns):
 #   - pre-commit-hooks : whitespace, line endings, basic safety.
@@ -152,6 +156,19 @@ repos:
       - id: markdownlint-cli2
         additional_dependencies: ['markdownlint-rule-relative-links']
 
+      # The story heading shape, gated by MD043 through its own config, because
+      # the rule takes one `headings` array. The precondition is that
+      # `.markdownlint-cli2.jsonc` never mentions MD043 at any value including
+      # false: it is merged over this file and would silently disable the
+      # contract. There is no epic config: `_docs/plan/epics/` holds no file, and
+      # `check-hooks-apply` errors on a pattern that matches nothing.
+      - id: markdownlint-cli2
+        alias: md-story
+        name: markdownlint (story heading shape)
+        additional_dependencies: ['markdownlint-rule-relative-links']
+        files: '^_docs/plan/stories/[^/]+\.md$'
+        args: ['--config', '.markdownlint/story.markdownlint-cli2.jsonc']
+
   # --- Explicit relative links (ambiguity guard; pre-commit, local) ---
   #
   # A bare-filename relative link like [x](runbook.md) is ambiguous: the same
@@ -264,70 +281,59 @@ repos:
   # commitizen is intentionally NOT the commit-msg linter (committed is the SoT).
   # For version bumping / changelog only, add commitizen explicitly per-project.
 
-  # --- Shipped executable artifacts (ADR-0006) ---
+  # --- The plan record this repository keeps (ADR-0006, as amended by ADR-0017) ---
   #
-  # The library publishes drop-ins a reader is expected to copy and run, so this
-  # repository proves they run. `language: system` throughout: flake.nix is the
-  # single provider, as for dprint, typos and committed above.
+  # The method and the linter are plan-xp, pinned in flake.nix. Nothing here is a
+  # copy of its schemas: a copy is the duplication AGENTS.md forbids, and a copy
+  # that drifts from the version the gate runs is worse than none. The devShell
+  # exports PLAN_XP_SCHEMA_DIR from the locked package, and every hook below
+  # resolves through it.
   #
-  # programming/project-management/plan/ — the plan-zone schema and its linter. The
-  # split between them is deliberate and mirrored here: check-jsonschema owns
-  # the shape of one lane file, check-plan owns every fact spanning two.
+  # `language: system` throughout, as for dprint, typos and committed above.
   - repo: local
     hooks:
-      - id: plan-schema-metaschema
-        name: plan schemas are valid JSON Schema 2020-12
-        entry: check-jsonschema --check-metaschema
-        language: system
-        files: '^programming/project-management/plan/plan-(lane|config)\.schema\.json$'
-        pass_filenames: true
-
-      # pass_filenames: false — a schema edit invalidates every lane file, not
-      # only the staged ones, so the hook names the full fixture itself and
-      # triggers on the schema as well as on the fixtures.
-      - id: plan-schema-example
-        name: plan worked example matches the schema
+      # pass_filenames: false — a schema change invalidates every lane file, not
+      # only the staged ones, so the hook names the full record itself.
+      - id: plan-lane-files
+        name: plan lane files match the schema
         entry: >-
+          sh -c '[ -n "$PLAN_XP_SCHEMA_DIR" ] || {
+          echo "PLAN_XP_SCHEMA_DIR is unset: enter the devShell first" >&2;
+          echo "  nix develop --command git commit ..." >&2; exit 1; };
           check-jsonschema --schemafile
-          programming/project-management/plan/plan-lane.schema.json
-          programming/project-management/plan/example/lanes/backlog.yml
-          programming/project-management/plan/example/lanes/todo.yml
-          programming/project-management/plan/example/lanes/doing.yml
-          programming/project-management/plan/example/lanes/review.yml
-          programming/project-management/plan/example/lanes/closed.yml
+          "$PLAN_XP_SCHEMA_DIR/plan-lane.schema.json"
+          _docs/plan/lanes/backlog.yml _docs/plan/lanes/todo.yml
+          _docs/plan/lanes/doing.yml _docs/plan/lanes/review.yml
+          _docs/plan/lanes/closed.yml'
         language: system
-        files: '^programming/project-management/plan/(plan-lane\.schema\.json|example/lanes/.*\.yml)$'
+        files: '^_docs/plan/lanes/.*\.yml$'
         pass_filenames: false
 
-      # The config carries what a plan-zone script needs and cannot derive from
-      # the record, so it is schema-owned for the same reason a lane file is.
-      - id: plan-config-example
-        name: plan worked example config matches the schema
+      - id: plan-config-file
+        name: plan config matches the schema
         entry: >-
+          sh -c '[ -n "$PLAN_XP_SCHEMA_DIR" ] || {
+          echo "PLAN_XP_SCHEMA_DIR is unset: enter the devShell first" >&2;
+          echo "  nix develop --command git commit ..." >&2; exit 1; };
           check-jsonschema --schemafile
-          programming/project-management/plan/plan-config.schema.json
-          programming/project-management/plan/example/config.yml
+          "$PLAN_XP_SCHEMA_DIR/plan-config.schema.json" _docs/plan/config.yml'
         language: system
-        files: '^programming/project-management/plan/(plan-config\.schema\.json|example/config\.yml)$'
+        files: '^_docs/plan/config\.yml$'
         pass_filenames: false
 
-      - id: plan-linter-shellcheck
-        name: shellcheck (plan-zone linter)
-        entry: shellcheck
-        language: system
-        files: '^programming/project-management/plan/(check-plan|test-check-plan)$'
-        pass_filenames: true
-
-      # pass_filenames: false — every rule this script has is cross-file, so
+      # pass_filenames: false — every rule the linter has is cross-file, so
       # handing it one changed path would let a story rename slip through
-      # whenever the lane file happened not to be staged.
-      - id: plan-linter-self-test
-        name: plan linter accepts its own worked example
+      # whenever the lane file happened not to be staged. The hook stays
+      # read-only: --rank-fix is run by a close ceremony, never by a gate.
+      - id: plan-record-coherent
+        name: the plan record is coherent
         entry: >-
-          programming/project-management/plan/check-plan
-          programming/project-management/plan/example
+          sh -c 'command -v check-plan >/dev/null || {
+          echo "check-plan not on PATH: it comes from the pinned plan-xp input," >&2;
+          echo "so enter the devShell first — nix develop --command git commit ..." >&2;
+          exit 1; }; check-plan _docs/plan'
         language: system
-        files: '^programming/project-management/plan/'
+        files: '^_docs/plan/'
         pass_filenames: false
 
   # --- Meta: keep the config itself honest ---

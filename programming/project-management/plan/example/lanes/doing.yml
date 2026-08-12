@@ -1,8 +1,0 @@
-# yaml-language-server: $schema=../plan-lane.schema.json
-lane: doing
-stories:
-  - id: "004"
-    slug: profile-composition
-    type: story
-    points: 2
-    needs: ["002"]

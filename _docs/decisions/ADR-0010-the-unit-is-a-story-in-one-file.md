@@ -32,6 +32,4 @@ an estimate of agent time.
 
 ## Status
 
-Implemented by
-[01 — Stories and Estimation](../../programming/project-management/01-stories-and-estimation.md)
-and [02 — The Story on Disk](../../programming/project-management/02-the-story-on-disk.md).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).

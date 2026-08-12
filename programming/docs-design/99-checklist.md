@@ -24,8 +24,9 @@ Owner: [01 — Diataxis Zones](./01-diataxis-zones.md).
 
 - [ ] The docs root matches the project's product: `docs/` for a codebase, `_docs/` for a knowledge
       base, and nothing that is product content sits under it.
-- [ ] Each durable file has one primary reader need and lives in the matching zone; the plan exception
-      is owned by the [project-management checklist](../project-management/99-checklist.md).
+- [ ] Each durable file has one primary reader need and lives in the matching zone; the plan
+      exception is owned by
+      [plan-xp's review checklist](https://github.com/gubasso/plan-xp/blob/develop/docs/reference/review-checklist.md).
 - [ ] Operational material is zone-first: runbooks and setup in guides, diagnostics and case studies in
       reference, never a topic directory beside the zones.
 - [ ] The root docs README is still an index.

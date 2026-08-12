@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/gubasso/plan-xp/develop/share/schema/plan-lane.schema.json
+lane: backlog
+stories:
+  - id: "002"
+    slug: gate-the-bucket-shell-scripts
+    type: chore
+    points: 2
+    needs: []
+    tags: [governance]
+    note: a pre-existing gap the migration made visible, not one it created

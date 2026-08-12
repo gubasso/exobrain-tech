@@ -38,9 +38,12 @@ illustration; the line is whether a reader is expected to copy the thing and run
 
 ## Status
 
-Accepted. Enacted by `programming/docs-design/plan/`, the plan-zone hooks in
-`.pre-commit-config.yaml`, the `test` recipe in `justfile`, and the validator packages in
-`flake.nix`.
+Accepted. Enacted by the plan-record gates in `.pre-commit-config.yaml`, the `test` recipe in
+`justfile`, and the validator packages in `flake.nix`.
 
 Amended by [ADR-0008](./ADR-0008-separate-documentation-design-from-project-management.md) — the
 plan-zone artifacts and their gates moved to `programming/project-management/plan/`.
+
+Amended by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — those artifacts left the
+repository entirely. This rule now binds the artifacts this repository still ships, and the gates on
+the record it consumes.

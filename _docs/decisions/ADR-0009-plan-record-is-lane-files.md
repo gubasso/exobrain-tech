@@ -29,8 +29,7 @@ respect dependencies, and `todo` keeps eligible entries ahead of ineligible entr
 
 ## Status
 
-Implemented by [03 — The Plan Record](../../programming/project-management/03-the-plan-record.md)
-and the [plan artifacts](../../programming/project-management/plan/).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).
 
 Amended by [ADR-0014](./ADR-0014-an-epic-is-a-field-and-a-document.md) — an entry may carry one
 gated reference to an epic document.

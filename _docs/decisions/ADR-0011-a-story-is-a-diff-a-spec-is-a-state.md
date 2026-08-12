@@ -30,5 +30,4 @@ Closed stories remain historical records and are never updated to mirror later s
 
 ## Status
 
-Implemented by
-[05 — Specs and Stories](../../programming/project-management/05-specs-and-stories.md).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).

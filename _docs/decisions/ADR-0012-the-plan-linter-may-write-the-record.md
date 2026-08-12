@@ -32,8 +32,7 @@ not constrain a gated artifact to read-only behavior.
 
 ## Status
 
-Implemented by [the plan linter](../../programming/project-management/plan/check-plan) and its
-[test harness](../../programming/project-management/plan/test-check-plan).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).
 
 Amended by [ADR-0015](./ADR-0015-closed-is-an-append-only-log.md) — the writer's scope extends to
 `closed.yml`, ordered by close date.

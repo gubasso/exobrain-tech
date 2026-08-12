@@ -40,10 +40,16 @@ rewritten the same way, while replacing `<Implementation task.>` with plain pros
 
 ## Where it bites
 
-[`template-story.md`](../../../programming/project-management/template-story.md) ships a story
-skeleton whose `Tasks` section is a GFM checklist of angle placeholders, so every pass moved the
-marker onto the `Rabbit holes` item below it and contradicted the fixed shape that
-[02 — The Story on Disk](../../../programming/project-management/02-the-story-on-disk.md) requires.
+Any document pairing `- [ ]` with an angle placeholder. In this repository that is
+`_docs/plan/stories/*.md`, whose `Tasks` section is a GFM checklist, and every pass moves the marker
+onto the `Rabbit holes` item below it — contradicting the fixed shape the
+[story headings reference](https://github.com/gubasso/plan-xp/blob/develop/docs/reference/story-headings.md)
+requires and the `MD043` hook gates.
+
+It bit the shipped
+[story template](https://github.com/gubasso/plan-xp/blob/develop/share/init/templates/story.md)
+hardest, which is why that project excludes its whole payload directory from formatting rather than
+guarding one block. This repository has no such payload and needs only the guard below.
 
 ## Workaround
 

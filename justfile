@@ -16,34 +16,27 @@ lint:
     nix develop --command editorconfig-checker
     nix develop --command pre-commit run --all-files
 
-# Verify every executable artifact the library ships (ADR-0006).
+# Verify the artifacts this repository ships and the record it consumes (ADR-0006,
+# as amended by ADR-0017). This library no longer ships an executable of its own;
+# what it ships is a record, and the tool that proves it comes from a pinned input.
 test: test-plan
 
-# programming/project-management/plan/ — the plan-zone schemas and linter.
-#   1. both schemas are valid JSON Schema draft 2020-12
-#   2. the worked example satisfies them, lane files and config alike
-#   3. the linter is shellcheck-clean
-#   4. the linter accepts the worked example, including its epic
-#   5. the writer and content gate satisfy their behavioral tests
+# _docs/plan/ — this repository's own plan record, gated by the pinned plan-xp
+# input rather than by a copy of its schemas in this tree.
+#   1. every lane file and the config match the schemas the package provides
+#   2. the record is coherent, checked by the linter from that same package
 test-plan:
-    nix develop --command check-jsonschema --check-metaschema \
-        programming/project-management/plan/plan-lane.schema.json \
-        programming/project-management/plan/plan-config.schema.json
-    nix develop --command check-jsonschema \
-        --schemafile programming/project-management/plan/plan-lane.schema.json \
-        programming/project-management/plan/example/lanes/backlog.yml \
-        programming/project-management/plan/example/lanes/todo.yml \
-        programming/project-management/plan/example/lanes/doing.yml \
-        programming/project-management/plan/example/lanes/review.yml \
-        programming/project-management/plan/example/lanes/closed.yml
-    nix develop --command check-jsonschema \
-        --schemafile programming/project-management/plan/plan-config.schema.json \
-        programming/project-management/plan/example/config.yml
-    nix develop --command shellcheck programming/project-management/plan/check-plan \
-        programming/project-management/plan/test-check-plan
-    nix develop --command programming/project-management/plan/check-plan \
-        programming/project-management/plan/example
-    nix develop --command programming/project-management/plan/test-check-plan
+    nix develop --command sh -c 'check-jsonschema \
+        --schemafile "$PLAN_XP_SCHEMA_DIR/plan-lane.schema.json" \
+        _docs/plan/lanes/backlog.yml \
+        _docs/plan/lanes/todo.yml \
+        _docs/plan/lanes/doing.yml \
+        _docs/plan/lanes/review.yml \
+        _docs/plan/lanes/closed.yml'
+    nix develop --command sh -c 'check-jsonschema \
+        --schemafile "$PLAN_XP_SCHEMA_DIR/plan-config.schema.json" \
+        _docs/plan/config.yml'
+    nix develop --command check-plan _docs/plan
 
 # Nothing to compile for a knowledge base.
 build:

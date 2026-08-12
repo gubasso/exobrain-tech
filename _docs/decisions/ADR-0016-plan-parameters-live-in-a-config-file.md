@@ -39,7 +39,4 @@ entry to express the same three values.
 
 ## Status
 
-Accepted. Enacted by
-[the config schema](../../programming/project-management/plan/plan-config.schema.json),
-[the plan-zone template](../../programming/project-management/template-plan-zone.md), and
-[04 — Gating the Plan](../../programming/project-management/04-gating-the-plan.md).
+Superseded by [ADR-0017](./ADR-0017-the-planning-method-moves-to-plan-xp.md) — the method and its artifacts now live at [plan-xp](https://github.com/gubasso/plan-xp).
