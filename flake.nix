@@ -51,17 +51,18 @@
             pkgs.typos
             pkgs.committed
 
-            # This repository keeps a plan record whose format and linter belong to
-            # a separate project. check-jsonschema validates `_docs/plan/` against
-            # the schemas the pinned plan-xp package provides, and the linter
-            # itself comes from that same package rather than from a file in this
-            # tree — see ADR-0017 for the split and ADR-0018 for why a lock-pinned
-            # public input is a tool dependency rather than an external one.
+            # This repository keeps a plan record whose format and linter belong
+            # to a separate project. check-jsonschema validates `_docs/plan/`
+            # against the schemas the pinned plan-xp package provides, and the
+            # linter itself comes from that same package rather than from a file
+            # in this tree — see ADR-0017 for the split and ADR-0018 for why a
+            # lock-pinned public input is a tool dependency rather than an
+            # external one.
             #
-            # shellcheck and shfmt left with the hook they served. A devShell entry
-            # with no gate behind it is the assertion-without-a-gate the charter
-            # forbids; `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is
-            # the story that brings both back, with a hook.
+            # There is no shellcheck or shfmt here. A devShell entry with no gate
+            # behind it is the assertion-without-a-gate the charter forbids, and
+            # `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is the
+            # story that adds the hook and the tools together.
             pkgs.check-jsonschema
 
             # The plan linter and the two schemas that gate `_docs/plan/`. They

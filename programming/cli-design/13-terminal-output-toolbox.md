@@ -8,11 +8,6 @@ Everything here was measured on 2026-08-11 against nixpkgs unstable, by running 
 reading its README. Versions are dated evidence, not a package index; the verdicts outlive them.
 Revalidate a row before adopting the tool it names, by running it rather than by reading a changelog.
 
-The subset a renderer actually needs — the padding trap, the glyph tiers, the ladder, and the adopted
-set — is restated inside
-[plan-xp](https://github.com/gubasso/plan-xp/blob/develop/docs/explanation/terminal-rendering.md),
-which carries its own copy so it stays self-contained. This chapter is the full survey.
-
 ## Method
 
 Three tests decided every row, and the second one is the interesting one.

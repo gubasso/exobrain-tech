@@ -7,4 +7,4 @@ stories:
     points: 2
     needs: []
     tags: [governance]
-    note: a pre-existing gap the migration made visible, not one it created
+    note: the five bucket scripts have never had a gate

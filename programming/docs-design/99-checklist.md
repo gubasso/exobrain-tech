@@ -29,6 +29,8 @@ Owner: [01 — Diataxis Zones](./01-diataxis-zones.md).
       [plan-xp's review checklist](https://github.com/gubasso/plan-xp/blob/develop/docs/reference/review-checklist.md).
 - [ ] Operational material is zone-first: runbooks and setup in guides, diagnostics and case studies in
       reference, never a topic directory beside the zones.
+- [ ] No document narrates its own history: no `formerly`, no `used to`, no `this replaces`, no note
+      explaining an absence. A decision record is the only home for it.
 - [ ] The root docs README is still an index.
 
 ## Decisions

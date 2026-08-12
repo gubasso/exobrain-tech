@@ -80,6 +80,23 @@ A fenced code block is still right for illustration. The line is whether the rea
 the thing and run it: if yes it is a file, because a fence cannot be validated and an unenforced
 artifact reads as verified.
 
+## No document narrates its own history
+
+Non-negotiable: a file states what is true now. It never narrates how it got that way — no `formerly`, no
+`used to`, no `this replaces`, no `inherited from`, no patch-series markers on the code a change
+touched, and no note explaining why something is absent. A reader arriving today has no idea what
+yesterday looked like, and telling them costs a sentence they cannot act on.
+
+The test: delete the clause. If nothing a reader can act on disappeared, it was archaeology.
+
+Two homes are exempt, because holding history is their entire job. A decision record says why one
+option was chosen over others at the time, and is frozen once accepted. A story's `Revisions` section
+records changes to the agreement made after that story's own work began — not where the story came
+from. Git history holds the rest, and holds it better.
+
+This binds every change, including the one that removes something: a deletion leaves no trace in
+prose, only in the log.
+
 ## Filesystem state
 
 Non-negotiable: the filesystem owns its own state, and no document indexes it. Forbidden is the

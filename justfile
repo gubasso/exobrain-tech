@@ -16,9 +16,15 @@ lint:
     nix develop --command editorconfig-checker
     nix develop --command pre-commit run --all-files
 
-# Verify the artifacts this repository ships and the record it consumes (ADR-0006,
-# as amended by ADR-0017). This library no longer ships an executable of its own;
-# what it ships is a record, and the tool that proves it comes from a pinned input.
+# Verify what this repository ships and what it consumes (ADR-0006).
+#
+# The library ships documents and, in a few buckets, a shell script a reader is
+# expected to copy and run. Those five scripts are not gated yet:
+# `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is the story that
+# gates them, and it is what returns shellcheck and shfmt to the devShell.
+#
+# What is gated here is the plan record, whose format and linter belong to the
+# pinned plan-xp input.
 test: test-plan
 
 # _docs/plan/ — this repository's own plan record, gated by the pinned plan-xp

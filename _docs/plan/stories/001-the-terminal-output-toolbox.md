@@ -71,6 +71,4 @@ start from a measurement rather than from a search.
 
 ## Revisions
 
-- Written in `.draft/plan-tooling/` while the planning method still lived in this repository. It
-  landed here rather than moving to plan-xp because its subject is CLI design; plan-xp restates the
-  subset it needs and cites this chapter as further reading.
+None.

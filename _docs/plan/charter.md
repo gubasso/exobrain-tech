@@ -12,7 +12,7 @@ verified, and adopted without reaching outside its own checkout.
 - A shipped artifact is proven by a gate, never asserted by prose.
 - One fact has one home, and the filesystem owns its own state.
 - The repository practices the methods it teaches, and adopts a published tool for a method it does
-  not. Documentation design is taught here and used here; planning is now
+  not teach. Documentation design is taught here and used here; planning is
   [plan-xp](https://github.com/gubasso/plan-xp), pinned in `flake.nix` and used here on the same
   terms.
 

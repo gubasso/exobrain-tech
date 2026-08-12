@@ -75,6 +75,4 @@ something runs them.
 
 ## Revisions
 
-- Opened by the plan-xp migration, which removed the only `shellcheck` hook this repository had and
-  made the pre-existing gap visible. The gap is older than the migration; the migration is only what
-  stopped hiding it.
+None.

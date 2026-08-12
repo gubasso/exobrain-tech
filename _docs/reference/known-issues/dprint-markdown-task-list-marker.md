@@ -46,11 +46,6 @@ onto the `Rabbit holes` item below it — contradicting the fixed shape the
 [story headings reference](https://github.com/gubasso/plan-xp/blob/develop/docs/reference/story-headings.md)
 requires and the `MD043` hook gates.
 
-It bit the shipped
-[story template](https://github.com/gubasso/plan-xp/blob/develop/share/init/templates/story.md)
-hardest, which is why that project excludes its whole payload directory from formatting rather than
-guarding one block. This repository has no such payload and needs only the guard below.
-
 ## Workaround
 
 Wrap the affected block in `<!-- dprint-ignore-start -->` and `<!-- dprint-ignore-end -->`. The
