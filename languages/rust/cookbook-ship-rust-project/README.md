@@ -100,9 +100,12 @@ targets = []
 all-features = true
 
 [advisories]
-vulnerability = "deny"
-unmaintained = "warn"
-unsound = "warn"
+# These take a scope, not a severity: all | workspace | transitive | none.
+# An advisory in scope is an error. `vulnerability`, `notice` and
+# `severity-threshold` were removed and now hard-error if named; vulnerability
+# advisories are always denied.
+unmaintained = "workspace"
+unsound = "workspace"
 yanked = "warn"
 
 [licenses]

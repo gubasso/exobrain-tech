@@ -115,7 +115,10 @@ panic           = "deny"
 
 # Restriction: style discipline
 wildcard_imports      = "deny"
-string_to_string      = "warn"
+# `string_to_string` was removed; `implicit_clone` covers those cases. Naming a
+# removed lint trips `renamed_and_removed_lints`, which `-D warnings` turns into
+# a hard error, so the gate fails on the config rather than on the code.
+implicit_clone        = "warn"
 redundant_clone       = "warn"
 unnecessary_wraps     = "warn"
 needless_pass_by_value = "warn"
@@ -216,9 +219,12 @@ targets = []
 all-features = true
 
 [advisories]
-vulnerability = "deny"
-unmaintained = "warn"
-unsound = "warn"
+# These take a scope, not a severity: all | workspace | transitive | none.
+# An advisory in scope is an error. `vulnerability`, `notice` and
+# `severity-threshold` were removed and now hard-error if named; vulnerability
+# advisories are always denied.
+unmaintained = "workspace"
+unsound = "workspace"
 yanked = "warn"
 
 [licenses]
