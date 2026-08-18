@@ -70,6 +70,10 @@ Two subjects a documentation method needs and this shelf does not yet own — co
 the shapes of runbooks, diagnostics, and case studies — are held by
 [docs-design](../docs-design/README.md).
 
+One document genre has its own shelf, because its rules are about evidence rather than about
+documentation: a page comparing this project to its alternatives is specified by
+[comparison-docs](../comparison-docs/README.md).
+
 ## House format
 
 This shelf obeys [06 — Format](./06-format.md). Chapters stay at or below 200 lines, carry no bold or
