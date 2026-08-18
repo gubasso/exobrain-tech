@@ -36,6 +36,7 @@ apply. Both failures grow with the project rather than with any single document.
 | 7        | [Lifecycle](./07-lifecycle.md)         | Changing a spec, promoting a draft, retiring a workaround.         |
 | 8        | [Gates](./08-gates.md)                 | The hook for every rule, and the honest list of unenforced ones.   |
 | 9        | [Spec to Code](./09-spec-to-code.md)   | A spec may lead its code; enactment is cited, coverage is derived. |
+| 10       | [Procedures](./10-procedures.md)       | The shape of a step, and what crosses a phase boundary.            |
 | 99       | [Checklist](./99-checklist.md)         | What must pass before a documentation change merges.               |
 |          | [Glossary](./glossary.md)              | Resolve a term at its owning chapter.                              |
 | Template | [Spec](./TEMPLATE-spec.md)             | Start a domain's contract.                                         |
@@ -65,9 +66,9 @@ over its own files — so the gate snippets are proven rather than illustrated.
 
 ## Related
 
-Four subjects a documentation method needs and this shelf does not yet own — guide shape, procedure
-artifacts, comment discipline, and the shapes of runbooks, diagnostics, and case studies — are held
-by [docs-design](../docs-design/README.md).
+Two subjects a documentation method needs and this shelf does not yet own — comment discipline, and
+the shapes of runbooks, diagnostics, and case studies — are held by
+[docs-design](../docs-design/README.md).
 
 ## House format
 

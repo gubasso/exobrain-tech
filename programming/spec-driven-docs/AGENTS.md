@@ -10,12 +10,12 @@ token-estimate: 700
 
 A spec-driven documentation framework for projects worked on by coding agents. Covers the artifact
 model, placement, the spec and its requirement blocks, the decision log, agent context budgets, the
-markdown register, lifecycle, the spec-to-code seam, and the gates that hold all of it.
+markdown register, lifecycle, the spec-to-code seam, procedure shape, and the gates that hold all of
+it.
 
 The planning method itself — how stories are written, ranked, and moved — belongs to the planning
-tool; this shelf owns only the contract its work record satisfies. Guide shape, procedure artifacts,
-comment discipline, and the shapes of runbooks, diagnostics, and case studies are held by
-`../docs-design/`.
+tool; this shelf owns only the contract its work record satisfies. Comment discipline and the shapes
+of runbooks, diagnostics, and case studies are held by `../docs-design/`.
 
 ## How to use this shelf
 
@@ -35,6 +35,7 @@ read the shelf linearly; [05 — Agent Context](./05-agent-context.md) owns focu
 | Which markdown may I use, and how long may this be?            | `06-format.md`        |
 | How does a spec change, and what happens to a draft?           | `07-lifecycle.md`     |
 | How does a spec written first become work, and who tracks it?  | `09-spec-to-code.md`  |
+| How is a step written, and what crosses a phase boundary?      | `10-procedures.md`    |
 | What hook enforces this rule?                                  | `08-gates.md`         |
 | What must pass before this change merges?                      | `99-checklist.md`     |
 | What does this shelf mean by a term?                           | `glossary.md`         |

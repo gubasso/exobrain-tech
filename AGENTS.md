@@ -64,7 +64,7 @@ only in part keeps its status and gains an `Amended by ADR-NNNN` line under `Sta
 - Every fenced code block needs a language specifier; use `text` when none applies.
 - A guide is steps, not an essay: imperative instruction, the command in a fence, and prose reserved
   for a decision, a hazard, or a non-obvious ordering constraint.
-  `programming/docs-design/10-guide-shape.md` owns the rule; ADR-0019 records the decision.
+  `programming/spec-driven-docs/10-procedures.md` owns the rule; ADR-0019 records the decision.
 - This root digest stays plain and frontmatter-free; per-directory digests carry frontmatter.
 
 ## Executable artifacts

@@ -196,5 +196,7 @@ These rules are real and no command decides them. A reviewer does.
 | A fact has exactly one owner                             | requires knowing what the fact is         |
 | A spec change is declared as a typed clause              | a command cannot see an omitted clause    |
 | A typed clause's type matches the diff                   | requires reading both sides               |
+| A step is one action, and an unprinted outcome is a step | requires reading the step                 |
+| An artifact token names one artifact, never a step       | requires judging the name                 |
 
 [99 — Checklist](./99-checklist.md) is where these are asked at review time.

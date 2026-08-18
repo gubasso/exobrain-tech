@@ -113,6 +113,20 @@ Owner: [09 — Spec to Code](./09-spec-to-code.md).
 - [ ] The cited type matches the diff: a new requirement is `ADDED`, a reworded one `MODIFIED`, a
       deleted one `REMOVED`.
 
+## Procedures
+
+Owner: [10 — Procedures](./10-procedures.md).
+
+- [ ] Every step is one action in the imperative, with at most one sentence after its command.
+- [ ] An outcome no command prints is a verification step rather than a sentence describing it.
+- [ ] The guide opens with checkable preconditions and closes with a verification step that states
+      what a correct result looks like.
+- [ ] Every artifact token is upper-snake, names the artifact rather than the step, and carries no
+      realistic value.
+- [ ] Every phase of a multi-phase guide carries an inputs line naming each producer, and every phase
+      that produces an artifact ends with an outputs block.
+- [ ] No outputs block was promoted to a heading, and none defines the artifact it names.
+
 ## Gates
 
 Owner: [08 — Gates](./08-gates.md).
