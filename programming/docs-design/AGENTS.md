@@ -15,6 +15,10 @@ mechanics, procedure artifacts, and the documentation review gate.
 Planning scope, stories, and the lane record are outside this shelf and outside this repository:
 they route to [plan-xp](https://github.com/gubasso/plan-xp), pinned in `flake.nix`.
 
+The documentation method is [spec-driven-docs](../spec-driven-docs/README.md). This shelf is where
+guide shape, procedure artifacts, comment discipline, subsystem pages, and the shapes of runbooks,
+diagnostics, and case studies are written.
+
 ## How to use this shelf
 
 Load this file, find the owning chapter below, then read that chapter and the sources it names. Do not

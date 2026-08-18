@@ -24,7 +24,7 @@ directory structure best serves the knowledge within a bucket.
 `_docs/` is **not** the product. It holds the metadata and specs _about_ the product — governance,
 ADRs, conventions, architecture, guides, and explanation about how this knowledge base itself works
 — organized by Diátaxis zone (`decisions/`, `guides/`, `reference/`, `explanation/`) and following
-the docs-design method.
+the spec-driven-docs method.
 
 Never place a knowledge article under `_docs/`. Placement test: "Is this about how the KB works?" →
 `_docs/`. "Is this knowledge the library serves?" → the owning bucket. Cross-link from `_docs/` only
@@ -109,4 +109,5 @@ welcome wherever its entries carry their own payload: what a directory reserves,
 specifies, its domain and scope. Justify it like any other content, not by the directory's existence.
 The test: strip the paths out and read what is left — if nothing teaches, it was the listing. A
 layout a reader is told to create in their own project is a specification, not a copy, and stays.
-`programming/docs-design/00-foundations.md` owns the full rule; ADR-0007 records the decision.
+`programming/spec-driven-docs/00-model.md` owns the full rule; ADR-0007 records the decision. How a
+section's heading decides the judgment is held by `programming/docs-design/00-foundations.md`.

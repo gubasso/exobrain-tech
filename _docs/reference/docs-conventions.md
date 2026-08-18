@@ -4,6 +4,9 @@ How `exobrain-tech` organizes and maintains the specs about its knowledge-base p
 small set of homes with clear ownership: each fact has one durable source of truth, each document
 serves one reader need, each decision stays short enough to review and supersede.
 
+The method is [spec-driven-docs](../../programming/spec-driven-docs/README.md); this page states how
+this repository applies it.
+
 Sources: <https://diataxis.fr/> and
 <https://www.writethedocs.org/guide/writing/docs-principles/>.
 
@@ -47,7 +50,7 @@ file moves. Naming files in prose is normal, and a list, table, or full tree bel
 entries carry their own payload: what a directory reserves, what a file specifies, its scope. Strip
 the paths out and read what is left — if nothing teaches, it was the index. A generated table of
 contents of a page's own headings is not disk state and belongs to its generator.
-`programming/docs-design/00-foundations.md` owns the rule; see
+`programming/spec-driven-docs/00-model.md` owns the rule; see
 [ADR-0007](../decisions/ADR-0007-filesystem-owns-disk-state.md).
 
 ## Drafts

@@ -46,7 +46,7 @@ bindings overlay it with concrete tooling, and it hands off to the later `releas
 - This is a **generated digest**; regenerate it (updating `last-synced` and `token-estimate`)
   whenever the shelf's knowledge changes. Do not add guidance absent from the sources.
 - Related trees are referenced, not owned: `../release-workflow/` (next phase),
-  `../../tools/git/branch-protection/` (platform runbooks/rulesets), and `../docs-design/` (the
+  `../../tools/git/branch-protection/` (platform runbooks/rulesets), and `../spec-driven-docs/` (the
   single-source-of-truth and Diátaxis standards this shelf obeys).
 - Language bindings and implementation-kind files live under `languages/<lang>/`; add or
   refresh them independently of this general spine.

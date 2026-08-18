@@ -25,4 +25,5 @@ reference, and explanations.
 
 ## Status
 
-Accepted.
+Superseded by
+[ADR-0020](./ADR-0020-spec-driven-docs-is-the-documentation-method.md).

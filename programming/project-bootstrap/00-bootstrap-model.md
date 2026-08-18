@@ -3,7 +3,7 @@
 **Bootstrap** is the once-per-project phase that takes an empty repository to a scaffolded,
 quality-gated baseline ready for feature work. It is a **how-to guide** in the Diátaxis sense —
 task-oriented, ordered, assuming you know what a project is and just need the steps — not a
-tutorial. See [docs-design / Diátaxis zones](../docs-design/01-diataxis-zones.md).
+tutorial. See [spec-driven-docs / placement](../spec-driven-docs/01-placement.md).
 
 ## The once-per-project phase
 
@@ -35,7 +35,7 @@ The layers link; they never duplicate. Branch protection lives under
 [`tools/git/branch-protection/`](../../tools/git/branch-protection/) and is _referenced_ from the
 runbook, not copied. Release setup lives in [release-workflow](../release-workflow/README.md). This
 is the single-source-of-truth discipline from
-[docs-design / single source of truth](../docs-design/00-foundations.md): duplicated
+[spec-driven-docs / single source of truth](../spec-driven-docs/00-model.md): duplicated
 instructions drift, so each fact is owned in one place and pointed to from everywhere else.
 
 ## Relationship to the release phase

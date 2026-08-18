@@ -37,6 +37,12 @@ own tooling and is outside this shelf. It lives at
 [plan-xp](https://github.com/gubasso/plan-xp), which this repository consumes as a pinned
 `flake.nix` input.
 
+The repository's documentation method is
+[spec-driven-docs](../spec-driven-docs/README.md), which owns ownership, placement, decision
+records, agent context, drafts, reference maintenance, markdown mechanics, and the review gate.
+What this shelf owns and that one does not: guide shape, procedure artifacts, comment discipline,
+subsystem pages, and the shapes of runbooks, diagnostics, and case studies.
+
 ## Reading
 
 Read ownership before placement, then compare frozen ADRs with living subsystem pages. Agent context

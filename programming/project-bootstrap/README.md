@@ -106,8 +106,8 @@ when you bootstrap a project of that kind.
   scaffolded and gated.
 - [Branch protection & CI-driven release](../../tools/git/branch-protection/) — the platform
   runbooks and rulesets the bootstrap runbook invokes (linked, never copied here).
-- [Single source of truth](../docs-design/00-foundations.md) and
-  [Diátaxis zones](../docs-design/01-diataxis-zones.md) — the docs-design standards this shelf
+- [Single source of truth](../spec-driven-docs/00-model.md) and
+  [Diátaxis zones](../spec-driven-docs/01-placement.md) — the spec-driven-docs standards this shelf
   obeys: one owner per fact, runbooks are how-to guides.
 
 ## TL;DR (the irreducible defaults)
