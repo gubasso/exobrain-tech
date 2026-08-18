@@ -31,45 +31,17 @@ For the related auth setup and the recovery flow when an overlay goes wrong, see
 
 ## 1. Create the project
 
-`osc meta prj -e <project>` opens `$EDITOR` with the project's `_meta` XML. For a fresh home
-project:
+Create `home:<user>:<project>` and its build targets per
+[creating-an-obs-project.md](./creating-an-obs-project.md).
 
-```xml
-<project name="home:<user>:<project>">
-  <title>One-line description</title>
-  <description>Optional longer description.</description>
-  <person userid="<user>" role="bugowner"/>
-  <person userid="<user>" role="maintainer"/>
-  <build>    <enable/></build>
-  <publish>  <enable/></publish>
-  <debuginfo><enable/></debuginfo>
+Choosing the lanes for an overlay project:
 
-  <repository name="SLE_15_SP7">
-    <path project="SUSE:SLE-15-SP7:Update" repository="standard"/>
-    <path project="SUSE:SLE-15-SP7:GA"     repository="standard"/>
-    <arch>x86_64</arch>
-  </repository>
-  <repository name="SLE_15_SP6">
-    <path project="SUSE:SLE-15-SP6:GA" repository="standard"/>
-    <arch>x86_64</arch>
-  </repository>
-  <!-- repeat per SP you care about -->
-</project>
-```
-
-Rules of thumb:
-
-- **One `<repository>` per target SP**, with the lane name (e.g. `SLE_15_SP6`) matching whatever
-  taxonomy your consumer uses to pick a repo at install time.
-- The first `<path>` is the _base_ of the resolver search; the resolver looks at later `<path>`
-  entries to satisfy any BuildRequires that don't resolve in the first. For SP7, listing `:Update`
-  before `:GA` gives security-patched binaries first shot. For other SPs, `:GA` alone is usually
-  enough.
-- Add `<arch>aarch64</arch>` only when you need an arm64 lane — builds are not free, and extra
-  arches surface unrelated failures.
-- Trim aggressively: every lane you list takes scheduler time.
-
-Save and exit; `osc` validates and pushes. `osc meta prj <project>` confirms.
+- One `<repository>` per target SP, with the lane name (`SLE_15_SP6`) matching whatever taxonomy
+  your consumer uses to pick a repo at install time.
+- List `:Update` before `:GA` on an SP you want security-patched binaries for. On the others, `:GA`
+  alone is usually enough.
+- Add `<arch>aarch64</arch>` only when you need an arm64 lane. Extra arches surface unrelated
+  failures, and every lane takes scheduler time.
 
 ## 2. Base package — import directly OR branch from upstream
 

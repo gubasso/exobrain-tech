@@ -114,8 +114,22 @@ Owner: [09 — Procedure Artifacts](./09-procedure-artifacts.md).
       produces nothing says so rather than staying silent.
 - [ ] Each inputs line names a producer for every token it lists; a citation of a later phase is a
       recorded exception, cross-linked both ways.
-- [ ] Phases are numbered actions with commands in fenced blocks, not prose describing commands.
 - [ ] Reference, explanation, and decision records carry no tokens, and any exempted guide records why.
+
+## Guide shape
+
+Owner: [10 — Guide Shape](./10-guide-shape.md).
+
+- [ ] Steps are numbered when order binds, written in the imperative, with everything the reader
+      types in a fenced block that declares a language.
+- [ ] No step is announced by one sentence and summarized by another; each sentence that stays is
+      one a reader needs to perform the step.
+- [ ] Prose appears only for a decision the reader must make, a hazard stated where it is hit, or a
+      non-obvious ordering constraint; everything else is a table, a list, or a fence.
+- [ ] No concept is explained at the step. The guide links the page that owns it.
+- [ ] The guide opens with checkable preconditions and closes with a verification step carrying the
+      command and the result that proves it.
+- [ ] The heading list reads as one task; a page carrying two tasks or a reference table was split.
 
 ## Verification
 

@@ -2,86 +2,55 @@
 
 > <https://openbuildservice.org/> · <https://en.opensuse.org/openSUSE:OSC>
 
-Notes on running an OBS home/test project end-to-end with `osc` from the command line —
-authentication, project setup, link-based overlays, and the diagnose/recover loop for the classes of
-build-system errors that can't be inferred from prior context.
+Running an OBS home or test project end-to-end with `osc`: authentication, project and package
+setup, link-based overlays, and the diagnose-and-recover loop for the build-system errors that
+cannot be inferred from prior context.
 
-## Index
+These notes are project-agnostic. A concrete project keeps its own applied companion — real project,
+package, and patch names, plus its incident log — in its own repository under `docs/`.
 
-- [setup-home-project-from-upstream.md](./setup-home-project-from-upstream.md) — from-scratch
-  walkthrough for a home OBS project that overlays one or more upstream packages with local patches.
-  Covers project meta, base-package import vs branch, satellite `_link` topology with
-  `<apply name="…patch"/>`, branched providers, the orphan-patch trap, and the verification
-  sequence.
-- [broken-state-link-drift.md](./broken-state-link-drift.md) — what OBS's `broken` lane state means,
-  the diagnostic recipe (verbose results + `?expand=1` body), and the `osc add` / `osc rm` /
-  `osc ci` recovery for `_link.apply` ↔ source-tree drift. The class of error that bites you the
-  second time you rename an overlay patch.
-- [auth-in-devcontainers.md](./auth-in-devcontainers.md) — decision matrix and Tier 1 (obfuscated
-  config file) walkthrough for `osc` auth in dctl / VS Code devcontainers without a host keyring.
-  Covers all five tiers, the `osc vc` / `obs-build` dependency, and the troubleshooting section for
-  the `NoneType` seed bug and the `trusted-certs` permission error.
-- [common-mistakes-and-pitfalls.md](./common-mistakes-and-pitfalls.md) — the "what not to do"
-  companion to the setup guide. Five categories (auth, workspace, CLI foot-guns, patch/link
-  evolution, diagnostic discipline) with one entry per real incident: what happened, why it bit, the
-  rule that prevents recurrence. Read end-to-end the first time; cheat-sheet thereafter.
-- [libexpat-source-naming.md](./libexpat-source-naming.md) — concrete instance of the
-  binary-vs-source naming convention: the `libexpat1` RPM ships from source pkg `expat`, not
-  `libexpat`. Authoritative probe (`/search/published/binary/id`), the
-  `osc branch <src-prj> <src-pkg> <tgt-prj> <tgt-pkg>` rename trick that keeps downstream consumers
-  referring to `libexpat`, cross-project version + CVE patch matrix, and why
-  `SUSE:SLE-15-SP<n>:Update` beats `openSUSE:Factory` as a branch source for SLES overlay work.
-- [blocked-state-is-transient.md](./blocked-state-is-transient.md) — `osc results` reporting
-  `blocked: <dep>` on a lane is a scheduler-waiting state (not terminal). Default 15–20 min wait
-  before any intervention; `osc rebuild` is harmful when issued over an in-flight auto-rebuild.
-  Decision table for wait vs probe vs escalate.
-- [sle-update-pool-vs-standard.md](./sle-update-pool-vs-standard.md) — `SUSE:SLE-15-SP<n>:Update`
-  (and other `kind="maintenance_release"` projects) typically has project-level publish disabled;
-  its `standard` repo is empty. Maintenance binaries live under the `pool` repo. The canonical
-  consumer-side resolver `<path>` is
-  `<path project="<source-distro>:<version>:Update" repository="pool"/>`. Includes the probe recipe
-  and the trade-off vs `osc branch` for the same purpose.
-- [osc-commands.md](./osc-commands.md) — compact cheat sheet of the most-used `osc` verbs grouped by
-  workflow (auth, checkout/branch, sources, changelog, build, commit/submit, services, install test,
-  merge). Companion to the deeper guides; quickest answer to "what was the flag for X?".
-- [obs-github-coordination.md](./obs-github-coordination.md) — the upstream-vs-OBS dual-repo
-  discipline. Carry patches only while the upstream fix is pending; drop them the moment a release
-  tagged with the fix lands. Covers tarball-based patch mechanics (`tar xf` + `diff -u` +
-  `PatchN:`), the `Upstream-Status:` header convention, and the carry → drop lifecycle.
-- [templates/](templates/README.md) — reusable OBS `_meta` XML for projects and packages
-  (Tumbleweed/Leap/SLE targets, package descriptor with upstream URL), plus a real applied example.
-  Copy, fill in placeholders, apply with `osc meta -F`.
-- [case-studies/](case-studies/) — narrative reflections on real incidents (goal → mistakes → fix →
-  rule distilled → happy path → final result). Read once per topic to install the lesson; the topic
-  notes above are the reference cards you grep for afterwards. Current entries:
-  - [`01-broken-link-drift-after-patch-rename.md`](case-studies/01-broken-link-drift-after-patch-rename.md)
-    — every lane went `broken: patch '<new>' does not exist` after a converger renamed an overlay
-    patch but didn't `osc rm` the old one. The `broken` state is pre-build, distinct from
-    `unresolvable` / `failed`, with its own diagnostic recipe and one-commit workspace recovery.
-  - [`02-libexpat-abi-override-via-sles-update-branch.md`](case-studies/02-libexpat-abi-override-via-sles-update-branch.md)
-    — overriding a buildroot ABI by branching a SUSE Update package into the home project. Two
-    foot-guns: binary RPM name ≠ source pkg name (`libexpat1` ships from `expat`), and
-    `openSUSE:Factory` is rarely the right branch source for SLES overlay work. The 4-arg
-    `osc branch` rename form solves both.
+## Doing
 
-## Companion files
+| Document                                                                     | What it gets you                                                                                                                                                              |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [creating-an-obs-project.md](./creating-an-obs-project.md)                   | A project or subproject on any OBS instance: the maintainer ACL that gates a colon-named name, the `_meta` that creates it, and the search call that lists what exists        |
+| [setup-home-project-from-upstream.md](./setup-home-project-from-upstream.md) | A home project overlaying upstream packages: base-package import against branch, satellite `_link` topology with `<apply>`, branched providers, and the verification sequence |
+| [auth-in-devcontainers.md](./auth-in-devcontainers.md)                       | `osc` credentials inside a devcontainer with no host keyring: five tiers, the obfuscated-config walkthrough, and the `osc vc` and `obs-build` dependency                      |
+| [osc-commands.md](./osc-commands.md)                                         | The verb you half-remember, grouped by workflow, with the synopses that are easy to get wrong (`osc co`, `osc branch`, `osc build`)                                           |
 
-- `systems/linux/opensuse/opensuse-build-service-obs.md` — curated upstream-URL
-  index for OBS / osc / packaging documentation (kept in the openSUSE subtree because the curated
-  links live there); cross-links into this `osc-obs` subtree.
-- `tools/dctl.md` — `dctl` CLI surface used by `auth-in-devcontainers.md` when the
-  host runs containers via dctl rather than vanilla VS Code remote-containers.
-- [`runbook-template.md`](./runbook-template.md) — generic shape for a per-lane convergence runbook
-  driven by a Claude self-debug loop. Placeholder-based so it can be copied into any OBS overlay
-  project's `docs/` tree.
-- [`../../workflows/claude-self-debug-loop.md`](../../workflows/claude-self-debug-loop.md) —
-  architecture of the self-debug loop that consumes the runbook above (driver, log persistence,
-  failure handling, budget guardrails). Pairs with the `osc-obs` Claude Code skill in dotfiles for
-  side-effecting OBS verbs.
+## Diagnosing
 
-## Audience
+| Document                                                             | The failure it explains                                                                                                                                                                                                |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [broken-state-link-drift.md](./broken-state-link-drift.md)           | `broken` is a pre-build source-service failure, distinct from `unresolvable` and `failed`. Diagnose with verbose results plus `?expand=1`; recover `_link.apply` drift with one `osc add` / `osc rm` / `osc ci` commit |
+| [blocked-state-is-transient.md](./blocked-state-is-transient.md)     | `blocked: <dep>` is the scheduler waiting, not a terminal state. Wait 15 to 20 minutes; `osc rebuild` over an in-flight auto-rebuild makes it worse                                                                    |
+| [common-mistakes-and-pitfalls.md](./common-mistakes-and-pitfalls.md) | One entry per real incident across auth, workspace, CLI foot-guns, patch evolution, and diagnostic discipline: what happened, why it bit, the rule that prevents it                                                    |
 
-These notes are project-agnostic. Each home OBS project that uses this pattern carries its own
-applied-version companion (a setup walkthrough pinned to its concrete project / package / patch
-names, plus a chronological mistakes-log when one exists) in its own repo under `docs/` — keep those
-there, not here.
+## Looking up
+
+| Document                                                           | The fact it owns                                                                                                                                                           |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [sle-update-pool-vs-standard.md](./sle-update-pool-vs-standard.md) | `kind="maintenance_release"` projects publish under `pool`, not `standard`, so the consumer `<path>` names `pool` — and adding a path beats branching for the same purpose |
+| [libexpat-source-naming.md](./libexpat-source-naming.md)           | A binary RPM name is not its source package name (`libexpat1` ships from `expat`). The authoritative probe, and the 4-arg `osc branch` rename that keeps consumers working |
+| [obs-github-coordination.md](./obs-github-coordination.md)         | Carry a patch only while the upstream fix is pending, and drop it when a release ships it. Tarball patch mechanics and the `Upstream-Status:` convention                   |
+
+## Directories
+
+- [templates/](templates/README.md) — reusable project and package `_meta` XML for Tumbleweed, Leap,
+  and SLE targets, applied with `osc meta -F`, plus one real applied example.
+- [case-studies/](case-studies/) — one incident each, told end to end: goal, what went wrong, the
+  fix that landed, and the rule distilled. Read once to install the lesson; the topic notes above
+  are what you grep afterwards.
+
+## Automating
+
+[runbook-template.md](./runbook-template.md) is the per-lane convergence runbook a Claude self-debug
+loop consumes. Its driver, log persistence, and budget guardrails live in
+[`../../workflows/claude-self-debug-loop.md`](../../workflows/claude-self-debug-loop.md).
+
+## Companions
+
+- [`../../systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md)
+  — curated upstream URL index for OBS, `osc`, and packaging documentation.
+- [`../dctl.md`](../dctl.md) — the `dctl` CLI surface used when containers run through dctl rather
+  than vanilla remote-containers.

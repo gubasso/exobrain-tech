@@ -1,7 +1,7 @@
 ---
 digest-of: programming/docs-design
-last-synced: 2026-08-11
-token-estimate: 650
+last-synced: 2026-08-18
+token-estimate: 690
 ---
 
 # AGENTS
@@ -35,6 +35,7 @@ read the shelf linearly; [04 — Agent Context](./04-agent-context.md) owns focu
 | How is an external-system bug recorded and retired?                | `07-known-issues.md`              |
 | Which markdown constructs carry structure, and how is shape gated? | `08-lean-markdown.md`             |
 | How does a guide name values crossing phase boundaries?            | `09-procedure-artifacts.md`       |
+| How large is a step, and how much prose may a guide spend?         | `10-guide-shape.md`               |
 | What must pass before a documentation change merges?               | `99-checklist.md`                 |
 | What does this shelf mean by a documentation term?                 | `glossary.md`                     |
 
@@ -48,6 +49,8 @@ read the shelf linearly; [04 — Agent Context](./04-agent-context.md) owns focu
 - Use no bold or italics, and give every fenced block a language.
 - A fixed shape has one `MD043` array applied by one hook; free-form documents are not gated.
 - A multi-phase guide names what each phase consumes and produces; artifact tokens carry no real value.
+- A guide is steps, not an essay: imperative instruction, the command in a fence, prose reserved for
+  a decision, a hazard, or a non-obvious ordering constraint.
 - The filesystem owns its state; a tree, list, or table stays only when its entries teach something.
 
 ## Maintenance

@@ -43,6 +43,12 @@ chapters, then state local exceptions below the block.
 - Use no bold or italics. Put identifiers, paths, flags, and statuses in inline code, and give every
   fenced block a language.
 - Preserve lowercase `<angle>` placeholders in project-agnostic material.
+- Write a guide as steps, not an essay: imperative instruction, everything the reader types in a
+  fenced block, and at most one sentence of why after the command.
+- Spend prose in a guide only on a decision the reader must make, a hazard where it is hit, or a
+  non-obvious ordering constraint; use a table, a list, or a fence for the rest.
+- Open a guide with checkable preconditions and close it with a verification step that carries the
+  command and the result proving the outcome.
 - Make each phase of a multi-phase guide name its input and output artifacts using upper-snake
   `<ANGLE>` tokens that never carry real values.
 - Report documentation changes by ownership: which source changed, which links were added, and

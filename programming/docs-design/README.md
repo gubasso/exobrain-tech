@@ -25,6 +25,7 @@ from code, chat history, or old issues.
 | 7        | [Known Issues](./07-known-issues.md)                           | Track bugs in external systems under test; expand then collapse.    |
 | 8        | [Lean Markdown](./08-lean-markdown.md)                         | Spend markdown on structure, and gate contractual document shapes.  |
 | 9        | [Procedure Artifacts](./09-procedure-artifacts.md)             | Name what each phase of a guide produces and what it consumes.      |
+| 10       | [Guide Shape](./10-guide-shape.md)                             | Step size, imperative voice, and the prose a guide may spend.       |
 | 99       | [Checklist](./99-checklist.md)                                 | Review durable documentation before merging it.                     |
 |          | [Glossary](./glossary.md)                                      | Resolve documentation terms at their owning chapters.               |
 | Template | [ADR](./template-adr.md)                                       | Start a decision record with the shelf's fixed shape.               |
@@ -40,7 +41,8 @@ own tooling and is outside this shelf. It lives at
 
 Read ownership before placement, then compare frozen ADRs with living subsystem pages. Agent context
 and drafts explain how material is loaded and promoted; tracking, known issues, markdown mechanics,
-procedure artifacts, and the review checklist apply those foundations to durable documentation.
+procedure artifacts, guide shape, and the review checklist apply those foundations to durable
+documentation.
 
 An agent should load [AGENTS.md](./AGENTS.md), choose the owning chapter from its routing table, and
 read that chapter plus the sources it names.
