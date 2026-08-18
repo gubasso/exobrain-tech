@@ -174,7 +174,7 @@ Key data points for justifying spec-driven workflows:
 | Artifact     | Lives In                 | Lifecycle          | SoT For             | Update Frequency       |
 | ------------ | ------------------------ | ------------------ | ------------------- | ---------------------- |
 | Feature spec | `docs/spec/` or `specs/` | Pre-impl → archive | Intent (temporary)  | Never post-archive     |
-| ADR          | `docs/adr/`              | Immutable          | Decision rationale  | Never (supersede)      |
+| ADR          | `docs/decisions/`        | Immutable          | Decision rationale  | Never (supersede)      |
 | CLAUDE.md    | Repo root                | Living             | Project conventions | As conventions change  |
 | Tests        | `tests/`                 | Living             | Behavior            | With every code change |
 | Code         | `src/` / `lib/`          | Living             | Implementation      | Continuously           |

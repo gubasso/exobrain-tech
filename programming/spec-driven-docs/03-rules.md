@@ -12,7 +12,7 @@ table of contents becomes an index of rule IDs rather than a list of sentences.
 ```markdown
 ### `decision-records:filename-carries-no-digit` — Decision record filenames carry no number
 
-When an author creates a decision record, the author MUST name it `ADR-<imperative-slug>.md`.
+When an author creates a decision record, the author MUST name it `ADR-<slug>.md`.
 
 #### Scenario: Two worktrees add a record for the same seam
 

@@ -62,9 +62,9 @@ token-estimate: <approx tokens>
 Regenerate a digest when the area's knowledge changes. A digest keeps no index of the directory: the
 filesystem owns what exists, and a checked-in list drifts on the next add or rename. It names a file
 when it has something to say about it. See
-[ADR-0007](../decisions/ADR-0007-filesystem-owns-disk-state.md). When a digest and a
+[ADR-filesystem-owns-disk-state](../decisions/ADR-filesystem-owns-disk-state.md). When a digest and a
 source file disagree, the source file wins and the digest is regenerated. Copy
-[`../reference/agents-digest-template.md`](../reference/agents-digest-template.md) into a content
+[`../reference/TEMPLATE-agents-digest.md`](../reference/TEMPLATE-agents-digest.md) into a content
 area as its `AGENTS.md` to start one.
 
 This standard is a default feature of `exobrain-tech`: agents entering any area get an accurate,

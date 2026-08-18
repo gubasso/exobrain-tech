@@ -43,7 +43,7 @@ independent version to track — `--runtime krun` dispatches into the `+LIBKRUN`
 
 ## Known issues
 
-### KI-01 — `\n` mangled in `sh -c` payloads under `--runtime krun`
+### KI-krun-mangles-newlines-in-sh-c — `\n` mangled in `sh -c` payloads under `--runtime krun`
 
 **Status:** classified 2026-05-19. Upstream report drafted (see
 [Upstream bug report](#upstream-bug-report-drafted-ready-to-file) below), not yet filed.
@@ -151,14 +151,14 @@ with the issue URL after filing.
 
 <!-- TODO(upstream-url): replace this comment with the filed issue URL once the bug is reported. Search: TODO(upstream-url) -->
 
-### KI-02 — `@devcontainers/cli` cannot bring a container up under `--runtime krun`
+### KI-devcontainers-cli-fails-under-krun — `@devcontainers/cli` cannot bring a container up under `--runtime krun`
 
-**Status:** consequence of [KI-01](#ki-01--n-mangled-in-sh--c-payloads-under---runtime-krun); not a
+**Status:** consequence of [KI-krun-mangles-newlines-in-sh-c](#ki-krun-mangles-newlines-in-sh-c--n-mangled-in-sh--c-payloads-under---runtime-krun); not a
 separate bug. **First observed:** `@devcontainers/cli` 0.86.0 against podman 5.8.2 + crun 1.27.1
 (`--krun`).
 
 `devcontainer up --workspace-folder X --docker-path "$(command -v podman)"` fails because the CLI's
-keep-alive shim is a multi-line `sh -c` payload that trips KI-01. The container does get created
+keep-alive shim is a multi-line `sh -c` payload that trips KI-krun-mangles-newlines-in-sh-c. The container does get created
 (podman returns a container ID) but every subsequent in-container probe fails over the broken
 channel.
 
@@ -398,14 +398,14 @@ the `-c` payload that crosses the host→guest boundary at container start.
   `Environment` section above. Stale versions will get the report bounced.
 - File against **containers/crun first** — that's where the `--krun` handler dispatches. If
   maintainers redirect to libkrun, mirror it there with a back-link.
-- After filing, update the KI-01 status banner and the `TODO(upstream-url)` marker with the filed
+- After filing, update the KI-krun-mangles-newlines-in-sh-c status banner and the `TODO(upstream-url)` marker with the filed
   issue URL.
 - If the maintainer asks for a smaller repro, try a one-character second line: `-c $'a\nb'` — likely
   produces `a` then `/bin/sh: 2: nb: not found`.
 
 ## Investigation log
 
-- **2026-05-19** — An isolation spike classified KI-01 by isolating the bug from
+- **2026-05-19** — An isolation spike classified KI-krun-mangles-newlines-in-sh-c by isolating the bug from
   `@devcontainers/cli`. A two-line `echo` script under raw `podman run --runtime krun` reproduces;
   the same script under default `crun` is clean. Bug located in `crun --krun` / libkrun argv path,
   not in any caller. Spike status flipped from "blocked — pending classification" to "classified —

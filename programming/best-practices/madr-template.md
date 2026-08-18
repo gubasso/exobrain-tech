@@ -2,15 +2,17 @@
 
 Format: Markdown Architecture Decision Record (MADR) v3. Spec: <https://adr.github.io/madr/>
 
-The skill scaffolds the first two ADRs at plan-creation time (`0001-rewrite-decision.md`,
-`0002-parity-boundary.md`). The implementation agent writes additional ADRs (`0003-*`, …) as it
-encounters non-trivial design choices during Phase C.
+Name each filled record `ADR-<slug>.md`: the slug is the identifier, so parallel branches cannot
+allocate the same id and a rename never has to happen.
+[spec-driven-docs / decisions](../spec-driven-docs/04-decisions.md) owns the naming rule and the
+minimal five-section body this repository uses; the frontmatter below is upstream MADR v3, which
+carries more fields than that shape needs.
 
 ## Template
 
 ```markdown
 ---
-status: proposed | accepted | rejected | deprecated | superseded by adr/NNNN-name.md
+status: proposed | accepted | rejected | deprecated | superseded by ADR-<slug>.md
 date: <YYYY-MM-DD>
 decision-makers: [<names or roles>]
 consulted: [<names or roles>]
@@ -76,7 +78,7 @@ exercises it?>
 
 - Canonical guideline section: `{{GUIDELINE_PATH}}#<anchor>`
 - Target-language canon: `{{TARGET_LANG_CANON}}#<anchor>` (if relevant)
-- Related ADRs: `adr/NNNN-name.md`
+- Related ADRs: `ADR-<slug>.md`
 ```
 
 ## When to write an ADR

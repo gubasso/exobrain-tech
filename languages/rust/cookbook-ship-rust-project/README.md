@@ -479,7 +479,7 @@ Branch model, release-plz/OIDC, and metadata are identical. Differences:
 
 [^rule]: Cookbook duplication is a sanctioned exception to the repo's SoT/DRY rule — see
     the repo's `AGENTS.md` and
-    [ADR-0002](../../../programming/design-decisions/cookbook-duplication-exception.md).
+    [ADR-cookbook-duplication-exception](../../../_docs/decisions/ADR-cookbook-duplication-exception.md).
 
 [^gen-bootstrap]: [General project-bootstrap](../../../programming/project-bootstrap/README.md) —
     the language-agnostic once-per-project recipe.

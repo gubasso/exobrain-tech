@@ -21,7 +21,7 @@ systems/shell/util_scripts/run_in_background.sh
 ## Core
 
 A hook that selects every shell script under a content bucket, and a `just test` case behind it.
-ADR-0006 requires it, and the requirement has been unmet since the files were written.
+ADR-executable-artifacts-in-the-library requires it, and the requirement has been unmet since the files were written.
 
 ## In scope
 
@@ -37,7 +37,7 @@ ADR-0006 requires it, and the requirement has been unmet since the files were wr
 
 ## Governed by
 
-- `_docs/decisions/ADR-0006-executable-artifacts-in-the-library.md` — the three obligations a
+- `_docs/decisions/ADR-executable-artifacts-in-the-library.md` — the three obligations a
   shipped artifact carries, one of which is the hook this story adds.
 - `AGENTS.md` — the same rule as a repository non-negotiable.
 - `programming/cli-design/README.md` — the shell conventions the scripts are held to.

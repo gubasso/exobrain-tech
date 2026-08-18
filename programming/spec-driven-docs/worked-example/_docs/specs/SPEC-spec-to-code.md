@@ -85,3 +85,16 @@ The author MUST cite an agreement in code by its rule ID rather than by naming a
   rule is what binds
 
 Verify: `grep -rnE "^[[:space:]]*#.*\bADR-" src tests && exit 1 || exit 0`
+
+### `spec-to-code:a-suppression-names-its-case` — A suppression names its known-issue case
+
+Where a test is suppressed or left failing, the author MUST name the `KI-<slug>` case at the
+suppression.
+
+#### Scenario: A suppression names a case that no record defines
+
+- GIVEN an expected failure whose reason is `KI-vendor-drops-the-body`
+- WHEN no record under known-issues carries that name
+- THEN the suppression fails, because a mask nobody can look up never gets removed
+
+Verify: `grep -rhoE "\\bKI-[a-z0-9-]+" src tests | sort -u > /tmp/kc; ls _docs/reference/known-issues | sed "s/\\.md$//" | sort -u > /tmp/kr; comm -13 /tmp/kr /tmp/kc | grep . && exit 1 || exit 0`

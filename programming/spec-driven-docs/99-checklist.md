@@ -24,8 +24,9 @@ Owner: [01 — Placement](./01-placement.md).
       product content sits under it.
 - [ ] Each document has one primary reader need and lives in the matching zone.
 - [ ] Every spec is at `<root>/specs/SPEC-<domain>.md` and none is co-located with what it governs.
-- [ ] Every file whose kind this framework fixes carries its uppercase prefix: `SPEC-`, `ADR-`, or
-      `TEMPLATE-`. Guides, reference, and explanation pages carry none.
+- [ ] Every file whose kind this framework fixes carries its uppercase prefix: `SPEC-`, `ADR-`,
+      `KI-`, or `TEMPLATE-`. Guides, reference, and explanation pages carry none.
+- [ ] No prefixed filename carries a counter; the slug is the identifier.
 - [ ] No exploratory material entered the docs root.
 
 ## Specs
@@ -64,7 +65,7 @@ Owner: [04 — Decisions](./04-decisions.md).
 
 - [ ] The choice cleared the threshold: cross-cutting, expensive to reverse, constraining, or
       rejecting a plausible alternative.
-- [ ] The filename is `ADR-<imperative-slug>.md` and carries no digit.
+- [ ] The filename is `ADR-<slug>.md` and carries no digit.
 - [ ] No merged record was renamed or deleted.
 - [ ] No record was edited to describe a later design.
 - [ ] The body is at or below 350 words, uses the five sections, and carries exactly one `Status`.
@@ -105,8 +106,8 @@ Owner: [07 — Lifecycle](./07-lifecycle.md).
 - [ ] A fact depending on an external source has an entry in the tracking registry.
 - [ ] A workaround added here names the condition that retires it, and a workaround whose condition is
       met was removed along with its record.
-- [ ] Every known-issue record carries exactly one state, and a masked one carries a retire condition
-      where a mitigated one carries none.
+- [ ] Every known-issue record is named `KI-<slug>.md`, carries exactly one state, and a masked one
+      carries a retire condition where a mitigated one carries none.
 - [ ] A resolved symptom that could recur and be misread left a diagnostic entry, and no archive of
       resolved cases was created.
 
@@ -124,8 +125,8 @@ Owner: [09 — Spec to Code](./09-spec-to-code.md).
 - [ ] Every rule ID cited in code resolves to a requirement in a spec.
 - [ ] A comment that survived holds what the code cannot express; one restating the next line was
       deleted and one covering for a vague name became the name.
-- [ ] Every suppressed or failing test names its case id and the condition that removes it, and every
-      expected failure uses the strict form.
+- [ ] Every suppressed or failing test names its case id, every case id resolves to a `KI-<slug>.md`
+      record, and every expected failure uses the strict form.
 
 ## Procedures
 

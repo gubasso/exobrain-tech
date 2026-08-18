@@ -122,7 +122,7 @@ truth. Firecracker and every project in the entry-point table below reached the 
 [`sysexits(3)`](https://man.freebsd.org/cgi/man.cgi?query=sysexits&sektion=3) now says the interface
 "has been deprecated and is retained only for compatibility. Its use is discouraged," and notes that
 the choice of an appropriate value is often ambiguous. None of the reference projects in chapter 10
-use sysexits values. This spec keeps them anyway — see ADR-0003 for why — but the honest consequence
+use sysexits values. This spec keeps them anyway — see ADR-keep-bsd-sysexits-despite-deprecation for why — but the honest consequence
 is that **the code is worth less than the message.** Given a fixed budget, spend it on the rendered
 diagnostic before spending it on refining the taxonomy.
 
@@ -208,7 +208,7 @@ This is `riptask`'s approach (`src/error.rs:48-49`) and it's a good escape hatch
 
 `main` returns `ExitCode` and contains no logic. The fallible program is a separate function — call
 it `run`, `try_main`, or `dispatch` — and `main` is a five-to-ten-line adapter that renders the error
-once and classifies it once. This is a rule, not a preference. See ADR-0002.
+once and classifies it once. This is a rule, not a preference. See ADR-main-delegates-to-run.
 
 ### Why the split is forced
 
@@ -367,7 +367,7 @@ the README stops describing the binary.
 
 ## Rules
 
-- `main` returns `ExitCode` and holds no logic. The fallible program is `run`. (ADR-0002)
+- `main` returns `ExitCode` and holds no logic. The fallible program is `run`. (ADR-main-delegates-to-run)
 - No `std::process::exit` — return the `ExitCode` so destructors run. Enforce with
   `clippy::exit = "deny"`.
 - Render the error chain before classifying it. A binary that returns a code and prints nothing has

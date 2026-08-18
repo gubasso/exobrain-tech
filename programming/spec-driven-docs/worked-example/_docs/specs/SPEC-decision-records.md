@@ -10,7 +10,7 @@ live in whichever spec owns them.
 
 ### `decision-records:filename-carries-no-digit` — A decision record filename carries no digit
 
-When an author creates a decision record, the author MUST name it `ADR-<imperative-slug>.md`.
+When an author creates a decision record, the author MUST name it `ADR-<slug>.md`.
 
 #### Scenario: Two agents create a record in parallel
 

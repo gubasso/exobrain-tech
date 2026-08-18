@@ -100,7 +100,7 @@ honest is the case it names and the condition that ends it.
 - A suppression MUST carry the condition under which it is removed.
 
 ```python
-@pytest.mark.xfail(reason="KI-0007: upstream returns 500 on a replayed webhook", strict=True)
+@pytest.mark.xfail(reason="KI-upstream-500-on-replayed-webhook", strict=True)
 def test_webhook_replay_is_idempotent():
     ...
 ```
@@ -110,7 +110,10 @@ the suppression outlives the bug it was written for and nobody learns the case c
 turns the suite red the moment the fix arrives, which is the signal that closes it.
 
 A test that must not hide the bug at all keeps failing, with the case id in a comment beside it. The
-case, its states, and its retirement belong to [07 — Lifecycle](./07-lifecycle.md).
+case id is the record's filename, so it resolves the same way a rule ID does — the reason string
+needs no restated summary, because the record it names holds the symptom, the workaround, and the
+retire condition. The case, its states, and its retirement belong to
+[07 — Lifecycle](./07-lifecycle.md).
 
 ## Coverage is a grep
 

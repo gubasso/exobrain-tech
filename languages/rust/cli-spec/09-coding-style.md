@@ -60,7 +60,7 @@ fn intentionally_unused_during_bootstrap() { ... }
 #![allow(dead_code)]
 ```
 
-A WIP module may scope at module level (`#![allow(dead_code)] // WIP: see ADR-0007`) — but remove
+A WIP module may scope at module level (`#![allow(dead_code)] // WIP: <case id>`) — but remove
 before shipping.
 
 ## 5. Cargo / clippy lints

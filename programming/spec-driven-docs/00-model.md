@@ -72,6 +72,12 @@ statement of the rule, it had become a second owner.
 A carrying sentence is allowed. Restating a source's conclusion so the reader understands a claim
 before following the link passes the test; copying the source's argument does not.
 
+- A reference MUST carry the claim it relies on rather than only the coordinates of where to find it.
+
+A line number decays silently. Text moves above it, the citation now points at something else, and
+nothing anywhere reports the drift. A heading anchor or a rule ID survives that same edit, and the
+carrying sentence means a reader who never follows the link still understands the passage.
+
 ## Behavior contracts belong in code
 
 Prose is the weakest place to state a contract. Before writing a requirement, ask whether a function

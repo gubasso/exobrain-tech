@@ -26,9 +26,9 @@ everything else is human-authored.
 ## ADR scaffold
 
 Record consequential decisions as Architecture Decision Records so the _why_ survives. Use a
-**MADR-minimal** template ([MADR](https://github.com/adr/madr)) under `docs/decisions/` (or the
-repo's chosen location). A good seed is a self-containment ADR that states the docs-as-SoT principle
-itself.
+**MADR-minimal** template ([MADR](https://github.com/adr/madr)) under `docs/decisions/`, naming each
+record `ADR-<slug>.md` so the slug is its identifier and no branch has to allocate a number. A good
+seed is a self-containment ADR that states the docs-as-SoT principle itself.
 
 ## README-as-index discipline
 

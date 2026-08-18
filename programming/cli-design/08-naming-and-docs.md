@@ -302,12 +302,14 @@ counter += 1  # increment counter
 Good:
 
 ```python
-# Counter resets to 0 on rollover (24h); see ADR-0014.
+# SATISFIES telemetry:counter-resets-on-rollover
+# Counter resets to 0 on rollover (24h).
 counter += 1
 ```
 
-Link to ADRs, issues, or specs by **stable identifier**. Don't reference variables by name in
-comments — renames rot the comment.
+Cite an agreement by its rule ID, never by naming a decision record: the ID resolves under a grep
+and the record is frozen. Don't reference variables by name in comments — renames rot the comment.
+[spec-driven-docs / spec to code](../spec-driven-docs/09-spec-to-code.md) owns the rule.
 
 ### What not to write
 

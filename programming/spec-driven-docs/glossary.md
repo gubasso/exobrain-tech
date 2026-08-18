@@ -16,7 +16,7 @@ page points rather than restates.
 | Decision record          | one immutable entry in the log of why                                | `04-decisions.md`     |
 | Disposition              | what happened to a considered option: chosen, rejected, deferred     | `04-decisions.md`     |
 | Reopening condition      | what would put a deferred option back on the table                   | `04-decisions.md`     |
-| Kind prefix              | the uppercase `SPEC-`, `ADR-`, or `TEMPLATE-` leading a filename     | `01-placement.md`     |
+| Kind prefix              | the uppercase `SPEC-`, `ADR-`, `KI-`, or `TEMPLATE-` leading a name  | `01-placement.md`     |
 | Companion directory      | `SPEC-<domain>/`, holding artifacts a requirement names              | `02-specs.md`         |
 | Docs root                | `docs/` for a codebase, `_docs/` for a content tree                  | `01-placement.md`     |
 | Zone                     | a directory under the docs root serving one reader need              | `01-placement.md`     |
@@ -30,6 +30,8 @@ page points rather than restates.
 | Typed clause             | `ADDED`, `MODIFIED`, or `REMOVED` plus a rule ID, in an entry doc    | `09-spec-to-code.md`  |
 | Coverage tag             | `SATISFIES` or `VERIFIES` plus a rule ID, in a source comment        | `09-spec-to-code.md`  |
 | Suppression              | a failing or expected-failing test naming its case and its exit      | `09-spec-to-code.md`  |
+| Known-issue case         | a live defect in a system the project does not own, recorded once    | `07-lifecycle.md`     |
+| Case id                  | `KI-<slug>`, the known-issue record's filename and citation token    | `07-lifecycle.md`     |
 | Mask                     | a temporary workaround, carrying the condition that removes it       | `07-lifecycle.md`     |
 | Mitigation               | a permanent guard that stays after the upstream fix                  | `07-lifecycle.md`     |
 | Clarification marker     | `[NEEDS CLARIFICATION: <question>]` at an undecided requirement      | `03-rules.md`         |

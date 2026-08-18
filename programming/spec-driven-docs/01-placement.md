@@ -116,12 +116,13 @@ session and teaches nothing.
 A file whose kind this framework fixes carries that kind as an uppercase prefix, so a directory
 listing, a glob, or an agent tells the kinds apart without opening anything.
 
-| Artifact        | Name                 | Lives in             |
-| --------------- | -------------------- | -------------------- |
-| Specification   | `SPEC-<domain>.md`   | `<root>/specs/`      |
-| Decision record | `ADR-<slug>.md`      | `<root>/decisions/`  |
-| Template        | `TEMPLATE-<kind>.md` | beside what it seeds |
-| Spec companion  | `SPEC-<domain>/`     | `<root>/specs/`      |
+| Artifact         | Name                 | Lives in                         |
+| ---------------- | -------------------- | -------------------------------- |
+| Specification    | `SPEC-<domain>.md`   | `<root>/specs/`                  |
+| Decision record  | `ADR-<slug>.md`      | `<root>/decisions/`              |
+| Known-issue case | `KI-<slug>.md`       | `<root>/reference/known-issues/` |
+| Template         | `TEMPLATE-<kind>.md` | beside what it seeds             |
+| Spec companion   | `SPEC-<domain>/`     | `<root>/specs/`                  |
 
 - A file whose kind this framework fixes MUST carry that kind as an uppercase prefix.
 - A prefixed filename MUST carry the slug that identifies it, and no counter.
@@ -130,7 +131,11 @@ The prefix is uppercase because the discriminator should win over the slug when 
 column of filenames. It is the first thing read and the only part that repeats.
 
 The rule that generates the table: prefix a file when its shape is fixed and gated. A project that
-gates a fourth shape adds a fourth prefix by the same test.
+gates a fifth shape adds a fifth prefix by the same test.
+
+A known-issue case is prefixed because it is the one kind cited from outside the docs root. A
+suppression in the source names its case, and the prefix is what makes that citation resolvable by
+a grep over a single directory; [07 — Lifecycle](./07-lifecycle.md) owns the record's contents.
 
 Guides, reference pages, and explanation pages take no prefix. Their zone directory already names
 their reader need, and a prefix on every file would make the discriminator meaningless by making it

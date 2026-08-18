@@ -21,7 +21,7 @@ citation already made.
 
 ## Decision Outcome
 
-Chosen option: `slug as the identifier` — a record is named `ADR-<imperative-slug>.md` and the
+Chosen option: `slug as the identifier` — a record is named `ADR-<slug>.md` and the
 filename is immutable once merged.
 
 Two branches choosing the same slug have collided on a subject rather than on a counter, which is a

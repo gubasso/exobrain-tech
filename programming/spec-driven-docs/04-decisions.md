@@ -8,14 +8,18 @@ today.
 ## Filenames
 
 ```text
-ADR-<imperative-slug>.md
+ADR-<slug>.md
 ```
 
-- A decision record MUST be named `ADR-<imperative-slug>.md`.
+- A decision record MUST be named `ADR-<slug>.md`, whose slug names the choice.
 - A decision record filename MUST NOT contain a digit.
 - Once merged, a decision record filename MUST NOT change.
 
-Examples: `ADR-use-postgresql-for-primary-storage.md`, `ADR-split-the-planning-method-into-its-own-project.md`.
+Examples: `ADR-use-postgresql-for-primary-storage.md`, `ADR-a-comment-cites-the-rule-not-the-record.md`.
+
+The slug names the choice in whatever voice states it plainly. An imperative fits a record that picks
+a tool; a record that fixes a rule reads better as the rule itself, and forcing either into the
+other's voice costs the reader the sentence the filename was carrying.
 
 The `ADR-` prefix makes a record identifiable from a directory listing, so a glob, a grep, or an agent
 separates decisions from templates and indexes without opening a file.

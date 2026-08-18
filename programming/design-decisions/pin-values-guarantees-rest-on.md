@@ -1,4 +1,4 @@
-# ADR-0004: Pin the values a guarantee rests on, even when they match the upstream default
+# Pin the values a guarantee rests on, even when they match the upstream default
 
 ## Context and Problem Statement
 
@@ -38,5 +38,5 @@ does not change when the two values coincide today.
 
 ## Status
 
-Accepted. Same shape as [ADR-0001](./version-source-of-truth.md): one place authors the value and
+Accepted. Same shape as [the committed-version rule](./version-source-of-truth.md): one place authors the value and
 nothing load-bearing is left implicit.

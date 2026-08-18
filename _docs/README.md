@@ -21,5 +21,5 @@ Core KB content outside `_docs/` can use the structure that best fits the topic.
   single-source-of-truth, drafts, and the digest standard.
 - [Documentation review checklist](./reference/docs-review-checklist.md) — the pre-merge
   guard for documentation and content changes.
-- [AGENTS.md digest template](./reference/agents-digest-template.md) — the per-area
+- [AGENTS.md digest template](./reference/TEMPLATE-agents-digest.md) — the per-area
   content-digest standard.

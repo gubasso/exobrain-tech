@@ -1,7 +1,8 @@
 # Pre-commit hooks for Markdown knowledge bases / docs repos.
 #
 # Mostly markdown, but not only: this repository keeps a plan record whose format
-# a tool owns, and ADR-0006 requires a shipped or consumed artifact to be gated
+# a tool owns, and ADR-executable-artifacts-in-the-library requires a shipped or
+# consumed artifact to be gated
 # rather than asserted. Those gates live at the end of this file.
 #
 # Design goals:
@@ -199,7 +200,7 @@ repos:
         types: [markdown]
         entry: '^\s*\[[^\]]+\]:\s+(?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/|<)[^\s/:#]+\.[A-Za-z0-9]+'
 
-  # --- No document indexes the filesystem (ADR-0007; pre-commit, local) ---
+  # --- No document indexes the filesystem (ADR-filesystem-owns-disk-state; pre-commit, local) ---
   #
   # The filesystem is the source of truth for what exists, so nothing enumerates
   # a directory because it has contents. The rule bars a shape, not a syntax: a
@@ -226,6 +227,44 @@ repos:
         language: pygrep
         types: [markdown]
         entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
+
+  # --- Fixed-kind filenames carry a slug, not a counter
+  #     (ADR-migrate-the-numbered-decision-log-to-slugs,
+  #      ADR-a-known-issue-case-is-a-prefixed-slug; pre-commit, local) ---
+  #
+  # Both hooks are scoped to the directory rather than to the prefix. A `files:`
+  # pattern of `^_docs/decisions/ADR-` never sees the file someone named
+  # `0001-use-postgres.md`, so the one filename the rule exists to reject would
+  # be the one filename the gate is blind to.
+  #
+  # The slug is the identifier because two branches each allocating the next
+  # number are both right, and the merge leaves two records claiming one id.
+  - repo: local
+    hooks:
+      - id: adr-filename-shape
+        name: decision records are ADR-<slug>.md with no digit
+        language: system
+        files: '^_docs/decisions/.*\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do case "$(basename "$f")" in
+          TEMPLATE-adr.md) ;;
+          ADR-*[0-9]*) echo "FAIL $f: a record filename carries no digit"; exit 1;;
+          ADR-?*.md) ;;
+          *) echo "FAIL $f: a record filename starts with ADR-"; exit 1;;
+          esac; done' --
+
+      - id: ki-filename-shape
+        name: known-issue records are KI-<slug>.md with no counter
+        language: system
+        files: '^_docs/reference/known-issues/.*\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do case "$(basename "$f")" in
+          KI-[0-9]*) echo "FAIL $f: a case id is a slug, not a counter"; exit 1;;
+          KI-?*.md) ;;
+          *) echo "FAIL $f: a known-issue filename starts with KI-"; exit 1;;
+          esac; done' --
 
   # --- Spelling (report-only) ---
   #
@@ -287,7 +326,9 @@ repos:
   # commitizen is intentionally NOT the commit-msg linter (committed is the SoT).
   # For version bumping / changelog only, add commitizen explicitly per-project.
 
-  # --- The plan record this repository keeps (ADR-0006, as amended by ADR-0017) ---
+  # --- The plan record this repository keeps
+  #     (ADR-executable-artifacts-in-the-library,
+  #      superseded in part by ADR-the-planning-method-moves-to-plan-xp) ---
   #
   # The method and the linter are plan-xp, pinned in flake.nix. Nothing here is a
   # copy of its schemas: a copy is the duplication AGENTS.md forbids, and a copy
@@ -345,7 +386,8 @@ repos:
   # --- The worked example shipped with programming/spec-driven-docs/ ---
   #
   # That shelf ships a pre-commit block, two MD043 arrays and a set of fixture
-  # documents a reader copies into their own project, which ADR-0006 makes an
+  # documents a reader copies into their own project, which
+  # ADR-executable-artifacts-in-the-library makes an
   # artifact this repository runs rather than asserts. `just test-spec-shelf`
   # runs the block the way a reader would: over a scratch copy whose root is the
   # example's own root, so the `^_docs/` patterns inside it need no rewriting.

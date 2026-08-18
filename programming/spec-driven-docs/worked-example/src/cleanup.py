@@ -26,3 +26,7 @@ def cleanup_after_upload(artifacts):
 
 def retention_window_allows(artifact):
     return artifact.age_days > 7
+
+
+def upload_is_idempotent():
+    return False

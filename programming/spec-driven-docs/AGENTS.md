@@ -38,6 +38,7 @@ read the shelf linearly; [05 — Agent Context](./05-agent-context.md) owns focu
 | How is a step written, and what crosses a phase boundary?      | `10-procedures.md`    |
 | What goes in a runbook, a diagnostic, or a case study?         | `11-operational.md`   |
 | How does an external-system bug get recorded and retired?      | `07-lifecycle.md`     |
+| What prefix does this file carry, and why?                     | `01-placement.md`     |
 | What hook enforces this rule?                                  | `08-gates.md`         |
 | What must pass before this change merges?                      | `99-checklist.md`     |
 | What does this shelf mean by a term?                           | `glossary.md`         |
@@ -55,13 +56,15 @@ Templates: `TEMPLATE-spec.md`, `TEMPLATE-adr.md`, `TEMPLATE-agents-digest.md`,
   verification command.
 - Cite a rule by its ID so the citation can be checked with a grep.
 - Specs live at `<root>/specs/SPEC-<domain>.md`, never beside what they govern.
-- A file whose kind is fixed carries it as an uppercase prefix: `SPEC-`, `ADR-`, `TEMPLATE-`.
+- A file whose kind is fixed carries it as an uppercase prefix: `SPEC-`, `ADR-`, `KI-`, `TEMPLATE-`,
+  and carries the slug that identifies it rather than a counter.
 - Use no bold or italics, and give every fenced block a language.
 - A rule no command can check is listed as unenforced, not presented as gated.
 - A requirement whose `Verify:` command fails is unimplemented, not broken; its state is derived by
   running the command, never stored.
 - A comment cites a rule by ID and never names a decision record.
-- A suppression names its case and the condition that removes it.
+- A suppression names its case by its `KI-<slug>` id, and the record carries the condition that
+  removes it.
 - A requirement carrying an open question is marked at the requirement and is not enacted.
 
 ## Maintenance

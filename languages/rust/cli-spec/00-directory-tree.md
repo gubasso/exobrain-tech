@@ -143,7 +143,7 @@ Add when you actually need them — not preemptively:
 
 - `examples/` — small runnable examples that double as docs.
 - `xtask/` — workspace-internal CLI for build tasks. Only at workspace scale.
-- `docs/adr/` — Architecture Decision Records for spec deviations.
+- `docs/decisions/` — `ADR-<slug>.md` decision records for spec deviations.
 
 ## Reading order for new contributors
 

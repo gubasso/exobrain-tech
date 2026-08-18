@@ -53,13 +53,54 @@ Reuse the id of the project's existing markdownlint hook so its settings carry o
 
 ## Filenames
 
+Scope the hook to the directory, not to the prefix. A `files:` pattern of `^_docs/decisions/ADR-`
+never sees the file someone named `0001-use-postgres.md`, so the one filename the rule exists to
+reject is the one filename the gate is blind to.
+
 ```yaml
 - id: adr-filename-shape
-  name: decision record filenames carry no digit
+  name: decision records are ADR-<slug>.md with no digit
   language: system
-  files: '^_docs/decisions/ADR-.*\.md$'
-  entry: sh -c 'for f; do case "$f" in *[0-9]*) echo "FAIL $f"; exit 1;; esac; done' --
+  files: '^_docs/decisions/.*\.md$'
+  entry: sh -c 'for f; do case "${f##*/}" in
+      TEMPLATE-adr.md) ;;
+      ADR-*[0-9]*) echo "FAIL $f: a record filename carries no digit"; exit 1 ;;
+      ADR-?*.md) ;;
+      *) echo "FAIL $f: a record filename starts with ADR-"; exit 1 ;;
+    esac; done' --
+
+- id: ki-filename-shape
+  name: known-issue records are KI-<slug>.md with no counter
+  language: system
+  files: '^_docs/reference/known-issues/.*\.md$'
+  entry: sh -c 'for f; do case "${f##*/}" in
+      KI-[0-9]*) echo "FAIL $f: a case id is a slug, not a counter"; exit 1 ;;
+      KI-?*.md) ;;
+      *) echo "FAIL $f: a known-issue filename starts with KI-"; exit 1 ;;
+    esac; done' --
 ```
+
+## Case ids
+
+A suppression names a case, and the name is worth nothing if it resolves to no record. This is the
+coverage grep again, over a different pair of sets: every `KI-` token cited anywhere outside the docs
+root, against the records that exist.
+
+```bash
+rg -o '\bKI-[a-z0-9-]+' --glob '!<root>/**' . | sed 's/.*://' | sort -u > /tmp/cited
+ls <root>/reference/known-issues/ | sed 's/\.md$//' | sort -u > /tmp/recorded
+comm -13 /tmp/recorded /tmp/cited | grep . && exit 1 || exit 0
+```
+
+The check runs one way only. A cited case with no record is a fabrication and fails; a record no
+suppression cites is ordinary, because the workaround may live in a config or a dependency pin rather
+than in a marked test.
+
+Wire it as `always_run`, not behind a `files:` filter. The commit this check exists to catch is the
+one that deletes a record while a suppression still cites it, and pre-commit selects staged files
+with `--diff-filter=ACMRTUXB`, which omits deletions. A filter would hand the hook an empty list on
+exactly that commit. The same reasoning binds every gate that compares two sets rather than
+inspecting the files it is given.
 
 ## Companion directories
 

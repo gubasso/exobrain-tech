@@ -1,6 +1,6 @@
 # Template — Decision record
 
-Copy the block below to `<root>/decisions/ADR-<imperative-slug>.md`. A project keeping its own copy
+Copy the block below to `<root>/decisions/ADR-<slug>.md`. A project keeping its own copy
 names it `TEMPLATE-adr.md`, so the prefix distinguishes the seed from the records it seeds and no
 template reads as a decision the project made. A filled body is at or below 350 words.
 

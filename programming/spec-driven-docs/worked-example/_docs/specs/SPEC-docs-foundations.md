@@ -55,7 +55,20 @@ uppercase.
 - WHEN an agent lists it
 - THEN `ADR-` and `TEMPLATE-` separate them without opening either
 
-Verify: `find _docs/specs _docs/decisions -name '*.md' | rg -v '/(SPEC|ADR|TEMPLATE)-' | grep . && exit 1 || exit 0`
+Verify: `find _docs/specs _docs/decisions _docs/reference/known-issues -name '*.md' | rg -v '/(SPEC|ADR|KI|TEMPLATE)-' | grep . && exit 1 || exit 0`
+
+### `docs-foundations:a-kind-prefix-carries-a-slug` — A prefixed filename carries a slug, not a counter
+
+Where a filename carries a kind prefix, the author MUST follow the prefix with the slug that
+identifies the file rather than an allocated number.
+
+#### Scenario: Two branches each add a record
+
+- GIVEN two branches that each add the next numbered record
+- WHEN they merge
+- THEN both files claim one identity, which a slug drawn from the subject cannot do
+
+Verify: `find _docs/decisions _docs/reference/known-issues -name '*-*.md' | rg '/(ADR|KI)-[0-9]' | grep . && exit 1 || exit 0`
 
 ### `docs-foundations:companion-artifacts-share-the-spec-name` — A spec's supporting artifacts sit in a directory named for it
 

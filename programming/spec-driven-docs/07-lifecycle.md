@@ -96,7 +96,7 @@ reference, with the workaround and the condition that retires it.
 - A temporary workaround MUST record the condition under which it is removed.
 
 ```yaml
-# <root>/reference/known-issues/<slug>.md
+# <root>/reference/known-issues/KI-<slug>.md
 ---
 upstream: https://github.com/<org>/<repo>/issues/1234
 affects: <component>
@@ -104,6 +104,13 @@ workaround: <what the project does instead>
 retire_when: upstream release >= 2.4.0
 ---
 ```
+
+- A known-issue record MUST be named `KI-<slug>.md`, and that name is the case id.
+
+The case id is the filename, so a suppression that names `KI-krun-mangles-newlines` resolves to one
+file by inspection. A counter would not: an external bug is found by whoever trips over it, on
+whatever branch they are on, and two people allocating the next number is the same collision a
+decision record avoids the same way ([04 — Decisions](./04-decisions.md)).
 
 The retire condition is what stops a workaround outliving its bug. Without it the workaround becomes
 permanent by default, and the next reader assumes it was a design choice.

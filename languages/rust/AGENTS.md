@@ -30,7 +30,8 @@ carries its own nested digest).
   distribution, and a per-new-project runbook. Own nested `AGENTS.md`.
 - **Cookbook**: the `cookbook/` sub-shelf is a single-file, TLDR ship-it runbook (scaffold → quality
   gates → branch security → CI → release/publish) that inlines and footnotes the bootstrap and
-  release specs. It is the sanctioned SoT/DRY exception (repo `AGENTS.md`; ADR-0002) — do **not**
+  release specs. It is the sanctioned SoT/DRY exception (repo `AGENTS.md`;
+  ADR-cookbook-duplication-exception) — do **not**
   de-duplicate it against the specs. Own nested `AGENTS.md`.
 
 ## Maintenance Notes

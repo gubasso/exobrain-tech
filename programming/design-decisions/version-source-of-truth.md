@@ -1,4 +1,4 @@
-# ADR-0001: Committed version is the source of truth; the tag mirrors it
+# Committed version is the source of truth; the tag mirrors it
 
 ## Context and Problem Statement
 

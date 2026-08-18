@@ -3,7 +3,8 @@
 # toolchain matches CI and local runs.
 #
 # This is mostly a markdown KB, but not only: a bucket may ship an executable
-# artifact a reader is expected to copy and run, and ADR-0006 requires such an
+# artifact a reader is expected to copy and run, and
+# ADR-executable-artifacts-in-the-library requires such an
 # artifact to be gated here rather than asserted. `test` is where that gate
 # lives. `build` stays a no-op — nothing is compiled.
 
@@ -16,7 +17,8 @@ lint:
     nix develop --command editorconfig-checker
     nix develop --command pre-commit run --all-files
 
-# Verify what this repository ships and what it consumes (ADR-0006).
+# Verify what this repository ships and what it consumes
+# (ADR-executable-artifacts-in-the-library).
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
 # expected to copy and run. Those five scripts are not gated yet:
@@ -47,7 +49,8 @@ test-plan:
 # programming/spec-driven-docs/worked-example/ — the shelf applied to itself.
 #
 # The example ships a pre-commit block a reader copies into their own project,
-# and ADR-0006 makes that block an artifact this repository must run rather than
+# and ADR-executable-artifacts-in-the-library makes that block an artifact this
+# repository must run rather than
 # assert. It is run the way a reader would run it: the example is copied to a
 # scratch repository whose root is the example's own root, so the `^_docs/`
 # patterns inside the block resolve without a single path being rewritten here.

@@ -7,7 +7,8 @@
 
     # The planning method this repository uses, and the linter that gates its
     # record. It is a tool dependency of the same class as shellcheck below, not
-    # an external source of knowledge: ADR-0018 states that reading, and
+    # an external source of knowledge:
+    # ADR-a-flake-pinned-tool-input-is-a-tool-dependency states that reading, and
     # flake.lock pinning a concrete revision is what keeps it true while the
     # branch itself moves.
     plan-xp = {
@@ -73,7 +74,8 @@
             # to a separate project. check-jsonschema validates `_docs/plan/`
             # against the schemas the pinned plan-xp package provides, and the
             # linter itself comes from that same package rather than from a file
-            # in this tree — see ADR-0017 for the split and ADR-0018 for why a
+            # in this tree — see ADR-the-planning-method-moves-to-plan-xp for the
+            # split and ADR-a-flake-pinned-tool-input-is-a-tool-dependency for why a
             # lock-pinned public input is a tool dependency rather than an
             # external one.
             #

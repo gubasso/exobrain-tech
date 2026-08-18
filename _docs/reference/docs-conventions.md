@@ -25,17 +25,20 @@ document needs two homes, choose the owner and link from the other.
 
 ## Lean ADRs
 
-Architecture decisions live in `decisions/` as lean ADRs. A useful ADR names the problem, lists the
-serious options, records the chosen option, states consequences, and declares status. Keep a filled
-ADR body at or below 350 words; if it cannot fit, it is probably multiple decisions — split them.
+Architecture decisions live in `decisions/` as `ADR-<slug>.md`, one per file. A useful ADR names the
+problem, lists the serious options, records the chosen option, states consequences, and declares
+status. Keep a filled ADR body at or below 350 words; if it cannot fit, it is probably multiple
+decisions — split them. Copy `decisions/TEMPLATE-adr.md` to start one.
 
-Lifecycle: `Proposed → Accepted → Implemented → Superseded | Deprecated | Rejected`. **Never
-delete an accepted decision — and never let one mislead.** Replaced wholesale → `Superseded`, link
-the successor. No longer applicable with no successor → `Deprecated`, say why. Changed only in part
-by a later ADR while the decision stands → keep the status and add an `Amended by ADR-NNNN — <what
-changed>` line under `Status`, editing the old body only where it would actively mislead. Keep a
-`Rejected` option when the rejection prevents repeated debate. Copy `decisions/template.md` to
-start a new ADR.
+The slug is the identifier and the filename carries no counter, so parallel branches cannot allocate
+the same id. Cite a record by that slug; code cites the rule ID it satisfies instead, because a rule
+resolves under a grep and a record is frozen argument.
+
+Lifecycle: `Proposed → Accepted → Implemented → Superseded | Deprecated | Rejected`. Never delete an
+accepted decision. Replaced wholesale → `Superseded`, link the successor. No longer applicable with
+no successor → `Deprecated`, say why. Keep a `Rejected` option when the rejection prevents repeated
+debate. A record is not annotated as it ages: what binds today is in the spec, and a record that
+only ever claimed to describe its own moment cannot go stale.
 
 ## Single source of truth
 
@@ -51,7 +54,7 @@ entries carry their own payload: what a directory reserves, what a file specifie
 the paths out and read what is left — if nothing teaches, it was the index. A generated table of
 contents of a page's own headings is not disk state and belongs to its generator.
 `programming/spec-driven-docs/00-model.md` owns the rule; see
-[ADR-0007](../decisions/ADR-0007-filesystem-owns-disk-state.md).
+[ADR-filesystem-owns-disk-state](../decisions/ADR-filesystem-owns-disk-state.md).
 
 ## Drafts
 
@@ -65,7 +68,7 @@ Each substantial content area carries an `AGENTS.md` digest — a map of that ar
 derived from the area's files, never the source of truth. It declares a `last-synced` date so
 staleness is visible, and is regenerated when the area's knowledge changes. It carries no inventory
 of the directory. See
-[AGENTS.md digest template](./agents-digest-template.md) and
+[AGENTS.md digest template](./TEMPLATE-agents-digest.md) and
 [Knowledge-base architecture](../explanation/knowledge-base-architecture.md).
 
 ## Semantic names and stable headings

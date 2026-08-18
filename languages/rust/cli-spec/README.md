@@ -15,7 +15,7 @@ Use this spec as a template at project bootstrap and as a tie-breaker during cod
    vocabulary (parse-shape vs runtime-shape, `AppContext`, the four-edit rule) lives there.
 2. Start a new CLI from `templates/` (copy the files, rename the crate, prune unused modules).
 3. When a design question comes up, search the chapter that owns it.
-4. When the spec itself needs to change, add an ADR under `adr/` and edit the chapter.
+4. When the spec itself needs to change, add an `ADR-<slug>.md` under `decisions/` and edit the chapter.
 
 ## Index
 
@@ -35,10 +35,10 @@ Use this spec as a template at project bootstrap and as a tie-breaker during cod
 
 ## Supporting material
 
-| Path                       | Hook                                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------------------- |
-| [`templates/`](templates/) | Bootstrap skeleton for a new Rust CLI: starter files, module layout, and template comments. |
-| [`adr/`](adr/)             | Architecture decision records for changes to this Rust spec and its defaults.               |
+| Path                         | Hook                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| [`templates/`](templates/)   | Bootstrap skeleton for a new Rust CLI: starter files, module layout, and template comments. |
+| [`decisions/`](./decisions/) | Architecture decision records for changes to this Rust spec and its defaults.               |
 
 ## Templates
 
@@ -73,7 +73,7 @@ Copy the tree, drop the `.template` suffixes, rename `app_template` → your cra
   BSD sysexits.
 - `main` returns `ExitCode`, holds no logic, renders the chain and classifies it. The fallible
   program is `run`. `fn main() -> Result<_, _>` is disallowed — it exits `1` and `Debug`-dumps,
-  whatever your matrix says. (ADR-0002)
+  whatever your matrix says. (ADR-main-delegates-to-run)
 - `tracing` + `tracing-subscriber` with `RUST_LOG`. **Default destination:
   `$XDG_STATE_HOME/<app>/<app>.log`** (file sink via `tracing-appender`). Terminal mirror is opt-in.
 - `figment` for layered config: defaults → user file → project file → env → CLI.

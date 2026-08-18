@@ -88,7 +88,7 @@ uses `anstyle` unconditionally in its
 [public `Styles` API](https://docs.rs/clap/latest/clap/builder/struct.Styles.html), and its default
 `color` feature brings `anstream`, so ordinary `clap` projects generally add direct edges rather
 than a new dependency subtree. This choice is governed by
-[ADR-0004](./adr/0004-use-anstyle-and-anstream-for-terminal-colour.md).
+[ADR-use-anstyle-and-anstream-for-terminal-colour](./decisions/ADR-use-anstyle-and-anstream-for-terminal-colour.md).
 
 #### Color alternatives and avoid list
 

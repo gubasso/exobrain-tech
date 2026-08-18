@@ -30,7 +30,7 @@ a backend in any language (Rust, Go, shell wrappers) or architecture.
   multi-line `sh -c` shim breaks under `crun --krun`.
 - [60-podman-libkrun-operational-notes](./60-podman-libkrun-operational-notes.md) — living
   operational reference for rootless `podman run --runtime krun`: environment baseline, the
-  `\n`-mangling bug (KI-01) and its orchestrator fallout (KI-02), working patterns, and the drafted
+  `\n`-mangling bug (KI-krun-mangles-newlines-in-sh-c) and its orchestrator fallout (KI-devcontainers-cli-fails-under-krun), working patterns, and the drafted
   upstream bug report.
 - [90-references](./90-references.md) — consolidated bibliography.
 

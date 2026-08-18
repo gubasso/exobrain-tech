@@ -16,11 +16,12 @@ unchecked, fix it or record an explicit exception in the owning source of truth.
 ## ADRs
 
 - [ ] New ADRs use the lean sections and stay at or below 350 words.
+- [ ] The filename is `ADR-<slug>.md`, carries no digit, and was not changed after merge.
 - [ ] The ADR has exactly one `Status:` from
       `Proposed | Accepted | Implemented | Deprecated | Superseded | Rejected`.
-- [ ] No accepted or implemented decision was deleted; superseded ADRs link to their successor,
-      deprecated ADRs say why they stopped applying, and partially changed ADRs carry an
-      `Amended by ADR-NNNN` line under `Status`.
+- [ ] No accepted or implemented decision was deleted; superseded ADRs link to their successor and
+      deprecated ADRs say why they stopped applying.
+- [ ] No code comment names a decision record; an agreement is cited from code by its rule ID.
 
 ## Drafts
 

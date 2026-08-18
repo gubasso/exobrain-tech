@@ -37,11 +37,11 @@ a package index.
 
 ## Governed by
 
-- `_docs/decisions/ADR-0004-content-vs-metadata-placement.md` — the placement test that sends this
+- `_docs/decisions/ADR-docs-vs-library-boundary.md` — the placement test that sends this
   chapter to a content bucket rather than to `_docs/`: its subject is CLI design, not this
   repository.
 - `programming/cli-design/README.md` — the shelf this chapter joins, and the numbering it continues.
-- `programming/docs-design/08-lean-markdown.md` — the markdown rules every chapter here is held to.
+- `programming/spec-driven-docs/06-format.md` — the markdown rules every chapter here is held to.
 
 ## Amends
 

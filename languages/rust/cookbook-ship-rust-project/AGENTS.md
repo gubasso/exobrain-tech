@@ -13,7 +13,7 @@ git remote to a published, branch-protected, CI-gated crate. It **intentionally 
 that live canonically in the Rust `project-bootstrap-spec/`, `release-workflow-spec/`, `cli-spec/`
 shelves and in `tools/git/branch-protection/` + `tools/nix/`, footnoting each to its owner. This
 duplication is the sanctioned cookbook exception to the repo's SoT/DRY rule (repo `AGENTS.md`;
-ADR-0002).
+ADR-cookbook-duplication-exception).
 
 ## Key Points
 

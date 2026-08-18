@@ -28,14 +28,53 @@ repos:
 
   - repo: local
     hooks:
+      # Scoped to the directory, not the prefix: a `files:` pattern of
+      # `^_docs/decisions/ADR-` never sees the file someone named
+      # `0001-use-postgres.md`, which is the one name the rule exists to reject.
       - id: adr-filename-shape
-        name: decision record filenames carry no digit
+        name: decision records are ADR-<slug>.md with no digit
         language: system
-        files: '^_docs/decisions/ADR-.*\.md$'
+        files: '^_docs/decisions/.*\.md$'
         pass_filenames: true
         entry: >-
-          sh -c 'for f; do case "$(basename "$f")" in *[0-9]*)
-          echo "FAIL decision-records:filename-carries-no-digit $f"; exit 1;; esac; done' --
+          sh -c 'for f; do case "$(basename "$f")" in
+          TEMPLATE-adr.md) ;;
+          ADR-*[0-9]*) echo "FAIL docs-foundations:a-kind-prefix-carries-a-slug $f"; exit 1;;
+          ADR-?*.md) ;;
+          *) echo "FAIL docs-foundations:artifact-filenames-carry-a-kind-prefix $f"; exit 1;;
+          esac; done' --
+
+      - id: ki-filename-shape
+        name: known-issue records are KI-<slug>.md with no counter
+        language: system
+        files: '^_docs/reference/known-issues/.*\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do case "$(basename "$f")" in
+          KI-[0-9]*) echo "FAIL docs-foundations:a-kind-prefix-carries-a-slug $f"; exit 1;;
+          KI-?*.md) ;;
+          *) echo "FAIL docs-foundations:artifact-filenames-carry-a-kind-prefix $f"; exit 1;;
+          esac; done' --
+
+      # One way only. A cited case with no record is a fabrication; a record no
+      # suppression cites is ordinary, because the workaround may live in a
+      # config or a dependency pin rather than in a marked test.
+      #
+      # `always_run` rather than a `files:` filter, because the commit that
+      # breaks this check is the one that deletes the record while a suppression
+      # still cites it — and pre-commit selects staged files with
+      # `--diff-filter=ACMRTUXB`, which omits deletions. A filter would hand the
+      # hook an empty list on exactly the commit it exists to catch.
+      - id: case-id-resolves
+        name: every case id cited in code resolves to a known-issue record
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c 'grep -rhoE "\bKI-[a-z0-9-]+" src tests | sort -u > /tmp/kc;
+          ls _docs/reference/known-issues | sed "s/\.md$//" | sort -u > /tmp/kr;
+          comm -13 /tmp/kr /tmp/kc | grep . &&
+          { echo "FAIL spec-to-code:a-suppression-names-its-case"; exit 1; }; true'
 
       - id: adr-word-cap
         name: decision records stay within 350 words
@@ -119,7 +158,7 @@ repos:
       - id: comment-rule-id-resolves
         name: every rule ID cited in code resolves to a requirement
         language: system
-        files: '\.py$'
+        always_run: true
         pass_filenames: false
         entry: >-
           sh -c 'grep -rhoE "(SATISFIES|VERIFIES) [a-z0-9-]+:[a-z0-9-]+" src tests |

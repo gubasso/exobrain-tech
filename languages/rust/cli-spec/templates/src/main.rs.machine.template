@@ -3,8 +3,8 @@
 //! `main` is the process boundary and nothing else: it emits one structured error
 //! envelope and classifies it once. All the work — parsing args, initializing
 //! file-first logging with no stderr mirror by default, building `AppContext`,
-//! dispatching — lives in `run`, which returns `Result` so `?` is available. See
-//! ADR-0002 for why this split is forced rather than stylistic. NO business logic
+//! dispatching — lives in `run`, which returns `Result` so `?` is available.
+//! This split is forced rather than stylistic. NO business logic
 //! here OR in `run` — if you find yourself writing logic, lift it into
 //! `commands/`, `services/`, or `adapters/`.
 
@@ -30,7 +30,7 @@ use crate::error::AppError;
 fn main() -> ExitCode {
     // `Cli::parse()` belongs here, not in `run`: `main` owns the connection to `argv`, and `run`
     // receives what it needs. clap handles its own parse failures and exits, so this adds no
-    // second error path. See ADR-0002.
+    // second error path.
     match run(Cli::parse()) {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {

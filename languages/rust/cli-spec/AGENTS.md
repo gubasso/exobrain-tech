@@ -59,7 +59,7 @@ spec references the general facing-category taxonomy and records only Rust idiom
 - `AppError::exit_code() -> u8` mapped to BSD sysexits. Unit-test every arm.
 - No `unwrap`/`expect` outside main, tests, build scripts, `LazyLock`.
 
-### The Process Boundary (ADR-0002)
+### The Process Boundary (ADR-main-delegates-to-run)
 
 - `main` returns `ExitCode`, holds no logic, and owns two things: the connection to process globals
   (`args_os()`), and rendering-then-classifying the error. The fallible program is `run`.
@@ -78,7 +78,7 @@ spec references the general facing-category taxonomy and records only Rust idiom
 - Anti-patterns: `Result<(), u8>`, `Result<(), (u8, &str)>`, `Result<T, ()>`,
   `.map_err(|_| CODE)`, and per-call-site code selection.
 
-### sysexits Caveat (ADR-0003)
+### sysexits Caveat (ADR-keep-bsd-sysexits-despite-deprecation)
 
 - Keep BSD sysexits as the default taxonomy, but know it is deprecated upstream by `sysexits(3)`
   itself and unused by most reference projects. Consequence: the code is worth less than the
@@ -104,7 +104,7 @@ spec references the general facing-category taxonomy and records only Rust idiom
 ### Dependencies
 
 - Manage deps through Cargo's CLI only: `cargo add`/`cargo remove`/`cargo update`. Never hand-edit
-  dependency names/versions/features in `Cargo.toml`. Commit `Cargo.lock` for binaries. (ADR-0001)
+  dependency names/versions/features in `Cargo.toml`. Commit `Cargo.lock` for binaries. (ADR-cargo-cli-only-dependencies)
 - Current majors: `thiserror` 2, `toml` 1 (TOML spec 1.1), `anstream` 1.0.
 - Avoid: `env_logger`, `log`, `structopt`, `failure`, `confy`, `dirs`, `lazy_static`, `serde_yaml`,
   unmaintained `ansi_term`, and maintenance-only legacy color crates as new defaults.
@@ -134,5 +134,5 @@ spec references the general facing-category taxonomy and records only Rust idiom
 
 - Chapter 06 (testing) is a subdirectory; load directly when reviewing test strategy.
 - Templates in `templates/` provide bootstrap skeletons; not digested here.
-- The spec's own decision records live in `adr/` and are cited by number in the sections above.
+- The spec's own decision records live in `decisions/` and are cited by slug in the sections above.
 - Regenerate when any chapter file changes or crate ecosystem shifts.

@@ -157,7 +157,7 @@ because pre-agreed numbers are guessable to the scripts and coding agents that r
 private numbering must be learned per tool. But the honest consequence is that **the exit code is
 worth less than the message.** Spend effort on the rendered diagnostic first. The reasoning, and the
 rule against pulling the numbers from a crate, are recorded in
-[Rust CLI spec ADR-0003](../../languages/rust/cli-spec/adr/0003-keep-bsd-sysexits-despite-deprecation.md).
+[Rust CLI spec ADR-keep-bsd-sysexits-despite-deprecation](../../languages/rust/cli-spec/decisions/ADR-keep-bsd-sysexits-despite-deprecation.md).
 
 A process supervised by systemd or launchd is a further case: the manager's behaviour is a
 `0`-versus-nonzero decision plus whatever `SuccessExitStatus=`/`RestartPreventExitStatus=` name
