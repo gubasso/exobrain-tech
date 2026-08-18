@@ -59,3 +59,29 @@ The author MUST derive the set of unenacted rules from the specs and the plan zo
 - THEN the file is refused, because a stored copy drifts on the next change to either side
 
 Verify: reviewer confirms no document stores the agreed-to-enacted mapping
+
+### `spec-to-code:a-comment-cites-the-rule` — A comment cites the rule it satisfies
+
+Where a comment cites an agreement, the author MUST write `SATISFIES` or `VERIFIES` followed by the
+rule ID.
+
+#### Scenario: A comment cites a rule that no spec defines
+
+- GIVEN a comment carrying `SATISFIES auth:token-expiry-is-bounded`
+- WHEN no spec defines that ID
+- THEN the citation fails, because a citation that resolves to nothing is a fabrication
+
+Verify: `grep -rhoE "(SATISFIES|VERIFIES) [a-z0-9-]+:[a-z0-9-]+" src tests | grep -oE "[a-z0-9-]+:[a-z0-9-]+" | sort -u > /tmp/c; grep -rhoE "^### .[a-z0-9-]+:[a-z0-9-]+." _docs/specs | grep -oE "[a-z0-9-]+:[a-z0-9-]+" | sort -u > /tmp/a; comm -13 /tmp/a /tmp/c | grep . && exit 1 || exit 0`
+
+### `spec-to-code:a-comment-names-no-record` — A comment names no decision record
+
+The author MUST cite an agreement in code by its rule ID rather than by naming a decision record.
+
+#### Scenario: A branch exists because of a recorded decision
+
+- GIVEN code whose shape was argued for in a decision record
+- WHEN the author wants the reason discoverable from the code
+- THEN the comment carries the rule ID the record enforces, because the record is frozen and the
+  rule is what binds
+
+Verify: `grep -rnE "^[[:space:]]*#.*\bADR-" src tests && exit 1 || exit 0`

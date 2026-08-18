@@ -102,7 +102,15 @@ The test is what a change to the tree would cost. Strip the paths out and read w
 passage still teaches, it was documentation that happened to name files. If nothing survives, it was
 the listing.
 
+The heading is the tell, and is worth choosing deliberately. `Source map`, `Contents`, and `Files`
+promise an inventory, so a section under one of them is judged as an inventory and generally fails.
+`Directory domains` promises something else — what each part of the tree reserves, and what belongs
+there — and a tree or table under it passes on the strength of what it says. Name the section after
+the knowledge it carries, and the shape follows.
+
 A layout a reader is told to create in their own project is a specification, not a copy, and stays.
+A generated table of contents of a document's own headings is not disk state either: it indexes the
+document rather than the tree, and belongs to its generator.
 
 ## Sources
 

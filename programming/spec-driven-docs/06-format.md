@@ -14,6 +14,7 @@ size budget the whole framework is measured against.
 | Requirement statement            | one sentence                                         |
 | Decision record                  | 350 words                                            |
 | Chapter                          | 200 lines                                            |
+| Catalog                          | 300 lines                                            |
 | Reference depth                  | one level from the entry document                    |
 
 - A document MUST stay within the budget for its artifact class.
@@ -26,6 +27,12 @@ lines, and a file over a hundred lines is assumed to be read in part.
 
 When a chapter wants more room, the excess is a requirement in a spec or a decision record, not a
 longer chapter.
+
+A catalog is the exception, and gets the spec's number for the same reason a spec does: its length is
+a function of how many rules exist, one entry apiece, so the chapter cap would punish the corpus for
+growing rather than punish an author for rambling. The gate list, the checklist, the glossary, and a
+shelf index are catalogs. What a catalog owes is one entry per rule and no argument; an argument in a
+catalog belongs to the chapter that owns the rule.
 
 ## Structural markdown is kept
 

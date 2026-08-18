@@ -48,13 +48,14 @@ introduction to the subject and it carries no rules.
 
 The body is an ordered list of requirement blocks and nothing else. No narrative between them, no
 rationale, no history of how a rule came to be. A rule that needs an argument has a decision record,
-and the record names the rule; the spec states the rule and stops.
+and the record names the rule; the spec states the rule and stops. The single exception is the
+clarification marker, owned by [03 — Rules](./03-rules.md).
 
 Order matters. Put the requirement most likely to be violated first: retrieval accuracy is highest
 near the start of a document, and a rule buried at line 240 is a rule an agent may not act on.
 
 - Requirements MUST be ordered with the most consequential first.
-- A requirement MUST NOT be separated from the next by narrative prose.
+- A requirement MUST NOT be separated from the next by anything but a clarification marker.
 
 ## One spec per domain
 

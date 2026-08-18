@@ -128,7 +128,17 @@ for f in _docs/decisions/ADR-*.md; do
   w=$(wc -w < "$f")
   [ "$w" -le 350 ] || { echo "FAIL $f: $w words, cap is 350"; exit 1; }
 done
+
+for f in <shelf>/[0-9][0-9]-*.md; do
+  n=$(wc -l < "$f")
+  case "$f" in *-gates.md | *-checklist.md) cap=300 ;; *) cap=200 ;; esac
+  [ "$n" -le "$cap" ] || { echo "FAIL $f: $n lines, cap is $cap"; exit 1; }
+done
 ```
+
+The chapter loop is what stops a shelf from absorbing a subject by growing. A catalog takes the
+larger number for the reason [06 — Format](./06-format.md) states, and is matched by name rather than
+by inspecting the file, because no command can tell an argument from an inventory.
 
 ## Tables of contents
 
@@ -177,10 +187,49 @@ strip "$f" | grep -niE 'formerly|used to be|this replaces|inherited from' && exi
 strip "$f" | grep -nE '\*\*[^*]+\*\*' && exit 1                                       # emphasis
 ````
 
-No linter in the usual toolchain forbids inline emphasis: `MD036` fires only on a whole paragraph of
-emphasized text ending without punctuation, so a bolded lead-in followed by prose passes. Give the
-emphasis check an `<!-- allow-emphasis: <reason> -->` escape hatch, so a genuine exception costs a
-sentence in the diff rather than becoming a habit.
+Give the emphasis check an `<!-- allow-emphasis: <reason> -->` escape hatch, so a genuine exception
+costs a sentence in the diff rather than becoming a habit.
+
+## Comment citations
+
+Two checks, and the second is the one that matters. Scope both to the code, excluding the docs root:
+a chapter stating either rule necessarily writes the strings it forbids.
+
+```bash
+rg -n --glob '!<root>/**' -e '^[[:space:]]*(#|//|--|\*)[[:space:]].*\bADR-' . \
+  && { echo 'FAIL a comment names a decision record'; exit 1; } || true
+
+rg -o '(SATISFIES|VERIFIES) ([a-z0-9-]+:[a-z0-9-]+)' -r '$2' --glob '!<root>/**' \
+  | sort -u > /tmp/cited
+rg -o '^### `([a-z0-9-]+:[a-z0-9-]+)`' -r '$1' <root>/specs | sort -u > /tmp/agreed
+comm -13 /tmp/agreed /tmp/cited | grep . \
+  && { echo 'FAIL a comment cites a rule no spec defines'; exit 1; } || true
+```
+
+The second is the orphan check requirements tracers run: a citation that resolves to nothing is a
+fabrication, and catching it is what makes the other three citation sites worth trusting.
+
+## Clarification markers
+
+The cap and the form are one loop. Whether the marker blocks enactment is a set intersection against
+the enacted list from [09 — Spec to Code](./09-spec-to-code.md).
+
+```bash
+for f in <root>/specs/SPEC-*.md; do
+  n=$(rg -c '\[NEEDS CLARIFICATION' "$f" || echo 0)
+  [ "$n" -le 3 ] || { echo "FAIL $f: $n markers, cap is 3"; exit 1; }
+  rg -q '\[NEEDS CLARIFICATION:?[[:space:]]*\]' "$f" \
+    && { echo "FAIL $f: a marker carries no question"; exit 1; }
+done
+
+awk '/^### `/{id=$2} /\[NEEDS CLARIFICATION/{print id}' <root>/specs/SPEC-*.md \
+  | tr -d '`' | sort -u > /tmp/marked
+comm -12 /tmp/marked /tmp/enacted | grep . \
+  && { echo 'FAIL work enacts a rule carrying an open question'; exit 1; } || true
+```
+
+The `awk` tracks the requirement heading it is inside, so a marker is attributed to the rule above it
+rather than to whatever heading happens to fall in a fixed context window.
 
 ## Unenforced
 
@@ -198,5 +247,8 @@ These rules are real and no command decides them. A reviewer does.
 | A typed clause's type matches the diff                   | requires reading both sides               |
 | A step is one action, and an unprinted outcome is a step | requires reading the step                 |
 | An artifact token names one artifact, never a step       | requires judging the name                 |
+| A comment holds only what the code cannot express        | requires reading the code beside it       |
+| An operational document carries every part of its shape  | requires knowing which shape it is        |
+| A destructive step shows its dry run and its loss        | requires knowing the tool's forms         |
 
 [99 — Checklist](./99-checklist.md) is where these are asked at review time.

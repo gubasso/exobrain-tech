@@ -205,7 +205,7 @@ repos:
   # a directory because it has contents. The rule bars a shape, not a syntax: a
   # list, table, or full tree is fine wherever its entries carry their own
   # payload, and that judgment lives in
-  # programming/docs-design/00-foundations.md — it cannot be linted.
+  # programming/spec-driven-docs/00-model.md — it cannot be linted.
   #
   # These two shapes can, because each is an index by construction:
   #   - a `source-files:` frontmatter key holding a digest's file list

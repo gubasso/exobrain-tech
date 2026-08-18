@@ -108,8 +108,33 @@ retire_when: upstream release >= 2.4.0
 The retire condition is what stops a workaround outliving its bug. Without it the workaround becomes
 permanent by default, and the next reader assumes it was a design choice.
 
+A record carries one state, and the state says what has to happen next.
+
+| State           | Means                                                                |
+| --------------- | -------------------------------------------------------------------- |
+| `investigating` | reproduced, not yet root-caused                                      |
+| `mitigated`     | a permanent guard exists and stays after the upstream fix            |
+| `masked`        | a temporary workaround is in the tree, carrying its retire condition |
+| `monitoring`    | the upstream fix is believed deployed                                |
+
+- A record MUST carry exactly one state.
+- A masked record MUST carry a retire condition, and a mitigated one MUST NOT.
+
+The pair that earns the vocabulary is `mitigated` against `masked`, because they look alike in the
+diff and retire oppositely. A readiness check that waits for a service to report healthy is part of
+the design and outlives the bug that exposed the need for it. A fixed sleep that hides the same race
+is a mask, and it leaves when the bug does. One case can carry both.
+
 When the condition is met, remove the workaround and delete the record in the same change. The record
 existed to describe a live constraint; a constraint that lifted leaves no trace in prose.
+
+- Where a resolved symptom could recur and be misread, the author MUST leave a diagnostic entry.
+
+That entry is the durable half, and it is the only half. It carries the symptom, the signal that
+identifies it, and what the signal means — the shape
+[11 — Operational](./11-operational.md) owns — so a reader meeting the symptom again recognizes it in
+one lookup. An archive of resolved cases is not that: it is kept because the cases existed, and the
+log already holds them.
 
 ## Sources
 

@@ -144,6 +144,30 @@ separates compliance from breach.
 Write the scenario that would be argued about. A scenario restating the rule in other words adds
 length and settles nothing; a scenario naming the ambiguous case settles the ambiguity.
 
+## Open questions
+
+A rule sometimes must be written while something about it is undecided. Mark the question at it.
+
+```markdown
+### `plan-record:lane-holds-one-story` — A lane holds one story
+
+While a lane is active, the lane MUST hold exactly one story.
+
+[NEEDS CLARIFICATION: a hotfix must preempt an active lane without evicting its story]
+```
+
+- A marker MUST be `[NEEDS CLARIFICATION: <question>]` and carry the question, not the topic.
+- A spec MUST NOT carry more than three markers.
+- A unit of work MUST NOT enact a rule whose requirement carries a marker.
+
+It is the one exception to the no-prose-between-requirements rule, because it is a property of the
+requirement above it. A spec that hides the question invites an agent to resolve it silently.
+
+Three is the cap because a marker is for a question that changes scope, reads several ways with
+different consequences, or has no sensible default. Blocking enactment rather than the commit keeps
+it honest: an open question is legitimate state for an agreed spec, and shipping code against one is
+not. The inventory is `rg -F '[NEEDS CLARIFICATION' <root>/specs`, never a page that lists them.
+
 ## Verification
 
 - Every requirement MUST carry a `Verify:` line.
@@ -167,6 +191,8 @@ a bare count, is not a verification: it passes whatever it finds.
 ## Sources
 
 - EARS, for the five patterns: <https://alistairmavin.com/ears/>
+- GitHub Spec Kit, for the clarification marker and its cap:
+  <https://github.com/github/spec-kit/blob/main/spec-driven.md>
 - RFC 2119 and RFC 8174, for the keywords and the capitalization rule:
   <https://www.rfc-editor.org/rfc/rfc2119>, <https://www.rfc-editor.org/rfc/rfc8174>
 - Anthropic, on stating what to do rather than what not to do:

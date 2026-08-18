@@ -102,6 +102,61 @@ repos:
           { echo "FAIL spec-to-code:a-spec-change-is-typed $f"; exit 1; };
           done; true' --
 
+      - id: comment-names-no-record
+        name: no comment names a decision record
+        language: system
+        files: '\.py$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do grep -nE "^[[:space:]]*#.*\bADR-" "$f" &&
+          { echo "FAIL spec-to-code:a-comment-names-no-record $f"; exit 1; };
+          done; true' --
+
+      # The orphan check: a coverage tag naming a rule no spec defines is a
+      # fabricated citation, and catching it is what makes the other citation
+      # sites worth trusting. Scoped to the code, because a spec stating the
+      # rule necessarily writes the words the tag is made of.
+      - id: comment-rule-id-resolves
+        name: every rule ID cited in code resolves to a requirement
+        language: system
+        files: '\.py$'
+        pass_filenames: false
+        entry: >-
+          sh -c 'grep -rhoE "(SATISFIES|VERIFIES) [a-z0-9-]+:[a-z0-9-]+" src tests |
+          grep -oE "[a-z0-9-]+:[a-z0-9-]+" | sort -u > /tmp/cited;
+          grep -rhoE "^### .[a-z0-9-]+:[a-z0-9-]+." _docs/specs |
+          grep -oE "[a-z0-9-]+:[a-z0-9-]+" | sort -u > /tmp/agreed;
+          comm -13 /tmp/agreed /tmp/cited | grep . &&
+          { echo "FAIL spec-to-code:a-comment-cites-the-rule"; exit 1; }; true'
+
+      - id: marker-cap-and-question
+        name: clarification markers are capped at three and carry a question
+        language: system
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do n=$(grep -c "\[NEEDS CLARIFICATION" "$f" || true);
+          [ "$n" -le 3 ] || { echo "FAIL docs-specs:markers-are-capped $f: $n"; exit 1; };
+          grep -qE "\[NEEDS CLARIFICATION:?[[:space:]]*[]]" "$f" &&
+          { echo "FAIL docs-specs:a-marker-carries-a-question $f"; exit 1; };
+          done; true' --
+
+      # awk tracks the requirement heading it is inside, so a marker is charged
+      # to the rule above it rather than to whatever heading falls in a fixed
+      # context window.
+      - id: marker-blocks-enactment
+        name: no unit of work enacts a rule carrying an open question
+        language: system
+        files: '^_docs/(specs|plan)/.*\.md$'
+        pass_filenames: false
+        entry: >-
+          sh -c 'awk "/^### /{id=\$2} /\\[NEEDS CLARIFICATION/{print id}" _docs/specs/SPEC-*.md |
+          grep -oE "[a-z0-9-]+:[a-z0-9-]+" | sort -u > /tmp/marked;
+          grep -rhoE "(ADDED|MODIFIED|REMOVED) .[a-z0-9-]+:[a-z0-9-]+." _docs/plan |
+          grep -oE "[a-z0-9-]+:[a-z0-9-]+" | sort -u > /tmp/enacted;
+          comm -12 /tmp/marked /tmp/enacted | grep . &&
+          { echo "FAIL work enacts a rule carrying an open question"; exit 1; }; true'
+
       - id: no-emphasis
         name: documents carry no bold or italic text
         language: system

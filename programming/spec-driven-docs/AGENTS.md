@@ -10,12 +10,11 @@ token-estimate: 700
 
 A spec-driven documentation framework for projects worked on by coding agents. Covers the artifact
 model, placement, the spec and its requirement blocks, the decision log, agent context budgets, the
-markdown register, lifecycle, the spec-to-code seam, procedure shape, and the gates that hold all of
-it.
+markdown register, lifecycle, the spec-to-code seam, comment discipline, procedure and operational
+shape, and the gates that hold all of it.
 
 The planning method itself — how stories are written, ranked, and moved — belongs to the planning
-tool; this shelf owns only the contract its work record satisfies. Comment discipline and the shapes
-of runbooks, diagnostics, and case studies are held by `../docs-design/`.
+tool; this shelf owns only the contract its work record satisfies.
 
 ## How to use this shelf
 
@@ -35,7 +34,10 @@ read the shelf linearly; [05 — Agent Context](./05-agent-context.md) owns focu
 | Which markdown may I use, and how long may this be?            | `06-format.md`        |
 | How does a spec change, and what happens to a draft?           | `07-lifecycle.md`     |
 | How does a spec written first become work, and who tracks it?  | `09-spec-to-code.md`  |
+| What may a comment say, and how does it cite a rule?           | `09-spec-to-code.md`  |
 | How is a step written, and what crosses a phase boundary?      | `10-procedures.md`    |
+| What goes in a runbook, a diagnostic, or a case study?         | `11-operational.md`   |
+| How does an external-system bug get recorded and retired?      | `07-lifecycle.md`     |
 | What hook enforces this rule?                                  | `08-gates.md`         |
 | What must pass before this change merges?                      | `99-checklist.md`     |
 | What does this shelf mean by a term?                           | `glossary.md`         |
@@ -58,6 +60,9 @@ Templates: `TEMPLATE-spec.md`, `TEMPLATE-adr.md`, `TEMPLATE-agents-digest.md`,
 - A rule no command can check is listed as unenforced, not presented as gated.
 - A requirement whose `Verify:` command fails is unimplemented, not broken; its state is derived by
   running the command, never stored.
+- A comment cites a rule by ID and never names a decision record.
+- A suppression names its case and the condition that removes it.
+- A requirement carrying an open question is marked at the requirement and is not enacted.
 
 ## Maintenance
 

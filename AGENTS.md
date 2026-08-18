@@ -109,5 +109,5 @@ welcome wherever its entries carry their own payload: what a directory reserves,
 specifies, its domain and scope. Justify it like any other content, not by the directory's existence.
 The test: strip the paths out and read what is left — if nothing teaches, it was the listing. A
 layout a reader is told to create in their own project is a specification, not a copy, and stays.
-`programming/spec-driven-docs/00-model.md` owns the full rule; ADR-0007 records the decision. How a
-section's heading decides the judgment is held by `programming/docs-design/00-foundations.md`.
+`programming/spec-driven-docs/00-model.md` owns the full rule and the heading that decides the
+judgment; ADR-0007 records the decision.

@@ -56,8 +56,15 @@ test-plan:
 #
 # The copy is what makes the run non-destructive: the block's formatting hooks
 # write in place, and they write to the scratch tree.
+#
+# `env -u` is load-bearing. `git commit` exports GIT_DIR, GIT_INDEX_FILE, and
+# GIT_WORK_TREE into every hook process, and this recipe runs as a hook. A
+# `git add -A` that inherits them writes to the committing repository's index
+# from inside the scratch tree, which corrupts the commit in progress and makes
+# every later hook report against the wrong file set.
 test-spec-shelf:
-    nix develop --command sh -c ' \
+    nix develop --command env -u GIT_DIR -u GIT_INDEX_FILE -u GIT_WORK_TREE \
+        -u GIT_OBJECT_DIRECTORY -u GIT_ALTERNATE_OBJECT_DIRECTORIES sh -c ' \
         set -e; \
         d=$(mktemp -d); \
         trap "rm -rf $d" EXIT; \

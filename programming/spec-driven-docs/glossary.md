@@ -28,6 +28,12 @@ page points rather than restates.
 | Unenforced rule          | a real rule that no command decides, declared as such                | `08-gates.md`         |
 | Enact                    | to change behavior so a rule's verification command passes           | `09-spec-to-code.md`  |
 | Typed clause             | `ADDED`, `MODIFIED`, or `REMOVED` plus a rule ID, in an entry doc    | `09-spec-to-code.md`  |
+| Coverage tag             | `SATISFIES` or `VERIFIES` plus a rule ID, in a source comment        | `09-spec-to-code.md`  |
+| Suppression              | a failing or expected-failing test naming its case and its exit      | `09-spec-to-code.md`  |
+| Mask                     | a temporary workaround, carrying the condition that removes it       | `07-lifecycle.md`     |
+| Mitigation               | a permanent guard that stays after the upstream fix                  | `07-lifecycle.md`     |
+| Clarification marker     | `[NEEDS CLARIFICATION: <question>]` at an undecided requirement      | `03-rules.md`         |
+| Catalog                  | a document holding one entry per rule and no argument                | `06-format.md`        |
 | Agreed behavior          | behavior an open unit of work cites by rule ID; the spec wins        | `00-model.md`         |
 | Observed behavior        | behavior no open work cites; the code wins                           | `00-model.md`         |
 

@@ -35,8 +35,9 @@ apply. Both failures grow with the project rather than with any single document.
 | 6        | [Format](./06-format.md)               | Structural markdown, an imperative register, and the budgets.      |
 | 7        | [Lifecycle](./07-lifecycle.md)         | Changing a spec, promoting a draft, retiring a workaround.         |
 | 8        | [Gates](./08-gates.md)                 | The hook for every rule, and the honest list of unenforced ones.   |
-| 9        | [Spec to Code](./09-spec-to-code.md)   | A spec may lead its code; enactment is cited, coverage is derived. |
+| 9        | [Spec to Code](./09-spec-to-code.md)   | A spec may lead its code; enactment and comments cite it by ID.    |
 | 10       | [Procedures](./10-procedures.md)       | The shape of a step, and what crosses a phase boundary.            |
+| 11       | [Operational](./11-operational.md)     | What a runbook, a diagnostic, and a case study each contain.       |
 | 99       | [Checklist](./99-checklist.md)         | What must pass before a documentation change merges.               |
 |          | [Glossary](./glossary.md)              | Resolve a term at its owning chapter.                              |
 | Template | [Spec](./TEMPLATE-spec.md)             | Start a domain's contract.                                         |
@@ -66,15 +67,12 @@ over its own files — so the gate snippets are proven rather than illustrated.
 
 ## Related
 
-Two subjects a documentation method needs and this shelf does not yet own — comment discipline, and
-the shapes of runbooks, diagnostics, and case studies — are held by
-[docs-design](../docs-design/README.md).
-
 One document genre has its own shelf, because its rules are about evidence rather than about
 documentation: a page comparing this project to its alternatives is specified by
 [comparison-docs](../comparison-docs/README.md).
 
 ## House format
 
-This shelf obeys [06 — Format](./06-format.md). Chapters stay at or below 200 lines, carry no bold or
-italics, and spend prose only on a decision, a hazard, or a non-obvious constraint.
+This shelf obeys [06 — Format](./06-format.md). Chapters stay at or below 200 lines and catalogs at
+or below 300, none carries bold or italics, and prose is spent only on a decision, a hazard, or a
+non-obvious constraint.

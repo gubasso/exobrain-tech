@@ -34,7 +34,9 @@ Owner: [02 — Specs](./02-specs.md).
 
 - [ ] The spec uses `## Purpose` then `## Requirements`, and introduces no section outside the shape.
 - [ ] Requirements are ordered with the most consequential first.
-- [ ] No narrative sits between two requirements.
+- [ ] No narrative sits between two requirements; a clarification marker is the one exception.
+- [ ] Every marker is `[NEEDS CLARIFICATION: <question>]`, the spec carries at most three, and no
+      unit of work enacts a marked rule.
 - [ ] No spec links or names a decision record, and no entry document does either; the reference
       runs from the record to the rule ID.
 - [ ] A behavior change in this diff is reflected in the spec.
@@ -91,6 +93,7 @@ Owner: [06 — Format](./06-format.md).
 - [ ] No document narrates its own history or explains an absence.
 - [ ] The change recommends one default rather than surveying alternatives it does not recommend.
 - [ ] One term is used for one concept.
+- [ ] Every chapter is within 200 lines and every catalog within 300.
 
 ## Lifecycle
 
@@ -102,6 +105,10 @@ Owner: [07 — Lifecycle](./07-lifecycle.md).
 - [ ] A fact depending on an external source has an entry in the tracking registry.
 - [ ] A workaround added here names the condition that retires it, and a workaround whose condition is
       met was removed along with its record.
+- [ ] Every known-issue record carries exactly one state, and a masked one carries a retire condition
+      where a mitigated one carries none.
+- [ ] A resolved symptom that could recur and be misread left a diagnostic entry, and no archive of
+      resolved cases was created.
 
 ## Spec to code
 
@@ -112,6 +119,13 @@ Owner: [09 — Spec to Code](./09-spec-to-code.md).
 - [ ] No requirement carries a stored status marker, and no stored coverage artifact was added.
 - [ ] The cited type matches the diff: a new requirement is `ADDED`, a reworded one `MODIFIED`, a
       deleted one `REMOVED`.
+- [ ] Every comment citing an agreement cites it by rule ID as `SATISFIES` or `VERIFIES`, and no
+      comment names a decision record.
+- [ ] Every rule ID cited in code resolves to a requirement in a spec.
+- [ ] A comment that survived holds what the code cannot express; one restating the next line was
+      deleted and one covering for a vague name became the name.
+- [ ] Every suppressed or failing test names its case id and the condition that removes it, and every
+      expected failure uses the strict form.
 
 ## Procedures
 
@@ -126,6 +140,18 @@ Owner: [10 — Procedures](./10-procedures.md).
 - [ ] Every phase of a multi-phase guide carries an inputs line naming each producer, and every phase
       that produces an artifact ends with an outputs block.
 - [ ] No outputs block was promoted to a heading, and none defines the artifact it names.
+
+## Operational documents
+
+Owner: [11 — Operational](./11-operational.md).
+
+- [ ] Each operational document carries every part of its shape, and the runbook states the condition
+      under which the reader stops and reverts.
+- [ ] Every destructive step shows its dry-run or inspection form as its own prior step, and states
+      what cannot be recovered before the command.
+- [ ] Every signal a diagnostic names carries its expected result.
+- [ ] A rule an incident produced was written to the owning spec rather than left in the case study.
+- [ ] No directory was named after a document type.
 
 ## Gates
 
