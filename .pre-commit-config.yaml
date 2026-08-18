@@ -129,6 +129,11 @@ repos:
   #
   # md-toc updates the TOC block delimited by `<!--TOC-->` markers in
   # any markdown file. Files without the marker are left untouched.
+  #
+  # The spec-driven-docs worked example is excluded because it ships its own
+  # md-toc hook at depth 3, which stops at the requirement heading and leaves
+  # the scenarios out. Two hooks with different depths over one file rewrite it
+  # in turn, forever.
   - repo: https://github.com/frnmst/md-toc
     rev: 9.0.0
     hooks:
@@ -136,6 +141,7 @@ repos:
         # -c: don't gate on TOC list coherence (free-form notes may diverge).
         # -p: write in place. --skip-lines 1: don't TOC the H1 title.
         args: [-p, -c, --skip-lines, '1', github]
+        exclude: '^programming/spec-driven-docs/worked-example/'
 
   # --- Markdown lint (style gate + ordered-list renumber autofix) ---
   #
@@ -334,6 +340,26 @@ repos:
           exit 1; }; check-plan _docs/plan'
         language: system
         files: '^_docs/plan/'
+        pass_filenames: false
+
+  # --- The worked example shipped with programming/spec-driven-docs/ ---
+  #
+  # That shelf ships a pre-commit block, two MD043 arrays and a set of fixture
+  # documents a reader copies into their own project, which ADR-0006 makes an
+  # artifact this repository runs rather than asserts. `just test-spec-shelf`
+  # runs the block the way a reader would: over a scratch copy whose root is the
+  # example's own root, so the `^_docs/` patterns inside it need no rewriting.
+  #
+  # pass_filenames: false — the recipe names the tree itself, and the block's
+  # cross-file checks (rule-id uniqueness, table-of-contents freshness) would let
+  # a break through whenever the file that broke it happened not to be staged.
+  - repo: local
+    hooks:
+      - id: spec-shelf-example
+        name: the spec-driven-docs example passes its own hooks
+        entry: just test-spec-shelf
+        language: system
+        files: '^programming/spec-driven-docs/worked-example/'
         pass_filenames: false
 
   # --- Meta: keep the config itself honest ---

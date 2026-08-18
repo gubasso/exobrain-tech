@@ -1,0 +1,14 @@
+// The project's general markdownlint configuration.
+//
+// MD043 is absent from this file and must stay absent, at every value
+// including false: markdownlint-cli2 merges this file over the base given by
+// --config, so a mention here would disable the spec and decision-record
+// heading shapes while their hooks kept reporting success.
+//
+// MD013 is off because line wrapping is owned by the formatter, not the
+// linter, and a second opinion about column width only produces noise.
+{
+  "config": {
+    "MD013": false
+  }
+}

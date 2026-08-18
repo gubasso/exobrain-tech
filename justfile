@@ -25,7 +25,7 @@ lint:
 #
 # What is gated here is the plan record, whose format and linter belong to the
 # pinned plan-xp input.
-test: test-plan
+test: test-plan test-spec-shelf
 
 # _docs/plan/ — this repository's own plan record, gated by the pinned plan-xp
 # input rather than by a copy of its schemas in this tree.
@@ -43,6 +43,29 @@ test-plan:
         --schemafile "$PLAN_XP_SCHEMA_DIR/plan-config.schema.json" \
         _docs/plan/config.yml'
     nix develop --command check-plan _docs/plan
+
+# programming/spec-driven-docs/worked-example/ — the shelf applied to itself.
+#
+# The example ships a pre-commit block a reader copies into their own project,
+# and ADR-0006 makes that block an artifact this repository must run rather than
+# assert. It is run the way a reader would run it: the example is copied to a
+# scratch repository whose root is the example's own root, so the `^_docs/`
+# patterns inside the block resolve without a single path being rewritten here.
+# A second copy of those hook definitions, scoped to the in-tree path, would be
+# the duplication AGENTS.md forbids and would drift from the file readers take.
+#
+# The copy is what makes the run non-destructive: the block's formatting hooks
+# write in place, and they write to the scratch tree.
+test-spec-shelf:
+    nix develop --command sh -c ' \
+        set -e; \
+        d=$(mktemp -d); \
+        trap "rm -rf $d" EXIT; \
+        cp -r programming/spec-driven-docs/worked-example/. "$d"; \
+        cd "$d"; \
+        git init -q .; \
+        git add -A; \
+        pre-commit run --all-files --config pre-commit-additions.yaml'
 
 # Move the pinned plan-xp revision to the current `develop` tip, then prove the
 # record still passes the linter that arrived with it.

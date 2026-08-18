@@ -36,6 +36,15 @@
             # node+npm on PATH it uses `language_version: system` instead.
             pkgs.nodejs
 
+            # The gate snippet shipped with programming/spec-driven-docs/ is
+            # run against its own fixtures by `just test-spec-shelf`, and two of
+            # its hooks are `language: system`: the typed-clause check calls rg,
+            # and the table-of-contents freshness check calls md_toc. Both are
+            # named here for the reason the block below gives — a system hook
+            # resolves off the ambient PATH and needs a declared provider.
+            pkgs.ripgrep
+            pkgs.python3Packages.md-toc
+
             # Tools whose upstream hook is `language: python` but ships a
             # prebuilt, dynamically linked binary in the wheel. Such a binary
             # hard-codes the ELF interpreter /lib64/ld-linux-x86-64.so.2, which

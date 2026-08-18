@@ -1,0 +1,61 @@
+# Spec to Code Specification
+
+## Purpose
+
+Rules governing the seam between a spec and the work that implements it. Covers requirements written
+before their behavior exists, how an entry document in the plan zone — this project declares it at
+`_docs/plan/` — cites the rules it enacts, and how coverage is derived. The shape of a requirement
+is covered by the specs specification; how a spec changes is covered by its lifecycle rules.
+
+## Requirements
+
+### `spec-to-code:a-spec-may-lead-its-code` — A spec may lead its code
+
+Where a requirement's behavior does not yet exist, the author MUST represent that state only by its
+failing verification command.
+
+#### Scenario: A domain is specified before it is built
+
+- GIVEN a spec merged with three requirements and no implementation
+- WHEN a reader runs the three verification commands
+- THEN the three failures are the backlog, and no marker in the spec restates them
+
+Verify: `rg -in '^status:' _docs/specs && exit 1 || exit 0`
+
+### `spec-to-code:a-spec-change-is-typed` — A spec change is typed
+
+When an entry document cites a spec change, the author MUST write the clause as `ADDED`, `MODIFIED`,
+or `REMOVED` followed by the rule ID in inline code.
+
+#### Scenario: A clause names a type but garbles the ID
+
+- GIVEN an entry document carrying `ADDED auth-token-expiry`
+- WHEN the shape gate runs
+- THEN the clause fails, because the ID token is not `` `<spec-slug>:<rule-slug>` ``
+
+Verify: `rg -n 'ADDED|MODIFIED|REMOVED' _docs/plan | rg -v '(ADDED|MODIFIED|REMOVED) \x60[a-z0-9-]+:[a-z0-9-]+\x60' | grep . && exit 1 || exit 0`
+
+### `spec-to-code:an-entry-document-cites-rule-ids` — An entry document cites rule IDs
+
+When a unit of work changes agreed behavior, the author MUST cite each affected rule ID in the
+work's entry document.
+
+#### Scenario: A diff changes a spec the entry document never names
+
+- GIVEN a change that rewords a requirement
+- WHEN the entry document carries no `MODIFIED` clause for its ID
+- THEN review rejects the change, because no command can see the omission
+
+Verify: reviewer compares the spec diff against the entry document's typed clauses
+
+### `spec-to-code:unenacted-rules-are-the-backlog` — Unenacted rules are the backlog
+
+The author MUST derive the set of unenacted rules from the specs and the plan zone on every ask.
+
+#### Scenario: Someone proposes a coverage file
+
+- GIVEN a request for a rules-to-work index under `_docs/reference/`
+- WHEN the same set is derivable by comparing spec IDs against cited IDs
+- THEN the file is refused, because a stored copy drifts on the next change to either side
+
+Verify: reviewer confirms no document stores the agreed-to-enacted mapping

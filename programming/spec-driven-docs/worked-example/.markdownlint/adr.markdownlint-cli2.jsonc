@@ -1,0 +1,23 @@
+// The decision record heading shape, gated by MD043 required-headings.
+//
+// The five sections are exact and ordered, and the array ends without a
+// wildcard: a record that grows a sixth section is a record carrying something
+// that belongs in a spec. `?` stands in for the varying title.
+//
+// Precondition: the project's general `.markdownlint-cli2.jsonc` must not
+// mention MD043 at any value, including false. It merges over this file and
+// would disable the shape while the hook kept reporting success.
+{
+  "config": {
+    "MD043": {
+      "headings": [
+        "?",
+        "## Context and Problem Statement",
+        "## Considered Options",
+        "## Decision Outcome",
+        "## Consequences",
+        "## Status"
+      ]
+    }
+  }
+}

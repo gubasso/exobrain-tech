@@ -1,0 +1,159 @@
+# Additions for a project adopting spec-driven-docs.
+#
+# Merge these into .pre-commit-config.yaml. Paths assume a knowledge base
+# (`_docs/`); change to `docs/` for a codebase. The two markdownlint entries
+# reuse the id of the project's existing markdownlint hook so its language and
+# dependency settings carry over.
+#
+# Precondition for the heading shapes: the project's .markdownlint-cli2.jsonc
+# must not mention MD043 at any value, including false. That file is merged over
+# the --config base and would silently disable both shapes while the hooks keep
+# reporting success.
+
+repos:
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.22.1
+    hooks:
+      - id: markdownlint-cli2
+        alias: md-spec
+        name: markdownlint (spec heading shape)
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        args: ['--config', '.markdownlint/spec.markdownlint-cli2.jsonc']
+
+      - id: markdownlint-cli2
+        alias: md-adr
+        name: markdownlint (decision record heading shape)
+        files: '^_docs/decisions/(ADR-.*|TEMPLATE-adr)\.md$'
+        args: ['--config', '.markdownlint/adr.markdownlint-cli2.jsonc']
+
+  - repo: local
+    hooks:
+      - id: adr-filename-shape
+        name: decision record filenames carry no digit
+        language: system
+        files: '^_docs/decisions/ADR-.*\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do case "$(basename "$f")" in *[0-9]*)
+          echo "FAIL decision-records:filename-carries-no-digit $f"; exit 1;; esac; done' --
+
+      - id: adr-word-cap
+        name: decision records stay within 350 words
+        language: system
+        files: '^_docs/decisions/ADR-.*\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do w=$(wc -w < "$f"); [ "$w" -le 350 ] ||
+          { echo "FAIL decision-records:body-stays-within-350-words $f: $w words"; exit 1; }; done' --
+
+      - id: spec-requirement-parts
+        name: every requirement carries an id and a verification
+        language: system
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do
+          r=$(grep -cE "^### \`[a-z0-9-]+:[a-z0-9-]+\` . " "$f" || true);
+          h=$(grep -c "^### " "$f" || true);
+          v=$(grep -c "^Verify: " "$f" || true);
+          [ "$r" = "$h" ] && [ "$r" = "$v" ] ||
+          { echo "FAIL docs-specs:requirement-carries-five-parts $f: $r/$h headings, $v verify"; exit 1; };
+          done' --
+
+      - id: spec-rule-id-unique
+        name: rule identifiers are unique across the project
+        language: system
+        files: '^_docs/specs/.*\.md$'
+        pass_filenames: false
+        entry: >-
+          sh -c 'dupes=$(grep -rhoE "^### \`[a-z0-9-]+:[a-z0-9-]+\`" _docs/specs | sort | uniq -d);
+          [ -z "$dupes" ] ||
+          { echo "FAIL docs-specs:rule-id-is-unique-and-slugged"; echo "$dupes"; exit 1; }'
+
+      - id: spec-prohibition-cap
+        name: a spec carries at most five prohibitions
+        language: system
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do n=$(grep -cE "MUST NOT|SHALL NOT" "$f" || true); [ "$n" -le 5 ] ||
+          { echo "FAIL docs-specs:prohibitions-are-capped $f: $n"; exit 1; }; done' --
+
+      - id: spec-size-cap
+        name: specs stay within 300 lines and carry a TOC above 100
+        language: system
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do n=$(sed "/^<!--TOC-->$/,/^<!--TOC-->$/d" "$f" | wc -l);
+          [ "$n" -le 300 ] || { echo "FAIL $f: $n authored lines, cap is 300"; exit 1; };
+          if [ "$n" -gt 100 ]; then grep -q "<!--TOC-->" "$f" ||
+          { echo "FAIL $f: over 100 lines with no TOC"; exit 1; }; fi; done' --
+
+      - id: typed-clause-shape
+        name: typed spec-change clauses carry a well-formed rule ID
+        language: system
+        files: '^_docs/plan/.*\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do
+          rg -n "ADDED|MODIFIED|REMOVED" "$f" |
+          rg -v "(ADDED|MODIFIED|REMOVED) \x60[a-z0-9-]+:[a-z0-9-]+\x60" | grep . &&
+          { echo "FAIL spec-to-code:a-spec-change-is-typed $f"; exit 1; };
+          done; true' --
+
+      - id: no-emphasis
+        name: documents carry no bold or italic text
+        language: system
+        types: [markdown]
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do
+          sed "/^\`\`\`/,/^\`\`\`/d" "$f" | grep -nE "\*\*[^*]+\*\*" &&
+          { echo "FAIL docs-format:document-uses-structural-markdown-only $f"; exit 1; };
+          done; true' --
+
+      # The `Verify:` line of the requirement this hook enforces necessarily
+      # contains the words the hook forbids, so it is excluded. A gate that
+      # cannot coexist with its own definition is a gate nobody can ship.
+      - id: no-self-narration
+        name: documents state the present
+        language: system
+        types: [markdown]
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do
+          grep -vn "^Verify: " "$f" | grep -iE "formerly|used to be|this replaces|previously we" &&
+          { echo "FAIL docs-format:document-states-the-present $f"; exit 1; };
+          done; true' --
+
+      - id: fence-language
+        name: every opening fence declares a language
+        language: system
+        types: [markdown]
+        pass_filenames: true
+        entry: >-
+          awk '/^```/{ if(!inf){ inf=1; if($0=="```"){
+          printf "FAIL docs-format:fence-declares-a-language %s:%d\n", FILENAME, FNR; bad=1 } }
+          else inf=0; next } END{ exit bad }'
+
+  # Tables of contents: generated, never hand-written, and gated for staleness.
+  # The depth flag belongs to the parser subcommand, so it follows `github`.
+  # At the top level `-l` means --no-links and `-l 3` is an error.
+  - repo: https://github.com/frnmst/md-toc
+    rev: 9.0.0
+    hooks:
+      - id: md-toc
+        args: [-p, -c, --skip-lines, '1', github, -l, '3']
+
+  - repo: local
+    hooks:
+      - id: md-toc-fresh
+        name: tables of contents are current
+        language: system
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        pass_filenames: true
+        entry: >-
+          sh -c 'for f; do grep -q "<!--TOC-->" "$f" || continue;
+          md_toc -d -c -s 1 github -l 3 "$f" ||
+          { echo "FAIL stale TOC in $f; run md_toc -p"; exit 1; }; done' --
