@@ -7,13 +7,12 @@ holds the wiring and the honest list of what no command can decide.
 
 - A rule that no command can check MUST be listed as unenforced rather than presented as gated.
 
-[03 — Rules](./03-rules.md) requires the `Verify:` line itself; this chapter wires what it names. A
-rule presented as binding but never checked teaches readers that specs describe intentions rather than
-reality, and after that they stop reading them.
+[03 — Rules](./03-rules.md) requires the `Verify:` line; this chapter wires what it names. A rule
+presented as binding but never checked teaches readers that specs describe intentions, and after
+that they stop reading them.
 
-A check whose file set is empty exits zero, so a renamed directory or a drifted `files:` pattern turns
-every gate below into a green light over nothing. Assert the set before checking it, here and for
-`_docs/decisions/ADR-*.md`.
+A check whose file set is empty exits zero, so a renamed directory or a drifted `files:` pattern
+turns every gate below into a green light over nothing. Assert the set before checking it.
 
 ```bash
 set -- _docs/specs/SPEC-*.md
@@ -31,9 +30,9 @@ Each config is `{"config": {"MD043": {"headings": [...]}}}` with one array. For 
 `["?", "## Purpose", "## Requirements", "+"]`; for a record it is `"?"` followed by the five section
 headings in order, with no trailing wildcard.
 
-MD043 checks every heading level, so the array must cover the requirement and scenario headings, not
-only the `##` sections. Tokens are `?` for exactly one heading, `+` for one or more, `*` for zero or
-more; `?` matches the varying title, and `+` fails an empty spec.
+MD043 checks every heading level, so the array covers the requirement and scenario headings, not only
+the `##` sections. Tokens are `?` for exactly one heading, `+` for one or more, `*` for zero or more;
+`?` matches the varying title and `+` fails an empty spec.
 
 ```yaml
 - id: markdownlint-cli2
@@ -96,11 +95,11 @@ The check runs one way only. A cited case with no record is a fabrication and fa
 suppression cites is ordinary, because the workaround may live in a config or a dependency pin rather
 than in a marked test.
 
-Wire it as `always_run`, not behind a `files:` filter. The commit this check exists to catch is the
-one that deletes a record while a suppression still cites it, and pre-commit selects staged files
-with `--diff-filter=ACMRTUXB`, which omits deletions. A filter would hand the hook an empty list on
-exactly that commit. The same reasoning binds every gate that compares two sets rather than
-inspecting the files it is given.
+Wire it as `always_run`, not behind a `files:` filter. The commit this check exists to catch deletes
+a record while a suppression still cites it, and pre-commit selects staged files with
+`--diff-filter=ACMRTUXB`, which omits deletions — so a filter would hand the hook an empty list on
+exactly that commit. The same reasoning binds every gate comparing two sets rather than the files it
+is given.
 
 ## Companion directories
 
@@ -157,7 +156,9 @@ done
 ## Sizes
 
 ```bash
-[ "$(wc -l < AGENTS.md)" -le 100 ] || { echo 'FAIL AGENTS.md over 100 lines'; exit 1; }
+find . -name AGENTS.md -exec sh -c \
+  'c=150; [ "$1" = ./AGENTS.md ] && c=100; [ "$(wc -l < "$1")" -le "$c" ] || echo "FAIL $1"' _ {} \; \
+  | grep . && exit 1
 
 for f in _docs/specs/SPEC-*.md; do
   n=$(sed '/^<!--TOC-->$/,/^<!--TOC-->$/d' "$f" | wc -l)   # authored lines only
@@ -165,7 +166,7 @@ for f in _docs/specs/SPEC-*.md; do
   [ "$n" -le 100 ] || rg -q '<!--TOC-->' "$f" || { echo "FAIL $f: over 100 lines, no TOC"; exit 1; }
 done
 
-for f in _docs/decisions/ADR-*.md; do
+for f in _docs/decisions/ADR-?*.md; do
   w=$(wc -w < "$f")
   [ "$w" -le 350 ] || { echo "FAIL $f: $w words, cap is 350"; exit 1; }
 done
@@ -180,6 +181,9 @@ done
 The chapter loop is what stops a shelf from absorbing a subject by growing. A catalog takes the
 larger number for the reason [06 — Format](./06-format.md) states, and is matched by name rather than
 by inspecting the file, because no command can tell an argument from an inventory.
+
+Where a budget lands over an older corpus, the loop skips a list of named paths and fails when a
+listed path fits or disappears, so the exemption shrinks on its own.
 
 ## Tables of contents
 
@@ -217,9 +221,8 @@ awk '/^```/{ if(!inf){ inf=1; if($0=="```"){ printf "%s:%d: bare opening fence\n
 
 ## Prose checks
 
-Two rules match on prose, and both must strip fenced blocks and inline code first: a document stating
-either rule necessarily quotes the words it forbids, and an unstripped match reports the definition as
-a breach.
+Two rules match on prose, and both must strip fences and inline code first: a document stating either
+rule quotes the words it forbids, and an unstripped match reports the definition as a breach.
 
 ````bash
 strip() { sed '/^```/,/^```/d' "$1" | sed 's/`[^`]*`//g'; }
@@ -279,6 +282,8 @@ These rules are real and no command decides them. A reviewer does.
 | Rule                                                     | Why no command                            |
 | -------------------------------------------------------- | ----------------------------------------- |
 | A requirement names a subject that can act               | requires reading the sentence             |
+| A requirement statement is one sentence                  | requires reading the sentence             |
+| A reference is one level from the entry document         | requires knowing the entry document       |
 | A scenario names the contested case, not a restatement   | requires knowing the ambiguity            |
 | A deferral's reopening condition is checkable            | requires domain knowledge                 |
 | Prose is spent only on a decision, hazard, or constraint | requires judging necessity                |

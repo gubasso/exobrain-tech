@@ -266,6 +266,117 @@ repos:
           *) echo "FAIL $f: a known-issue filename starts with KI-"; exit 1;;
           esac; done' --
 
+  # --- Size budgets (programming/spec-driven-docs/06-format.md; pre-commit, local) ---
+  #
+  # Every budget the method states as a count is gated here. A budget nothing
+  # checks is advice, and the shelf that publishes these numbers has to run them
+  # against itself before a reader is asked to.
+  #
+  # Each set is asserted non-empty before it is measured. A check whose file set
+  # is empty exits zero, so a renamed directory or a drifted pattern would turn
+  # the gate into a green light over nothing.
+  #
+  # The two budgets the method states in words rather than counts — a
+  # requirement statement is one sentence, and a reference is one level from the
+  # entry document — are reviewer judgment and are declared unenforced in
+  # 08-gates.md rather than faked here.
+  - repo: local
+    hooks:
+      - id: adr-word-cap
+        name: decision records stay within 350 words
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c 'set -- _docs/decisions/ADR-?*.md;
+          [ -e "$1" ] || { echo "FAIL no decision records matched; the layout moved"; exit 1; };
+          bad=""; for f; do w=$(wc -w < "$f");
+          [ "$w" -le 350 ] || bad="$bad $f ($w words);"; done;
+          [ -z "$bad" ] || { echo "FAIL 350-word budget:$bad"; exit 1; }'
+
+      - id: agents-digest-size
+        name: author-instructions files stay within 100 lines at the root and 150 in a subtree
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c '[ -f AGENTS.md ] || { echo "FAIL no root AGENTS.md"; exit 1; };
+          bad=$(find . -path ./.git -prune -o -name AGENTS.md -print |
+          while read -r f; do n=$(wc -l < "$f"); c=150;
+          [ "$f" = "./AGENTS.md" ] && c=100;
+          [ "$n" -le "$c" ] || echo "$f ($n lines, cap $c)"; done);
+          [ -z "$bad" ] || { echo "FAIL author-instructions budget"; echo "$bad"; exit 1; }'
+
+      # The debt list holds the chapters written before this budget bound them.
+      # A listed path is skipped; every other chapter in the same shelf is still
+      # gated, so the shelves carrying debt cannot grow more of it. The list is
+      # self-shrinking: a listed file that now fits, or that no longer exists,
+      # fails this hook until its line is deleted. The cap is never raised to
+      # admit a document — a chapter that wants more room splits.
+      - id: chapter-size-cap
+        name: chapters stay within 200 lines and catalogs within 300
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c 'debt="
+          ./infra/sandbox-isolation-backends/00-threat-model-and-principles.md
+          ./infra/sandbox-isolation-backends/10-runtimes-catalog.md
+          ./infra/sandbox-isolation-backends/20-decision-libkrun-linux.md
+          ./infra/sandbox-isolation-backends/30-libkrun-vs-firecracker.md
+          ./infra/sandbox-isolation-backends/60-podman-libkrun-operational-notes.md
+          ./languages/bash/release-workflow-spec/05-obs-multi-distro.md
+          ./languages/rust/cli-spec/02-subcommand-pattern.md
+          ./languages/rust/cli-spec/03-error-handling.md
+          ./languages/rust/cli-spec/07-dependencies.md
+          ./languages/rust/cli-spec/08-naming-and-visibility.md
+          ./languages/rust/cli-spec/10-reference-projects.md
+          ./languages/rust/release-workflow-spec/00-branch-model-and-release-plz.md
+          ./programming/cli-design/00-architecture.md
+          ./programming/cli-design/01-logging-and-output.md
+          ./programming/cli-design/02-error-messages.md
+          ./programming/cli-design/03-config-precedence.md
+          ./programming/cli-design/04-coding-style-rust-zig.md
+          ./programming/cli-design/05-designing-for-llm-agents.md
+          ./programming/cli-design/08-naming-and-docs.md
+          ./programming/cli-design/10-reference-projects.md
+          ./programming/cli-design/12-config-generation-from-types.md
+          ./programming/cli-design/13-terminal-output-toolbox.md
+          ./tools/nix/02-per-project-devshell.md
+          ./tools/osc-obs/case-studies/01-broken-link-drift-after-patch-rename.md
+          ./tools/osc-obs/case-studies/02-libexpat-abi-override-via-sles-update-branch.md
+          ";
+          stale=""; for f in $debt; do
+          [ -f "$f" ] || { stale="$stale $f (deleted);"; continue; };
+          n=$(wc -l < "$f"); c=200;
+          case "$f" in *-gates.md | *-checklist.md | */glossary.md) c=300;; esac;
+          [ "$n" -gt "$c" ] || stale="$stale $f ($n lines, now fits);"; done;
+          [ -z "$stale" ] || { echo "FAIL delist from the chapter debt list:$stale"; exit 1; };
+          set -- $(find . -regextype posix-extended -path ./.git -prune -o
+          -regex ".*/([0-9][0-9]-[^/]*|glossary)\.md" -print);
+          [ "$#" -gt 0 ] || { echo "FAIL no chapters matched; the layout moved"; exit 1; };
+          bad=""; for f; do case "$debt" in *" $f "*) continue;; esac;
+          n=$(wc -l < "$f"); c=200;
+          case "$f" in *-gates.md | *-checklist.md | */glossary.md) c=300;; esac;
+          [ "$n" -le "$c" ] || bad="$bad $f ($n lines, cap $c);"; done;
+          [ -z "$bad" ] || { echo "FAIL chapter budget:$bad"; exit 1; }'
+
+      # The gate that keeps the other gates honest. A budget can be stated in
+      # AGENTS.md, restated in a chapter, and enforced by nothing; this names the
+      # hook each count-shaped budget is enforced by, so renaming or deleting one
+      # fails here instead of quietly turning a rule back into a suggestion. The
+      # `$` anchor is load-bearing: without it a hook renamed by suffix still
+      # matches the id it replaced.
+      - id: budget-gates-exist
+        name: every size budget names the hook that enforces it
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c 'for h in adr-word-cap agents-digest-size chapter-size-cap; do
+          grep -q "id: $h$" .pre-commit-config.yaml ||
+          { echo "FAIL no hook enforces a stated budget: $h"; exit 1; }; done'
+
   # --- Spelling (report-only) ---
   #
   # `language: system` because upstream ships this hook as `language: python`

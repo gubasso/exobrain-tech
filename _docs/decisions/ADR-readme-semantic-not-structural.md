@@ -2,60 +2,43 @@
 
 ## Context and Problem Statement
 
-`README.md` files serve as the human-facing index for a directory. A tempting way to write one is to
-mirror the filesystem: an ASCII directory tree, or an exhaustive bullet list of every child file and
-subdirectory. But the filesystem is **mutable and drifts fast** — files are added, renamed, and
-deleted constantly, and a README that replicates the layout goes stale the moment the tree changes,
-silently misdescribing what is actually on disk. The directory listing already _is_ the source of
-truth for "what exists"; duplicating it into prose creates a second, lower-fidelity copy that must
-be hand-maintained.
-
-Separately, `AGENTS.md` digests deliberately _do_ map sources (their `Source Map` is a file-level
-index) — that is their designed job, and it is regenerated from the sources, so it is not subject to
-this problem.
+A `README.md` is the human-facing index for a directory, and the tempting way to write one is to
+mirror the filesystem: an ASCII tree, or a bullet per child. The filesystem is the source of truth
+for what exists and it drifts fast, so a mirrored README misdescribes the tree the moment a file
+moves, and the copy must be hand-maintained forever.
 
 ## Considered Options
 
-- README defines the area's organization, semantics, and domain; the filesystem stays the SoT for
-  what exists. Links to specific files/dirs are allowed when justified by that semantic role.
-- README mirrors the directory tree / enumerates every file (structural index).
-- README contains no file or directory references at all (pure prose).
+- README defines the area's organization, semantics, and domain, linking a file only where the link
+  carries a semantic role — chosen.
+- README mirrors the tree or enumerates every child — rejected: a lower-fidelity copy of `ls` that
+  goes stale on every add, rename, and delete.
+- README carries no file or directory reference at all — rejected: it also removes the curated
+  pointer to a landmark entry, which is navigation by meaning.
 
 ## Decision Outcome
 
-Chosen option: **README.md must define its area's organization, semantics, and domain — not
-replicate disk state.**
+Chosen option: a README states what kind of content the directory reserves, how the area is
+organized, and what its parts mean.
 
-- **Required:** a README states _what kind of content the directory reserves_ ("at dir X we keep
-  this kind of thing"), how the area is organized, and the meaning of its parts.
-- **Prohibited:** ASCII directory trees and exhaustive `ls`-style enumerations of files/subdirs that
-  merely mirror the filesystem and drift when it changes.
-- **Allowed when justified:** links to specific files or directories that carry organizational or
-  semantic meaning — a curated pointer to a landmark entry point, not a mechanical listing. The
-  test: does the link exist because this README is responsible for defining that part of the tree's
-  role, or is it just echoing what `ls` would show?
-- **Exempt — auto-generated ToC:** a table-of-contents block delimited by generator markers
-  (`<!--TOC-->` … `<!--TOC-->`, `<!-- toc -->` … `<!-- tocstop -->`) lists the page's own headings
-  and is tool-produced, so it is allowed and left to the generator (not hand-trimmed). This covers
-  in-page heading ToCs only, not hand-written sibling-file enumerations.
-- **Exemption withdrawn:** `AGENTS.md` digests were once exempt on the grounds that mapping sources
-  is their job. They are not exempt. A digest maps knowledge, not files; see
-  [ADR-filesystem-owns-disk-state](./ADR-filesystem-owns-disk-state.md).
+- Prohibited: ASCII directory trees and `ls`-style enumerations that mirror the filesystem.
+- Allowed when justified: a link to a file or directory whose role this README defines. The test is
+  whether the link exists because of that responsibility, or because `ls` would show it.
+- Exempt: a table-of-contents block between generator markers, which lists the page's own headings
+  and belongs to the generator. In-page heading ToCs only, never a hand-written sibling listing.
+- Exemption withdrawn: an `AGENTS.md` digest is not exempt. A digest maps knowledge, not files.
 
 ## Consequences
 
-- Good: READMEs stop going stale on every add/rename/delete; the filesystem remains the single SoT
-  for structure, and the README carries the durable semantic meaning the filesystem can't.
-- Good: navigation by _meaning_ (domain reservations, curated landmarks) survives refactors that
-  move files around.
-- Bad: existing READMEs that carry trees or exhaustive listings must be rewritten; the "justified
-  link vs mechanical listing" line requires per-README judgment rather than a mechanical rule.
+- Good: a README stops going stale on every add, rename, and delete, and navigation by meaning
+  survives a refactor.
+- Bad: existing READMEs carrying trees must be rewritten, and the justified-link line is a judgment
+  call rather than a mechanical rule.
 
 ## Status
 
-Accepted. Operative rule lives in the repo's `AGENTS.md` ("README Content Rule"), which
-also reconciles the older "README = index file" wording to mean a _semantic_ index. Enforced across
-the repository as part of the SoT sweep.
+Accepted. Operative rule lives in the repo's `AGENTS.md`, which also reads the older "README = index
+file" wording as a semantic index.
 
 Amended by [ADR-filesystem-owns-disk-state](./ADR-filesystem-owns-disk-state.md) — the `AGENTS.md`
 digest exemption is withdrawn.

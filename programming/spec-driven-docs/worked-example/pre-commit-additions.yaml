@@ -76,14 +76,62 @@ repos:
           comm -13 /tmp/kr /tmp/kc | grep . &&
           { echo "FAIL spec-to-code:a-suppression-names-its-case"; exit 1; }; true'
 
+      # Every size budget is gated, and every one of these hooks asserts its file
+      # set is non-empty first: a check handed no files exits zero, so a renamed
+      # directory would read as a pass. `always_run` for the same reason a
+      # cross-set check needs it — a `files:` filter cannot see the rename.
       - id: adr-word-cap
         name: decision records stay within 350 words
         language: system
-        files: '^_docs/decisions/ADR-.*\.md$'
-        pass_filenames: true
+        always_run: true
+        pass_filenames: false
         entry: >-
-          sh -c 'for f; do w=$(wc -w < "$f"); [ "$w" -le 350 ] ||
-          { echo "FAIL decision-records:body-stays-within-350-words $f: $w words"; exit 1; }; done' --
+          sh -c 'set -- _docs/decisions/ADR-?*.md;
+          [ -e "$1" ] || { echo "FAIL no decision records matched; the layout moved"; exit 1; };
+          for f; do w=$(wc -w < "$f"); [ "$w" -le 350 ] ||
+          { echo "FAIL decision-records:body-stays-within-350-words $f: $w words"; exit 1; }; done'
+
+      - id: agents-digest-size
+        name: author-instructions files stay within 100 lines at the root and 150 in a subtree
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c '[ -f AGENTS.md ] || { echo "FAIL no root AGENTS.md"; exit 1; };
+          bad=$(find . -path ./.git -prune -o -name AGENTS.md -print |
+          while read -r f; do n=$(wc -l < "$f"); c=150;
+          [ "$f" = "./AGENTS.md" ] && c=100;
+          [ "$n" -le "$c" ] || echo "$f ($n lines, cap $c)"; done);
+          [ -z "$bad" ] || { echo "FAIL docs-format:author-instructions-stay-within-budget";
+          echo "$bad"; exit 1; }'
+
+      # Specs and decision records carry their own budgets, so the chapter cap
+      # governs the prose zones only.
+      - id: chapter-size-cap
+        name: chapters stay within 200 lines
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c 'set -- $(find _docs -name "*.md" -not -path "_docs/specs/*"
+          -not -path "_docs/decisions/*");
+          [ "$#" -gt 0 ] || { echo "FAIL no chapters matched; the layout moved"; exit 1; };
+          for f; do n=$(wc -l < "$f"); [ "$n" -le 200 ] ||
+          { echo "FAIL docs-format:chapter-stays-within-200-lines $f: $n lines"; exit 1; }; done'
+
+      # The gate that keeps the other gates honest. A budget can be stated in a
+      # spec, restated in AGENTS.md, and enforced by nothing; this check names
+      # the hook each count-shaped budget is enforced by, so deleting one fails
+      # instead of quietly turning a rule back into a suggestion.
+      - id: budget-gates-exist
+        name: every size budget names the hook that enforces it
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: >-
+          sh -c 'for h in adr-word-cap agents-digest-size spec-size-cap chapter-size-cap; do
+          grep -q "id: $h$" pre-commit-additions.yaml ||
+          { echo "FAIL docs-format:every-budget-carries-a-gate: no hook $h"; exit 1; }; done'
 
       - id: spec-requirement-parts
         name: every requirement carries an id and a verification
@@ -121,13 +169,15 @@ repos:
       - id: spec-size-cap
         name: specs stay within 300 lines and carry a TOC above 100
         language: system
-        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
-        pass_filenames: true
+        always_run: true
+        pass_filenames: false
         entry: >-
-          sh -c 'for f; do n=$(sed "/^<!--TOC-->$/,/^<!--TOC-->$/d" "$f" | wc -l);
+          sh -c 'set -- _docs/specs/SPEC-?*.md;
+          [ -e "$1" ] || { echo "FAIL no specs matched; the layout moved"; exit 1; };
+          for f; do n=$(sed "/^<!--TOC-->$/,/^<!--TOC-->$/d" "$f" | wc -l);
           [ "$n" -le 300 ] || { echo "FAIL $f: $n authored lines, cap is 300"; exit 1; };
           if [ "$n" -gt 100 ]; then grep -q "<!--TOC-->" "$f" ||
-          { echo "FAIL $f: over 100 lines with no TOC"; exit 1; }; fi; done' --
+          { echo "FAIL $f: over 100 lines with no TOC"; exit 1; }; fi; done'
 
       - id: typed-clause-shape
         name: typed spec-change clauses carry a well-formed rule ID

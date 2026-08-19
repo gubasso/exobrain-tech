@@ -52,8 +52,10 @@ apply. Both failures grow with the project rather than with any single document.
    from [TEMPLATE-spec.md](./TEMPLATE-spec.md).
 3. Give every requirement a rule ID and a verification command.
 4. Wire the heading shapes and the identifier checks from [08 — Gates](./08-gates.md).
-5. Paste [TEMPLATE-docs-rules.md](./TEMPLATE-docs-rules.md) into the root author-instructions file.
-6. Add domains as they acquire rules. A domain with no verifiable rule does not get a spec.
+5. Land a gate for every budget in [06 — Format](./06-format.md) that is stated as a count. A
+   project that publishes these numbers and enforces none of them has documented an intention.
+6. Paste [TEMPLATE-docs-rules.md](./TEMPLATE-docs-rules.md) into the root author-instructions file.
+7. Add domains as they acquire rules. A domain with no verifiable rule does not get a spec.
 
 Start with one spec. A framework adopted all at once produces empty specs, and an empty spec costs
 context on every session while teaching nothing on any of them.
@@ -74,5 +76,5 @@ documentation: a page comparing this project to its alternatives is specified by
 ## House format
 
 This shelf obeys [06 — Format](./06-format.md). Chapters stay at or below 200 lines and catalogs at
-or below 300, none carries bold or italics, and prose is spent only on a decision, a hazard, or a
-non-obvious constraint.
+or below 300, both enforced by a hook rather than by intent, none carries bold or italics, and prose
+is spent only on a decision, a hazard, or a non-obvious constraint.

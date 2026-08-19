@@ -18,6 +18,20 @@ size budget the whole framework is measured against.
 | Reference depth                  | one level from the entry document                    |
 
 - A document MUST stay within the budget for its artifact class.
+- A project MUST enforce every budget stated as a count with a command that fails the change.
+- A project MUST NOT raise a budget to admit a document that exceeds it.
+- A gate that exempts a file MUST fail once that file no longer needs the exemption.
+
+Six of the budgets are line or word counts and are gated in [08 — Gates](./08-gates.md). The other
+two are not counts: a requirement statement being one sentence, and a reference being one level from
+the entry document, are reviewer judgment, and that chapter declares them unenforced rather than
+approximating them. A count nobody runs is advice, and a project that publishes these numbers
+without hooks has documented an intention.
+
+Adopting a budget over a corpus written before it is the case that tempts the raised number. Gate
+the scope already inside the budget and list the files outside it, so what is uncovered is an
+enumeration a reader can count rather than a silence. The list must fail the gate once a file it
+names fits, or it stops shrinking the day it stops being read.
 
 The numbers are not arbitrary and they are not measured constants either. Retrieval accuracy falls as
 input length grows, non-uniformly and on tasks as simple as finding one sentence, so a cap is the

@@ -95,6 +95,9 @@ Owner: [06 — Format](./06-format.md).
 - [ ] The change recommends one default rather than surveying alternatives it does not recommend.
 - [ ] One term is used for one concept.
 - [ ] Every chapter is within 200 lines and every catalog within 300.
+- [ ] Every budget stated as a count has a hook that fails the change, and no budget was raised to
+      admit a document.
+- [ ] A gate that skips a named file fails once that file fits or disappears.
 
 ## Lifecycle
 

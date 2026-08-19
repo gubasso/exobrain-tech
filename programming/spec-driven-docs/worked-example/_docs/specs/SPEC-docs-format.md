@@ -17,7 +17,33 @@ The author MUST keep a chapter at or below 200 lines.
 - WHEN more rules arrive
 - THEN the excess becomes a requirement in a spec or a decision record, not a longer chapter
 
-Verify: `find _docs -name '*.md' -exec sh -c 'test $(wc -l < "$1") -le 200 || echo "$1"' _ {} \; | grep . && exit 1 || exit 0`
+Verify: `find _docs -name '*.md' -not -path '_docs/specs/*' -not -path '_docs/decisions/*' -exec sh -c 'test $(wc -l < "$1") -le 200 || echo "$1"' _ {} \; | grep . && exit 1 || exit 0`
+
+### `docs-format:author-instructions-stay-within-budget` — Author instructions stay within budget
+
+The author MUST keep the root author-instructions file at or below 100 lines and a subtree one at or
+below 150.
+
+#### Scenario: A root file accumulates a subtree's rules
+
+- GIVEN a rule that binds one subtree only
+- WHEN it is written into the root file and pushes it past the cap
+- THEN it belongs in that subtree's own author-instructions file, which the root points at
+
+Verify: `find . -name AGENTS.md -exec sh -c 'c=150; [ "$1" = ./AGENTS.md ] && c=100; test $(wc -l < "$1") -le $c || echo "$1"' _ {} \; | grep . && exit 1 || exit 0`
+
+### `docs-format:every-budget-carries-a-gate` — Every count-shaped budget carries a gate
+
+The project MUST enforce every budget stated as a count with a command that fails the change, and
+MUST NOT raise a budget to admit a document that exceeds it.
+
+#### Scenario: A document arrives over its budget
+
+- GIVEN a chapter that will not fit in 200 lines
+- WHEN an author reaches for the cap rather than the content
+- THEN the chapter splits, because the gate that admits it would admit the next one too
+
+Verify: `for h in adr-word-cap agents-digest-size spec-size-cap chapter-size-cap; do grep -q "id: $h$" pre-commit-additions.yaml || exit 1; done`
 
 ### `docs-format:document-uses-structural-markdown-only` — A document uses structural markdown only
 

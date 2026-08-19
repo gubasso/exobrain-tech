@@ -7,7 +7,7 @@ holds the rules. Keep it a digest — rules and pointers, never a rule dump.
 
 - `MONOREPO` — this public KB plus the private `../exobrain-tech-vault`, together one logical
   knowledge base. References between them are in-repo cross-references, not external dependencies,
-  which is what keeps them compatible with Self-containment below (ADR-self-containment).
+  which is what keeps them compatible with Self-containment (ADR-self-containment).
 - `$EXOBRAIN_TECH` and `$EXOBRAIN_TECH_VAULT` — checkouts of the public KB and the private vault.
   Docs and scripts point into them as `$EXOBRAIN_TECH/<path>` and `$EXOBRAIN_TECH_VAULT/<path>`.
 
@@ -15,25 +15,25 @@ holds the rules. Keep it a digest — rules and pointers, never a rule dump.
 
 Non-negotiable: the product is the library — the knowledge itself. It lives in the eight top-level
 buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platforms/`, `workflows/`,
-`data/`), exactly as a code project's product is its codebase, and may use whatever structure best
-serves the knowledge within a bucket.
+`data/`), exactly as a code project's product is its codebase, and may use whatever structure serves
+the knowledge within a bucket.
 
 `_docs/` is not the product. It holds the metadata and specs about the product, organized by Diátaxis
 zone (`decisions/`, `guides/`, `reference/`, `explanation/`) and following the spec-driven-docs
 method. Never place a knowledge article there. Placement test: "Is this about how the KB works?" →
-`_docs/`. "Is this knowledge the library serves?" → the owning bucket. Cross-link from `_docs/` only
-when the product reference must mention it. See ADR-docs-vs-library-boundary.
+`_docs/`; "Is this knowledge the library serves?" → the owning bucket. Cross-link from `_docs/` only
+when the product reference must mention it (ADR-docs-vs-library-boundary).
 
 Public/private boundary: private equipment identity, security posture, recovery material,
 credentials, and personal workflows belong in `exobrain-tech-vault`, never here.
 
 ## Self-containment
 
-Non-negotiable: this project is self-contained. The knowledge it depends on is held in-repo. An
-external reference is allowed only as a public link or citation for further reading — never as a
-load-bearing dependency on a resource outside the repository, and never on an external, local,
-personalized, or mutating repository, path, or tool. If one is required to understand, build, or
-operate this project, copy its essential knowledge in so the repo stays complete (ADR-self-containment).
+Non-negotiable: this project is self-contained; the knowledge it depends on is held in-repo. An
+external reference is allowed only as a public link or citation for further reading, never as a
+load-bearing dependency on a resource outside the repository — external, local, personalized, or
+mutating. If one is needed to understand, build, or operate this project, copy its essential
+knowledge in (ADR-self-containment).
 
 ## Decisions
 
@@ -58,6 +58,9 @@ who wants what binds today reads the spec, the artifact that states the present.
 - Record an external-system bug in `_docs/reference/known-issues/` as `KI-<slug>.md`; that slug is
   the case id a suppression names, and the record carries the condition that retires it.
 - Every fenced code block needs a language specifier; use `text` when none applies.
+- Budgets are gated, not advised (`programming/spec-driven-docs/06-format.md`): 100 lines here, 150
+  in a subtree digest, 350 words in a record, 200 in a chapter, 300 in a catalog. A document wanting
+  more room splits; the number never rises.
 - A guide is steps, not an essay: imperative instruction, the command in a fence, and prose reserved
   for a decision, a hazard, or a non-obvious ordering constraint
   (`programming/spec-driven-docs/10-procedures.md`, ADR-guides-are-step-shaped).
@@ -65,27 +68,25 @@ who wants what binds today reads the spec, the artifact that states the present.
 
 ## Executable artifacts
 
-A bucket may ship a working artifact — a schema, a script, a worked example — when a reader is
-expected to copy it and run it. It is library content: it lives in the owning bucket beside the
-chapter that explains it, never under `_docs/`. Shipping one carries three obligations, all in the
-same change (ADR-executable-artifacts-in-the-library): a gate in `.pre-commit-config.yaml`, a case
-under `just test`, and every tool it needs added to the `flake.nix` devShell.
+A bucket may ship a working artifact when a reader is expected to copy it and run it. It is library
+content, living in the owning bucket beside the chapter that explains it. Shipping one carries three
+obligations in the same change (ADR-executable-artifacts-in-the-library): a gate in
+`.pre-commit-config.yaml`, a case under `just test`, and each tool it needs in the `flake.nix`
+devShell.
 
-A fenced code block is still right for illustration. The line is whether the reader is meant to copy
-the thing and run it: if yes it is a file, because a fence cannot be validated and an unenforced
-artifact reads as verified.
+A fenced block is still right for illustration. The line is whether the reader is meant to copy the
+thing and run it: a fence cannot be validated, and an unenforced artifact reads as verified.
 
 ## No document narrates its own history
 
 Non-negotiable: a file states what is true now. It never narrates how it got that way — no
-`formerly`, no `used to`, no `this replaces`, no `inherited from`, no patch-series markers, and no
-note explaining why something is absent. The test: delete the clause. If nothing a reader can act on
-disappeared, it was archaeology.
+`formerly`, no `used to`, no `this replaces`, no `inherited from`, no patch-series marker, no note
+explaining an absence. The test: delete the clause. If nothing a reader can act on disappeared, it
+was archaeology.
 
 Two homes are exempt, because holding history is their entire job: a decision record, frozen once
-accepted, and a story's `Revisions` section. Git history holds the rest, and holds it better. This
-binds every change, including the one that removes something: a deletion leaves no trace in prose,
-only in the log.
+accepted, and a story's `Revisions` section. Git holds the rest, and holds it better. This binds the
+change that removes something too: a deletion leaves no trace in prose, only in the log.
 
 ## Filesystem state
 
@@ -95,5 +96,5 @@ table, a `source-files` list. Naming files in prose is normal, and a list, table
 welcome wherever its entries carry their own payload: what a directory reserves, what a file
 specifies, its domain and scope. The test: strip the paths out and read what is left — if nothing
 teaches, it was the listing. A layout a reader is told to create in their own project is a
-specification, not a copy, and stays. `programming/spec-driven-docs/00-model.md` owns the full rule
-and the heading that decides the judgment (ADR-filesystem-owns-disk-state).
+specification and stays. `programming/spec-driven-docs/00-model.md` owns the full rule and the
+heading that decides the judgment (ADR-filesystem-owns-disk-state).

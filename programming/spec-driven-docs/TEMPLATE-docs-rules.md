@@ -17,6 +17,9 @@ framework; the shelf owns the rules and this section points at them.
 - Never rename or delete a merged decision record, and never edit one to describe the present.
 - Keep exploratory material in `.draft/`; promotion is a rewrite into the owning zone.
 - Report documentation changes by ownership: which spec changed, which rule IDs, which hooks passed.
+- Stay inside the budget for the artifact class: `<root>` author instructions 100 lines, a subtree's
+  150, a spec 300, a record 350 words, a chapter 200, a catalog 300. Every one of these is gated; a
+  document that wants more room splits.
 ```
 
 Two habits keep this section short. Write each rule once and link rather than restate it, and push
