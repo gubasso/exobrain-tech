@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/gubasso/plan-xp/develop/share/schema/plan-lane.schema.json
 lane: closed
 stories:
   - id: "001"

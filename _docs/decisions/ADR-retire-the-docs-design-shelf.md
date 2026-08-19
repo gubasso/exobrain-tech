@@ -28,8 +28,8 @@ was true when it was written, and a dangling path in one is not a defect.
 
 - Good: one shelf answers documentation questions, and the contradictory naming and comment rules
   leave the tree with it.
-- Bad: relative links from those six records now resolve to nothing, and anyone who had bookmarked a
-  chapter loses it to the log.
+- Bad: six merged records name paths that no longer exist, and anyone holding a bookmark or an open
+  editor tab loses the chapter to the log.
 
 ## Status
 

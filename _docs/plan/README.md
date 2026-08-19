@@ -2,8 +2,8 @@
 
 What this repository is building next, and what bounds it.
 
-The method and the tooling are [plan-xp](https://github.com/gubasso/plan-xp), pinned in `flake.nix`.
-This directory is the record it validates; `just test-plan` is what runs it.
+This directory is the record of that. The repository names no method that fills it, so its shape is
+held by review rather than by a linter.
 
 ## Where to start
 
@@ -26,11 +26,3 @@ record.
 ## What already happened
 
 `lanes/closed.yml` is an append-only log ordered by close date. It is history, not a queue.
-
-## A note on the schemas
-
-The `yaml-language-server` modelines above each lane file point at the public raw URL, and they are
-editor convenience only. The gate is authoritative, and it validates against
-`$PLAN_XP_SCHEMA_DIR`, which the devShell exports from the locked package. No copy of either schema
-lives in this tree: a copy would be the duplication `AGENTS.md` forbids, and a copy that drifts from
-the version the gate runs is worse than none.

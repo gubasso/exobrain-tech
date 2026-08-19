@@ -1,3 +1,2 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/gubasso/plan-xp/develop/share/schema/plan-lane.schema.json
 lane: review
 stories: []

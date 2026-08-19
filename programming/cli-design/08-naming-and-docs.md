@@ -152,8 +152,8 @@ occupying the name that one of them needs. Prefer the specific word from the fir
 subcommand after release is a breaking change.
 
 Corroboration in widely-used tools: `gh repo view`, `git status`, `systemctl status`,
-`docker inspect`, `kubectl describe`. `git show` is the counter-example, and it is inherited from an
-era before `git status` existed.
+`docker inspect`, `kubectl describe`. `git show` is the counter-example, and it predates
+`git status`.
 
 **The table above is a tie-breaker, not a mandate to split.** It tells you which word to use once a
 job has earned its own command; it never argues that a job must. Where one output answers the whole

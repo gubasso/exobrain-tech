@@ -1,9 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/gubasso/plan-xp/develop/share/schema/plan-config.schema.json
-#
 # This repository's docs root is `_docs`, not `docs`: the product is the content
 # library at the top level, so the metadata directory takes the leading
-# underscore that sorts it clear of the listing. It is the reason plan-xp has no
-# default for either key — its first consumer would have broken one.
+# underscore that sorts it clear of the listing.
 docs_root: _docs
 plan_zone: plan
 iteration:

@@ -96,8 +96,12 @@ The invariant a comment may hold has a second form: a live defect in a system th
 own, worked around here. It carries no rule ID, because nothing about it was agreed. What makes it
 honest is the case it names and the condition that ends it.
 
-- A suppressed or failing test MUST name its case id at the suppression.
+- A suppression MUST name its case id at the suppression.
 - A suppression MUST carry the condition under which it is removed.
+
+The rule reaches every tool, not only the test runner. A formatter range, a linter disable comment,
+and a dependency pinned back one version are the same act with the same failure mode: the hazard is
+that a suppression with no exit becomes permanent by default.
 
 ```python
 @pytest.mark.xfail(reason="KI-upstream-500-on-replayed-webhook", strict=True)

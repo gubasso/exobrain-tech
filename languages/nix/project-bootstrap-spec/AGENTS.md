@@ -38,8 +38,8 @@ is general `03-local-dev-environment.md` and `tools/nix`.
   (`treefmt-nix` for multi-language repos); `statix` (Nix anti-patterns, `statix fix`);
   `deadnix --fail` (unused bindings/args). Expose all as `checks.<sys>.*` derivations so
   **`nix flake check`** validates the whole flake — the "one command fails fast" gate CI runs.
-- **Pre-commit:** wire formatter + `statix` + `deadnix` via `git-hooks.nix` (formerly
-  `pre-commit-hooks.nix`); it generates the `pre-commit` install step and can expose the same hooks
+- **Pre-commit:** wire formatter + `statix` + `deadnix` via `git-hooks.nix`, the same project as
+  `pre-commit-hooks.nix`; it generates the `pre-commit` install step and can expose the same hooks
   as `checks.<sys>.pre-commit`, so local hooks and `nix flake check` share one definition.
 - **flake-project kind:** the standard shape; layer onto an evaluable flake in order —
   `packages.default` (`stdenv.mkDerivation` or

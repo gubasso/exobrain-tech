@@ -1,9 +1,9 @@
 # Pre-commit hooks for Markdown knowledge bases / docs repos.
 #
-# Mostly markdown, but not only: this repository keeps a plan record whose format
-# a tool owns, and ADR-executable-artifacts-in-the-library requires a shipped or
-# consumed artifact to be gated
-# rather than asserted. Those gates live at the end of this file.
+# Mostly markdown, but not only: a bucket may ship an artifact a reader is
+# expected to copy and run, and ADR-executable-artifacts-in-the-library requires
+# such an artifact to be gated rather than asserted. That gate lives at the end
+# of this file.
 #
 # Design goals:
 #   - Autofix where possible; gate where not. Sane defaults, not bureaucratic.
@@ -19,10 +19,6 @@
 #   single provider — enter the shell (`direnv allow`, or `nix develop
 #   --command ...` when non-interactive) before running them. Adding another
 #   such hook means adding its package to the devShell in the same change.
-#   The three plan-record hooks at the end are in this class twice over: their
-#   tools come from the pinned plan-xp input rather than from nixpkgs, so a
-#   commit made outside the shell cannot see them. Each says so rather than
-#   dying on a bare ENOENT.
 #
 # Tooling stack (and what each owns):
 #   - pre-commit-hooks : whitespace, line endings, basic safety.
@@ -176,6 +172,26 @@ repos:
         files: '^_docs/plan/stories/[^/]+\.md$'
         args: ['--config', '.markdownlint/story.markdownlint-cli2.jsonc']
 
+      # The spec heading shape, on the same terms. `_docs/specs/` is where the
+      # rules this repository states live, so the file that says what binds is
+      # itself held to a shape.
+      - id: markdownlint-cli2
+        alias: md-spec
+        name: markdownlint (spec heading shape)
+        additional_dependencies: ['markdownlint-rule-relative-links']
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        args: ['--config', '.markdownlint/spec.markdownlint-cli2.jsonc']
+
+      # The decision-record heading shape. Five sections, fixed, and unlike the
+      # spec array this one carries no trailing wildcard — a sixth section
+      # fails.
+      - id: markdownlint-cli2
+        alias: md-adr
+        name: markdownlint (decision record heading shape)
+        additional_dependencies: ['markdownlint-rule-relative-links']
+        files: '^_docs/decisions/ADR-[a-z0-9-]+\.md$'
+        args: ['--config', '.markdownlint/adr.markdownlint-cli2.jsonc']
+
   # --- Explicit relative links (ambiguity guard; pre-commit, local) ---
   #
   # A bare-filename relative link like [x](runbook.md) is ambiguous: the same
@@ -217,6 +233,21 @@ repos:
   # pygrep is built into pre-commit — no external dependency, no devShell entry.
   - repo: local
     hooks:
+      # A document states what is true now. The decision log is excluded by
+      # artifact class, not by debt: holding history is a record's entire job.
+      #
+      # awk is the entry itself, not the body of a shell loop. It takes the
+      # files pre-commit hands it and its exit code is the verdict, so there is
+      # no wrapper to get backwards — the `&&` a grep-based body needs is
+      # exactly wrong for a matcher that exits non-zero on a violation.
+      - id: no-self-narration
+        name: documents state the present
+        language: system
+        types: [markdown]
+        pass_filenames: true
+        exclude: '^_docs/decisions/'
+        entry: awk -f .hooks/no-self-narration.awk
+
       - id: no-source-files-frontmatter
         name: no file-list frontmatter (the filesystem owns what exists)
         language: pygrep
@@ -246,25 +277,14 @@ repos:
         language: system
         files: '^_docs/decisions/.*\.md$'
         pass_filenames: true
-        entry: >-
-          sh -c 'for f; do case "$(basename "$f")" in
-          TEMPLATE-adr.md) ;;
-          ADR-*[0-9]*) echo "FAIL $f: a record filename carries no digit"; exit 1;;
-          ADR-?*.md) ;;
-          *) echo "FAIL $f: a record filename starts with ADR-"; exit 1;;
-          esac; done' --
+        entry: .hooks/adr-filename-shape.sh
 
       - id: ki-filename-shape
         name: known-issue records are KI-<slug>.md with no counter
         language: system
         files: '^_docs/reference/known-issues/.*\.md$'
         pass_filenames: true
-        entry: >-
-          sh -c 'for f; do case "$(basename "$f")" in
-          KI-[0-9]*) echo "FAIL $f: a case id is a slug, not a counter"; exit 1;;
-          KI-?*.md) ;;
-          *) echo "FAIL $f: a known-issue filename starts with KI-"; exit 1;;
-          esac; done' --
+        entry: .hooks/ki-filename-shape.sh
 
   # --- Size budgets (programming/spec-driven-docs/06-format.md; pre-commit, local) ---
   #
@@ -292,7 +312,7 @@ repos:
           [ -e "$1" ] || { echo "FAIL no decision records matched; the layout moved"; exit 1; };
           bad=""; for f; do w=$(wc -w < "$f");
           [ "$w" -le 350 ] || bad="$bad $f ($w words);"; done;
-          [ -z "$bad" ] || { echo "FAIL 350-word budget:$bad"; exit 1; }'
+          [ -z "$bad" ] || { echo "FAIL decision-records:record-fits-in-350-words:$bad"; exit 1; }'
 
       - id: agents-digest-size
         name: author-instructions files stay within 100 lines at the root and 150 in a subtree
@@ -305,7 +325,7 @@ repos:
           while read -r f; do n=$(wc -l < "$f"); c=150;
           [ "$f" = "./AGENTS.md" ] && c=100;
           [ "$n" -le "$c" ] || echo "$f ($n lines, cap $c)"; done);
-          [ -z "$bad" ] || { echo "FAIL author-instructions budget"; echo "$bad"; exit 1; }'
+          [ -z "$bad" ] || { echo "FAIL docs-format:author-instructions-stay-in-budget"; echo "$bad"; exit 1; }'
 
       # The debt list holds the chapters written before this budget bound them.
       # A listed path is skipped; every other chapter in the same shelf is still
@@ -313,6 +333,11 @@ repos:
       # self-shrinking: a listed file that now fits, or that no longer exists,
       # fails this hook until its line is deleted. The cap is never raised to
       # admit a document — a chapter that wants more room splits.
+      #
+      # A shelf index is a catalog, so `README.md` is discovered alongside the
+      # numbered chapters and takes the catalog number. Leaving it out is how a
+      # shelf absorbs a subject the chapter cap would have split: the index is
+      # the one file in a shelf that no numbered pattern matches.
       - id: chapter-size-cap
         name: chapters stay within 200 lines and catalogs within 300
         language: system
@@ -326,6 +351,7 @@ repos:
           ./infra/sandbox-isolation-backends/30-libkrun-vs-firecracker.md
           ./infra/sandbox-isolation-backends/60-podman-libkrun-operational-notes.md
           ./languages/bash/release-workflow-spec/05-obs-multi-distro.md
+          ./languages/rust/cookbook-ship-rust-project/README.md
           ./languages/rust/cli-spec/02-subcommand-pattern.md
           ./languages/rust/cli-spec/03-error-handling.md
           ./languages/rust/cli-spec/07-dependencies.md
@@ -342,6 +368,7 @@ repos:
           ./programming/cli-design/10-reference-projects.md
           ./programming/cli-design/12-config-generation-from-types.md
           ./programming/cli-design/13-terminal-output-toolbox.md
+          ./tools/git/README.md
           ./tools/nix/02-per-project-devshell.md
           ./tools/osc-obs/case-studies/01-broken-link-drift-after-patch-rename.md
           ./tools/osc-obs/case-studies/02-libexpat-abi-override-via-sles-update-branch.md
@@ -349,33 +376,82 @@ repos:
           stale=""; for f in $debt; do
           [ -f "$f" ] || { stale="$stale $f (deleted);"; continue; };
           n=$(wc -l < "$f"); c=200;
-          case "$f" in *-gates.md | *-checklist.md | */glossary.md) c=300;; esac;
+          case "$f" in *-gates.md | *-checklist.md | */glossary.md | */README.md) c=300;; esac;
           [ "$n" -gt "$c" ] || stale="$stale $f ($n lines, now fits);"; done;
           [ -z "$stale" ] || { echo "FAIL delist from the chapter debt list:$stale"; exit 1; };
           set -- $(find . -regextype posix-extended \( -path ./.git -o -path ./.draft \) -prune -o
-          -regex ".*/([0-9][0-9]-[^/]*|glossary)\.md" -print);
+          -regex ".*/([0-9][0-9]-[^/]*|glossary|README)\.md" -print);
           [ "$#" -gt 0 ] || { echo "FAIL no chapters matched; the layout moved"; exit 1; };
           bad=""; for f; do case "$debt" in *" $f "*) continue;; esac;
           n=$(wc -l < "$f"); c=200;
-          case "$f" in *-gates.md | *-checklist.md | */glossary.md) c=300;; esac;
+          case "$f" in *-gates.md | *-checklist.md | */glossary.md | */README.md) c=300;; esac;
           [ "$n" -le "$c" ] || bad="$bad $f ($n lines, cap $c);"; done;
-          [ -z "$bad" ] || { echo "FAIL chapter budget:$bad"; exit 1; }'
+          [ -z "$bad" ] || { echo "FAIL docs-format:chapter-fits-in-200-lines:$bad"; exit 1; }'
 
-      # The gate that keeps the other gates honest. A budget can be stated in
-      # AGENTS.md, restated in a chapter, and enforced by nothing; this names the
-      # hook each count-shaped budget is enforced by, so renaming or deleting one
-      # fails here instead of quietly turning a rule back into a suggestion. The
-      # `$` anchor is load-bearing: without it a hook renamed by suffix still
-      # matches the id it replaced.
-      - id: budget-gates-exist
-        name: every size budget names the hook that enforces it
+  # --- The gates this repository states in `_docs/specs/`
+  #     (ADR-executable-artifacts-in-the-library; pre-commit, local) ---
+  #
+  # Each entry below is a script under `.hooks/`, and each script carries the
+  # reasoning for the check it makes. A gate reachable only from inside
+  # pre-commit cannot be run against a path the hook misses, or exercised
+  # against a deliberate violation; `just test-gates` runs every one of them
+  # against a fixture tree built to fail it.
+  #
+  # `always_run` throughout for the corpus-wide gates. Each compares two sets
+  # rather than inspecting the files it is handed, and the commit each exists to
+  # catch is often a deletion — which pre-commit's `--diff-filter=ACMRTUXB`
+  # omits, so a `files:` filter would hand the hook an empty list on exactly
+  # that commit.
+  - repo: local
+    hooks:
+      - id: spec-verify-hooks-exist
+        name: every rule verified by a hook names a hook that exists
         language: system
         always_run: true
         pass_filenames: false
-        entry: >-
-          sh -c 'for h in adr-word-cap agents-digest-size chapter-size-cap; do
-          grep -q "id: $h$" .pre-commit-config.yaml ||
-          { echo "FAIL no hook enforces a stated budget: $h"; exit 1; }; done'
+        entry: .hooks/spec-verify-hooks-exist.sh
+
+      - id: spec-requirement-parts
+        name: every requirement carries a rule id and a verification
+        language: system
+        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
+        pass_filenames: true
+        entry: .hooks/spec-requirement-parts.sh
+
+      - id: spec-rule-id-unique
+        name: a rule identifier resolves to one requirement
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/spec-rule-id-unique.sh
+
+      - id: spec-size-cap
+        name: specs stay within 300 authored lines and carry a TOC above 100
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/spec-size-cap.sh
+
+      - id: no-named-method
+        name: a retired method name does not return
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/no-named-method.sh
+
+      - id: suppression-names-its-case
+        name: every markdown suppression names a known-issue case
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/suppression-names-its-case.sh
+
+      - id: ki-retire-when
+        name: every known-issue record carries its retirement condition
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/ki-retire-when.sh
 
   # --- Spelling (report-only) ---
   #
@@ -437,63 +513,6 @@ repos:
   # commitizen is intentionally NOT the commit-msg linter (committed is the SoT).
   # For version bumping / changelog only, add commitizen explicitly per-project.
 
-  # --- The plan record this repository keeps
-  #     (ADR-executable-artifacts-in-the-library,
-  #      superseded in part by ADR-the-planning-method-moves-to-plan-xp) ---
-  #
-  # The method and the linter are plan-xp, pinned in flake.nix. Nothing here is a
-  # copy of its schemas: a copy is the duplication AGENTS.md forbids, and a copy
-  # that drifts from the version the gate runs is worse than none. The devShell
-  # exports PLAN_XP_SCHEMA_DIR from the locked package, and every hook below
-  # resolves through it.
-  #
-  # `language: system` throughout, as for dprint, typos and committed above.
-  - repo: local
-    hooks:
-      # pass_filenames: false — a schema change invalidates every lane file, not
-      # only the staged ones, so the hook names the full record itself.
-      - id: plan-lane-files
-        name: plan lane files match the schema
-        entry: >-
-          sh -c '[ -n "$PLAN_XP_SCHEMA_DIR" ] || {
-          echo "PLAN_XP_SCHEMA_DIR is unset: enter the devShell first" >&2;
-          echo "  nix develop --command git commit ..." >&2; exit 1; };
-          check-jsonschema --schemafile
-          "$PLAN_XP_SCHEMA_DIR/plan-lane.schema.json"
-          _docs/plan/lanes/backlog.yml _docs/plan/lanes/todo.yml
-          _docs/plan/lanes/doing.yml _docs/plan/lanes/review.yml
-          _docs/plan/lanes/closed.yml'
-        language: system
-        files: '^_docs/plan/lanes/.*\.yml$'
-        pass_filenames: false
-
-      - id: plan-config-file
-        name: plan config matches the schema
-        entry: >-
-          sh -c '[ -n "$PLAN_XP_SCHEMA_DIR" ] || {
-          echo "PLAN_XP_SCHEMA_DIR is unset: enter the devShell first" >&2;
-          echo "  nix develop --command git commit ..." >&2; exit 1; };
-          check-jsonschema --schemafile
-          "$PLAN_XP_SCHEMA_DIR/plan-config.schema.json" _docs/plan/config.yml'
-        language: system
-        files: '^_docs/plan/config\.yml$'
-        pass_filenames: false
-
-      # pass_filenames: false — every rule the linter has is cross-file, so
-      # handing it one changed path would let a story rename slip through
-      # whenever the lane file happened not to be staged. The hook stays
-      # read-only: --rank-fix is run by a close ceremony, never by a gate.
-      - id: plan-record-coherent
-        name: the plan record is coherent
-        entry: >-
-          sh -c 'command -v check-plan >/dev/null || {
-          echo "check-plan not on PATH: it comes from the pinned plan-xp input," >&2;
-          echo "so enter the devShell first — nix develop --command git commit ..." >&2;
-          exit 1; }; check-plan _docs/plan'
-        language: system
-        files: '^_docs/plan/'
-        pass_filenames: false
-
   # --- The worked example shipped with programming/spec-driven-docs/ ---
   #
   # That shelf ships a pre-commit block, two MD043 arrays and a set of fixture
@@ -513,6 +532,29 @@ repos:
         entry: just test-spec-shelf
         language: system
         files: '^programming/spec-driven-docs/worked-example/'
+        pass_filenames: false
+
+  # --- The gates this repository adds, exercised against violations ---
+  #
+  # `08-gates.md` requires a new gate to be demonstrated failing before it is
+  # trusted, and the failures worth catching are the quiet ones: a matcher whose
+  # exit code is inverted, or an MD043 array that lost `match_case` and now
+  # accepts a heading in the wrong case. Both report success.
+  #
+  # Scoped to the files that define a gate or wire one, so an ordinary content
+  # commit does not pay for it. This config is in that set: a gate body moved
+  # from a script into an inline `entry:` would otherwise change what runs
+  # without running the control that proves it still refuses anything. So is the
+  # worked example, whose hooks are a second implementation a reader copies —
+  # running it over a conforming tree cannot tell a working gate from one that
+  # passes everything.
+  - repo: local
+    hooks:
+      - id: gate-negative-controls
+        name: every gate fails when it should
+        entry: just test-gates
+        language: system
+        files: '^(\.hooks/|\.markdownlint/|\.pre-commit-config\.yaml$|justfile$|programming/spec-driven-docs/worked-example/)'
         pass_filenames: false
 
   # --- Meta: keep the config itself honest ---

@@ -69,5 +69,5 @@ area as its `AGENTS.md` to start one.
 
 This standard is a default feature of `exobrain-tech`: agents entering any area get an accurate,
 up-to-date map before spending attention on the full content. See
-[Documentation conventions](../reference/docs-conventions.md) for the placement and
-single-source-of-truth rules that make the digests trustworthy.
+[Documentation conventions](../reference/docs-conventions.md) for the document that owns each of
+the placement and single-source-of-truth rules the digests rest on.

@@ -53,8 +53,6 @@ fontconfig won’t notice them until you rebuild its cache. You have two options
 - **XBPS-installed fonts:** no manual cache step needed.
 - **Hand-installed fonts:** run `fc-cache -fv` or `xbps-reconfigure -f fontconfig`.
 
-<!-- dprint-ignore-start -->
-[1]: https://github.com/void-linux/xbps/issues/551 "Optimize \"Updating fontconfig's cache...\" · Issue #551 · void-linux/xbps · GitHub"
+[1]: https://github.com/void-linux/xbps/issues/551 "Optimize the fontconfig cache update · Issue #551 · void-linux/xbps"
 [2]: https://man.voidlinux.org/fc-cache "fc-cache (1) - Void Linux manpages"
 [3]: https://docs.voidlinux.org/config/graphical-session/fonts.html "Fonts - Void Linux Handbook"
-<!-- dprint-ignore-end -->

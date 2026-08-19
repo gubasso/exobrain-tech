@@ -49,10 +49,9 @@ rewritten the same way, while replacing `<Implementation task.>` with plain pros
 ## Where it bites
 
 Any document pairing `- [ ]` with an angle placeholder. In this repository that is
-`_docs/plan/stories/*.md`, whose `Tasks` section is a GFM checklist, and every pass moves the marker
-onto the `Rabbit holes` item below it — contradicting the fixed shape the
-[story headings reference](https://github.com/gubasso/plan-xp/blob/develop/docs/reference/story-headings.md)
-requires and the `MD043` hook gates.
+`_docs/plan/stories/*.md`, whose `Tasks` section is a GFM checklist: every pass moves the marker onto
+the item below it, contradicting the fixed heading shape the `MD043` hook gates. A filled story has
+no placeholders left, so the trigger needs both halves together.
 
 ## Workaround
 

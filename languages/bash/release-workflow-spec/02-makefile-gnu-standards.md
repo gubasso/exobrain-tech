@@ -7,8 +7,6 @@ The single highest-leverage change. Per the
 [GNU Coding Standards on Directory Variables](https://www.gnu.org/prep/standards/html_node/Directory-Variables.html)
 and [DESTDIR](https://www.gnu.org/prep/standards/html_node/DESTDIR.html):
 
-<!-- markdownlint-disable MD010 -->
-
 ```make
 PREFIX     ?= /usr/local
 DESTDIR    ?=
@@ -25,25 +23,17 @@ install:
 	# ... etc
 ```
 
-<!-- markdownlint-enable MD010 -->
-
 Every install path uses `$(DESTDIR)$(prefix-var)`. This is the contract every packaging tool
 (`nfpm`, AUR `PKGBUILD`, `.deb`/`.rpm` post-install scripts) assumes.
 
 Keep the `~/.local` ergonomics by exposing a convenience target:
-
-<!-- markdownlint-disable MD010 -->
 
 ```make
 user-install:
 	$(MAKE) PREFIX="$$HOME/.local" install
 ```
 
-<!-- markdownlint-enable MD010 -->
-
 Add a `dist` target that produces a reproducible tarball:
-
-<!-- markdownlint-disable MD010 -->
 
 ```make
 VERSION := $(shell cat VERSION)
@@ -53,8 +43,6 @@ dist:
 	git archive --format=tar.gz --prefix=$(DIST)/ -o $(DIST).tar.gz HEAD
 	sha256sum $(DIST).tar.gz > $(DIST).tar.gz.sha256
 ```
-
-<!-- markdownlint-enable MD010 -->
 
 `git archive` produces a clean tarball from the committed tree — no `.git`, no work-clones, no temp
 files.

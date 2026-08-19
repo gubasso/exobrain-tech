@@ -70,7 +70,8 @@ Follow these steps to forward incoming mail for your custom address into your Gm
 
 ## Sending Emails
 
-To send from your custom domain, we’ll use Brevo (formerly SendinBlue) as the SMTP relay.
+To send from your custom domain, we’ll use Brevo as the SMTP relay. Its older accounts and
+documentation carry the name SendinBlue.
 
 ### Domain Setup at Brevo
 

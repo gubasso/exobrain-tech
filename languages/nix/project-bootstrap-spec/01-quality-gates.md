@@ -55,7 +55,8 @@ This is the Nix analogue of "one command fails fast" and is what CI runs. See th
 ## Pre-commit wiring — `git-hooks.nix`
 
 Wire `nixpkgs-fmt`/`alejandra`, `statix`, and `deadnix` into git hooks with
-[`git-hooks.nix`](https://github.com/cachix/git-hooks.nix) (formerly `pre-commit-hooks.nix`). It
+[`git-hooks.nix`](https://github.com/cachix/git-hooks.nix), the same project as
+`pre-commit-hooks.nix`. It
 generates a `pre-commit` install step and can also expose the same hooks as a
 `checks.<sys>.pre-commit` derivation, so local hooks and `nix flake check` share one definition.
 This slots into the general

@@ -75,6 +75,15 @@ The word cap is a forcing function. A record that will not fit is usually two de
 correct response is two records. Diagrams, option matrices, benchmark data, and migration steps belong
 in reference, linked from the record.
 
+The cap is a local optimizer, so it needs a counterweight. It reads one file and asks whether that
+file is small, which any partition of a large argument satisfies — a subsystem can be designed in
+350-word installments, each record clean and no artifact stating what the subsystem is. A run of
+related records about one domain is evidence that the domain lacks a spec, not that it needs another
+record. Write or extend the spec before adding the next one. The signal is a shared slug prefix or a
+repeated subject across consecutive records; it is a review question, never a gate, because related
+records are often genuinely independent decisions and a hook that failed on them would be wrong in
+the cases the corpus most needs.
+
 ## Dispositions
 
 `Considered Options` carries one line per option: what it was, and what happened to it.

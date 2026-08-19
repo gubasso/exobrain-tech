@@ -23,7 +23,7 @@ repos:
       - id: markdownlint-cli2
         alias: md-adr
         name: markdownlint (decision record heading shape)
-        files: '^_docs/decisions/(ADR-.*|TEMPLATE-adr)\.md$'
+        files: '^_docs/decisions/ADR-[a-z0-9-]+\.md$'
         args: ['--config', '.markdownlint/adr.markdownlint-cli2.jsonc']
 
   - repo: local
@@ -31,18 +31,26 @@ repos:
       # Scoped to the directory, not the prefix: a `files:` pattern of
       # `^_docs/decisions/ADR-` never sees the file someone named
       # `0001-use-postgres.md`, which is the one name the rule exists to reject.
+      #
+      # The charset is tested exactly rather than by prefix. `md-adr` is scoped
+      # to the slug shape, so a name this gate waves through but that hook does
+      # not match — `ADR-Bad_Name.md` — carries any heading structure at all. A
+      # `case` glob cannot say "these characters, repeated", so the prefix and
+      # suffix come off and what is left is tested for anything outside the set.
       - id: adr-filename-shape
         name: decision records are ADR-<slug>.md with no digit
         language: system
         files: '^_docs/decisions/.*\.md$'
         pass_filenames: true
         entry: >-
-          sh -c 'for f; do case "$(basename "$f")" in
-          TEMPLATE-adr.md) ;;
-          ADR-*[0-9]*) echo "FAIL docs-foundations:a-kind-prefix-carries-a-slug $f"; exit 1;;
-          ADR-?*.md) ;;
+          sh -c 'for f; do b=${f##*/}; [ "$b" = TEMPLATE-adr.md ] && continue;
+          s=${b#ADR-}; s=${s%.md};
+          case "$b" in ADR-*.md) ;;
           *) echo "FAIL docs-foundations:artifact-filenames-carry-a-kind-prefix $f"; exit 1;;
-          esac; done' --
+          esac;
+          case "$s" in "" | *[!a-z-]*)
+          echo "FAIL docs-foundations:a-kind-prefix-carries-a-slug $f"; exit 1;; esac;
+          done' --
 
       - id: ki-filename-shape
         name: known-issue records are KI-<slug>.md with no counter
@@ -50,11 +58,13 @@ repos:
         files: '^_docs/reference/known-issues/.*\.md$'
         pass_filenames: true
         entry: >-
-          sh -c 'for f; do case "$(basename "$f")" in
-          KI-[0-9]*) echo "FAIL docs-foundations:a-kind-prefix-carries-a-slug $f"; exit 1;;
-          KI-?*.md) ;;
+          sh -c 'for f; do b=${f##*/}; s=${b#KI-}; s=${s%.md};
+          case "$b" in KI-*.md) ;;
           *) echo "FAIL docs-foundations:artifact-filenames-carry-a-kind-prefix $f"; exit 1;;
-          esac; done' --
+          esac;
+          case "$s" in [0-9]* | "" | *[!a-z0-9-]*)
+          echo "FAIL docs-foundations:a-kind-prefix-carries-a-slug $f"; exit 1;; esac;
+          done' --
 
       # One way only. A cited case with no record is a fabrication; a record no
       # suppression cites is ordinary, because the workaround may live in a
@@ -133,19 +143,26 @@ repos:
           grep -q "id: $h$" pre-commit-additions.yaml ||
           { echo "FAIL docs-format:every-budget-carries-a-gate: no hook $h"; exit 1; }; done'
 
+      # Per block, not per file. Counting rule ids against `Verify:` lines over a
+      # whole spec passes the spec whose second requirement has no verification
+      # and whose first has two: the rule states ownership, and a total cannot
+      # see it.
       - id: spec-requirement-parts
         name: every requirement carries an id and a verification
         language: system
         files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
         pass_filenames: true
         entry: >-
-          sh -c 'for f; do
-          r=$(grep -cE "^### \`[a-z0-9-]+:[a-z0-9-]+\` . " "$f" || true);
-          h=$(grep -c "^### " "$f" || true);
-          v=$(grep -c "^Verify: " "$f" || true);
-          [ "$r" = "$h" ] && [ "$r" = "$v" ] ||
-          { echo "FAIL docs-specs:requirement-carries-five-parts $f: $r/$h headings, $v verify"; exit 1; };
-          done' --
+          awk 'function close_block() { if (h == "") return;
+          if (h !~ /^### `[a-z0-9-]+:[a-z0-9-]+` . /) {
+          printf "FAIL docs-specs:requirement-carries-five-parts %s:%d: not a rule id\n", FILENAME, hl;
+          bad = 1 }
+          if (v != 1) {
+          printf "FAIL docs-specs:requirement-carries-five-parts %s:%d: %d verifications\n", FILENAME, hl, v;
+          bad = 1 } }
+          /^### / { close_block(); h = $0; hl = FNR; v = 0; next }
+          /^Verify: / { if (h != "") v++; next }
+          END { close_block(); exit bad }'
 
       - id: spec-rule-id-unique
         name: rule identifiers are unique across the project
@@ -166,6 +183,9 @@ repos:
           sh -c 'for f; do n=$(grep -cE "MUST NOT|SHALL NOT" "$f" || true); [ "$n" -le 5 ] ||
           { echo "FAIL docs-specs:prohibitions-are-capped $f: $n"; exit 1; }; done' --
 
+      # The marker pair is checked before the TOC is excluded from the count.
+      # One opening marker with nothing to close it deletes every line after it,
+      # so the over-budget spec this cap exists to reject reports as fitting.
       - id: spec-size-cap
         name: specs stay within 300 lines and carry a TOC above 100
         language: system
@@ -174,10 +194,13 @@ repos:
         entry: >-
           sh -c 'set -- _docs/specs/SPEC-?*.md;
           [ -e "$1" ] || { echo "FAIL no specs matched; the layout moved"; exit 1; };
-          for f; do n=$(sed "/^<!--TOC-->$/,/^<!--TOC-->$/d" "$f" | wc -l);
+          for f; do m=$(grep -c "^<!--TOC-->$" "$f" || true);
+          case "$m" in 0 | 2) ;;
+          *) echo "FAIL $f: $m TOC markers, expected 0 or 2"; exit 1;; esac;
+          n=$(sed "/^<!--TOC-->$/,/^<!--TOC-->$/d" "$f" | wc -l);
           [ "$n" -le 300 ] || { echo "FAIL $f: $n authored lines, cap is 300"; exit 1; };
-          if [ "$n" -gt 100 ]; then grep -q "<!--TOC-->" "$f" ||
-          { echo "FAIL $f: over 100 lines with no TOC"; exit 1; }; fi; done'
+          [ "$n" -le 100 ] || [ "$m" -eq 2 ] ||
+          { echo "FAIL $f: over 100 lines with no TOC"; exit 1; }; done'
 
       - id: typed-clause-shape
         name: typed spec-change clauses carry a well-formed rule ID
@@ -246,19 +269,27 @@ repos:
           comm -12 /tmp/marked /tmp/enacted | grep . &&
           { echo "FAIL work enacts a rule carrying an open question"; exit 1; }; true'
 
-      # The `Verify:` line of the requirement this hook enforces necessarily
-      # contains the words the hook forbids, so it is excluded. A gate that
-      # cannot coexist with its own definition is a gate nobody can ship.
+      # The program is a file, not an inline entry. It outgrew a one-liner the
+      # moment it had to strip code the way CommonMark defines it, and a gate
+      # nobody can invoke outside pre-commit is a gate nobody can run against a
+      # deliberate violation.
+      #
+      # What it strips and why is in the file's own header. The short version:
+      # every shortcut in a prose scanner fails in the silent direction, so a
+      # fence is found at its container's indent, a fence left open ends with
+      # that container, and a code span closes on a run of its own length.
+      #
+      # awk is the entry rather than the body of a shell loop: it takes the
+      # files pre-commit hands it and its exit code is the verdict. A wrapper is
+      # where the inversion creeps in, because the `&&` a grep-based body needs
+      # fires on the clean files instead.
       - id: no-self-narration
         name: documents state the present
         language: system
         types: [markdown]
+        exclude: '^_docs/decisions/'
         pass_filenames: true
-        entry: >-
-          sh -c 'for f; do
-          grep -vn "^Verify: " "$f" | grep -iE "formerly|used to be|this replaces|previously we" &&
-          { echo "FAIL docs-format:document-states-the-present $f"; exit 1; };
-          done; true' --
+        entry: awk -f .hooks/no-self-narration.awk
 
       - id: fence-language
         name: every opening fence declares a language

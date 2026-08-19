@@ -17,34 +17,14 @@ lint:
     nix develop --command editorconfig-checker
     nix develop --command pre-commit run --all-files
 
-# Verify what this repository ships and what it consumes
+# Verify what this repository ships
 # (ADR-executable-artifacts-in-the-library).
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
 # expected to copy and run. Those five scripts are not gated yet:
 # `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is the story that
 # gates them, and it is what returns shellcheck and shfmt to the devShell.
-#
-# What is gated here is the plan record, whose format and linter belong to the
-# pinned plan-xp input.
-test: test-plan test-spec-shelf
-
-# _docs/plan/ — this repository's own plan record, gated by the pinned plan-xp
-# input rather than by a copy of its schemas in this tree.
-#   1. every lane file and the config match the schemas the package provides
-#   2. the record is coherent, checked by the linter from that same package
-test-plan:
-    nix develop --command sh -c 'check-jsonschema \
-        --schemafile "$PLAN_XP_SCHEMA_DIR/plan-lane.schema.json" \
-        _docs/plan/lanes/backlog.yml \
-        _docs/plan/lanes/todo.yml \
-        _docs/plan/lanes/doing.yml \
-        _docs/plan/lanes/review.yml \
-        _docs/plan/lanes/closed.yml'
-    nix develop --command sh -c 'check-jsonschema \
-        --schemafile "$PLAN_XP_SCHEMA_DIR/plan-config.schema.json" \
-        _docs/plan/config.yml'
-    nix develop --command check-plan _docs/plan
+test: test-spec-shelf test-gates
 
 # programming/spec-driven-docs/worked-example/ — the shelf applied to itself.
 #
@@ -77,22 +57,16 @@ test-spec-shelf:
         git add -A; \
         pre-commit run --all-files --config pre-commit-additions.yaml'
 
-# Move the pinned plan-xp revision to the current `develop` tip, then prove the
-# record still passes the linter that arrived with it.
+# Prove that each gate this repository adds can be made to fail.
 #
-# The lock is what pins the gate, so this changes what `test-plan` means and
-# belongs in a commit of its own. Clearing the cached verdict retires the
-# advisory in `.envrc` straight away rather than a day later; the path comes
-# from that file because the direnv layout directory is the user's to place.
-update-plan-xp:
-    @old=$(jq -r '.nodes["plan-xp"].locked.rev' flake.lock); \
-    nix flake update plan-xp; \
-    new=$(jq -r '.nodes["plan-xp"].locked.rev' flake.lock); \
-    rm -f "${PLAN_XP_FRESHNESS_CACHE:-/nonexistent}"; \
-    if [ "$old" = "$new" ]; then echo "plan-xp: already current ($old)"; exit 0; fi; \
-    echo "plan-xp: $old -> $new"; \
-    echo "changes: https://github.com/gubasso/plan-xp/compare/$old...$new"; \
-    just test-plan
+# `08-gates.md` requires a new gate to be demonstrated failing against an
+# intentional violation before it is trusted, and `.hooks/test-gates.sh` is
+# where every one of those violations is written. It runs the gates that ship
+# rather than a copy of them, which is what the devShell entries for awk and
+# markdownlint-cli2 are for: a tool reachable only inside pre-commit cannot be
+# run against a deliberate violation.
+test-gates:
+    nix develop --command .hooks/test-gates.sh
 
 # Nothing to compile for a knowledge base.
 build:

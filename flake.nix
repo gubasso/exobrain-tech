@@ -4,21 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-
-    # The planning method this repository uses, and the linter that gates its
-    # record. It is a tool dependency of the same class as shellcheck below, not
-    # an external source of knowledge:
-    # ADR-a-flake-pinned-tool-input-is-a-tool-dependency states that reading, and
-    # flake.lock pinning a concrete revision is what keeps it true while the
-    # branch itself moves.
-    plan-xp = {
-      url = "github:gubasso/plan-xp/develop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
-    { self, nixpkgs, flake-utils, plan-xp }:
+    { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -61,39 +50,20 @@
             pkgs.typos
             pkgs.committed
 
-            # The freshness advisory in `.envrc` and the `update-plan-xp`
-            # recipe read flake.lock and ask GitHub how far the pin has drifted.
-            # Both tools are common enough to be on a developer's PATH already,
-            # which is exactly why they are named here: an undeclared tool that
-            # happens to resolve is the ambient-PATH failure described above,
-            # working on the machine that wrote it and nowhere else.
-            pkgs.jq
-            pkgs.curl
+            # awk backs the prose gate, and markdownlint-cli2 backs the heading
+            # shapes. The linter has its own pre-commit environment, but a gate
+            # that cannot be run outside pre-commit cannot be run against a path
+            # the hook misses, or exercised against a deliberate violation —
+            # which `just test-gates` does for both.
+            pkgs.gawk
+            pkgs.markdownlint-cli2
 
-            # This repository keeps a plan record whose format and linter belong
-            # to a separate project. check-jsonschema validates `_docs/plan/`
-            # against the schemas the pinned plan-xp package provides, and the
-            # linter itself comes from that same package rather than from a file
-            # in this tree — see ADR-the-planning-method-moves-to-plan-xp for the
-            # split and ADR-a-flake-pinned-tool-input-is-a-tool-dependency for why a
-            # lock-pinned public input is a tool dependency rather than an
-            # external one.
-            #
-            # There is no shellcheck or shfmt here. A devShell entry with no gate
-            # behind it is the assertion-without-a-gate the charter forbids, and
-            # `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is the
-            # story that adds the hook and the tools together.
-            pkgs.check-jsonschema
-
-            # The plan linter and the two schemas that gate `_docs/plan/`. They
-            # come from the pinned input rather than from a copy in this tree,
-            # because a copy would be the duplication AGENTS.md forbids and a
-            # copy that drifts from the version the gate runs is worse than
-            # none.
-            plan-xp.packages.${system}.default
+            # There is no shellcheck or shfmt here. A devShell entry with no
+            # gate behind it is the assertion-without-a-gate the charter
+            # forbids, and the story that adds the hook and the tools together
+            # is `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md`.
           ];
           shellHook = ''
-            export PLAN_XP_SCHEMA_DIR="${plan-xp.packages.${system}.default}/share/plan-xp/schema"
             echo "dev shell ready"
           '';
         };

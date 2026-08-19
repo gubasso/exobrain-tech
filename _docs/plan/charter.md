@@ -11,10 +11,9 @@ verified, and adopted without reaching outside its own checkout.
 - Nothing load-bearing lives outside the repository.
 - A shipped artifact is proven by a gate, never asserted by prose.
 - One fact has one home, and the filesystem owns its own state.
-- The repository practices the methods it teaches, and adopts a published tool for a method it does
-  not teach. Documentation design is taught here and used here; planning is
-  [plan-xp](https://github.com/gubasso/plan-xp), pinned in `flake.nix` and used here on the same
-  terms.
+- The repository practices the methods it teaches. Documentation design is taught here and used
+  here; the docs root may hold a directory serving an adjacent domain, and nothing here names the
+  method that fills it.
 
 ## No-gos
 

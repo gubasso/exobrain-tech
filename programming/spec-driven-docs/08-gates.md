@@ -8,12 +8,12 @@ holds the wiring and the honest list of what no command can decide.
 - A rule that no command can check MUST be listed as unenforced rather than presented as gated.
 - A rule a project decides not to gate MUST be listed there too.
 - Every tool a gate runs MUST be in the project's devshell as well as in the hook.
+- A new gate MUST be demonstrated failing against an intentional violation before it is trusted.
 
 [03 — Rules](./03-rules.md) requires the `Verify:` line; this chapter wires what it names. A rule
-presented as binding but never checked teaches readers that specs describe intentions, and after
-that they stop reading them. The devshell rule is what makes a gate testable at all: a tool reachable
-only inside pre-commit cannot be run against a path the hook misses, and cannot be exercised against
-a deliberate violation.
+presented as binding but never checked teaches readers that specs describe intentions, and after that
+they stop reading them. The devshell rule is what makes a gate testable: a tool reachable only inside
+pre-commit cannot be run against a path the hook misses, or exercised against a violation.
 
 A check whose file set is empty exits zero, so a renamed directory or a drifted `files:` pattern
 turns every gate below into a green light over nothing. Assert the set before checking it.
@@ -32,11 +32,12 @@ would silently disable every shape below while the hooks keep reporting success.
 
 Each config is `{"config": {"MD043": {"headings": [...]}}}` with one array. For a spec that array is
 `["?", "## Purpose", "## Requirements", "+"]`; for a record it is `"?"` followed by the five section
-headings in order, with no trailing wildcard.
+headings in order, with no trailing wildcard. Scope the record hook to `ADR-` alone: a template holds
+the shape inside a fence so it can be copied, and MD043 counts a fenced heading as no heading at all.
 
-MD043 checks every heading level, so the array covers the requirement and scenario headings, not only
-the `##` sections. Tokens are `?` for exactly one heading, `+` for one or more, `*` for zero or more;
-`?` matches the varying title and `+` fails an empty spec.
+MD043 checks every heading level, so the array covers requirement and scenario headings too. Tokens
+are `?` for exactly one, `+` for one or more, `*` for zero or more; `+` fails an empty spec. Set
+`match_case: true`: its default is false, and without it a record headed `## status` passes.
 
 ```yaml
 - id: markdownlint-cli2
@@ -48,7 +49,7 @@ the `##` sections. Tokens are `?` for exactly one heading, `+` for one or more, 
 - id: markdownlint-cli2
   alias: md-adr
   name: markdownlint (decision record heading shape)
-  files: '^_docs/decisions/(ADR-.*|TEMPLATE-adr)\.md$'
+  files: '^_docs/decisions/ADR-[a-z0-9-]+\.md$'
   args: ['--config', '.markdownlint/adr.markdownlint-cli2.jsonc']
 ```
 
@@ -56,9 +57,8 @@ Reuse the id of the project's existing markdownlint hook so its settings carry o
 
 ## Filenames
 
-Scope the hook to the directory, not to the prefix. A `files:` pattern of `^_docs/decisions/ADR-`
-never sees the file someone named `0001-use-postgres.md`, so the one filename the rule exists to
-reject is the one filename the gate is blind to.
+Scope the hook to the directory, not the prefix. A `files:` pattern of `^_docs/decisions/ADR-` never
+sees the file someone named `0001-use-postgres.md` — the one filename the rule exists to reject.
 
 ```yaml
 - id: adr-filename-shape
@@ -86,8 +86,7 @@ reject is the one filename the gate is blind to.
 ## Case ids
 
 A suppression names a case, and the name is worth nothing if it resolves to no record. This is the
-coverage grep again, over a different pair of sets: every `KI-` token cited anywhere outside the docs
-root, against the records that exist.
+coverage grep again: every `KI-` token cited outside the docs root, against the records that exist.
 
 ```bash
 rg -o '\bKI-[a-z0-9-]+' --glob '!<root>/**' . | sed 's/.*://' | sort -u > /tmp/cited
@@ -95,15 +94,13 @@ ls <root>/reference/known-issues/ | sed 's/\.md$//' | sort -u > /tmp/recorded
 comm -13 /tmp/recorded /tmp/cited | grep . && exit 1 || exit 0
 ```
 
-The check runs one way only. A cited case with no record is a fabrication and fails; a record no
-suppression cites is ordinary, because the workaround may live in a config or a dependency pin rather
-than in a marked test.
+The check runs one way only: a cited case with no record is a fabrication and fails, while a record
+no suppression cites is ordinary — the workaround may live in a config or a dependency pin.
 
 Wire it as `always_run`, not behind a `files:` filter. The commit this check exists to catch deletes
 a record while a suppression still cites it, and pre-commit selects staged files with
-`--diff-filter=ACMRTUXB`, which omits deletions — so a filter would hand the hook an empty list on
-exactly that commit. The same reasoning binds every gate comparing two sets rather than the files it
-is given.
+`--diff-filter=ACMRTUXB`, which omits deletions — a filter would hand the hook an empty list on
+exactly that commit. The same reasoning binds every gate that compares two sets.
 
 ## Companion directories
 
@@ -175,16 +172,17 @@ for f in _docs/decisions/ADR-?*.md; do
   [ "$w" -le 350 ] || { echo "FAIL $f: $w words, cap is 350"; exit 1; }
 done
 
-for f in <shelf>/[0-9][0-9]-*.md; do
+for f in <shelf>/[0-9][0-9]-*.md <shelf>/README.md; do
   n=$(wc -l < "$f")
-  case "$f" in *-gates.md | *-checklist.md) cap=300 ;; *) cap=200 ;; esac
+  case "$f" in *-gates.md | *-checklist.md | */README.md) cap=300 ;; *) cap=200 ;; esac
   [ "$n" -le "$cap" ] || { echo "FAIL $f: $n lines, cap is $cap"; exit 1; }
 done
 ```
 
 The chapter loop is what stops a shelf from absorbing a subject by growing. A catalog takes the
-larger number for the reason [06 — Format](./06-format.md) states, and is matched by name rather than
-by inspecting the file, because no command can tell an argument from an inventory.
+larger number for the reason [06 — Format](./06-format.md) states, matched by name because no command
+can tell an argument from an inventory. The shelf index is in the loop because it is the one file no
+numbered pattern matches, and a subject the chapter cap would have split moves into it.
 
 Where a budget lands over an older corpus, the loop skips a list of named paths and fails when a
 listed path fits or disappears, so the exemption shrinks on its own.
@@ -289,6 +287,8 @@ These rules are real and no command decides them. A reviewer does.
 | A document contains no bold or italic text               | stated without a gate by decision         |
 | One term for one concept                                 | requires knowing which terms are synonyms |
 | A fact has exactly one owner                             | requires knowing what the fact is         |
+| A spec introduces no section outside its shape           | its trailing wildcard admits any heading  |
+| A run of records about one domain means a missing spec   | requires reading the corpus               |
 | A spec change is declared as a typed clause              | a command cannot see an omitted clause    |
 | A typed clause's type matches the diff                   | requires reading both sides               |
 | A step is one action, and an unprinted outcome is a step | requires reading the step                 |
