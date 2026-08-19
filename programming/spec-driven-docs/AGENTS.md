@@ -58,7 +58,7 @@ Templates: `TEMPLATE-spec.md`, `TEMPLATE-adr.md`, `TEMPLATE-agents-digest.md`,
 - Specs live at `<root>/specs/SPEC-<domain>.md`, never beside what they govern.
 - A file whose kind is fixed carries it as an uppercase prefix: `SPEC-`, `ADR-`, `KI-`, `TEMPLATE-`,
   and carries the slug that identifies it rather than a counter.
-- Use no bold or italics, and give every fenced block a language.
+- Use no bold or italics — stated without a gate, held by review — and give every fence a language.
 - A rule no command can check is listed as unenforced, not presented as gated.
 - A requirement whose `Verify:` command fails is unimplemented, not broken; its state is derived by
   running the command, never stored.

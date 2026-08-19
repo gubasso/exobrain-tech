@@ -34,6 +34,30 @@ material is deleted from specs rather than annotated, and why drafts stay outsid
 - A project MUST NOT state the same rule in two documents.
 - When two rules conflict, the author MUST resolve the conflict rather than qualify both.
 
+## Settled rules are applied, not re-raised
+
+A project states a rule so the choice is made once. An agent that surfaces a stated rule as an open
+question moves the cost back onto the person who already paid it.
+
+- An agent MUST apply a rule the project states rather than raise it as a question.
+- An agent MUST NOT ask whether work earns a decision record, a unit of work, or its own commit.
+- An agent reporting what is open MUST report only what is open.
+
+The second follows from the first. [04 — Decisions](./04-decisions.md) states the threshold a record
+must clear, so the question is answered before it is asked.
+
+The third is about the shape of a report. A list of open items is read to decide what to do next, so
+an entry that is resolved, decided, or measured clean costs reading time and hides the live ones. A
+finding that closed during the work belongs in the change that closed it.
+
+The failure is specific to agents. A model with room to spare will re-derive a settled choice,
+present the derivation as diligence, and ask for confirmation. Each round costs a reply and teaches
+the reader that a stated rule is provisional, which is the same lesson an ungated rule teaches in
+[08 — Gates](./08-gates.md).
+
+Where a rule genuinely does not reach the case, ask — naming what the rule says and where it stops.
+That is a different act from asking whether the rule holds.
+
 ## One entry document per unit of work
 
 A large corpus cannot be loaded, and an agent told to read the docs will either truncate or drown. The

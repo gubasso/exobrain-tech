@@ -6,10 +6,14 @@ holds the wiring and the honest list of what no command can decide.
 ## Principle
 
 - A rule that no command can check MUST be listed as unenforced rather than presented as gated.
+- A rule a project decides not to gate MUST be listed there too.
+- Every tool a gate runs MUST be in the project's devshell as well as in the hook.
 
 [03 — Rules](./03-rules.md) requires the `Verify:` line; this chapter wires what it names. A rule
 presented as binding but never checked teaches readers that specs describe intentions, and after
-that they stop reading them.
+that they stop reading them. The devshell rule is what makes a gate testable at all: a tool reachable
+only inside pre-commit cannot be run against a path the hook misses, and cannot be exercised against
+a deliberate violation.
 
 A check whose file set is empty exits zero, so a renamed directory or a drifted `files:` pattern
 turns every gate below into a green light over nothing. Assert the set before checking it.
@@ -205,9 +209,6 @@ The depth flag belongs to the parser subcommand, so it follows `github`; at the 
 md_toc -d -c -s 1 github -l 3 _docs/specs/SPEC-*.md   # 0 fresh, 128 stale
 ```
 
-Put `md-toc` in the devshell as well as the hooks. A tool that exists only inside pre-commit cannot be
-run against a path the hook misses, or tested at all.
-
 ## Fence languages
 
 A closing fence is always bare, so matching every bare fence reports one false failure per correctly
@@ -221,18 +222,16 @@ awk '/^```/{ if(!inf){ inf=1; if($0=="```"){ printf "%s:%d: bare opening fence\n
 
 ## Prose checks
 
-Two rules match on prose, and both must strip fences and inline code first: a document stating either
+One rule matches on prose, and it must strip fences and inline code first: a document stating the
 rule quotes the words it forbids, and an unstripped match reports the definition as a breach.
 
 ````bash
 strip() { sed '/^```/,/^```/d' "$1" | sed 's/`[^`]*`//g'; }
-
-strip "$f" | grep -niE 'formerly|used to be|this replaces|inherited from' && exit 1   # self-narration
-strip "$f" | grep -nE '\*\*[^*]+\*\*' && exit 1                                       # emphasis
+strip "$f" | grep -niE 'formerly|used to be|this replaces|inherited from' && exit 1
 ````
 
-Give the emphasis check an `<!-- allow-emphasis: <reason> -->` escape hatch, so a genuine exception
-costs a sentence in the diff rather than becoming a habit.
+The emphasis rule is the other prose rule, and it is stated without a gate. It appears in the
+unenforced table below.
 
 ## Comment citations
 
@@ -287,6 +286,7 @@ These rules are real and no command decides them. A reviewer does.
 | A scenario names the contested case, not a restatement   | requires knowing the ambiguity            |
 | A deferral's reopening condition is checkable            | requires domain knowledge                 |
 | Prose is spent only on a decision, hazard, or constraint | requires judging necessity                |
+| A document contains no bold or italic text               | stated without a gate by decision         |
 | One term for one concept                                 | requires knowing which terms are synonyms |
 | A fact has exactly one owner                             | requires knowing what the fact is         |
 | A spec change is declared as a typed clause              | a command cannot see an omitted clause    |

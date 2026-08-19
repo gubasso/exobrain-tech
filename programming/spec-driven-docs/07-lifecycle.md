@@ -32,6 +32,30 @@ the requirement in the spec, and the record explaining the choice. The record ci
 
 Most changes clear neither bar and produce only a spec edit. That is the normal case.
 
+## Adopting a rule over an existing corpus
+
+A rule lands after the material it binds. Applying it to what predates it is ordinary work, not a
+precondition for stating it.
+
+- A project adopting a rule MUST decide in the same change whether it is gated or held by review.
+- A project MUST NOT defer a rule because existing material breaches it.
+
+Three shapes, and the choice is about cost rather than principle.
+
+| Shape                           | When it fits                                                  |
+| ------------------------------- | ------------------------------------------------------------- |
+| Fix and gate at once            | few enough breaches to clear inside the adopting change       |
+| Gate with a shrinking exemption | many breaches, and each one changes what a document means     |
+| State it and hold it by review  | many breaches, and none of them changes what a document means |
+
+The exemption list is the one that goes wrong. It must fail once a path it names no longer needs it,
+or it stops shrinking the day it stops being read; [06 — Format](./06-format.md) owns that rule.
+
+Clearing breaches is gate work and runs at whatever pace the project chooses, a file at a time or in
+one pass. What is not available is a fourth shape where a rule is stated, ungated, and not declared
+unenforced. That is the state readers learn to ignore, and [08 — Gates](./08-gates.md) exists to keep
+a project out of it.
+
 ## Drafts
 
 `.draft/` at the project root is the workshop, and it is gitignored. Discovery notes, raw outlines,

@@ -42,4 +42,4 @@ clutter. Each choice survives, restated as plan-xp's own record.
 
 ## Status
 
-Accepted
+Superseded by [ADR-the-repository-names-no-planning-method](./ADR-the-repository-names-no-planning-method.md)

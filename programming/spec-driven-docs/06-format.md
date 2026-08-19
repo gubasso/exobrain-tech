@@ -69,11 +69,17 @@ statement becomes a MUST. A phrase tempting to bold as a mini-heading becomes a 
 produces too many headings the section was carrying more than one idea.
 
 The rule is zero, not sparingly. A density budget invites a judgment call on every line and loses it
-slowly; zero is checkable, and it is the only version applied consistently.
+slowly, so zero is the only version applied consistently.
 
-Do not justify this with token savings. Emphasis markers are one to two percent of a corpus. The
-dominant costs are restating a fact another document owns and loading documents the work does not
-need, and [00 — Model](./00-model.md) and [05 — Agent Context](./05-agent-context.md) fix those.
+It binds authoring and is held by review rather than by a gate. A project adopting it inherits a
+corpus written before it, and the exemption list that would clear that corpus costs more than the
+rule is worth: emphasis markers are one to two percent of a corpus, and removing one changes nothing
+a reader can act on. [08 — Gates](./08-gates.md) records it as unenforced, which is the honest form,
+and [07 — Lifecycle](./07-lifecycle.md) owns the choice between the two.
+
+Do not justify this with token savings. The dominant costs are restating a fact another document owns
+and loading documents the work does not need, and [00 — Model](./00-model.md) and
+[05 — Agent Context](./05-agent-context.md) fix those.
 
 ## Register
 

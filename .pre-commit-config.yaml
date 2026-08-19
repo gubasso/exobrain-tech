@@ -301,7 +301,7 @@ repos:
         pass_filenames: false
         entry: >-
           sh -c '[ -f AGENTS.md ] || { echo "FAIL no root AGENTS.md"; exit 1; };
-          bad=$(find . -path ./.git -prune -o -name AGENTS.md -print |
+          bad=$(find . \( -path ./.git -o -path ./.draft \) -prune -o -name AGENTS.md -print |
           while read -r f; do n=$(wc -l < "$f"); c=150;
           [ "$f" = "./AGENTS.md" ] && c=100;
           [ "$n" -le "$c" ] || echo "$f ($n lines, cap $c)"; done);
@@ -352,7 +352,7 @@ repos:
           case "$f" in *-gates.md | *-checklist.md | */glossary.md) c=300;; esac;
           [ "$n" -gt "$c" ] || stale="$stale $f ($n lines, now fits);"; done;
           [ -z "$stale" ] || { echo "FAIL delist from the chapter debt list:$stale"; exit 1; };
-          set -- $(find . -regextype posix-extended -path ./.git -prune -o
+          set -- $(find . -regextype posix-extended \( -path ./.git -o -path ./.draft \) -prune -o
           -regex ".*/([0-9][0-9]-[^/]*|glossary)\.md" -print);
           [ "$#" -gt 0 ] || { echo "FAIL no chapters matched; the layout moved"; exit 1; };
           bad=""; for f; do case "$debt" in *" $f "*) continue;; esac;

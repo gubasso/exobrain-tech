@@ -246,17 +246,6 @@ repos:
           comm -12 /tmp/marked /tmp/enacted | grep . &&
           { echo "FAIL work enacts a rule carrying an open question"; exit 1; }; true'
 
-      - id: no-emphasis
-        name: documents carry no bold or italic text
-        language: system
-        types: [markdown]
-        pass_filenames: true
-        entry: >-
-          sh -c 'for f; do
-          sed "/^\`\`\`/,/^\`\`\`/d" "$f" | grep -nE "\*\*[^*]+\*\*" &&
-          { echo "FAIL docs-format:document-uses-structural-markdown-only $f"; exit 1; };
-          done; true' --
-
       # The `Verify:` line of the requirement this hook enforces necessarily
       # contains the words the hook forbids, so it is excluded. A gate that
       # cannot coexist with its own definition is a gate nobody can ship.

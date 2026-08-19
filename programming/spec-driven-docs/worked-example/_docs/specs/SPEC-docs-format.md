@@ -55,7 +55,7 @@ The author MUST NOT use bold or italic text.
 - WHEN a reader scans it
 - THEN nothing is emphasized because everything is, and the identifiers belong in inline code
 
-Verify: `rg -n '\*\*[^*]+\*\*' _docs && exit 1 || exit 0`
+Verify: reviewer confirms the change introduces no bold or italic text
 
 ### `docs-format:document-states-the-present` — A document states the present
 
