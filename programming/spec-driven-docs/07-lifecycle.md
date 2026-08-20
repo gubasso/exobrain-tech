@@ -139,6 +139,20 @@ decision record avoids the same way ([04 — Decisions](./04-decisions.md)).
 The retire condition is what stops a workaround outliving its bug. Without it the workaround becomes
 permanent by default, and the next reader assumes it was a design choice.
 
+- A record MUST walk its mechanism step by step, as a run a reader can follow.
+
+A record that only names the defect, as in "the formatter moves the marker", is unfalsifiable to
+everyone but its author, and the next reader re-derives the mechanism from scratch. The shape that
+avoids that: name the two or three moving parts, run one concrete case, and show what each step
+leaves behind — the input, the command that acts on it, the state after it — so the wrong step is
+visible rather than asserted. Close with the cause in one line, the reading a triager reaches for
+first and why it is wrong, and the smallest fix. Quote captured output verbatim, tied to the step it
+belongs to.
+
+The walkthrough is what the case id buys. A suppression cites that id from source, and whoever
+follows the citation arrives knowing nothing about the bug; the walkthrough is the only part of the
+record written for them.
+
 A record carries one state, and the state says what has to happen next.
 
 | State           | Means                                                                |

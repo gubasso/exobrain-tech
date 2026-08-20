@@ -85,7 +85,7 @@ repos:
         name: the sample gate
 EOF
 
-  printf '# A sample case\n\nretire_when: upstream ships the fix\n' \
+  printf '# A sample case\n\nretire_when: upstream ships the fix\n\n## How it works\n\nStep one leaves the marker set; step two reads it.\n' \
     > "$t/_docs/reference/known-issues/KI-sample-bug.md"
   printf 'A page with a suppression.\n\n<!-- dprint-ignore-start KI-sample-bug -->\n\ntext\n\n<!-- dprint-ignore-end -->\n' \
     > "$t/_docs/reference/sample.md"
@@ -283,6 +283,19 @@ reject "ki-retire-when" "$root/.hooks/ki-retire-when.sh"
 rm _docs/reference/known-issues/KI-empty-condition.md
 printf '# Missing\n\nNo condition here.\n' > _docs/reference/known-issues/KI-no-condition.md
 reject "ki-retire-when" "$root/.hooks/ki-retire-when.sh"
+
+# --- ki-mechanism-walkthrough -----------------------------------------------
+#
+# The heading is matched anchored, so a record naming the phrase in prose is the
+# case that separates a real walkthrough from a mention of one.
+newtree mechanism-walkthrough
+accept "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
+printf '# No walkthrough\n\nretire_when: never\n' > _docs/reference/known-issues/KI-names-the-defect-once.md
+reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
+rm _docs/reference/known-issues/KI-names-the-defect-once.md
+printf '# Mentioned\n\nretire_when: never\n\nThis is ## How it works in prose.\n' \
+  > _docs/reference/known-issues/KI-mentions-the-heading.md
+reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
 
 # --- The worked example, exercised against violations ----------------------
 #

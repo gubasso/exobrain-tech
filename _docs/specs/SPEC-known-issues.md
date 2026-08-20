@@ -3,7 +3,8 @@
 ## Purpose
 
 What a record of an external-system bug in `_docs/reference/known-issues/` is: how its case id is
-formed, and what the record owes so the workaround it justifies can be removed. It binds the record
+formed, what it owes a reader who arrives from a suppression, and what the record owes so the
+workaround it justifies can be removed. It binds the record
 and the suppressions that cite it. A defect in this repository's own content is not a case; it is a
 fix.
 
@@ -45,3 +46,16 @@ A known-issue record MUST carry the condition under which it is removed.
   permanent by default
 
 Verify: `pre-commit run ki-retire-when --all-files`
+
+### `known-issues:a-record-walks-the-mechanism` — A record walks its mechanism step by step
+
+A known-issue record MUST carry a `## How it works` walkthrough that runs one concrete case and
+shows the state each step leaves behind.
+
+#### Scenario: A reader arrives from a suppression that cites the case
+
+- GIVEN a record stating only that the tool corrupts the block
+- WHEN the reader who follows the case id has never seen the bug
+- THEN the record answers nothing they can check, and the mechanism is re-derived from scratch
+
+Verify: `pre-commit run ki-mechanism-walkthrough --all-files`

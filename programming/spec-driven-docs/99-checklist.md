@@ -111,6 +111,8 @@ Owner: [07 — Lifecycle](./07-lifecycle.md).
       met was removed along with its record.
 - [ ] Every known-issue record is named `KI-<slug>.md`, carries exactly one state, and a masked one
       carries a retire condition where a mitigated one carries none.
+- [ ] Every known-issue record walks its mechanism step by step, showing the state each step leaves
+      behind, rather than naming the defect once.
 - [ ] A resolved symptom that could recur and be misread left a diagnostic entry, and no archive of
       resolved cases was created.
 

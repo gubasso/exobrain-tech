@@ -453,6 +453,13 @@ repos:
         pass_filenames: false
         entry: .hooks/ki-retire-when.sh
 
+      - id: ki-mechanism-walkthrough
+        name: every known-issue record walks its mechanism step by step
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/ki-mechanism-walkthrough.sh
+
   # --- Spelling (report-only) ---
   #
   # `language: system` because upstream ships this hook as `language: python`
