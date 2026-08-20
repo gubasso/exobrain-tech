@@ -113,6 +113,8 @@ Owner: [07 — Lifecycle](./07-lifecycle.md).
       carries a retire condition where a mitigated one carries none.
 - [ ] Every known-issue record walks its mechanism step by step, showing the state each step leaves
       behind, rather than naming the defect once.
+- [ ] Every record filed upstream carries a `## Report` section holding the filed body in the
+      tracker's own markup.
 - [ ] A resolved symptom that could recur and be misread left a diagnostic entry, and no archive of
       resolved cases was created.
 

@@ -460,6 +460,13 @@ repos:
         pass_filenames: false
         entry: .hooks/ki-mechanism-walkthrough.sh
 
+      - id: ki-report-body
+        name: every filed known-issue record carries the body it was filed with
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/ki-report-body.sh
+
   # --- Spelling (report-only) ---
   #
   # `language: system` because upstream ships this hook as `language: python`

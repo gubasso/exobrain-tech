@@ -297,6 +297,25 @@ printf '# Mentioned\n\nretire_when: never\n\nThis is ## How it works in prose.\n
   > _docs/reference/known-issues/KI-mentions-the-heading.md
 reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
 
+# --- ki-report-body ---------------------------------------------------------
+#
+# The gate keys on a specific upstream reference, so the tracker-only URL is the
+# case that separates a filed record from one that names where it would go.
+newtree report-body
+printf '# Filed\n\nupstream: https://github.com/org/repo/issues/1234\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\nThe filed body.\n' \
+  > _docs/reference/known-issues/KI-filed-with-report.md
+printf '# Not filed yet\n\nupstream: https://github.com/org/repo/issues\nretire_when: never\n\n## How it works\n\nStep one.\n' \
+  > _docs/reference/known-issues/KI-tracker-only.md
+accept "ki-report-body" "$root/.hooks/ki-report-body.sh"
+rm _docs/reference/known-issues/KI-filed-with-report.md
+printf '# Filed\n\nupstream: https://github.com/org/repo/issues/1234\nretire_when: never\n\n## How it works\n\nStep one.\n' \
+  > _docs/reference/known-issues/KI-filed-no-report.md
+reject "ki-report-body" "$root/.hooks/ki-report-body.sh"
+rm _docs/reference/known-issues/KI-filed-no-report.md
+printf '# Filed\n\nupstream: bsc#1234567\nretire_when: never\n\n## How it works\n\nStep one.\n\nSee the ## Report in the tracker.\n' \
+  > _docs/reference/known-issues/KI-filed-mentions-report.md
+reject "ki-report-body" "$root/.hooks/ki-report-body.sh"
+
 # --- The worked example, exercised against violations ----------------------
 #
 # The shelf ships `pre-commit-additions.yaml` for a reader to copy, and its

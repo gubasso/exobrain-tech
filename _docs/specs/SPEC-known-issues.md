@@ -3,8 +3,8 @@
 ## Purpose
 
 What a record of an external-system bug in `_docs/reference/known-issues/` is: how its case id is
-formed, what it owes a reader who arrives from a suppression, and what the record owes so the
-workaround it justifies can be removed. It binds the record
+formed, what it owes a reader who arrives from a suppression, what it owes a tracker it is filed
+into, and what the record owes so the workaround it justifies can be removed. It binds the record
 and the suppressions that cite it. A defect in this repository's own content is not a case; it is a
 fix.
 
@@ -59,3 +59,16 @@ shows the state each step leaves behind.
 - THEN the record answers nothing they can check, and the mechanism is re-derived from scratch
 
 Verify: `pre-commit run ki-mechanism-walkthrough --all-files`
+
+### `known-issues:a-filed-record-carries-its-report` — A filed record carries the body it was filed with
+
+A record whose `upstream:` names one filed issue MUST carry a `## Report` section holding that
+issue's body in the tracker's own markup.
+
+#### Scenario: The bug is filed under the deadline that made it worth filing
+
+- GIVEN a record written for this repository and a tracker expecting its own markup
+- WHEN the reporter has nothing to paste
+- THEN the report is written a second time, and the repository no longer holds what was said upstream
+
+Verify: `pre-commit run ki-report-body --all-files`

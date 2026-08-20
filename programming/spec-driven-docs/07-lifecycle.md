@@ -153,6 +153,14 @@ The walkthrough is what the case id buys. A suppression cites that id from sourc
 follows the citation arrives knowing nothing about the bug; the walkthrough is the only part of the
 record written for them.
 
+- A record filed upstream MUST carry the body it was filed with, in the tracker's own markup.
+
+Filing is where the record leaves the repository. A record written only for the project is written
+a second time in the tracker, under whatever deadline made the bug worth filing — and the two drift
+from that moment on. A `## Report` section that is the filed text, title on its own line and body in
+the tracker's markup, makes the filing a paste and keeps the repository holding what was actually
+said upstream.
+
 A record carries one state, and the state says what has to happen next.
 
 | State           | Means                                                                |
