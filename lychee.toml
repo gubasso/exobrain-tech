@@ -74,6 +74,11 @@ exclude = [
   "^https?://(www\\.)?gnu\\.org",
   "^https?://(www\\.)?mail-tester\\.com",
 
+  # --- Fabricated placeholders in illustrative examples ---
+  # Worked examples cite a stand-in upstream so the shape of a record is
+  # legible; the host is real, the path never was.
+  "^https?://github\\.com/example/",
+
   # --- Ephemeral / video hosts ---
   # YouTube videos vanish constantly; not worth gating pushes on.
   "^https?://(www\\.)?youtube\\.com/watch",
