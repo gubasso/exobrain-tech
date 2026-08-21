@@ -467,12 +467,12 @@ repos:
         pass_filenames: false
         entry: .hooks/ki-report-body.sh
 
-      - id: ki-report-width
-        name: a filed report body fits in 79 columns
+      - id: ki-bugzilla-report-width
+        name: a Bugzilla report body fits in 79 columns
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/ki-report-width.sh
+        entry: .hooks/ki-bugzilla-report-width.sh
 
   # --- Spelling (report-only) ---
   #

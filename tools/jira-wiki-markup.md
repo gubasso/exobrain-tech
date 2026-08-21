@@ -30,10 +30,15 @@ ticket holds sections a reader would otherwise scroll past.
 
 ## Wrapping
 
-Hard-wrap every line at 79 columns, the rule and the enforcement described in
-[Bugzilla comment syntax](./bugzilla-comment-syntax.md). Jira reflows prose, so the width is not a
-rendering requirement here — but `{noformat}` and `{code}` blocks and `||` tables do not reflow,
-and one rule for the whole file beats a per-block exception nobody remembers.
+There is no hard width here, and the 79-column rule described in
+[Bugzilla comment syntax](./bugzilla-comment-syntax.md) deliberately does not reach a Jira body —
+which is why a prepared body is named `<stem>.jira.txt` and the gate matches `*.bugzilla.txt`. Jira
+reflows prose to the panel, so a fixed width is invisible to every reader and enforceable only
+against the author.
+
+What does not reflow is `{noformat}` and `{code}` blocks and `||` tables. Wrap those by hand,
+narrow enough to read in a comment panel. That is authoring judgement per block, not a file-wide
+column a hook can check.
 
 ## Traps
 

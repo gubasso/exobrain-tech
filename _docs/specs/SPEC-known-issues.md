@@ -73,14 +73,16 @@ issue's body in the tracker's own markup.
 
 Verify: `pre-commit run ki-report-body --all-files`
 
-### `known-issues:a-report-body-fits-in-79-columns` — A report body fits in 79 columns
+### `known-issues:a-bugzilla-report-body-fits-in-79-columns` — A Bugzilla report fits in 79 columns
 
-A `## Report` section MUST hold its body in a fenced block whose lines are at most 79 columns.
+A record whose `upstream:` names Bugzilla MUST hold its `## Report` body in a fenced block whose
+lines are at most 79 columns. A record filed into a tracker that reflows MUST NOT be held to a
+width.
 
 #### Scenario: The report carries an aligned table and an annotated excerpt
 
-- GIVEN a tracker that renders a comment in a fixed-width box and reflows nothing
+- GIVEN Bugzilla, which renders a comment as preformatted text in a fixed-width box
 - WHEN a line runs past that width
-- THEN the tracker wraps it where it chooses, and the alignment that carried the argument is gone
+- THEN Bugzilla wraps it where it chooses, and the alignment that carried the argument is gone
 
-Verify: `pre-commit run ki-report-width --all-files`
+Verify: `pre-commit run ki-bugzilla-report-width --all-files`

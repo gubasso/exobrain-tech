@@ -74,17 +74,25 @@ lead-in beat a heading; where it genuinely needs three levels, attach a file and
 
 ## Enforcing the width
 
-The width is a rule with an id, not a habit: `known-issues:a-report-body-fits-in-79-columns`,
-verified by a hook so a project that adopts the convention adopts its gate with it. Register it
-where the project keeps its rules, carrying the verification line that names the hook:
+The width is a rule with an id, not a habit:
+`known-issues:a-bugzilla-report-body-fits-in-79-columns`, verified by a hook so a project that
+adopts the convention adopts its gate with it. Register it where the project keeps its rules,
+carrying the verification line that names the hook:
 
 ```markdown
-### `known-issues:a-report-body-fits-in-79-columns` — A report body fits in 79 columns
+### `known-issues:a-bugzilla-report-body-fits-in-79-columns` — A Bugzilla report fits in 79 columns
 
-A `## Report` section MUST hold its body in a fenced block whose lines are at most 79 columns.
+A record whose `upstream:` names Bugzilla MUST hold its `## Report` body in a fenced block whose
+lines are at most 79 columns. A record filed into a tracker that reflows MUST NOT be held to a
+width.
 
-Verify: `pre-commit run ki-report-width --all-files`
+Verify: `pre-commit run ki-bugzilla-report-width --all-files`
 ```
+
+The rule is Bugzilla's, not every tracker's. GitHub and Jira reflow, so a hard width there is
+invisible to every reader and enforceable only against the author — a habit wearing a rule id. So
+the gate needs a per-tracker discriminator it can read: for a fenced section that is the record's
+`upstream:`, and for a standalone body it is the filename, below.
 
 Where the body is a fenced section of a record, the gate reads the fence and nothing else. Body
 text outside it fails too: a markdown formatter owns the wrapping of everything unfenced, at a
@@ -92,15 +100,17 @@ width it chooses rather than the tracker's.
 
 ````sh
 awk '
-  FNR == 1         { report = 0; fence = 0 }
+  FNR == 1         { report = 0; fence = 0; bugzilla = 0 }
+  /^upstream:.*([Bb]ugzilla|bsc#|boo#|bnc#)/ { bugzilla = 1 }
   /^## Report$/    { report = 1; next }
   !fence && /^## / { report = 0 }
   report && /^```/ { fence = !fence; next }
+  !bugzilla        { next }
   report && fence && length($0) > 79 {
-    printf "FAIL known-issues:a-report-body-fits-in-79-columns %s:%d: %d columns\n",
+    printf "FAIL known-issues:a-bugzilla-report-body-fits-in-79-columns %s:%d: %d columns\n",
       FILENAME, FNR, length($0); bad = 1 }
   report && !fence && $0 != "" {
-    printf "FAIL known-issues:a-report-body-fits-in-79-columns %s:%d: body outside a fence\n",
+    printf "FAIL known-issues:a-bugzilla-report-body-fits-in-79-columns %s:%d: body outside a fence\n",
       FILENAME, FNR; bad = 1 }
   END { exit bad }
 ' "$@"
@@ -113,9 +123,16 @@ check silently — the failure a width gate is most likely to have and least lik
 Where the body is a standalone file instead, it is the same rule through editorconfig, which needs
 no code: no formatter claims `.txt`, which is what leaves the width to a checker that reads it.
 
+Name that file `<stem>.bugzilla.txt`. The compound suffix is the `*.test.js` / `*.spec.ts`
+convention: the real extension stays last, so editors, formatters, and `file(1)` still see plain
+text, while the segment before it names the role — here the tracker — and gives a glob something
+precise to match. That is what makes the per-tracker rule expressible in a config with no
+conditionals: a sibling `<stem>.jira.txt` in the same directory is simply not matched. Scoping the
+stanza by directory instead would sweep the Jira body in with it.
+
 ```ini
 # .editorconfig
-[**/filing/*.txt]
+[*.bugzilla.txt]
 max_line_length = 79
 ```
 
@@ -127,7 +144,8 @@ max_line_length = 79
     - id: editorconfig-checker
 ```
 
-Scope the stanza to the ticket bodies rather than setting the width globally: 79 columns is a
-property of the tracker's rendering box, not of every file in a repository, and a global cap
-collides with whatever formatter owns the other file types. Either gate is worth only what a
-failing run proves, so exercise a new one against a line of 85 columns before trusting it.
+Scope the stanza to the Bugzilla bodies rather than setting the width globally: 79 columns is a
+property of Bugzilla's rendering box, not of every file in a repository, and a global cap collides
+with whatever formatter owns the other file types. Either gate is worth only what a failing run
+proves, so exercise a new one against a line of 85 columns before trusting it — and against the
+same line in a body of a reflowing tracker, which must pass, or the narrowing is not real.
