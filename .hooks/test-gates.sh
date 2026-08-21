@@ -301,20 +301,33 @@ reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
 #
 # The gate keys on a specific upstream reference, so the tracker-only URL is the
 # case that separates a filed record from one that names where it would go.
+#
+# The query-string case is the one this gate silently missed: a canonical
+# Bugzilla link puts the id after `=` rather than `/`, so a record filed into
+# Bugzilla by the URL a reporter pastes escaped the requirement entirely, and a
+# positive run could not tell -- nothing in the repository was filed that way.
 newtree report-body
+body=$root/.hooks/ki-report-body.sh
 printf '# Filed\n\nupstream: https://github.com/org/repo/issues/1234\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\nThe filed body.\n' \
   > _docs/reference/known-issues/KI-filed-with-report.md
+printf '# Filed\n\nupstream: https://bugzilla.example.com/show_bug.cgi?id=1275998\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\nThe filed body.\n' \
+  > _docs/reference/known-issues/KI-filed-query-url-with-report.md
 printf '# Not filed yet\n\nupstream: https://github.com/org/repo/issues\nretire_when: never\n\n## How it works\n\nStep one.\n' \
   > _docs/reference/known-issues/KI-tracker-only.md
-accept "ki-report-body" "$root/.hooks/ki-report-body.sh"
+accept "ki-report-body" "$body"
 rm _docs/reference/known-issues/KI-filed-with-report.md
 printf '# Filed\n\nupstream: https://github.com/org/repo/issues/1234\nretire_when: never\n\n## How it works\n\nStep one.\n' \
   > _docs/reference/known-issues/KI-filed-no-report.md
-reject "ki-report-body" "$root/.hooks/ki-report-body.sh"
+reject "ki-report-body" "$body"
 rm _docs/reference/known-issues/KI-filed-no-report.md
+rm _docs/reference/known-issues/KI-filed-query-url-with-report.md
+printf '# Filed\n\nupstream: https://bugzilla.example.com/show_bug.cgi?id=1275998\nretire_when: never\n\n## How it works\n\nStep one.\n' \
+  > _docs/reference/known-issues/KI-filed-query-url-no-report.md
+reject "ki-report-body" "$body"
+rm _docs/reference/known-issues/KI-filed-query-url-no-report.md
 printf '# Filed\n\nupstream: bsc#1234567\nretire_when: never\n\n## How it works\n\nStep one.\n\nSee the ## Report in the tracker.\n' \
   > _docs/reference/known-issues/KI-filed-mentions-report.md
-reject "ki-report-body" "$root/.hooks/ki-report-body.sh"
+reject "ki-report-body" "$body"
 
 # --- ki-bugzilla-report-width ----------------------------------------------
 #

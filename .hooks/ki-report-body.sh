@@ -15,8 +15,11 @@ set -eu
 set -- _docs/reference/known-issues/KI-?*.md
 [ -e "$1" ] || { echo "FAIL no known-issue records matched; the layout moved"; exit 1; }
 
-# A specific item: a URL ending in /<digits>, or a #<digits> / bsc#<digits> id.
-filed='^upstream:.*([/#][0-9]+/?[[:space:]]*)$'
+# A specific item: a URL ending in /<digits> or ?<key>=<digits>, or a #<digits>
+# / bsc#<digits> id. The `=` form is not decoration -- a canonical Bugzilla link
+# is show_bug.cgi?id=<digits>, so without it a record filed into Bugzilla by the
+# URL a reporter actually pastes carries no report and the gate says nothing.
+filed='^upstream:.*([/#=][0-9]+/?[[:space:]]*)$'
 
 bad=""
 for f; do
