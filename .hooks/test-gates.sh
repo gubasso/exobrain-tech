@@ -316,6 +316,28 @@ printf '# Filed\n\nupstream: bsc#1234567\nretire_when: never\n\n## How it works\
   > _docs/reference/known-issues/KI-filed-mentions-report.md
 reject "ki-report-body" "$root/.hooks/ki-report-body.sh"
 
+# --- ki-report-width --------------------------------------------------------
+#
+# The heading case is the one a naive scanner gets wrong: a tracker body that
+# spells a heading inside the fence would close the section from within itself,
+# and every line after it would leave the check silently.
+newtree report-width
+head='# Filed\n\nupstream: bsc#1234567\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\n'
+printf "$head"'```text\nSUMMARY\n-------\n\nA line well inside the width.\n```\n' \
+  > _docs/reference/known-issues/KI-report-fits.md
+accept "ki-report-width" "$root/.hooks/ki-report-width.sh"
+printf "$head"'```text\n%s\n```\n' 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' \
+  > _docs/reference/known-issues/KI-report-too-wide.md
+reject "ki-report-width" "$root/.hooks/ki-report-width.sh"
+rm _docs/reference/known-issues/KI-report-too-wide.md
+printf "$head"'The filed body, unfenced, for dprint to rewrap at its own width.\n' \
+  > _docs/reference/known-issues/KI-report-unfenced.md
+reject "ki-report-width" "$root/.hooks/ki-report-width.sh"
+rm _docs/reference/known-issues/KI-report-unfenced.md
+printf "$head"'```text\n## Head, in the tracker markup\n%s\n```\n' 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' \
+  > _docs/reference/known-issues/KI-report-heading-inside.md
+reject "ki-report-width" "$root/.hooks/ki-report-width.sh"
+
 # --- The worked example, exercised against violations ----------------------
 #
 # The shelf ships `pre-commit-additions.yaml` for a reader to copy, and its

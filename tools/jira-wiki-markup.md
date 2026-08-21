@@ -28,6 +28,13 @@ It rarely matters: a ticket that exists to point at a source of truth carries a 
 expected against actual, and a link, and that needs no headings at all. Reach for `h2.` once a
 ticket holds sections a reader would otherwise scroll past.
 
+## Wrapping
+
+Hard-wrap every line at 79 columns, the rule and the enforcement described in
+[Bugzilla comment syntax](./bugzilla-comment-syntax.md). Jira reflows prose, so the width is not a
+rendering requirement here — but `{noformat}` and `{code}` blocks and `||` tables do not reflow,
+and one rule for the whole file beats a per-block exception nobody remembers.
+
 ## Traps
 
 - A `{` starts a macro. Text that must show a brace goes inside `{{...}}` or a `{noformat}` block.

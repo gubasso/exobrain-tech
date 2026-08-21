@@ -467,6 +467,13 @@ repos:
         pass_filenames: false
         entry: .hooks/ki-report-body.sh
 
+      - id: ki-report-width
+        name: a filed report body fits in 79 columns
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/ki-report-width.sh
+
   # --- Spelling (report-only) ---
   #
   # `language: system` because upstream ships this hook as `language: python`

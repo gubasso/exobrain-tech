@@ -72,3 +72,15 @@ issue's body in the tracker's own markup.
 - THEN the report is written a second time, and the repository no longer holds what was said upstream
 
 Verify: `pre-commit run ki-report-body --all-files`
+
+### `known-issues:a-report-body-fits-in-79-columns` — A report body fits in 79 columns
+
+A `## Report` section MUST hold its body in a fenced block whose lines are at most 79 columns.
+
+#### Scenario: The report carries an aligned table and an annotated excerpt
+
+- GIVEN a tracker that renders a comment in a fixed-width box and reflows nothing
+- WHEN a line runs past that width
+- THEN the tracker wraps it where it chooses, and the alignment that carried the argument is gone
+
+Verify: `pre-commit run ki-report-width --all-files`
