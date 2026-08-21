@@ -119,7 +119,8 @@ homework. A body opening with an environment table and a list of locations asks 
 assemble the story themselves, and most stop before they do.
 
 This binds the copy filed into a tracker as much as the record it came from: the same order, in the
-tracker's markup.
+tracker's markup ([Bugzilla](../../tools/bugzilla-comment-syntax.md),
+[Jira](../../tools/jira-wiki-markup.md)).
 
 ## A claim about code shows the code
 
