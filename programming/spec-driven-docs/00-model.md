@@ -72,6 +72,15 @@ statement of the rule, it had become a second owner.
 A carrying sentence is allowed. Restating a source's conclusion so the reader understands a claim
 before following the link passes the test; copying the source's argument does not.
 
+- A document whose purpose is to point at a source of truth MUST carry only what orients the reader
+  and the link.
+
+An issue opened to track a bug filed elsewhere, an index entry, a stub: each exists to route someone
+to the owner. What orients them is a sentence or two of what it is about, and where a contract is at
+stake, what was expected against what happened. A summary table, an environment block, a mechanism,
+or a paragraph of background is a second owner by the test above, and it rots while the target moves.
+The reader is one link away.
+
 - A reference MUST carry the claim it relies on rather than only the coordinates of where to find it.
 
 A line number decays silently. Text moves above it, the citation now points at something else, and

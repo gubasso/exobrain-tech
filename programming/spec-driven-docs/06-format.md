@@ -107,6 +107,46 @@ prose was carrying them.
 A rule that reads as arbitrary is the case where prose is required. Two sentences saying why a
 counterintuitive rule exists prevent the next author from deleting it as pointless.
 
+## A report leads with the run, not the detail
+
+- A report MUST place a walkthrough of one concrete run directly after its summary.
+- A report MUST state expected against actual before it presents supporting detail.
+
+A reader who has not seen the defect cannot judge the evidence for it. Summary, walkthrough, expected
+against actual, and only then environment, reproducibility, code, and captures gives them the story
+first and the proof second, so the excerpt they reach later reads as confirmation rather than as
+homework. A body opening with an environment table and a list of locations asks the reader to
+assemble the story themselves, and most stop before they do.
+
+This binds the copy filed into a tracker as much as the record it came from: the same order, in the
+tracker's markup.
+
+## A claim about code shows the code
+
+- A document making a claim about what code does MUST quote the span that shows it.
+- A quoted span MUST open with a header naming its path, its revision, and its start line.
+- A document MUST NOT support such a claim with a location citation alone.
+
+A reader who has to open a checkout and count lines to reach `file.py:127` does not check the claim.
+They take it on trust or they stop reading, and a report whose evidence nobody opens is a report
+without evidence. Quoting the deciding lines is what turns a citation into one, and the header kept
+above the quote is what lets a reader find the span and confirm it is still there.
+
+Quote the gist, not the region: the smallest span where the mechanism is visible, the parts that
+carry nothing elided, and the line that arms the defect and the line that fires it annotated in the
+margin. Annotate meaning, not position, because one header line locates the span and repeating a line
+number against each line adds noise a reader does not need. The header owns the location, so the
+prose above the fence does not restate it. A one-line change is shown as a diff hunk rather than
+described.
+
+Two habits fail the rule. The first is a list of line ranges under a heading like `Code path`, which
+reads as thorough and hands the reading back to the reader. The second is a fence marked with the
+source language, which invites a formatter to rewrite quotes, wrapping, and indentation; a quoted
+span is fenced as `text`, because a reformatted excerpt is no longer the thing that was quoted.
+
+[08 — Gates](./08-gates.md) records it as unenforced: whether a span shows the mechanism requires
+reading the code beside it.
+
 ## One default, not a survey
 
 - A document MUST recommend one option and MAY name one escape hatch.

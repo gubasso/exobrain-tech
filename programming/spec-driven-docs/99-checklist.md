@@ -10,6 +10,7 @@ Owner: [00 — Model](./00-model.md).
 
 - [ ] Every durable fact touched by the change has exactly one owner, and the reviewer can name it.
 - [ ] No document restates a fact another document owns; non-owners link instead.
+- [ ] Every pointer document carries what orients the reader and the link, and no further facts.
 - [ ] A behavior contract is carried by a name, a type, or a test where one can carry it.
 - [ ] No passage indexes the filesystem for its own sake; a listing that stays earns it by what its
       entries teach.
@@ -90,6 +91,9 @@ Owner: [06 — Format](./06-format.md).
 - [ ] No bold or italic text anywhere in the change.
 - [ ] Every fenced block declares a language.
 - [ ] RFC 2119 keywords appear only in normative statements.
+- [ ] Every report leads with its summary, then one concrete run, then expected against actual.
+- [ ] Every claim about what code does quotes the span that shows it, headed with its path,
+      revision, and start line.
 - [ ] Prose is spent only on a decision, a hazard, or a non-obvious constraint.
 - [ ] No document narrates its own history or explains an absence.
 - [ ] The change recommends one default rather than surveying alternatives it does not recommend.

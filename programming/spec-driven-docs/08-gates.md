@@ -10,10 +10,9 @@ holds the wiring and the honest list of what no command can decide.
 - Every tool a gate runs MUST be in the project's devshell as well as in the hook.
 - A new gate MUST be demonstrated failing against an intentional violation before it is trusted.
 
-[03 — Rules](./03-rules.md) requires the `Verify:` line; this chapter wires what it names. A rule
-presented as binding but never checked teaches readers that specs describe intentions, and after that
-they stop reading them. The devshell rule is what makes a gate testable: a tool reachable only inside
-pre-commit cannot be run against a path the hook misses, or exercised against a violation.
+[03 — Rules](./03-rules.md) requires the `Verify:` line; this chapter wires it. A rule presented as
+binding but never checked teaches readers that specs describe intentions. The devshell rule makes a
+gate testable: a tool reachable only inside pre-commit cannot be exercised against a violation.
 
 A check whose file set is empty exits zero, so a renamed directory or a drifted `files:` pattern
 turns every gate below into a green light over nothing. Assert the set before checking it.
@@ -228,8 +227,7 @@ strip() { sed '/^```/,/^```/d' "$1" | sed 's/`[^`]*`//g'; }
 strip "$f" | grep -niE 'formerly|used to be|this replaces|inherited from' && exit 1
 ````
 
-The emphasis rule is the other prose rule, and it is stated without a gate. It appears in the
-unenforced table below.
+The emphasis rule is the other prose rule, and it is stated without a gate; see the table below.
 
 ## Comment citations
 
@@ -247,8 +245,8 @@ comm -13 /tmp/agreed /tmp/cited | grep . \
   && { echo 'FAIL a comment cites a rule no spec defines'; exit 1; } || true
 ```
 
-The second is the orphan check requirements tracers run: a citation that resolves to nothing is a
-fabrication, and catching it is what makes the other three citation sites worth trusting.
+The second is the orphan check: a citation resolving to nothing is a fabrication, and catching it is
+what makes every other citation site worth trusting.
 
 ## Clarification markers
 
@@ -269,8 +267,7 @@ comm -12 /tmp/marked /tmp/enacted | grep . \
   && { echo 'FAIL work enacts a rule carrying an open question'; exit 1; } || true
 ```
 
-The `awk` tracks the requirement heading it is inside, so a marker is attributed to the rule above it
-rather than to whatever heading happens to fall in a fixed context window.
+The `awk` attributes a marker to the requirement heading above it, not to one in a fixed window.
 
 ## Unenforced
 
@@ -294,6 +291,9 @@ These rules are real and no command decides them. A reviewer does.
 | A step is one action, and an unprinted outcome is a step | requires reading the step                 |
 | An artifact token names one artifact, never a step       | requires judging the name                 |
 | A comment holds only what the code cannot express        | requires reading the code beside it       |
+| A claim about code quotes the code that shows it         | requires reading the code beside it       |
+| A report leads with a run before its supporting detail   | requires reading the document             |
+| A pointer carries only what orients the reader           | requires knowing what the target owns     |
 | An operational document carries every part of its shape  | requires knowing which shape it is        |
 | A destructive step shows its dry run and its loss        | requires knowing the tool's forms         |
 
