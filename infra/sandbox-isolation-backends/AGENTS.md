@@ -40,9 +40,6 @@ rootless-Podman + `crun --krun` stack. Not tied to any specific product.
 
 ## Maintenance Notes
 
-- Content migrated 2026-07-04 from an upstream sandbox-runtime spec set plus two prior docs
-  (`podman-libkrun.md`, `libkrun-crun-newline-mangling-upstream-issue.md`) that were removed from
-  `infra/containers/` in the same change.
 - The upstream `\n`-mangling bug report in `60-*` is drafted but not yet filed; update it with the
   issue URL once filed.
 - Regenerate this digest if any numbered doc changes materially; recompute `token-estimate`.

@@ -34,7 +34,8 @@ seed is a self-containment ADR that states the docs-as-SoT principle itself.
 
 Every directory's `README.md` is its index — it defines what the area is for and what belongs in it,
 and routes by meaning. It may name the files under it, but not merely to list them. This keeps navigation deterministic and prevents the drift that
-[single source of truth](../spec-driven-docs/00-model.md) warns against. This shelf's
+[single source of truth](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/00-model.md)
+warns against. This shelf's
 [hub README](./README.md) is an example.
 
 ## Automation

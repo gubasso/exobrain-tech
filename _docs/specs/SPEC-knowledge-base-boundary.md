@@ -9,25 +9,37 @@ written belongs to `SPEC-docs-format.md`.
 
 ## Requirements
 
-### `knowledge-base-boundary:no-knowledge-is-external` — No load-bearing knowledge is external
+### `knowledge-base-boundary:no-knowledge-is-external` — Current operation is self-contained
 
-Knowledge this repository depends on MUST be held in-repo, and a tool it runs MUST resolve to one
-pinned revision. An external reference is a citation for further reading, never a source of truth.
+Understanding, linting, formatting, testing, and building this checkout MUST require no file outside
+it. Upstream provenance and upgrade availability MAY be external because current operation does not
+exercise either one.
 
 #### Scenario: A gate reads a schema that lives in another project
 
-- GIVEN a hook validating this repository's own files against a schema fetched from elsewhere
-- WHEN that project renames the file or changes what the schema says
-- THEN the gate changes meaning with no commit here to explain it, so the schema was knowledge and
-  belongs in-repo
+- GIVEN a hook validating this repository's own files
+- WHEN the upstream canon checkout is unavailable
+- THEN the vendored schema, hooks, specs, configuration, and verifier keep every current operation
+  available
 
-The boundary is knowledge, not location. A public tool input pinned in `flake.lock` is a tool of the
-same class as the formatter beside it, because the lock names the revision every gate runs until
-someone moves it deliberately; an unpinned input is not, because it can change under the repository
-(ADR-a-flake-pinned-tool-input-is-a-tool-dependency).
+The boundary is current operation. A public tool input pinned in `flake.lock` is local operational
+state because the lock fixes the revision every gate runs. Canon provenance is metadata for upgrade,
+not an input to routine verification (ADR-source-the-documentation-canon-upstream).
 
-Verify: reviewer confirms the change adds no unpinned input, and no external document that is read
-rather than cited
+Verify: `pre-commit run spec-driven-docs-verify --all-files`
+
+### `knowledge-base-boundary:a-tool-input-is-pinned` — A tool input resolves to one pinned revision
+
+Every tool input this repository runs MUST resolve to one revision recorded in `flake.lock`.
+
+#### Scenario: An input is added without a lock entry
+
+- GIVEN a flake input added for a new gate
+- WHEN the lock is not updated alongside it
+- THEN the input can change under the repository with no commit here to explain it, which is the
+  dependency the pin exists to remove (ADR-a-flake-pinned-tool-input-is-a-tool-dependency)
+
+Verify: `jq -e 'del(.nodes.root) | [.nodes[] | .locked.rev] | all(type == "string")' flake.lock`
 
 ### `knowledge-base-boundary:no-method-is-named` — The repository names no planning method
 

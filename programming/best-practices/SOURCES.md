@@ -1,8 +1,7 @@
-# Sources & Refresh Provenance — refactor-migration & spec-driven best practices
+# Sources & Refresh Provenance — refactor-migration best practices
 
-Tracks the external upstreams and research grounding the refactor-migration and
-spec-driven-development reference docs in this directory, so the content can be re-synced and
-re-verified as upstreams evolve. Update this file whenever you refresh or re-verify a reference.
+Tracks the external upstreams and research grounding the refactor-migration reference documents in
+this directory. Update this file whenever you refresh or re-verify a reference.
 
 Scope: the externally-derived docs below. Other files in this directory (`licensing.md`,
 `operational-responsibilities.md`, `pre-commit.md`, `README.md`, `AGENTS.md`) are not tracked here.
@@ -19,14 +18,12 @@ how it is cited.
 
 ## File provenance
 
-| File                                        | Derivation / upstream                                                              | Last synced |
-| ------------------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
-| `refactor-migration-guideline.md`           | Original synthesis from the research + practitioner sources in its §14–§15 library | 2026-06-15  |
-| `refactor-guideline-excerpt.md`             | Distilled from `refactor-migration-guideline.md` (§0, §1, §3, §6, §8, §11)         | 2026-06-15  |
-| `refactor-plan-templates.md`                | Original — plan-file templates for the `refactor-migration-plan` skill             | 2026-06-15  |
-| `refactor-refusal-list.md`                  | Extracted from guideline §6 (the 16 translation smells)                            | 2026-06-15  |
-| `spec-driven-development-best-practices.md` | Synthesis from GitHub Spec Kit + the AGENTS.md / spec-driven research below        | 2026-06-15  |
-| `madr-template.md`                          | MADR (Markdown ADR) — <https://adr.github.io/madr/>                                | 2026-06-15  |
+| File                              | Derivation / upstream                                                              | Last synced |
+| --------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
+| `refactor-migration-guideline.md` | Original synthesis from the research + practitioner sources in its §14–§15 library | 2026-06-15  |
+| `refactor-guideline-excerpt.md`   | Distilled from `refactor-migration-guideline.md` (§0, §1, §3, §6, §8, §11)         | 2026-06-15  |
+| `refactor-plan-templates.md`      | Original — plan-file templates for the `refactor-migration-plan` skill             | 2026-06-15  |
+| `refactor-refusal-list.md`        | Extracted from guideline §6 (the 16 translation smells)                            | 2026-06-15  |
 
 ## Research references (verified; not refreshed routinely)
 

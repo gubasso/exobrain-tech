@@ -75,7 +75,6 @@
     "MD052": false, // reference labels — many notes use ad-hoc footnote refs
     "MD060": false // table column style — too strict for hand-edited tables
   },
-  "customRules": ["markdownlint-rule-relative-links"],
   "ignores": [
     "node_modules/",
     ".obsidian/",

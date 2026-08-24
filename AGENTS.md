@@ -28,30 +28,18 @@ credentials, and personal workflows belong in `exobrain-tech-vault`. And this re
 planning, project-management, or workflow method: the docs root may hold directories serving
 complementary domains, and nothing names what fills them (ADR-the-repository-names-no-planning-method).
 
-## Self-containment
+## Documentation canon
 
-Non-negotiable: this project is self-contained; the knowledge it depends on is held in-repo. An
-external reference is allowed only as a public link or citation for further reading, never as a
-load-bearing dependency on a resource outside the repository. If one is needed to understand, build,
-or operate this project, copy its essential knowledge in (ADR-self-containment).
+Non-negotiable: understanding, linting, formatting, testing, and building this checkout use only
+local files. `_docs/specs/` and `_docs/decisions/` are instance-owned; `.spec-driven-docs/` is the
+pinned managed projection, and `.spec-driven-docs/verify.sh --target . --offline` checks its hashes.
+The tagged [documentation canon](https://github.com/gubasso/spec-driven-docs/tree/v0.1.0) supplies
+method doctrine and upgrade material but is not an operational dependency.
 
-## Specs and decisions
-
-Non-negotiable: load the specs of the domains you touch before acting. `_docs/specs/SPEC-<domain>.md`
-states what binds now, each rule carrying an ID `<domain-slug>:<rule-slug>` that commits, reviews and
-gate failures cite. Change the owning spec in the same change that changes behavior, and do not load
-the decision log unless someone asks why a rule exists.
-
-Non-negotiable: record every significant, hard-to-reverse decision as an ADR under
-`_docs/decisions/`, one per file, named `ADR-<slug>.md` from `TEMPLATE-adr.md` — at or below 350
-words, exactly one `Status`, so the rationale lives with the work. Valid statuses: `Proposed`,
-`Accepted`, `Implemented`, `Deprecated`, `Superseded`, `Rejected`.
-
-The slug is the identifier: a filename carries no counter and no digit, because two branches each
-allocating the next number both win and one identity ends up claimed twice. Cite a record by its
-slug, never from code. An accepted decision is never deleted, never annotated as it ages, and is
-replaced only by a superseding ADR or marked `Deprecated`
-(`programming/spec-driven-docs/04-decisions.md`).
+Load the specs of every domain you touch before acting. Each rule has a stable ID that commits,
+reviews, and gate failures cite; change its owning spec with the behavior. Load decisions only when
+the rationale is needed. Record a significant hard-to-reverse choice as one slug-named ADR from the
+local template, within the gated size and status contracts. Accepted records stay immutable.
 
 ## Working under these rules
 

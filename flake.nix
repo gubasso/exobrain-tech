@@ -26,12 +26,9 @@
             # node+npm on PATH it uses `language_version: system` instead.
             pkgs.nodejs
 
-            # The gate snippet shipped with programming/spec-driven-docs/ is
-            # run against its own fixtures by `just test-spec-shelf`, and two of
-            # its hooks are `language: system`: the typed-clause check calls rg,
-            # and the table-of-contents freshness check calls md_toc. Both are
-            # named here for the reason the block below gives — a system hook
-            # resolves off the ambient PATH and needs a declared provider.
+            # Vendored corpus-wide gates call rg, and the root table-of-contents
+            # hook calls md_toc. System hooks resolve off the ambient PATH, so
+            # both tools need declared providers here.
             pkgs.ripgrep
             pkgs.python3Packages.md-toc
 

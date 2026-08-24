@@ -41,7 +41,7 @@ a package index.
   chapter to a content bucket rather than to `_docs/`: its subject is CLI design, not this
   repository.
 - `programming/cli-design/README.md` — the shelf this chapter joins, and the numbering it continues.
-- `programming/spec-driven-docs/06-format.md` — the markdown rules every chapter here is held to.
+- `_docs/specs/SPEC-docs-format.md` — the local markdown rules every chapter here is held to.
 
 ## Amends
 

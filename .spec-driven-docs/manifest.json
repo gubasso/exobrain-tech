@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "canon_version": "0.1.0",
+  "canon_source": "https://github.com/gubasso/spec-driven-docs",
+  "canon_ref": "pre-release",
+  "profile": "knowledge-base",
+  "docs_root": "_docs",
+  "installed_at": "2026-08-24T00:00:00Z",
+  "managed_files": [
+    {
+      "source": "scripts/verify.sh",
+      "destination": ".spec-driven-docs/verify.sh",
+      "sha256": "28438e45b180df094eddc6263a41221c57eaca8e4988c9e3f06c1b3cf0e2f669"
+    },
+    {
+      "source": ".markdownlint/adr.markdownlint-cli2.jsonc",
+      "destination": ".spec-driven-docs/markdownlint/adr.markdownlint-cli2.jsonc",
+      "sha256": "40ce5af8fc9ac349e2d8efb17a8c735463b6ed59469afabc6bf8c09b1c65359e"
+    },
+    {
+      "source": ".markdownlint/relative-links.markdownlint-cli2.jsonc",
+      "destination": ".spec-driven-docs/markdownlint/relative-links.markdownlint-cli2.jsonc",
+      "sha256": "c489edba99309dcb809edab714d6ed4db44f85a8cd306a594b2f36efe2e6486e"
+    },
+    {
+      "source": ".markdownlint/spec.markdownlint-cli2.jsonc",
+      "destination": ".spec-driven-docs/markdownlint/spec.markdownlint-cli2.jsonc",
+      "sha256": "85c5697b30b980e6f130f6dfa79960d16eb5a12c77e141ff23b63b0c0e6b055a"
+    },
+    {
+      "source": ".hooks/adr-filename-shape.sh",
+      "destination": ".spec-driven-docs/hooks/adr-filename-shape.sh",
+      "sha256": "d04df4b7febfdd89b6974392407de2068170cc4b0518312d282b0ebc57bbde72"
+    },
+    {
+      "source": ".hooks/adr-word-cap.sh",
+      "destination": ".spec-driven-docs/hooks/adr-word-cap.sh",
+      "sha256": "3ae588cf7c1b54e1917da843b8506eaaaf3a4c16939aee858a37c21c9c6896ab"
+    },
+    {
+      "source": ".hooks/agents-digest-size.sh",
+      "destination": ".spec-driven-docs/hooks/agents-digest-size.sh",
+      "sha256": "cdd26557ddb968ae8dd7a0b0fc7b84eb2f0c20ee236ac68c949d89e459eedf50"
+    },
+    {
+      "source": ".hooks/chapter-size-cap.sh",
+      "destination": ".spec-driven-docs/hooks/chapter-size-cap.sh",
+      "sha256": "46bdb2e6855d5b1d7c0caa448a5bd42e6b449854b100503156aeac9d76441413"
+    },
+    {
+      "source": ".hooks/ki-bugzilla-report-width.sh",
+      "destination": ".spec-driven-docs/hooks/ki-bugzilla-report-width.sh",
+      "sha256": "85275a6e1e1371ea901b7528c6687ca9fa5f501e5ee444d26d0265266723e042"
+    },
+    {
+      "source": ".hooks/ki-filename-shape.sh",
+      "destination": ".spec-driven-docs/hooks/ki-filename-shape.sh",
+      "sha256": "cecc4fb8ce8d6ac84f98c9946763f909f1883b4aee545d850a24d9fa2d70776e"
+    },
+    {
+      "source": ".hooks/ki-mechanism-walkthrough.sh",
+      "destination": ".spec-driven-docs/hooks/ki-mechanism-walkthrough.sh",
+      "sha256": "b3a1760b9d6b31cce5f195ed953334f3e1b714c6810ad64bebeaa6977de93848"
+    },
+    {
+      "source": ".hooks/ki-report-body.sh",
+      "destination": ".spec-driven-docs/hooks/ki-report-body.sh",
+      "sha256": "141ecede742fe02aec5260568d88010b921a65e29417bec383c09f6251573a43"
+    },
+    {
+      "source": ".hooks/ki-retire-when.sh",
+      "destination": ".spec-driven-docs/hooks/ki-retire-when.sh",
+      "sha256": "1a05ee65729c9b3a3cbb25e0b0dfed80b556a28d3b91c714e7e4861b5656487e"
+    },
+    {
+      "source": ".hooks/lib-instance-paths.sh",
+      "destination": ".spec-driven-docs/hooks/lib-instance-paths.sh",
+      "sha256": "023e294d2c6e33125cda31dfcfd69d59d876e0e25e9e8b9a35a1a39a076aa569"
+    },
+    {
+      "source": ".hooks/no-self-narration.awk",
+      "destination": ".spec-driven-docs/hooks/no-self-narration.awk",
+      "sha256": "4050fc16bda474295b02fdb60ef9c802ddf6d96520b53ccabe62ebb309fe0d7d"
+    },
+    {
+      "source": ".hooks/spec-requirement-parts.sh",
+      "destination": ".spec-driven-docs/hooks/spec-requirement-parts.sh",
+      "sha256": "39a71da1e201e7c1f0f1008203a73e95318057f7b7dc193298f41da39e209e32"
+    },
+    {
+      "source": ".hooks/spec-rule-id-unique.sh",
+      "destination": ".spec-driven-docs/hooks/spec-rule-id-unique.sh",
+      "sha256": "fd024e98187d42bb65c203a4f939696e5f99af5abf340b8d39c1766d6ac3bfa3"
+    },
+    {
+      "source": ".hooks/spec-size-cap.sh",
+      "destination": ".spec-driven-docs/hooks/spec-size-cap.sh",
+      "sha256": "97ced98400959706e095d1948eda0e4ff6ee2dc516e424dcd13e708e7784643f"
+    },
+    {
+      "source": ".hooks/spec-verify-hooks-exist.sh",
+      "destination": ".spec-driven-docs/hooks/spec-verify-hooks-exist.sh",
+      "sha256": "4df0195cb47d25b6333f32a0b48cc8a6f592c3a6bc085ed3741d87e3bea9e652"
+    },
+    {
+      "source": ".hooks/suppression-names-its-case.sh",
+      "destination": ".spec-driven-docs/hooks/suppression-names-its-case.sh",
+      "sha256": "b63b8a24bfea91a2a2c5f2e1dc328d4e632853ee983525ade2f5f14752869004"
+    },
+    {
+      "source": "templates/TEMPLATE-adr.md",
+      "destination": ".spec-driven-docs/templates/TEMPLATE-adr.md",
+      "sha256": "7b651d5e9a6fa8ae34ec28bccdac9c85ff9fe7af6e59d0528e2b32473e00c131"
+    },
+    {
+      "source": "templates/TEMPLATE-agents-digest.md",
+      "destination": ".spec-driven-docs/templates/TEMPLATE-agents-digest.md",
+      "sha256": "90450d471fc3a433cdce576e9be107892c949ff11f86b17959161f8c6ec41887"
+    },
+    {
+      "source": "templates/TEMPLATE-comparison.md",
+      "destination": ".spec-driven-docs/templates/TEMPLATE-comparison.md",
+      "sha256": "ab5fdd489546070e9ff99c7fd7292959a5837363f44b5c0c160eb0bb4d3313ad"
+    },
+    {
+      "source": "templates/TEMPLATE-docs-rules.md",
+      "destination": ".spec-driven-docs/templates/TEMPLATE-docs-rules.md",
+      "sha256": "06f58f5fd8294a12627b405a1f0671fe239d91c7819b7c78252a60f0220f2ebe"
+    },
+    {
+      "source": "templates/TEMPLATE-spec.md",
+      "destination": ".spec-driven-docs/templates/TEMPLATE-spec.md",
+      "sha256": "d3fd03d9c9b1235aee2313ac5cfd159cfa4a97fe12c0c9f90a854162bbda3980"
+    }
+  ],
+  "adopted_files": [
+    {
+      "source": "_docs/specs/SPEC-decision-records.md",
+      "destination": "_docs/specs/SPEC-decision-records.md",
+      "sha256": "73a0640d4f9f05e1a2e48621efa43b8077cbc89cee85b4f92fd9297e40092eca",
+      "baseline_sha256": "73a0640d4f9f05e1a2e48621efa43b8077cbc89cee85b4f92fd9297e40092eca"
+    },
+    {
+      "source": "_docs/specs/SPEC-distribution.md",
+      "destination": "_docs/specs/SPEC-distribution.md",
+      "sha256": "d6e2a5bfbd6190192c66a8877f715107a27c562059b03bd7cb1cd23bbcb5381f",
+      "baseline_sha256": "d6e2a5bfbd6190192c66a8877f715107a27c562059b03bd7cb1cd23bbcb5381f"
+    },
+    {
+      "source": "_docs/specs/SPEC-docs-format.md",
+      "destination": "_docs/specs/SPEC-docs-format.md",
+      "sha256": "b65267d5408758d39cd50874123dcc5f8625c7f9d6f8fd803abf5d52e6f339ac",
+      "baseline_sha256": "b65267d5408758d39cd50874123dcc5f8625c7f9d6f8fd803abf5d52e6f339ac"
+    },
+    {
+      "source": "_docs/specs/SPEC-knowledge-base-boundary.md",
+      "destination": "_docs/specs/SPEC-knowledge-base-boundary.md",
+      "sha256": "e1d131080213074427293f4ee53944544d4dd0a004cd1996d666b474f40037a7",
+      "baseline_sha256": "e1d131080213074427293f4ee53944544d4dd0a004cd1996d666b474f40037a7"
+    },
+    {
+      "source": "_docs/specs/SPEC-known-issues.md",
+      "destination": "_docs/specs/SPEC-known-issues.md",
+      "sha256": "1e4c63c5088bf56fc3e014dc71194c84b3315aea6797c9d15965fc081a00b1d2",
+      "baseline_sha256": "1e4c63c5088bf56fc3e014dc71194c84b3315aea6797c9d15965fc081a00b1d2"
+    },
+    {
+      "source": "_docs/specs/SPEC-specs.md",
+      "destination": "_docs/specs/SPEC-specs.md",
+      "sha256": "bfafdc0955d2f835cd6e7509e3bc6b2164a4df725608b125701f858269d30ece",
+      "baseline_sha256": "bfafdc0955d2f835cd6e7509e3bc6b2164a4df725608b125701f858269d30ece"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-catalog-gets-the-specs-budget.md",
+      "destination": "_docs/decisions/ADR-a-catalog-gets-the-specs-budget.md",
+      "sha256": "6f3b4495d895083345cae97815a5221412f3590343ac4a3dda2203412a7ee7ef",
+      "baseline_sha256": "6f3b4495d895083345cae97815a5221412f3590343ac4a3dda2203412a7ee7ef"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-comment-cites-the-rule-not-the-record.md",
+      "destination": "_docs/decisions/ADR-a-comment-cites-the-rule-not-the-record.md",
+      "sha256": "c2058ad85fac034188430aef97b9a29132c6c3b480798df069b8cc096c44f1f8",
+      "baseline_sha256": "c2058ad85fac034188430aef97b9a29132c6c3b480798df069b8cc096c44f1f8"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-comparison-table-indexes-runnable-scenarios.md",
+      "destination": "_docs/decisions/ADR-a-comparison-table-indexes-runnable-scenarios.md",
+      "sha256": "f146e551b3cd02723c581a4e9e07249d83e32c595e2e9de5e9c06c873f4752ed",
+      "baseline_sha256": "f146e551b3cd02723c581a4e9e07249d83e32c595e2e9de5e9c06c873f4752ed"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-flake-pinned-tool-input-is-a-tool-dependency.md",
+      "destination": "_docs/decisions/ADR-a-flake-pinned-tool-input-is-a-tool-dependency.md",
+      "sha256": "c77fc2fa322ec6c2f6f8c62de8d7ff239b32d49fb9b412932d3399a761d3fba5",
+      "baseline_sha256": "c77fc2fa322ec6c2f6f8c62de8d7ff239b32d49fb9b412932d3399a761d3fba5"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-known-issue-case-is-a-prefixed-slug.md",
+      "destination": "_docs/decisions/ADR-a-known-issue-case-is-a-prefixed-slug.md",
+      "sha256": "313399b5b27e7e524c8257ccc612aa7f29500f0b12b26b31546d0a5db5f84fa7",
+      "baseline_sha256": "313399b5b27e7e524c8257ccc612aa7f29500f0b12b26b31546d0a5db5f84fa7"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-record-begins-at-proposed.md",
+      "destination": "_docs/decisions/ADR-a-record-begins-at-proposed.md",
+      "sha256": "1ddaa6be9564bde609357d412eb89dee0bf7c30d3e94bad6838a8755431f22d6",
+      "baseline_sha256": "1ddaa6be9564bde609357d412eb89dee0bf7c30d3e94bad6838a8755431f22d6"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-record-is-not-annotated-as-it-ages.md",
+      "destination": "_docs/decisions/ADR-a-record-is-not-annotated-as-it-ages.md",
+      "sha256": "0dd66c4320ca7dd4582776ba77da60141bac62ed111d8ed9ec00e7aa4f5a6a30",
+      "baseline_sha256": "0dd66c4320ca7dd4582776ba77da60141bac62ed111d8ed9ec00e7aa4f5a6a30"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-resolved-external-bug-leaves-a-diagnostic.md",
+      "destination": "_docs/decisions/ADR-a-resolved-external-bug-leaves-a-diagnostic.md",
+      "sha256": "893062c3600c89511e56176c556fddecd5753e1575fc3590e6b24aff3ebb2ae8",
+      "baseline_sha256": "893062c3600c89511e56176c556fddecd5753e1575fc3590e6b24aff3ebb2ae8"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-spec-marks-its-open-questions-inline.md",
+      "destination": "_docs/decisions/ADR-a-spec-marks-its-open-questions-inline.md",
+      "sha256": "1c23a94d21e47988b48363079f68bf5f59fe9ecee212960f58d75c43c182d317",
+      "baseline_sha256": "1c23a94d21e47988b48363079f68bf5f59fe9ecee212960f58d75c43c182d317"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-stated-rule-is-applied-not-re-raised.md",
+      "destination": "_docs/decisions/ADR-a-stated-rule-is-applied-not-re-raised.md",
+      "sha256": "49a3a6c86cf4393d47943ce9a8614f79dd99ad357dcfa83caf6b9369b689b8e1",
+      "baseline_sha256": "49a3a6c86cf4393d47943ce9a8614f79dd99ad357dcfa83caf6b9369b689b8e1"
+    },
+    {
+      "source": "_docs/decisions/ADR-a-story-is-a-diff-a-spec-is-a-state.md",
+      "destination": "_docs/decisions/ADR-a-story-is-a-diff-a-spec-is-a-state.md",
+      "sha256": "0f1cf637d5c3f8994649186a49dac3c8f3730415205d190cc1ef274b6346be23",
+      "baseline_sha256": "0f1cf637d5c3f8994649186a49dac3c8f3730415205d190cc1ef274b6346be23"
+    },
+    {
+      "source": "_docs/decisions/ADR-adr-status-vocabulary-and-amendments.md",
+      "destination": "_docs/decisions/ADR-adr-status-vocabulary-and-amendments.md",
+      "sha256": "cb85aa67c1cc3addb969063ff7131002602383c5814cdfe8a891c8d52165e9ba",
+      "baseline_sha256": "cb85aa67c1cc3addb969063ff7131002602383c5814cdfe8a891c8d52165e9ba"
+    },
+    {
+      "source": "_docs/decisions/ADR-an-epic-is-a-field-and-a-document.md",
+      "destination": "_docs/decisions/ADR-an-epic-is-a-field-and-a-document.md",
+      "sha256": "5f987cad54ef25cbcc26f52ed559d7dab23824ef07649879e8e6397a2090a694",
+      "baseline_sha256": "5f987cad54ef25cbcc26f52ed559d7dab23824ef07649879e8e6397a2090a694"
+    },
+    {
+      "source": "_docs/decisions/ADR-cite-the-claim-not-the-coordinates.md",
+      "destination": "_docs/decisions/ADR-cite-the-claim-not-the-coordinates.md",
+      "sha256": "2bea634513d236e8483cacf2572cf219cfdc1f1adfbe1bb73c245c26997dba50",
+      "baseline_sha256": "2bea634513d236e8483cacf2572cf219cfdc1f1adfbe1bb73c245c26997dba50"
+    },
+    {
+      "source": "_docs/decisions/ADR-closed-is-an-append-only-log.md",
+      "destination": "_docs/decisions/ADR-closed-is-an-append-only-log.md",
+      "sha256": "bbd4a679018d85fc74412dc9762c12d602a0703b19608a8a10ba1acf1e2ddc70",
+      "baseline_sha256": "bbd4a679018d85fc74412dc9762c12d602a0703b19608a8a10ba1acf1e2ddc70"
+    },
+    {
+      "source": "_docs/decisions/ADR-cookbook-duplication-exception.md",
+      "destination": "_docs/decisions/ADR-cookbook-duplication-exception.md",
+      "sha256": "736ca0d4438f28066d76c25fd0f74e1d68d57f4a005643b5015b4e1b9caf20cc",
+      "baseline_sha256": "736ca0d4438f28066d76c25fd0f74e1d68d57f4a005643b5015b4e1b9caf20cc"
+    },
+    {
+      "source": "_docs/decisions/ADR-docs-vs-library-boundary.md",
+      "destination": "_docs/decisions/ADR-docs-vs-library-boundary.md",
+      "sha256": "04cc42835e13f4e49da404111ad4276cb4656d7c625b6691fb6135cde301552f",
+      "baseline_sha256": "04cc42835e13f4e49da404111ad4276cb4656d7c625b6691fb6135cde301552f"
+    },
+    {
+      "source": "_docs/decisions/ADR-documentation-governance.md",
+      "destination": "_docs/decisions/ADR-documentation-governance.md",
+      "sha256": "b1ae92160dfd8838fa3a80d49b42e587ae35c6d487750695725fb512e04c494c",
+      "baseline_sha256": "b1ae92160dfd8838fa3a80d49b42e587ae35c6d487750695725fb512e04c494c"
+    },
+    {
+      "source": "_docs/decisions/ADR-emphasis-is-authoring-guidance-not-a-gate.md",
+      "destination": "_docs/decisions/ADR-emphasis-is-authoring-guidance-not-a-gate.md",
+      "sha256": "18a059c7c5549ff44df900fad45a0d92a796974d9641caa8523411935dad8180",
+      "baseline_sha256": "18a059c7c5549ff44df900fad45a0d92a796974d9641caa8523411935dad8180"
+    },
+    {
+      "source": "_docs/decisions/ADR-executable-artifacts-in-the-library.md",
+      "destination": "_docs/decisions/ADR-executable-artifacts-in-the-library.md",
+      "sha256": "84828a04f83dc22745e3602514d9ed924995b191b40d44d2d9356cccab8ae27a",
+      "baseline_sha256": "84828a04f83dc22745e3602514d9ed924995b191b40d44d2d9356cccab8ae27a"
+    },
+    {
+      "source": "_docs/decisions/ADR-filesystem-owns-disk-state.md",
+      "destination": "_docs/decisions/ADR-filesystem-owns-disk-state.md",
+      "sha256": "95dca9820e5aae9f07e693bac364c8cfeb07ba3f359a5237e6ad8b04506e161d",
+      "baseline_sha256": "95dca9820e5aae9f07e693bac364c8cfeb07ba3f359a5237e6ad8b04506e161d"
+    },
+    {
+      "source": "_docs/decisions/ADR-guides-are-step-shaped.md",
+      "destination": "_docs/decisions/ADR-guides-are-step-shaped.md",
+      "sha256": "c5500f7ca4a09059a159883d2b565baee4aec6b9f0af6f81b4315bcac70c2271",
+      "baseline_sha256": "c5500f7ca4a09059a159883d2b565baee4aec6b9f0af6f81b4315bcac70c2271"
+    },
+    {
+      "source": "_docs/decisions/ADR-in-session-subagent-delegation.md",
+      "destination": "_docs/decisions/ADR-in-session-subagent-delegation.md",
+      "sha256": "ef9e233cc3f858a95da7d36bb20c96a1ae64895522ce4a97bc38e22cc41c7b0d",
+      "baseline_sha256": "ef9e233cc3f858a95da7d36bb20c96a1ae64895522ce4a97bc38e22cc41c7b0d"
+    },
+    {
+      "source": "_docs/decisions/ADR-migrate-the-numbered-decision-log-to-slugs.md",
+      "destination": "_docs/decisions/ADR-migrate-the-numbered-decision-log-to-slugs.md",
+      "sha256": "613b792685d7edc8626ce323006b85ad369b7c8b373099a3dc6e45fccb082fb0",
+      "baseline_sha256": "613b792685d7edc8626ce323006b85ad369b7c8b373099a3dc6e45fccb082fb0"
+    },
+    {
+      "source": "_docs/decisions/ADR-plan-parameters-live-in-a-config-file.md",
+      "destination": "_docs/decisions/ADR-plan-parameters-live-in-a-config-file.md",
+      "sha256": "e019b5f658322924f43fca37311417045299337d236c41bb0c189e09cdea5bf6",
+      "baseline_sha256": "e019b5f658322924f43fca37311417045299337d236c41bb0c189e09cdea5bf6"
+    },
+    {
+      "source": "_docs/decisions/ADR-plan-record-is-lane-files.md",
+      "destination": "_docs/decisions/ADR-plan-record-is-lane-files.md",
+      "sha256": "d3c2f8e0bc522fdf87bb231f53f8e9238db6dcd96e93ca58d7c3a53b40526378",
+      "baseline_sha256": "d3c2f8e0bc522fdf87bb231f53f8e9238db6dcd96e93ca58d7c3a53b40526378"
+    },
+    {
+      "source": "_docs/decisions/ADR-preserve-historical-citations-verbatim.md",
+      "destination": "_docs/decisions/ADR-preserve-historical-citations-verbatim.md",
+      "sha256": "6d0458fed21a51247f1df490989044e2bf85ac9f3203290bff76b91da37db435",
+      "baseline_sha256": "6d0458fed21a51247f1df490989044e2bf85ac9f3203290bff76b91da37db435"
+    },
+    {
+      "source": "_docs/decisions/ADR-readme-semantic-not-structural.md",
+      "destination": "_docs/decisions/ADR-readme-semantic-not-structural.md",
+      "sha256": "e16afcdc4315b2c6b9412a7fd24dbfa494dbd1b5919040df6dc745d5dfbf3731",
+      "baseline_sha256": "e16afcdc4315b2c6b9412a7fd24dbfa494dbd1b5919040df6dc745d5dfbf3731"
+    },
+    {
+      "source": "_docs/decisions/ADR-retire-the-docs-design-shelf.md",
+      "destination": "_docs/decisions/ADR-retire-the-docs-design-shelf.md",
+      "sha256": "59a20ef103c99f7248157a66f1b4fdd43eb0f3edc571b5c28b9f2f116d2c6278",
+      "baseline_sha256": "59a20ef103c99f7248157a66f1b4fdd43eb0f3edc571b5c28b9f2f116d2c6278"
+    },
+    {
+      "source": "_docs/decisions/ADR-self-containment.md",
+      "destination": "_docs/decisions/ADR-self-containment.md",
+      "sha256": "99e05b243b129eee62b8db026b9b85fa467a2e20fbe2fb9ca47ad50258610a29",
+      "baseline_sha256": "99e05b243b129eee62b8db026b9b85fa467a2e20fbe2fb9ca47ad50258610a29"
+    },
+    {
+      "source": "_docs/decisions/ADR-separate-documentation-design-from-project-management.md",
+      "destination": "_docs/decisions/ADR-separate-documentation-design-from-project-management.md",
+      "sha256": "d98d516a1b718fc7079ed36bd4e3f75cd1cb9e8ab04da37a80bf100fa55f15de",
+      "baseline_sha256": "d98d516a1b718fc7079ed36bd4e3f75cd1cb9e8ab04da37a80bf100fa55f15de"
+    },
+    {
+      "source": "_docs/decisions/ADR-source-the-documentation-canon-upstream.md",
+      "destination": "_docs/decisions/ADR-source-the-documentation-canon-upstream.md",
+      "sha256": "0f35d689547c1dc88baae68ae84a34d88b346a82da975ae55bfb280fa327e58e",
+      "baseline_sha256": "0f35d689547c1dc88baae68ae84a34d88b346a82da975ae55bfb280fa327e58e"
+    },
+    {
+      "source": "_docs/decisions/ADR-spec-driven-docs-is-the-documentation-method.md",
+      "destination": "_docs/decisions/ADR-spec-driven-docs-is-the-documentation-method.md",
+      "sha256": "2f6f882674db5c91ba5496e30895b6d14cb4f05b456a3844effc33288361e6b2",
+      "baseline_sha256": "2f6f882674db5c91ba5496e30895b6d14cb4f05b456a3844effc33288361e6b2"
+    },
+    {
+      "source": "_docs/decisions/ADR-the-plan-linter-may-write-the-record.md",
+      "destination": "_docs/decisions/ADR-the-plan-linter-may-write-the-record.md",
+      "sha256": "bb3a2ffae52e9744de96bf3ef642650b35a11aabe2553bc2d3519a645592cf2b",
+      "baseline_sha256": "bb3a2ffae52e9744de96bf3ef642650b35a11aabe2553bc2d3519a645592cf2b"
+    },
+    {
+      "source": "_docs/decisions/ADR-the-planning-method-moves-to-plan-xp.md",
+      "destination": "_docs/decisions/ADR-the-planning-method-moves-to-plan-xp.md",
+      "sha256": "5f6f865f7bd888077ae7f26797bf8f797014c834123d6689b80dee9218a83419",
+      "baseline_sha256": "5f6f865f7bd888077ae7f26797bf8f797014c834123d6689b80dee9218a83419"
+    },
+    {
+      "source": "_docs/decisions/ADR-the-repository-names-no-planning-method.md",
+      "destination": "_docs/decisions/ADR-the-repository-names-no-planning-method.md",
+      "sha256": "b14b423090d81963e3cc1c98aab6b1b1e1f7575eba2215d1df72d5b6a0627183",
+      "baseline_sha256": "b14b423090d81963e3cc1c98aab6b1b1e1f7575eba2215d1df72d5b6a0627183"
+    },
+    {
+      "source": "_docs/decisions/ADR-the-unit-is-a-story-in-one-file.md",
+      "destination": "_docs/decisions/ADR-the-unit-is-a-story-in-one-file.md",
+      "sha256": "3a3baeb02f212a2a27baedbaabf50bb0e07e8e2c77334c3815988a381d7e17db",
+      "baseline_sha256": "3a3baeb02f212a2a27baedbaabf50bb0e07e8e2c77334c3815988a381d7e17db"
+    },
+    {
+      "source": "_docs/decisions/TEMPLATE-adr.md",
+      "destination": "_docs/decisions/TEMPLATE-adr.md",
+      "sha256": "4a8889e224db026cc600bc7ad235f5ceedf8e0e4cbd893ab49e6126322afa270",
+      "baseline_sha256": "4a8889e224db026cc600bc7ad235f5ceedf8e0e4cbd893ab49e6126322afa270"
+    },
+    {
+      "source": ".spec-driven-docs/chapter-size-debt.txt",
+      "destination": ".spec-driven-docs/chapter-size-debt.txt",
+      "sha256": "156873b7126fe4c3df6f8d68fa1aa6b1fac9868d44ea97c0c64f90dc49ea7007",
+      "baseline_sha256": "156873b7126fe4c3df6f8d68fa1aa6b1fac9868d44ea97c0c64f90dc49ea7007"
+    }
+  ],
+  "integration_blocks": [
+    {
+      "path": ".pre-commit-config.yaml",
+      "marker_hash": "0c400e8ac48403d07216c0c65acbf09c1bd6136d1df3abba92c8e25a8a132c35"
+    }
+  ]
+}

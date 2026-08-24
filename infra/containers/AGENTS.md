@@ -17,13 +17,10 @@ or troubleshooting material.
 - **Podman**: Podman-first devcontainer workflow (Docker-compatible socket, `devcontainer` CLI).
 - **Kubernetes**: Container-orchestration reference material.
 - **Troubleshooting**: Docker/devcontainer cleanup guidance.
-- **microVM isolation** (libkrun / `crun --krun`) now lives in the sibling
-  `infra/sandbox-isolation-backends/` shelf, not here.
+- **microVM isolation** (libkrun / `crun --krun`) is documented in the sibling
+  `infra/sandbox-isolation-backends/` shelf.
 
 ## Maintenance Notes
 
 - Keep the README index aligned with the current markdown notes.
 - This digest covers only the Markdown guidance files in the directory.
-- 2026-07-04: `podman-libkrun.md` and `libkrun-crun-newline-mangling-upstream-issue.md` were
-  migrated into the vendor-neutral `infra/sandbox-isolation-backends/` shelf and removed from
-  this directory; recompute `token-estimate` on the next regeneration.

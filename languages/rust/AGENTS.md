@@ -38,6 +38,4 @@ carries its own nested digest).
 
 - `cli-spec/`, `project-bootstrap-spec/`, and `release-workflow-spec/` each have their own digest
   and are not expanded here.
-- The former top-level `code-review-guide.md` was migrated out of this repo into the cog skill-refs
-  corpus; it is no longer a source file here.
 - Regenerate when the area's knowledge changes.

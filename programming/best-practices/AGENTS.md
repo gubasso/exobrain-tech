@@ -8,17 +8,15 @@ token-estimate: 250
 
 ## Scope
 
-Cross-cutting best practices for licensing, ADR templates, operational responsibilities, pre-commit
-hooks, refactor and migration guidance, refusal lists, and spec-driven development practices.
+Cross-cutting best practices for licensing, operational responsibilities, pre-commit hooks,
+refactor and migration guidance, and refusal lists.
 
 ## Key Points
 
 - **Licensing**: SPDX defaults for code and docs.
-- **MADR template**: decision-record structure and when to write one.
 - **Operational responsibilities**: DevOps checklist for ongoing ownership.
 - **Pre-commit**: hook configuration guidance.
 - **Refactor guidance**: migration guideline, excerpt, plan templates, and refusal list.
-- **Spec-driven development**: best-practice notes for spec-first work.
 
 ## Maintenance Notes
 

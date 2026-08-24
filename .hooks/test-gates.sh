@@ -118,7 +118,7 @@ printf 'This `formerly\nlived` elsewhere.\n' > "$n/multiline-span.md"
 printf 'Line one.\nThis `formerly lived elsewhere.\nLine three.\n' > "$n/unclosed-span.md"
 printf 'Opening `\n\nThis formerly lived elsewhere.\n\nClosing `\n' > "$n/cross-paragraph.md"
 
-narrate() { awk -f "$root/.hooks/no-self-narration.awk" "$1"; }
+narrate() { awk -f "$root/.spec-driven-docs/hooks/no-self-narration.awk" "$1"; }
 reject "no-self-narration" narrate "$n/bad.md"
 accept "no-self-narration" narrate "$n/inline.md"
 accept "no-self-narration" narrate "$n/indented.md"
@@ -159,7 +159,7 @@ adr '## status' > ADR-case.md
 printf '# T\n\n## Purpose\n\nW.\n\n## Requirements\n\n### A\n\nB.\n' > SPEC-ok.md
 printf '# T\n\n## purpose\n\nW.\n\n## Requirements\n\n### A\n\nB.\n' > SPEC-case.md
 
-md() { markdownlint-cli2 --config "$root/.markdownlint/$1" "$2"; }
+md() { markdownlint-cli2 --config "$root/.spec-driven-docs/markdownlint/$1" "$2"; }
 accept "md-adr" md adr.markdownlint-cli2.jsonc ADR-ok.md
 reject "md-adr" md adr.markdownlint-cli2.jsonc ADR-case.md
 reject "md-adr" md adr.markdownlint-cli2.jsonc ADR-sixth.md
@@ -170,48 +170,48 @@ reject "md-spec" md spec.markdownlint-cli2.jsonc SPEC-case.md
 newtree filenames
 : > _docs/decisions/TEMPLATE-adr.md
 : > _docs/decisions/ADR-a-good-slug.md
-accept "adr-filename-shape" "$root/.hooks/adr-filename-shape.sh" \
+accept "adr-filename-shape" "$root/.spec-driven-docs/hooks/adr-filename-shape.sh" \
   _docs/decisions/TEMPLATE-adr.md _docs/decisions/ADR-a-good-slug.md
-reject "adr-filename-shape" "$root/.hooks/adr-filename-shape.sh" _docs/decisions/ADR-0001-thing.md
-reject "adr-filename-shape" "$root/.hooks/adr-filename-shape.sh" _docs/decisions/ADR-Bad_Name.md
-reject "adr-filename-shape" "$root/.hooks/adr-filename-shape.sh" _docs/decisions/0001-use-postgres.md
+reject "adr-filename-shape" "$root/.spec-driven-docs/hooks/adr-filename-shape.sh" _docs/decisions/ADR-0001-thing.md
+reject "adr-filename-shape" "$root/.spec-driven-docs/hooks/adr-filename-shape.sh" _docs/decisions/ADR-Bad_Name.md
+reject "adr-filename-shape" "$root/.spec-driven-docs/hooks/adr-filename-shape.sh" _docs/decisions/0001-use-postgres.md
 
-accept "ki-filename-shape" "$root/.hooks/ki-filename-shape.sh" \
+accept "ki-filename-shape" "$root/.spec-driven-docs/hooks/ki-filename-shape.sh" \
   _docs/reference/known-issues/KI-sample-bug.md _docs/reference/known-issues/KI-md043-quirk.md
-reject "ki-filename-shape" "$root/.hooks/ki-filename-shape.sh" _docs/reference/known-issues/KI-0007.md
-reject "ki-filename-shape" "$root/.hooks/ki-filename-shape.sh" _docs/reference/known-issues/KI-Bad_Name.md
-reject "ki-filename-shape" "$root/.hooks/ki-filename-shape.sh" _docs/reference/known-issues/case.md
+reject "ki-filename-shape" "$root/.spec-driven-docs/hooks/ki-filename-shape.sh" _docs/reference/known-issues/KI-0007.md
+reject "ki-filename-shape" "$root/.spec-driven-docs/hooks/ki-filename-shape.sh" _docs/reference/known-issues/KI-Bad_Name.md
+reject "ki-filename-shape" "$root/.spec-driven-docs/hooks/ki-filename-shape.sh" _docs/reference/known-issues/case.md
 
 # --- spec-verify-hooks-exist ------------------------------------------------
 newtree verify-hooks
-accept "spec-verify-hooks-exist" "$root/.hooks/spec-verify-hooks-exist.sh"
+accept "spec-verify-hooks-exist" "$root/.spec-driven-docs/hooks/spec-verify-hooks-exist.sh"
 sed -i 's/sample-gate/renamed-gate/' .pre-commit-config.yaml
-reject "spec-verify-hooks-exist" "$root/.hooks/spec-verify-hooks-exist.sh"
+reject "spec-verify-hooks-exist" "$root/.spec-driven-docs/hooks/spec-verify-hooks-exist.sh"
 
 # --- spec-requirement-parts -------------------------------------------------
 newtree requirement-parts
-accept "spec-requirement-parts" "$root/.hooks/spec-requirement-parts.sh" _docs/specs/SPEC-sample.md
+accept "spec-requirement-parts" "$root/.spec-driven-docs/hooks/spec-requirement-parts.sh" _docs/specs/SPEC-sample.md
 printf '# T\n\n## Purpose\n\nP.\n\n## Requirements\n\n### A plain heading\n\nMUST.\n\nVerify: `pre-commit run sample-gate --all-files`\n' \
   > _docs/specs/SPEC-noid.md
-reject "spec-requirement-parts" "$root/.hooks/spec-requirement-parts.sh" _docs/specs/SPEC-noid.md
+reject "spec-requirement-parts" "$root/.spec-driven-docs/hooks/spec-requirement-parts.sh" _docs/specs/SPEC-noid.md
 printf '# T\n\n## Purpose\n\nP.\n\n## Requirements\n\n### `a:b` — X\n\nMUST.\n' > _docs/specs/SPEC-noverify.md
-reject "spec-requirement-parts" "$root/.hooks/spec-requirement-parts.sh" _docs/specs/SPEC-noverify.md
+reject "spec-requirement-parts" "$root/.spec-driven-docs/hooks/spec-requirement-parts.sh" _docs/specs/SPEC-noverify.md
 # The totals balance and the second requirement still owns no verification. A
 # gate counting rule ids against `Verify:` lines over the whole file passes this.
 printf '# T\n\n## Purpose\n\nP.\n\n## Requirements\n\n### `a:b` — X\n\nMUST.\n\nVerify: `pre-commit run sample-gate --all-files`\n\nVerify: `pre-commit run sample-gate --all-files`\n\n### `c:d` — Y\n\nMUST.\n' \
   > _docs/specs/SPEC-lopsided.md
-reject "spec-requirement-parts" "$root/.hooks/spec-requirement-parts.sh" _docs/specs/SPEC-lopsided.md
+reject "spec-requirement-parts" "$root/.spec-driven-docs/hooks/spec-requirement-parts.sh" _docs/specs/SPEC-lopsided.md
 
 # --- spec-rule-id-unique ----------------------------------------------------
 newtree rule-id
-accept "spec-rule-id-unique" "$root/.hooks/spec-rule-id-unique.sh"
+accept "spec-rule-id-unique" "$root/.spec-driven-docs/hooks/spec-rule-id-unique.sh"
 sed 's/^# Sample Specification/# Second Specification/' _docs/specs/SPEC-sample.md \
   > _docs/specs/SPEC-second.md
-reject "spec-rule-id-unique" "$root/.hooks/spec-rule-id-unique.sh"
+reject "spec-rule-id-unique" "$root/.spec-driven-docs/hooks/spec-rule-id-unique.sh"
 
 # --- spec-size-cap ----------------------------------------------------------
 newtree size-cap
-accept "spec-size-cap" "$root/.hooks/spec-size-cap.sh"
+accept "spec-size-cap" "$root/.spec-driven-docs/hooks/spec-size-cap.sh"
 {
   printf '# Long\n\n## Purpose\n\nP.\n\n## Requirements\n\n'
   i=0
@@ -220,7 +220,7 @@ accept "spec-size-cap" "$root/.hooks/spec-size-cap.sh"
     i=$((i + 1))
   done
 } > _docs/specs/SPEC-long.md
-reject "spec-size-cap" "$root/.hooks/spec-size-cap.sh"
+reject "spec-size-cap" "$root/.spec-driven-docs/hooks/spec-size-cap.sh"
 rm _docs/specs/SPEC-long.md
 {
   printf '# Middling\n\n## Purpose\n\nP.\n\n## Requirements\n\n'
@@ -230,7 +230,7 @@ rm _docs/specs/SPEC-long.md
     i=$((i + 1))
   done
 } > _docs/specs/SPEC-middling.md
-reject "spec-size-cap" "$root/.hooks/spec-size-cap.sh"
+reject "spec-size-cap" "$root/.spec-driven-docs/hooks/spec-size-cap.sh"
 rm _docs/specs/SPEC-middling.md
 # One opening marker and nothing to close it: the TOC exclusion would otherwise
 # delete every line after it and report an over-budget spec as fitting.
@@ -242,7 +242,7 @@ rm _docs/specs/SPEC-middling.md
     i=$((i + 1))
   done
 } > _docs/specs/SPEC-unclosed.md
-reject "spec-size-cap" "$root/.hooks/spec-size-cap.sh"
+reject "spec-size-cap" "$root/.spec-driven-docs/hooks/spec-size-cap.sh"
 
 # --- no-named-method --------------------------------------------------------
 #
@@ -264,38 +264,38 @@ accept "no-named-method" "$root/.hooks/no-named-method.sh"
 
 # --- suppression-names-its-case ---------------------------------------------
 newtree suppression
-accept "suppression-names-its-case" "$root/.hooks/suppression-names-its-case.sh"
+accept "suppression-names-its-case" "$root/.spec-driven-docs/hooks/suppression-names-its-case.sh"
 printf 'A page.\n\n<!-- dprint-ignore-start -->\n\ntext\n\n<!-- dprint-ignore-end -->\n' \
   > _docs/reference/naked.md
 git add -A
-reject "suppression-names-its-case" "$root/.hooks/suppression-names-its-case.sh"
+reject "suppression-names-its-case" "$root/.spec-driven-docs/hooks/suppression-names-its-case.sh"
 rm _docs/reference/naked.md
 printf 'A page.\n\n<!-- dprint-ignore-start KI-no-such-case -->\n\ntext\n\n<!-- dprint-ignore-end -->\n' \
   > _docs/reference/dangling.md
 git add -A
-reject "suppression-names-its-case" "$root/.hooks/suppression-names-its-case.sh"
+reject "suppression-names-its-case" "$root/.spec-driven-docs/hooks/suppression-names-its-case.sh"
 
 # --- ki-retire-when ---------------------------------------------------------
 newtree retire-when
-accept "ki-retire-when" "$root/.hooks/ki-retire-when.sh"
+accept "ki-retire-when" "$root/.spec-driven-docs/hooks/ki-retire-when.sh"
 printf '# Empty\n\nretire_when:\n' > _docs/reference/known-issues/KI-empty-condition.md
-reject "ki-retire-when" "$root/.hooks/ki-retire-when.sh"
+reject "ki-retire-when" "$root/.spec-driven-docs/hooks/ki-retire-when.sh"
 rm _docs/reference/known-issues/KI-empty-condition.md
 printf '# Missing\n\nNo condition here.\n' > _docs/reference/known-issues/KI-no-condition.md
-reject "ki-retire-when" "$root/.hooks/ki-retire-when.sh"
+reject "ki-retire-when" "$root/.spec-driven-docs/hooks/ki-retire-when.sh"
 
 # --- ki-mechanism-walkthrough -----------------------------------------------
 #
 # The heading is matched anchored, so a record naming the phrase in prose is the
 # case that separates a real walkthrough from a mention of one.
 newtree mechanism-walkthrough
-accept "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
+accept "ki-mechanism-walkthrough" "$root/.spec-driven-docs/hooks/ki-mechanism-walkthrough.sh"
 printf '# No walkthrough\n\nretire_when: never\n' > _docs/reference/known-issues/KI-names-the-defect-once.md
-reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
+reject "ki-mechanism-walkthrough" "$root/.spec-driven-docs/hooks/ki-mechanism-walkthrough.sh"
 rm _docs/reference/known-issues/KI-names-the-defect-once.md
 printf '# Mentioned\n\nretire_when: never\n\nThis is ## How it works in prose.\n' \
   > _docs/reference/known-issues/KI-mentions-the-heading.md
-reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
+reject "ki-mechanism-walkthrough" "$root/.spec-driven-docs/hooks/ki-mechanism-walkthrough.sh"
 
 # --- ki-report-body ---------------------------------------------------------
 #
@@ -307,7 +307,7 @@ reject "ki-mechanism-walkthrough" "$root/.hooks/ki-mechanism-walkthrough.sh"
 # Bugzilla by the URL a reporter pastes escaped the requirement entirely, and a
 # positive run could not tell -- nothing in the repository was filed that way.
 newtree report-body
-body=$root/.hooks/ki-report-body.sh
+body=$root/.spec-driven-docs/hooks/ki-report-body.sh
 printf '# Filed\n\nupstream: https://github.com/org/repo/issues/1234\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\nThe filed body.\n' \
   > _docs/reference/known-issues/KI-filed-with-report.md
 printf '# Filed\n\nupstream: https://bugzilla.example.com/show_bug.cgi?id=1275998\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\nThe filed body.\n' \
@@ -340,7 +340,7 @@ reject "ki-report-body" "$body"
 # fail the Bugzilla record character for character -- otherwise the gate is
 # enforcing a habit rather than the rule it names.
 newtree report-width
-gate=$root/.hooks/ki-bugzilla-report-width.sh
+gate=$root/.spec-driven-docs/hooks/ki-bugzilla-report-width.sh
 wide='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 head='# Filed\n\nupstream: bsc#1234567\nretire_when: never\n\n## How it works\n\nStep one.\n\n## Report\n\n'
 printf "$head"'```text\nSUMMARY\n-------\n\nA line well inside the width.\n```\n' \
@@ -362,69 +362,5 @@ ghhead='# Filed\n\nupstream: https://github.com/dprint/dprint/issues/1234\nretir
 printf "$ghhead"'```text\n%s\n```\n' "$wide" \
   > _docs/reference/known-issues/KI-report-reflowing-tracker.md
 accept "ki-bugzilla-report-width" "$gate"
-
-# --- The worked example, exercised against violations ----------------------
-#
-# The shelf ships `pre-commit-additions.yaml` for a reader to copy, and its
-# hooks are separate implementations from the scripts above. `just
-# test-spec-shelf` runs them over a conforming tree, which cannot tell a working
-# gate from one that passes everything — the direction that matters is the one
-# a positive run never takes.
-example=$root/programming/spec-driven-docs/worked-example
-
-newexample() {
-  t="$work/example-$1"
-  rm -rf "$t"
-  cp -r "$example/." "$t"
-  cd "$t"
-  git init -q
-  git add -A
-}
-
-example_hook() {
-  git add -A
-  pre-commit run "$1" --all-files --config pre-commit-additions.yaml
-}
-
-# The shelf ships the scanner as a file, so the copy a reader takes home is the
-# program that was exercised above rather than a paraphrase of it.
-cmp -s "$root/.hooks/no-self-narration.awk" "$example/.hooks/no-self-narration.awk" ||
-  fail "the worked example's narration scanner has drifted from the one under test"
-
-newexample baseline
-accept "worked-example" example_hook adr-filename-shape
-accept "worked-example" example_hook ki-filename-shape
-accept "worked-example" example_hook spec-requirement-parts
-accept "worked-example" example_hook spec-size-cap
-accept "worked-example" example_hook no-self-narration
-
-newexample adr-name
-cp _docs/decisions/ADR-use-slugs-as-decision-record-ids.md _docs/decisions/ADR-Bad_Name.md
-reject "worked-example adr-filename-shape" example_hook adr-filename-shape
-
-newexample ki-name
-cp _docs/reference/known-issues/KI-vendor-replays-idempotency-key.md \
-  _docs/reference/known-issues/KI-Bad_Name.md
-reject "worked-example ki-filename-shape" example_hook ki-filename-shape
-
-newexample lopsided
-printf '# T\n\n## Purpose\n\nP.\n\n## Requirements\n\n### `a:b` — X\n\nMUST.\n\nVerify: `pre-commit run x --all-files`\n\nVerify: `pre-commit run x --all-files`\n\n### `c:d` — Y\n\nMUST.\n' \
-  > _docs/specs/SPEC-lopsided.md
-reject "worked-example spec-requirement-parts" example_hook spec-requirement-parts
-
-newexample unclosed-toc
-{
-  printf '# Unclosed\n\n<!--TOC-->\n\n## Purpose\n\nP.\n\n## Requirements\n\n'
-  i=0
-  while [ "$i" -lt 320 ]; do
-    printf 'padding line\n'
-    i=$((i + 1))
-  done
-} > _docs/specs/SPEC-unclosed.md
-reject "worked-example spec-size-cap" example_hook spec-size-cap
-
-newexample narration
-printf '# A page\n\nThis formerly lived in the other shelf.\n' > _docs/reference/narrating.md
-reject "worked-example no-self-narration" example_hook no-self-narration
 
 echo "test-gates: every gate failed when it should"

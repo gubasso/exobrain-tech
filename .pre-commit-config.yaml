@@ -127,10 +127,6 @@ repos:
   # md-toc updates the TOC block delimited by `<!--TOC-->` markers in
   # any markdown file. Files without the marker are left untouched.
   #
-  # The spec-driven-docs worked example is excluded because it ships its own
-  # md-toc hook at depth 3, which stops at the requirement heading and leaves
-  # the scenarios out. Two hooks with different depths over one file rewrite it
-  # in turn, forever.
   - repo: https://github.com/frnmst/md-toc
     rev: 9.0.0
     hooks:
@@ -138,7 +134,6 @@ repos:
         # -c: don't gate on TOC list coherence (free-form notes may diverge).
         # -p: write in place. --skip-lines 1: don't TOC the H1 title.
         args: [-p, -c, --skip-lines, '1', github]
-        exclude: '^programming/spec-driven-docs/worked-example/'
 
   # --- Markdown lint (style gate + ordered-list renumber autofix) ---
   #
@@ -157,7 +152,16 @@ repos:
     rev: v0.22.1
     hooks:
       - id: markdownlint-cli2
+
+      - id: markdownlint-cli2
+        alias: md-relative-links
+        name: markdownlint (relative link liveness)
         additional_dependencies: ['markdownlint-rule-relative-links']
+        args: ['--config', '.spec-driven-docs/markdownlint/relative-links.markdownlint-cli2.jsonc']
+        # A decision record cites the layout of its own moment, and the vendored
+        # payload is written against the upstream canon's layout rather than this
+        # instance's; neither resolves against this tree.
+        exclude: '^(_docs/decisions/|\.spec-driven-docs/)'
 
       # The story heading shape, gated by MD043 through its own config, because
       # the rule takes one `headings` array. The precondition is that
@@ -168,7 +172,6 @@ repos:
       - id: markdownlint-cli2
         alias: md-story
         name: markdownlint (story heading shape)
-        additional_dependencies: ['markdownlint-rule-relative-links']
         files: '^_docs/plan/stories/[^/]+\.md$'
         args: ['--config', '.markdownlint/story.markdownlint-cli2.jsonc']
 
@@ -178,9 +181,8 @@ repos:
       - id: markdownlint-cli2
         alias: md-spec
         name: markdownlint (spec heading shape)
-        additional_dependencies: ['markdownlint-rule-relative-links']
         files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
-        args: ['--config', '.markdownlint/spec.markdownlint-cli2.jsonc']
+        args: ['--config', '.spec-driven-docs/markdownlint/spec.markdownlint-cli2.jsonc']
 
       # The decision-record heading shape. Five sections, fixed, and unlike the
       # spec array this one carries no trailing wildcard — a sixth section
@@ -188,9 +190,8 @@ repos:
       - id: markdownlint-cli2
         alias: md-adr
         name: markdownlint (decision record heading shape)
-        additional_dependencies: ['markdownlint-rule-relative-links']
         files: '^_docs/decisions/ADR-[a-z0-9-]+\.md$'
-        args: ['--config', '.markdownlint/adr.markdownlint-cli2.jsonc']
+        args: ['--config', '.spec-driven-docs/markdownlint/adr.markdownlint-cli2.jsonc']
 
   # --- Explicit relative links (ambiguity guard; pre-commit, local) ---
   #
@@ -221,8 +222,8 @@ repos:
   # The filesystem is the source of truth for what exists, so nothing enumerates
   # a directory because it has contents. The rule bars a shape, not a syntax: a
   # list, table, or full tree is fine wherever its entries carry their own
-  # payload, and that judgment lives in
-  # programming/spec-driven-docs/00-model.md — it cannot be linted.
+  # payload, and that judgment lives in the local boundary spec — it cannot be
+  # linted.
   #
   # These two shapes can, because each is an index by construction:
   #   - a `source-files:` frontmatter key holding a digest's file list
@@ -231,6 +232,20 @@ repos:
   # carries — `## Directory domains`, saying what each part reserves — and passes.
   #
   # pygrep is built into pre-commit — no external dependency, no devShell entry.
+  - repo: local
+    hooks:
+      - id: no-source-files-frontmatter
+        name: no file-list frontmatter (the filesystem owns what exists)
+        language: pygrep
+        types: [markdown]
+        entry: '^source-files:'
+      - id: no-source-map-section
+        name: no topic-to-filename source map section
+        language: pygrep
+        types: [markdown]
+        entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
+
+# BEGIN spec-driven-docs managed
   - repo: local
     hooks:
       # A document states what is true now. The decision log is excluded by
@@ -246,18 +261,7 @@ repos:
         types: [markdown]
         pass_filenames: true
         exclude: '^_docs/decisions/'
-        entry: awk -f .hooks/no-self-narration.awk
-
-      - id: no-source-files-frontmatter
-        name: no file-list frontmatter (the filesystem owns what exists)
-        language: pygrep
-        types: [markdown]
-        entry: '^source-files:'
-      - id: no-source-map-section
-        name: no topic-to-filename source map section
-        language: pygrep
-        types: [markdown]
-        entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
+        entry: awk -f .spec-driven-docs/hooks/no-self-narration.awk
 
   # --- Fixed-kind filenames carry a slug, not a counter
   #     (ADR-migrate-the-numbered-decision-log-to-slugs,
@@ -277,16 +281,16 @@ repos:
         language: system
         files: '^_docs/decisions/.*\.md$'
         pass_filenames: true
-        entry: .hooks/adr-filename-shape.sh
+        entry: .spec-driven-docs/hooks/adr-filename-shape.sh
 
       - id: ki-filename-shape
         name: known-issue records are KI-<slug>.md with no counter
         language: system
         files: '^_docs/reference/known-issues/.*\.md$'
         pass_filenames: true
-        entry: .hooks/ki-filename-shape.sh
+        entry: .spec-driven-docs/hooks/ki-filename-shape.sh
 
-  # --- Size budgets (programming/spec-driven-docs/06-format.md; pre-commit, local) ---
+  # --- Documentation size budgets (pre-commit, local) ---
   #
   # Every budget the method states as a count is gated here. A budget nothing
   # checks is advice, and the shelf that publishes these numbers has to run them
@@ -298,8 +302,8 @@ repos:
   #
   # The two budgets the method states in words rather than counts — a
   # requirement statement is one sentence, and a reference is one level from the
-  # entry document — are reviewer judgment and are declared unenforced in
-  # 08-gates.md rather than faked here.
+  # entry document — are reviewer judgment, carried by review rather than faked
+  # here.
   - repo: local
     hooks:
       - id: adr-word-cap
@@ -307,25 +311,14 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: >-
-          sh -c 'set -- _docs/decisions/ADR-?*.md;
-          [ -e "$1" ] || { echo "FAIL no decision records matched; the layout moved"; exit 1; };
-          bad=""; for f; do w=$(wc -w < "$f");
-          [ "$w" -le 350 ] || bad="$bad $f ($w words);"; done;
-          [ -z "$bad" ] || { echo "FAIL decision-records:record-fits-in-350-words:$bad"; exit 1; }'
+        entry: .spec-driven-docs/hooks/adr-word-cap.sh
 
       - id: agents-digest-size
         name: author-instructions files stay within 100 lines at the root and 150 in a subtree
         language: system
         always_run: true
         pass_filenames: false
-        entry: >-
-          sh -c '[ -f AGENTS.md ] || { echo "FAIL no root AGENTS.md"; exit 1; };
-          bad=$(find . \( -path ./.git -o -path ./.draft \) -prune -o -name AGENTS.md -print |
-          while read -r f; do n=$(wc -l < "$f"); c=150;
-          [ "$f" = "./AGENTS.md" ] && c=100;
-          [ "$n" -le "$c" ] || echo "$f ($n lines, cap $c)"; done);
-          [ -z "$bad" ] || { echo "FAIL docs-format:author-instructions-stay-in-budget"; echo "$bad"; exit 1; }'
+        entry: .spec-driven-docs/hooks/agents-digest-size.sh
 
       # The debt list holds the chapters written before this budget bound them.
       # A listed path is skipped; every other chapter in the same shelf is still
@@ -343,55 +336,13 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: >-
-          sh -c 'debt="
-          ./infra/sandbox-isolation-backends/00-threat-model-and-principles.md
-          ./infra/sandbox-isolation-backends/10-runtimes-catalog.md
-          ./infra/sandbox-isolation-backends/20-decision-libkrun-linux.md
-          ./infra/sandbox-isolation-backends/30-libkrun-vs-firecracker.md
-          ./infra/sandbox-isolation-backends/60-podman-libkrun-operational-notes.md
-          ./languages/bash/release-workflow-spec/05-obs-multi-distro.md
-          ./languages/rust/cookbook-ship-rust-project/README.md
-          ./languages/rust/cli-spec/02-subcommand-pattern.md
-          ./languages/rust/cli-spec/03-error-handling.md
-          ./languages/rust/cli-spec/07-dependencies.md
-          ./languages/rust/cli-spec/08-naming-and-visibility.md
-          ./languages/rust/cli-spec/10-reference-projects.md
-          ./languages/rust/release-workflow-spec/00-branch-model-and-release-plz.md
-          ./programming/cli-design/00-architecture.md
-          ./programming/cli-design/01-logging-and-output.md
-          ./programming/cli-design/02-error-messages.md
-          ./programming/cli-design/03-config-precedence.md
-          ./programming/cli-design/04-coding-style-rust-zig.md
-          ./programming/cli-design/05-designing-for-llm-agents.md
-          ./programming/cli-design/08-naming-and-docs.md
-          ./programming/cli-design/10-reference-projects.md
-          ./programming/cli-design/12-config-generation-from-types.md
-          ./programming/cli-design/13-terminal-output-toolbox.md
-          ./tools/git/README.md
-          ./tools/nix/02-per-project-devshell.md
-          ./tools/osc-obs/case-studies/01-broken-link-drift-after-patch-rename.md
-          ./tools/osc-obs/case-studies/02-libexpat-abi-override-via-sles-update-branch.md
-          ";
-          stale=""; for f in $debt; do
-          [ -f "$f" ] || { stale="$stale $f (deleted);"; continue; };
-          n=$(wc -l < "$f"); c=200;
-          case "$f" in *-gates.md | *-checklist.md | */glossary.md | */README.md) c=300;; esac;
-          [ "$n" -gt "$c" ] || stale="$stale $f ($n lines, now fits);"; done;
-          [ -z "$stale" ] || { echo "FAIL delist from the chapter debt list:$stale"; exit 1; };
-          set -- $(find . -regextype posix-extended \( -path ./.git -o -path ./.draft \) -prune -o
-          -regex ".*/([0-9][0-9]-[^/]*|glossary|README)\.md" -print);
-          [ "$#" -gt 0 ] || { echo "FAIL no chapters matched; the layout moved"; exit 1; };
-          bad=""; for f; do case "$debt" in *" $f "*) continue;; esac;
-          n=$(wc -l < "$f"); c=200;
-          case "$f" in *-gates.md | *-checklist.md | */glossary.md | */README.md) c=300;; esac;
-          [ "$n" -le "$c" ] || bad="$bad $f ($n lines, cap $c);"; done;
-          [ -z "$bad" ] || { echo "FAIL docs-format:chapter-fits-in-200-lines:$bad"; exit 1; }'
+        entry: .spec-driven-docs/hooks/chapter-size-cap.sh
 
   # --- The gates this repository states in `_docs/specs/`
   #     (ADR-executable-artifacts-in-the-library; pre-commit, local) ---
   #
-  # Each entry below is a script under `.hooks/`, and each script carries the
+  # Each entry below is a script under `.spec-driven-docs/hooks/`, edited upstream
+  # rather than in place, and each script carries the
   # reasoning for the check it makes. A gate reachable only from inside
   # pre-commit cannot be run against a path the hook misses, or exercised
   # against a deliberate violation; `just test-gates` runs every one of them
@@ -409,70 +360,82 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/spec-verify-hooks-exist.sh
+        entry: .spec-driven-docs/hooks/spec-verify-hooks-exist.sh
 
       - id: spec-requirement-parts
         name: every requirement carries a rule id and a verification
         language: system
         files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
         pass_filenames: true
-        entry: .hooks/spec-requirement-parts.sh
+        entry: .spec-driven-docs/hooks/spec-requirement-parts.sh
 
       - id: spec-rule-id-unique
         name: a rule identifier resolves to one requirement
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/spec-rule-id-unique.sh
+        entry: .spec-driven-docs/hooks/spec-rule-id-unique.sh
 
       - id: spec-size-cap
         name: specs stay within 300 authored lines and carry a TOC above 100
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/spec-size-cap.sh
-
-      - id: no-named-method
-        name: a retired method name does not return
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .hooks/no-named-method.sh
+        entry: .spec-driven-docs/hooks/spec-size-cap.sh
 
       - id: suppression-names-its-case
         name: every markdown suppression names a known-issue case
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/suppression-names-its-case.sh
+        entry: .spec-driven-docs/hooks/suppression-names-its-case.sh
 
       - id: ki-retire-when
         name: every known-issue record carries its retirement condition
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/ki-retire-when.sh
+        entry: .spec-driven-docs/hooks/ki-retire-when.sh
 
       - id: ki-mechanism-walkthrough
         name: every known-issue record walks its mechanism step by step
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/ki-mechanism-walkthrough.sh
+        entry: .spec-driven-docs/hooks/ki-mechanism-walkthrough.sh
 
       - id: ki-report-body
         name: every filed known-issue record carries the body it was filed with
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/ki-report-body.sh
+        entry: .spec-driven-docs/hooks/ki-report-body.sh
 
       - id: ki-bugzilla-report-width
         name: a Bugzilla report body fits in 79 columns
         language: system
         always_run: true
         pass_filenames: false
-        entry: .hooks/ki-bugzilla-report-width.sh
+        entry: .spec-driven-docs/hooks/ki-bugzilla-report-width.sh
+
+# END spec-driven-docs managed
+
+  # Instance policy: the vendored payload verifies itself, and this retired name
+  # is specific to this knowledge base.
+  - repo: local
+    hooks:
+      - id: spec-driven-docs-verify
+        name: the vendored documentation payload matches its recorded hashes
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .spec-driven-docs/verify.sh --target . --offline
+      - id: no-named-method
+        name: a retired method name does not return
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/no-named-method.sh
 
   # --- Spelling (report-only) ---
   #
@@ -534,48 +497,27 @@ repos:
   # commitizen is intentionally NOT the commit-msg linter (committed is the SoT).
   # For version bumping / changelog only, add commitizen explicitly per-project.
 
-  # --- The worked example shipped with programming/spec-driven-docs/ ---
-  #
-  # That shelf ships a pre-commit block, two MD043 arrays and a set of fixture
-  # documents a reader copies into their own project, which
-  # ADR-executable-artifacts-in-the-library makes an
-  # artifact this repository runs rather than asserts. `just test-spec-shelf`
-  # runs the block the way a reader would: over a scratch copy whose root is the
-  # example's own root, so the `^_docs/` patterns inside it need no rewriting.
-  #
-  # pass_filenames: false — the recipe names the tree itself, and the block's
-  # cross-file checks (rule-id uniqueness, table-of-contents freshness) would let
-  # a break through whenever the file that broke it happened not to be staged.
-  - repo: local
-    hooks:
-      - id: spec-shelf-example
-        name: the spec-driven-docs example passes its own hooks
-        entry: just test-spec-shelf
-        language: system
-        files: '^programming/spec-driven-docs/worked-example/'
-        pass_filenames: false
-
   # --- The gates this repository adds, exercised against violations ---
   #
-  # `08-gates.md` requires a new gate to be demonstrated failing before it is
-  # trusted, and the failures worth catching are the quiet ones: a matcher whose
-  # exit code is inverted, or an MD043 array that lost `match_case` and now
-  # accepts a heading in the wrong case. Both report success.
+  # A new gate is demonstrated failing before it is trusted
+  # (ADR-executable-artifacts-in-the-library), and the failures worth catching
+  # are the quiet ones: a matcher whose exit code is inverted, or an MD043 array
+  # that lost `match_case` and now accepts a heading in the wrong case. Both
+  # report success.
   #
   # Scoped to the files that define a gate or wire one, so an ordinary content
   # commit does not pay for it. This config is in that set: a gate body moved
   # from a script into an inline `entry:` would otherwise change what runs
-  # without running the control that proves it still refuses anything. So is the
-  # worked example, whose hooks are a second implementation a reader copies —
-  # running it over a conforming tree cannot tell a working gate from one that
-  # passes everything.
+  # without running the control that proves it still refuses anything. The
+  # vendored payload is included because a managed-gate edit must exercise its
+  # deliberate failure case.
   - repo: local
     hooks:
       - id: gate-negative-controls
         name: every gate fails when it should
         entry: just test-gates
         language: system
-        files: '^(\.hooks/|\.markdownlint/|\.pre-commit-config\.yaml$|justfile$|programming/spec-driven-docs/worked-example/)'
+        files: '^(\.hooks/|\.markdownlint/|\.spec-driven-docs/|\.pre-commit-config\.yaml$|justfile$)'
         pass_filenames: false
 
   # --- Meta: keep the config itself honest ---

@@ -289,7 +289,8 @@ counter += 1
 
 Cite an agreement by its rule ID, never by naming a decision record. Don't reference variables by
 name in comments — renames will rot the comment.
-[spec-driven-docs / spec to code](../spec-driven-docs/09-spec-to-code.md) owns the rule.
+[The documentation canon](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/09-spec-to-code.md)
+argues the same rule at length.
 
 When you write a comment, ask: "would removing this confuse a future reader?" If no, delete it.
 
