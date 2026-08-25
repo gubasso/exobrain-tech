@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "canon_version": "0.1.4",
+  "canon_version": "0.1.5",
   "canon_source": "https://github.com/gubasso/spec-driven-docs",
-  "canon_ref": "v0.1.4",
+  "canon_ref": "v0.1.5",
   "profile": "knowledge-base",
   "docs_root": "_docs",
   "installed_at": "2026-08-24T00:00:00Z",
@@ -201,7 +201,7 @@
       "source": "templates/TEMPLATE-spec.md",
       "destination": "_docs/specs/TEMPLATE-spec.md",
       "sha256": "2a77ccdbba13ab7bfa50b6dd5702f21fd71a050e09fae482708590ae13c3f86b",
-      "baseline_sha256": "d3fd03d9c9b1235aee2313ac5cfd159cfa4a97fe12c0c9f90a854162bbda3980"
+      "baseline_sha256": "2a77ccdbba13ab7bfa50b6dd5702f21fd71a050e09fae482708590ae13c3f86b"
     },
     {
       "source": "templates/TEMPLATE-adr.md",
@@ -219,7 +219,7 @@
   "integration_blocks": [
     {
       "path": ".pre-commit-config.yaml",
-      "marker_hash": "4f2551c464640f1d3374028eecbe9ff3b360d6d21dbf3e530e36c33ee18e7e57"
+      "marker_hash": "9cf5dcc8f8ba30ae55efdd346c2df0ca1637dbc9e528d623f4927ca0d54b5280"
     }
   ]
 }
