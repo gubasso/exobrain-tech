@@ -245,191 +245,11 @@ repos:
         types: [markdown]
         entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
 
-# BEGIN spec-driven-docs managed
+
+  # Instance policy: this retired name is specific to this knowledge base. The
+  # payload verifies itself from the managed block, which carries that hook.
   - repo: local
     hooks:
-      # A document states what is true now. The decision log is excluded by
-      # artifact class, not by debt: holding history is a record's entire job.
-      #
-      # awk is the entry itself, not the body of a shell loop. It takes the
-      # files pre-commit hands it and its exit code is the verdict, so there is
-      # no wrapper to get backwards — the `&&` a grep-based body needs is
-      # exactly wrong for a matcher that exits non-zero on a violation.
-      - id: no-self-narration
-        name: documents state the present
-        language: system
-        types: [markdown]
-        pass_filenames: true
-        exclude: '^_docs/decisions/'
-        entry: awk -f .spec-driven-docs/hooks/no-self-narration.awk
-
-  # --- Fixed-kind filenames carry a slug, not a counter
-  #     (ADR-migrate-the-numbered-decision-log-to-slugs,
-  #      ADR-a-known-issue-case-is-a-prefixed-slug; pre-commit, local) ---
-  #
-  # Both hooks are scoped to the directory rather than to the prefix. A `files:`
-  # pattern of `^_docs/decisions/ADR-` never sees the file someone named
-  # `0001-use-postgres.md`, so the one filename the rule exists to reject would
-  # be the one filename the gate is blind to.
-  #
-  # The slug is the identifier because two branches each allocating the next
-  # number are both right, and the merge leaves two records claiming one id.
-  - repo: local
-    hooks:
-      - id: adr-filename-shape
-        name: decision records are ADR-<slug>.md with no digit
-        language: system
-        files: '^_docs/decisions/.*\.md$'
-        pass_filenames: true
-        entry: .spec-driven-docs/hooks/adr-filename-shape.sh
-
-      - id: ki-filename-shape
-        name: known-issue records are KI-<slug>.md with no counter
-        language: system
-        files: '^_docs/reference/known-issues/.*\.md$'
-        pass_filenames: true
-        entry: .spec-driven-docs/hooks/ki-filename-shape.sh
-
-  # --- Documentation size budgets (pre-commit, local) ---
-  #
-  # Every budget the method states as a count is gated here. A budget nothing
-  # checks is advice, and the shelf that publishes these numbers has to run them
-  # against itself before a reader is asked to.
-  #
-  # Each set is asserted non-empty before it is measured. A check whose file set
-  # is empty exits zero, so a renamed directory or a drifted pattern would turn
-  # the gate into a green light over nothing.
-  #
-  # The two budgets the method states in words rather than counts — a
-  # requirement statement is one sentence, and a reference is one level from the
-  # entry document — are reviewer judgment, carried by review rather than faked
-  # here.
-  - repo: local
-    hooks:
-      - id: adr-word-cap
-        name: decision records stay within 350 words
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/adr-word-cap.sh
-
-      - id: agents-digest-size
-        name: author-instructions files stay within 100 lines at the root and 150 in a subtree
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/agents-digest-size.sh
-
-      # The debt list holds the chapters written before this budget bound them.
-      # A listed path is skipped; every other chapter in the same shelf is still
-      # gated, so the shelves carrying debt cannot grow more of it. The list is
-      # self-shrinking: a listed file that now fits, or that no longer exists,
-      # fails this hook until its line is deleted. The cap is never raised to
-      # admit a document — a chapter that wants more room splits.
-      #
-      # A shelf index is a catalog, so `README.md` is discovered alongside the
-      # numbered chapters and takes the catalog number. Leaving it out is how a
-      # shelf absorbs a subject the chapter cap would have split: the index is
-      # the one file in a shelf that no numbered pattern matches.
-      - id: chapter-size-cap
-        name: chapters stay within 200 lines and catalogs within 300
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/chapter-size-cap.sh
-
-  # --- The gates this repository states in `_docs/specs/`
-  #     (ADR-executable-artifacts-in-the-library; pre-commit, local) ---
-  #
-  # Each entry below is a script under `.spec-driven-docs/hooks/`, edited upstream
-  # rather than in place, and each script carries the
-  # reasoning for the check it makes. A gate reachable only from inside
-  # pre-commit cannot be run against a path the hook misses, or exercised
-  # against a deliberate violation; `just test-gates` runs every one of them
-  # against a fixture tree built to fail it.
-  #
-  # `always_run` throughout for the corpus-wide gates. Each compares two sets
-  # rather than inspecting the files it is handed, and the commit each exists to
-  # catch is often a deletion — which pre-commit's `--diff-filter=ACMRTUXB`
-  # omits, so a `files:` filter would hand the hook an empty list on exactly
-  # that commit.
-  - repo: local
-    hooks:
-      - id: spec-verify-hooks-exist
-        name: every rule verified by a hook names a hook that exists
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/spec-verify-hooks-exist.sh
-
-      - id: spec-requirement-parts
-        name: every requirement carries a rule id and a verification
-        language: system
-        files: '^_docs/specs/SPEC-[a-z0-9-]+\.md$'
-        pass_filenames: true
-        entry: .spec-driven-docs/hooks/spec-requirement-parts.sh
-
-      - id: spec-rule-id-unique
-        name: a rule identifier resolves to one requirement
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/spec-rule-id-unique.sh
-
-      - id: spec-size-cap
-        name: specs stay within 300 authored lines and carry a TOC above 100
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/spec-size-cap.sh
-
-      - id: suppression-names-its-case
-        name: every markdown suppression names a known-issue case
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/suppression-names-its-case.sh
-
-      - id: ki-retire-when
-        name: every known-issue record carries its retirement condition
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/ki-retire-when.sh
-
-      - id: ki-mechanism-walkthrough
-        name: every known-issue record walks its mechanism step by step
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/ki-mechanism-walkthrough.sh
-
-      - id: ki-report-body
-        name: every filed known-issue record carries the body it was filed with
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/ki-report-body.sh
-
-      - id: ki-bugzilla-report-width
-        name: a Bugzilla report body fits in 79 columns
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/hooks/ki-bugzilla-report-width.sh
-
-# END spec-driven-docs managed
-
-  # Instance policy: the vendored payload verifies itself, and this retired name
-  # is specific to this knowledge base.
-  - repo: local
-    hooks:
-      - id: spec-driven-docs-verify
-        name: the vendored documentation payload matches its recorded hashes
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: .spec-driven-docs/verify.sh --target . --offline
       - id: no-named-method
         name: a retired method name does not return
         language: system
@@ -523,5 +343,143 @@ repos:
   # --- Meta: keep the config itself honest ---
   - repo: meta
     hooks:
-      - id: check-hooks-apply
+      # `check-hooks-apply` is deliberately absent. The managed block wires the
+      # whole delivered gate set, including the comparison gates, and this
+      # knowledge base holds no `COMPARISON-<slug>.md` yet. Those gates matching
+      # nothing is the expected state of a document kind not yet written, not a
+      # misconfigured hook.
       - id: check-useless-excludes
+# BEGIN spec-driven-docs managed
+  - repo: local
+    hooks:
+      - id: spec-driven-docs-verify
+        name: verify spec-driven docs instance
+        entry: .spec-driven-docs/verify.sh --target . --offline
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: adr-filename-shape
+        name: decision record filename shape
+        entry: .spec-driven-docs/hooks/adr-filename-shape.sh
+        language: system
+        files: '^_docs/decisions/.*\.md$'
+      - id: adr-word-cap
+        name: decision record word cap
+        entry: .spec-driven-docs/hooks/adr-word-cap.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: agents-digest-size
+        name: agent digest size
+        entry: .spec-driven-docs/hooks/agents-digest-size.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: chapter-size-cap
+        name: chapter and catalog size
+        entry: .spec-driven-docs/hooks/chapter-size-cap.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: comparison-dated-tables
+        name: comparison tables are dated
+        entry: .spec-driven-docs/hooks/comparison-dated-tables.sh
+        language: system
+        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+      - id: comparison-escaped-pipes
+        name: comparison table pipes are escaped
+        entry: .spec-driven-docs/hooks/comparison-escaped-pipes.sh
+        language: system
+        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+      - id: comparison-legend
+        name: comparison legend
+        entry: .spec-driven-docs/hooks/comparison-legend.sh
+        language: system
+        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+      - id: comparison-one-reference-per-cell
+        name: one reference per comparison cell
+        entry: .spec-driven-docs/hooks/comparison-one-reference-per-cell.sh
+        language: system
+        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+      - id: comparison-verdict-word
+        name: comparison verdict word
+        entry: .spec-driven-docs/hooks/comparison-verdict-word.sh
+        language: system
+        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+      - id: gate-message-cites-a-rule
+        name: gate messages cite a rule
+        entry: .spec-driven-docs/hooks/gate-message-cites-a-rule.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: instance-manifest
+        name: instance manifest
+        entry: .spec-driven-docs/hooks/instance-manifest.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: ki-bugzilla-report-width
+        name: Bugzilla report width
+        entry: .spec-driven-docs/hooks/ki-bugzilla-report-width.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: ki-filename-shape
+        name: known issue filename shape
+        entry: .spec-driven-docs/hooks/ki-filename-shape.sh
+        language: system
+        files: '^_docs/reference/known-issues/.*\.md$'
+      - id: ki-mechanism-walkthrough
+        name: known issue mechanism walkthrough
+        entry: .spec-driven-docs/hooks/ki-mechanism-walkthrough.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: ki-report-body
+        name: known issue report body
+        entry: .spec-driven-docs/hooks/ki-report-body.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: ki-retire-when
+        name: known issue retirement condition
+        entry: .spec-driven-docs/hooks/ki-retire-when.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: no-self-narration
+        name: documents state the present
+        entry: .spec-driven-docs/hooks/no-self-narration.sh
+        language: system
+        types: [markdown]
+        exclude: '^_docs/decisions/'
+      - id: spec-requirement-parts
+        name: spec requirement parts
+        entry: .spec-driven-docs/hooks/spec-requirement-parts.sh
+        language: system
+        files: '^_docs/specs/SPEC-.*\.md$'
+      - id: spec-rule-id-unique
+        name: spec rule IDs are unique
+        entry: .spec-driven-docs/hooks/spec-rule-id-unique.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: spec-size-cap
+        name: spec size cap
+        entry: .spec-driven-docs/hooks/spec-size-cap.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: spec-verify-hooks-exist
+        name: spec hook references exist
+        entry: .spec-driven-docs/hooks/spec-verify-hooks-exist.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: suppression-names-its-case
+        name: suppressions name a known issue
+        entry: .spec-driven-docs/hooks/suppression-names-its-case.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+# END spec-driven-docs managed

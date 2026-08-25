@@ -2,87 +2,73 @@
 
 ## Purpose
 
-What a record of an external-system bug in `_docs/reference/known-issues/` is: how its case id is
-formed, what it owes a reader who arrives from a suppression, what it owes a tracker it is filed
-into, and what the record owes so the workaround it justifies can be removed. It binds the record
-and the suppressions that cite it. A defect in this repository's own content is not a case; it is a
-fix.
+Rules governing known-issue records — the zone that holds an external defect this project works
+around. Covers the case id, the retirement condition, the mechanism walkthrough, and the body a
+filed record carries. Where the zone sits and how a suppression cites a record belong to
+`SPEC-spec-to-code.md`; the markdown a record is written in belongs to `SPEC-docs-format.md`.
 
 ## Requirements
 
-### `known-issues:case-id-is-a-slug` — A case id is a prefixed slug with no counter
+### `known-issues:case-id-is-a-slug` — A case id is a slug
 
-A known-issue filename MUST be `KI-<slug>.md` and MUST NOT carry a counter.
+The author MUST name every known-issue record `KI-<slug>.md`, with a slug of lowercase letters,
+digits and hyphens that does not open with a digit.
 
-#### Scenario: A case is filed against an upstream formatter
+#### Scenario: Two branches record a vendor defect in parallel
 
-- GIVEN a reproducible bug in a pinned tool
-- WHEN the record is added as `KI-0007.md`
-- THEN the commit fails, because the id a suppression cites has to survive a merge
+- GIVEN two worktrees each adding a record
+- WHEN both allocate the next sequential number
+- THEN two records claim one identity, which a slug name makes impossible
 
 Verify: `pre-commit run ki-filename-shape --all-files`
 
-### `known-issues:a-suppression-names-its-case` — A suppression names the case behind it
+### `known-issues:a-record-carries-its-retirement-condition` — A record carries its retirement condition
 
-Where a document suppresses a tool, the suppression MUST name a case id that resolves to a record.
+The author MUST give every known-issue record a non-empty `retire_when:` value.
 
-#### Scenario: A formatter corrupts one block and the block is fenced off
+#### Scenario: A workaround outlives its bug
 
-- GIVEN a range that stops a formatter from rewriting a passage
-- WHEN it carries no case id
-- THEN the next reader takes it for a design choice, and nothing says what would remove it
-
-Verify: `pre-commit run suppression-names-its-case --all-files`
-
-### `known-issues:a-record-carries-its-retirement-condition` — A record says what retires it
-
-A known-issue record MUST carry the condition under which it is removed.
-
-#### Scenario: A workaround outlives the bug it works around
-
-- GIVEN a record whose workaround is applied in several documents
-- WHEN the upstream tool is fixed
-- THEN the stated condition is what tells a reader the guard can go, so the record cannot be
-  permanent by default
+- GIVEN a record whose workaround has no stated exit
+- WHEN the upstream fix ships
+- THEN nothing retires the workaround, and the next reader takes it for a design choice
 
 Verify: `pre-commit run ki-retire-when --all-files`
 
-### `known-issues:a-record-walks-the-mechanism` — A record walks its mechanism step by step
+### `known-issues:a-record-walks-the-mechanism` — A record walks its mechanism
 
-A known-issue record MUST carry a `## How it works` walkthrough that runs one concrete case and
-shows the state each step leaves behind.
+The author MUST walk a known-issue record's mechanism step by step under a `## How it works`
+heading.
 
-#### Scenario: A reader arrives from a suppression that cites the case
+#### Scenario: A record names the defect and stops
 
-- GIVEN a record stating only that the tool corrupts the block
-- WHEN the reader who follows the case id has never seen the bug
-- THEN the record answers nothing they can check, and the mechanism is re-derived from scratch
+- GIVEN a record stating only that the formatter moves the marker
+- WHEN a reader arrives from a suppression's case id
+- THEN the claim is unfalsifiable to everyone but its author, and the gate rejects the record
 
 Verify: `pre-commit run ki-mechanism-walkthrough --all-files`
 
-### `known-issues:a-filed-record-carries-its-report` — A filed record carries the body it was filed with
+### `known-issues:a-filed-record-carries-its-report` — A filed record carries its report
 
-A record whose `upstream:` names one filed issue MUST carry a `## Report` section holding that
-issue's body in the tracker's own markup.
+Where `upstream:` names one issue rather than a tracker, the author MUST keep the filed text in a
+`## Report` section.
 
-#### Scenario: The bug is filed under the deadline that made it worth filing
+#### Scenario: A record is filed under deadline
 
-- GIVEN a record written for this repository and a tracker expecting its own markup
-- WHEN the reporter has nothing to paste
-- THEN the report is written a second time, and the repository no longer holds what was said upstream
+- GIVEN a record written for the project and a report written into the tracker
+- WHEN only the tracker holds the report
+- THEN the two drift from that moment on, and the gate rejects the record
 
 Verify: `pre-commit run ki-report-body --all-files`
 
-### `known-issues:a-bugzilla-report-body-fits-in-79-columns` — A Bugzilla report fits in 79 columns
+### `known-issues:a-bugzilla-report-body-fits-in-79-columns` — A Bugzilla report body fits in 79 columns
 
-A record whose `upstream:` names Bugzilla MUST hold its `## Report` body in a fenced block whose
-lines are at most 79 columns. A record filed into a tracker that reflows MUST NOT be held to a
-width.
+Where `upstream:` names a Bugzilla tracker, the author MUST keep every line of the `## Report` body
+inside a fence and at or below 79 columns.
 
-#### Scenario: The report carries an aligned table and an annotated excerpt
+#### Scenario: An aligned table is pasted into a Bugzilla comment
 
-- GIVEN Bugzilla, which renders a comment as preformatted text in a fixed-width box
-- WHEN a line runs past that width
-- THEN Bugzilla wraps it where it chooses, and the alignment that carried the argument is gone
+- GIVEN a report whose table runs to 120 columns
+- WHEN Bugzilla renders the comment as preformatted text
+- THEN it wraps where Bugzilla chooses and the alignment carrying the argument is lost
 
 Verify: `pre-commit run ki-bugzilla-report-width --all-files`

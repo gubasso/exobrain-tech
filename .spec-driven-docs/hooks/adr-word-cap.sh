@@ -13,7 +13,7 @@ set -- "$(sdd_docs_root)"/decisions/ADR-?*.md
 for f; do
   words=$(wc -w <"$f")
   [ "$words" -le 350 ] || {
-    echo "FAIL decision-records:record-fits-in-350-words $f: $words"
+    echo "FAIL decision-records:body-stays-within-350-words $f: $words"
     exit 1
   }
 done

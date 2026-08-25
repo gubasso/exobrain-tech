@@ -30,7 +30,7 @@ ids=$(grep -ho 'pre-commit run [a-z0-9-]*' "$@" | cut -d' ' -f3 | sort -u)
 
 for h in $ids; do
   grep -qE "^ *(- id|alias): $h\$" .pre-commit-config.yaml || {
-    echo "FAIL docs-format:every-verified-rule-names-a-live-hook: $h"
+    echo "FAIL docs-specs:verification-names-a-live-hook: $h"
     exit 1
   }
 done

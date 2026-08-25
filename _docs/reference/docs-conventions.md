@@ -8,15 +8,15 @@ The further-reading column names the canon chapter that argues the same rule at 
 
 | Subject                                      | Owner                                                      | Further reading                                                                                          |
 | -------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Zones, and which one a document belongs in   | [AGENTS.md](../../AGENTS.md)                               | [01 — Placement](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/01-placement.md)         |
-| The spec artifact: parts, ids, and size      | [SPEC-specs](../specs/SPEC-specs.md)                       | [02 — Specs](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/02-specs.md)                 |
-| Requirement grammar and typed clauses        | [SPEC-specs](../specs/SPEC-specs.md)                       | [03 — Rules](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/03-rules.md)                 |
-| Decision records and their lifecycle         | [SPEC-decision-records](../specs/SPEC-decision-records.md) | [04 — Decisions](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/04-decisions.md)         |
-| Sizes, fences, links, and filesystem indexes | [SPEC-docs-format](../specs/SPEC-docs-format.md)           | [06 — Format](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/06-format.md)               |
-| External-system bugs and their case ids      | [SPEC-known-issues](../specs/SPEC-known-issues.md)         | [07 — Lifecycle](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/07-lifecycle.md)         |
-| One fact, one home                           | [AGENTS.md](../../AGENTS.md)                               | [00 — Model](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/00-model.md)                 |
-| Drafts, and what promotion means             | [AGENTS.md](../../AGENTS.md)                               | [07 — Lifecycle](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/07-lifecycle.md)         |
-| What an agent loads, and semantic names      | [AGENTS.md](../../AGENTS.md)                               | [05 — Agent Context](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/05-agent-context.md) |
+| Zones, and which one a document belongs in   | [AGENTS.md](../../AGENTS.md)                               | [01 — Placement](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/01-placement.md)         |
+| The spec artifact: parts, ids, and size      | [SPEC-docs-specs](../specs/SPEC-docs-specs.md)             | [02 — Specs](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/02-specs.md)                 |
+| Requirement grammar and typed clauses        | [SPEC-docs-specs](../specs/SPEC-docs-specs.md)             | [03 — Rules](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/03-rules.md)                 |
+| Decision records and their lifecycle         | [SPEC-decision-records](../specs/SPEC-decision-records.md) | [04 — Decisions](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/04-decisions.md)         |
+| Sizes, fences, links, and filesystem indexes | [SPEC-docs-format](../specs/SPEC-docs-format.md)           | [06 — Format](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/06-format.md)               |
+| External-system bugs and their case ids      | [SPEC-known-issues](../specs/SPEC-known-issues.md)         | [07 — Lifecycle](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/07-lifecycle.md)         |
+| One fact, one home                           | [AGENTS.md](../../AGENTS.md)                               | [00 — Model](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/00-model.md)                 |
+| Drafts, and what promotion means             | [AGENTS.md](../../AGENTS.md)                               | [07 — Lifecycle](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/07-lifecycle.md)         |
+| What an agent loads, and semantic names      | [AGENTS.md](../../AGENTS.md)                               | [05 — Agent Context](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/05-agent-context.md) |
 
 The root `AGENTS.md` carries the rules that bind every file. Where it and a spec both speak, the spec
 is the one that binds.

@@ -19,11 +19,11 @@ for f; do
     function close_block() {
       if (heading == "") return
       if (heading !~ /^### `[a-z0-9-]+:[a-z0-9-]+` [^ ]+ /) {
-        printf "FAIL docs-specs:a-requirement-carries-its-parts %s:%d: heading is not a rule id\n", file, hline
+        printf "FAIL docs-specs:requirement-carries-five-parts %s:%d: heading is not a rule id\n", file, hline
         bad = 1
       }
       if (verifies != 1) {
-        printf "FAIL docs-specs:a-requirement-carries-its-parts %s:%d: %d verifications, expected 1\n", file, hline, verifies
+        printf "FAIL docs-specs:requirement-carries-five-parts %s:%d: %d verifications, expected 1\n", file, hline, verifies
         bad = 1
       }
     }

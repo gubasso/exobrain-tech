@@ -1,59 +1,72 @@
-# Documentation Distribution Specification
+# Distribution Specification
+
+<!--TOC-->
+
+- [Purpose](#purpose)
+- [Requirements](#requirements)
+  - [`distribution:manifest-identifies-every-owned-file` — The manifest identifies every owned file](#distributionmanifest-identifies-every-owned-file--the-manifest-identifies-every-owned-file)
+    - [Scenario: An agent encounters a local edit](#scenario-an-agent-encounters-a-local-edit)
+  - [`distribution:initialization-preserves-project-content` — Initialization preserves project content](#distributioninitialization-preserves-project-content--initialization-preserves-project-content)
+    - [Scenario: A repository has a hand-commented hook configuration](#scenario-a-repository-has-a-hand-commented-hook-configuration)
+  - [`distribution:instances-operate-offline` — Instances operate offline](#distributioninstances-operate-offline--instances-operate-offline)
+    - [Scenario: The canon checkout is unavailable](#scenario-the-canon-checkout-is-unavailable)
+  - [`distribution:upgrade-conflicts-are-atomic` — Upgrade conflicts are atomic](#distributionupgrade-conflicts-are-atomic--upgrade-conflicts-are-atomic)
+    - [Scenario: One managed hook is edited locally](#scenario-one-managed-hook-is-edited-locally)
+
+<!--TOC-->
 
 ## Purpose
 
-Rules governing the pinned documentation payload held under `.spec-driven-docs/`, its ownership
-classes, and offline verification. Local content rules remain in their existing domain specs.
+Rules governing installation, ownership classes, offline verification, and upgrades. An instance
+adopts this spec, so every rule here is one an instance can verify with the payload it received.
+The release rules the canon alone runs are stated in `SPEC-release.md`.
 
 ## Requirements
 
-### `distribution:managed-payload-is-hash-verified` — Managed payload is hash verified
+### `distribution:manifest-identifies-every-owned-file` — The manifest identifies every owned file
 
-The instance MUST record and verify a SHA-256 for every managed documentation payload file.
+The installer MUST record each installed file with its ownership class, destination, and SHA-256.
 
-#### Scenario: A vendored gate changes outside an upgrade
+#### Scenario: An agent encounters a local edit
 
-- GIVEN a hook whose installed hash is recorded
-- WHEN its bytes change locally
-- THEN offline verification fails and names the path
+- GIVEN an installed file differs from its baseline
+- WHEN the verifier reads the manifest
+- THEN it distinguishes managed drift from adopted reconciliation
 
-Verify: `pre-commit run spec-driven-docs-verify --all-files`
+Verify: `pre-commit run instance-manifest --all-files`
 
-### `distribution:living-specs-remain-local` — Living specs remain local
+### `distribution:initialization-preserves-project-content` — Initialization preserves project content
 
-The instance MUST keep `_docs/specs/` adopted and locally owned across canon upgrades.
+When a target is non-empty, the installer MUST preview its changes before writing any file.
 
-#### Scenario: The canon adds a rule the library does not yet satisfy
+#### Scenario: A repository has a hand-commented hook configuration
 
-- GIVEN an upstream living-spec change
-- WHEN an upgrade refreshes managed payload
-- THEN the local spec is preserved for explicit reconciliation
+- GIVEN comments outside the managed markers
+- WHEN initialization inserts its block
+- THEN every outside comment remains byte-identical
 
-Verify: reviewer confirms `adopted_files` records a baseline for every local spec and that no
-upgrade rewrites one
+Verify: `just test-instantiation`
 
-### `distribution:the-integration-block-is-instance-authored` — The integration block is instance authored
+### `distribution:instances-operate-offline` — Instances operate offline
 
-The instance MUST author the marked `.pre-commit-config.yaml` block itself and record its hash, so
-that no generator supplies its contents.
+The installed verifier MUST validate an instance without a network or canon checkout.
 
-#### Scenario: An upgrade offers to refresh the marked block
+#### Scenario: The canon checkout is unavailable
 
-- GIVEN a block holding this repository's own hook wiring and the reasoning behind it
-- WHEN a generator would replace the region between the markers
-- THEN the replacement is refused, because the canon owns the scripts the block names and this
-  repository owns which of them run and why
+- GIVEN a fully installed target
+- WHEN its vendored verifier runs with `--offline`
+- THEN it checks tools, hashes, rule IDs, and the marked integration block locally
 
-Verify: `pre-commit run spec-driven-docs-verify --all-files`
+Verify: `just test-instantiation`
 
-### `distribution:verification-operates-offline` — Verification operates offline
+### `distribution:upgrade-conflicts-are-atomic` — Upgrade conflicts are atomic
 
-The instance MUST verify current operation with its vendored verifier and no canon checkout.
+If a managed file differs from its installed hash, then the upgrader MUST abort without changing the target.
 
-#### Scenario: Upstream is unavailable
+#### Scenario: One managed hook is edited locally
 
-- GIVEN the local manifest, hooks, configs, specs, templates, flake, and task runner
-- WHEN `.spec-driven-docs/verify.sh --target . --offline` runs
-- THEN it reaches no upstream path or network endpoint
+- GIVEN a valid installed instance with one managed edit
+- WHEN an upgrade is requested
+- THEN it lists the conflict and changes no target byte
 
-Verify: `pre-commit run spec-driven-docs-verify --all-files`
+Verify: `just test-upgrade`

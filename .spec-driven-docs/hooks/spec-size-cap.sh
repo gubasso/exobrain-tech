@@ -25,18 +25,18 @@ for f; do
   case "$markers" in
     0 | 2) ;;
     *)
-      echo "FAIL docs-specs:a-spec-fits-in-300-lines $f: $markers TOC markers, expected 0 or 2"
+      echo "FAIL docs-specs:spec-stays-within-300-lines $f: $markers TOC markers, expected 0 or 2"
       exit 1
       ;;
   esac
 
   n=$(sed '/^<!--TOC-->$/,/^<!--TOC-->$/d' "$f" | wc -l)
   [ "$n" -le 300 ] || {
-    echo "FAIL docs-specs:a-spec-fits-in-300-lines $f: $n authored lines, cap is 300"
+    echo "FAIL docs-specs:spec-stays-within-300-lines $f: $n authored lines, cap is 300"
     exit 1
   }
   if [ "$n" -gt 100 ] && [ "$markers" -eq 0 ]; then
-    echo "FAIL docs-specs:a-spec-fits-in-300-lines $f: over 100 lines with no TOC"
+    echo "FAIL docs-specs:spec-stays-within-300-lines $f: over 100 lines with no TOC"
     exit 1
   fi
 done

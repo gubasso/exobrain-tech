@@ -32,7 +32,7 @@ pointing at its license. Choose the model deliberately and state it in the `READ
 The `README.md` is the project index. At a minimum it states: what the project is (one line), how to
 build/run it, how to set up the dev environment, and where the deeper docs live. Keep it an index
 that routes to detail, not a place that duplicates it — the same
-[single-source-of-truth](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/00-model.md)
+[single-source-of-truth](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/00-model.md)
 rule that governs this shelf.
 
 ## Automation

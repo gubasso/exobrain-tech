@@ -106,8 +106,8 @@ when you bootstrap a project of that kind.
   scaffolded and gated.
 - [Branch protection & CI-driven release](../../tools/git/branch-protection/) — the platform
   runbooks and rulesets the bootstrap runbook invokes (linked, never copied here).
-- [Single source of truth](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/00-model.md)
-  and [Diátaxis zones](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/01-placement.md)
+- [Single source of truth](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/00-model.md)
+  and [Diátaxis zones](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/01-placement.md)
   — the documentation standards this shelf obeys: one owner per fact, runbooks are how-to guides.
 
 ## TL;DR (the irreducible defaults)

@@ -20,7 +20,7 @@ set -- "$(sdd_docs_root)"/specs/SPEC-?*.md
 # shellcheck disable=SC2016
 dupes=$(grep -hoE '^### `[a-z0-9-]+:[a-z0-9-]+`' "$@" | sort | uniq -d)
 [ -z "$dupes" ] || {
-  echo "FAIL docs-specs:a-rule-id-is-unique"
+  echo "FAIL docs-specs:rule-id-is-unique-and-slugged"
   echo "$dupes"
   exit 1
 }

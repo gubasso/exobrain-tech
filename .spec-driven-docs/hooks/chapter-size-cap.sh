@@ -28,13 +28,13 @@ if [ -f "$debt" ]; then
     case "$file" in '' | '#'*) continue ;; esac
     case "$file" in ./*) ;; *) file="./$file" ;; esac
     [ -f "$file" ] || {
-      echo "FAIL docs-format:chapter-fits-in-200-lines delist $file: deleted"
+      echo "FAIL docs-format:chapter-stays-within-200-lines delist $file: deleted"
       exit 1
     }
     cap=$(cap_for "$file")
     lines=$(wc -l <"$file")
     [ "$lines" -gt "$cap" ] || {
-      echo "FAIL docs-format:chapter-fits-in-200-lines delist $file: now fits"
+      echo "FAIL docs-format:chapter-stays-within-200-lines delist $file: now fits"
       exit 1
     }
   done <"$debt"
@@ -49,7 +49,7 @@ find . \
     cap=$(cap_for "$file")
     lines=$(wc -l <"$file")
     [ "$lines" -le "$cap" ] || {
-      echo "FAIL docs-format:chapter-fits-in-200-lines $file"
+      echo "FAIL docs-format:chapter-stays-within-200-lines $file"
       exit 1
     }
   done

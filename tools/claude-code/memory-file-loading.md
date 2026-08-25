@@ -3,7 +3,7 @@
 How Claude Code and the `AGENTS.md`-native CLIs discover author-instruction files, and when each one
 enters the context window. This is the tool-specific source of truth behind the language-agnostic
 pattern in
-[documentation canon 05 — Agent context](https://github.com/gubasso/spec-driven-docs/blob/v0.1.0/method/05-agent-context.md).
+[documentation canon 05 — Agent context](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/05-agent-context.md).
 
 ## Claude Code
 

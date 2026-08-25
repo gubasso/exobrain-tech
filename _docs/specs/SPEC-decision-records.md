@@ -2,47 +2,56 @@
 
 ## Purpose
 
-What a decision record in `_docs/decisions/` is: how it is named, how long it may be, and what may
-happen to it after it merges. It binds the record as an artifact. The shape a document holds in
-general belongs to `SPEC-docs-format.md`, and the argument for any one decision belongs to the record
-itself.
+Rules governing decision records under `_docs/decisions/`. Covers naming, permanence, and size. What
+a record's body contains is covered by the record template; the rules a record's decision enforces
+live in whichever spec owns them.
 
 ## Requirements
 
-### `decision-records:a-merged-record-is-permanent` — A merged record is never deleted or retconned
+### `decision-records:filename-carries-no-digit` — A decision record filename carries no digit
 
-A merged record MUST NOT be deleted, renamed, or edited so a later design appears to have been the
-original choice.
+When an author creates a decision record, the author MUST name it `ADR-<slug>.md`.
 
-#### Scenario: A record turns out to be wrong about the tree it described
+#### Scenario: Two agents create a record in parallel
 
-- GIVEN a merged record asserting a consequence that was false when it was written
-- WHEN the false statement is replaced with the true one
-- THEN the correction is permitted, because it changes the fact and not the argument
+- GIVEN two worktrees each adding a record
+- WHEN both allocate the next sequential number
+- THEN two records claim one identity, which a slug name makes impossible
 
-Verify: `git log --diff-filter=DR --format='%h %s' -- '_docs/decisions/*'`, and a reviewer confirms
-each entry is a sanctioned migration
+Verify: `find _docs/decisions -name 'ADR-*' | rg '[0-9]' && exit 1 || exit 0`
 
-### `decision-records:filename-is-a-slug` — A record filename is a slug with no counter
+### `decision-records:record-is-not-revised` — A decision record is not revised
 
-A record filename MUST be `ADR-<slug>.md` and MUST NOT carry a digit.
+The author MUST NOT edit a decision record to describe a later design.
 
-#### Scenario: Two branches each add the next record
+#### Scenario: A rule the record established is later narrowed
 
-- GIVEN two branches, each adding a record to the log
-- WHEN both allocate the next number and merge
-- THEN a counter would leave two records claiming one identity, so the slug is the identifier
+- GIVEN a merged record establishing a rule
+- WHEN a later change narrows that rule
+- THEN the spec carries the narrowed rule and the record keeps its original wording
 
-Verify: `pre-commit run adr-filename-shape --all-files`
+Verify: `git log --format=%H -- _docs/decisions | head -50 | xargs -I{} git show --stat {}`
 
-### `decision-records:record-fits-in-350-words` — A record fits in 350 words
+### `decision-records:merged-record-is-permanent` — A merged decision record is permanent
 
-A filled record MUST be at or below 350 words.
+The author MUST NOT delete or rename a merged decision record.
 
-#### Scenario: A decision will not fit the cap
+#### Scenario: A record's decision is reversed
 
-- GIVEN a design argument of 500 words
-- WHEN it is written as one record
-- THEN the commit fails, and the response is two records or a spec, never a raised cap
+- GIVEN a record whose choice the project later abandons
+- WHEN the successor is written
+- THEN the original keeps its filename, gains a status, and links its successor
 
-Verify: `pre-commit run adr-word-cap --all-files`
+Verify: `git log --diff-filter=DR --name-only --format= -- _docs/decisions | grep . && exit 1 || exit 0`
+
+### `decision-records:body-stays-within-350-words` — A decision record stays within 350 words
+
+The author MUST keep a filled decision record at or below 350 words.
+
+#### Scenario: A record grows past the cap
+
+- GIVEN a record covering both a storage choice and a migration approach
+- WHEN it exceeds the cap
+- THEN it holds two decisions and becomes two records
+
+Verify: `for f in _docs/decisions/ADR-*.md; do [ "$(wc -w < "$f")" -le 350 ] || exit 1; done`

@@ -15,7 +15,7 @@ for f; do
   case "$b" in
     ADR-*) ;;
     *)
-      echo "FAIL decision-records:filename-is-a-slug $f: no ADR- prefix"
+      echo "FAIL decision-records:filename-carries-no-digit $f: no ADR- prefix"
       status=1
       continue
       ;;
@@ -23,7 +23,7 @@ for f; do
   case "$b" in
     *.md) ;;
     *)
-      echo "FAIL decision-records:filename-is-a-slug $f: not a markdown file"
+      echo "FAIL decision-records:filename-carries-no-digit $f: not a markdown file"
       status=1
       continue
       ;;
@@ -32,7 +32,7 @@ for f; do
   s=${s%.md}
   case "$s" in
     '' | *[!a-z-]*)
-      echo "FAIL decision-records:filename-is-a-slug $f: the slug is lowercase and hyphens, with no digit"
+      echo "FAIL decision-records:filename-carries-no-digit $f: the slug is lowercase and hyphens, with no digit"
       status=1
       ;;
   esac

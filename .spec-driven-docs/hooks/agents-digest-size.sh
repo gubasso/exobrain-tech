@@ -12,7 +12,7 @@ find . \
     [ "$file" = ./AGENTS.md ] && cap=100
     lines=$(wc -l <"$file")
     [ "$lines" -le "$cap" ] || {
-      echo "FAIL docs-format:author-instructions-stay-in-budget $file"
+      echo "FAIL docs-format:author-instructions-stay-within-budget $file"
       exit 1
     }
   done

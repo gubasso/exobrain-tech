@@ -33,7 +33,7 @@ complementary domains, and nothing names what fills them (ADR-the-repository-nam
 Non-negotiable: understanding, linting, formatting, testing, and building this checkout use only
 local files. `_docs/specs/` and `_docs/decisions/` are instance-owned; `.spec-driven-docs/` is the
 pinned managed projection, and `.spec-driven-docs/verify.sh --target . --offline` checks its hashes.
-The tagged [documentation canon](https://github.com/gubasso/spec-driven-docs/tree/v0.1.0) supplies
+The tagged [documentation canon](https://github.com/gubasso/spec-driven-docs/tree/v0.1.4) supplies
 method doctrine and upgrade material but is not an operational dependency.
 
 Load the specs of every domain you touch before acting. Each rule has a stable ID that commits,

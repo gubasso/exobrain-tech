@@ -23,14 +23,14 @@ status=0
 raw=$(grep -rIn --exclude-dir=.git --exclude-dir=known-issues \
   -e '<!-- *dprint-ignore' -e '<!-- *markdownlint-disable' .) || status=$?
 [ "$status" -le 1 ] || {
-  echo "FAIL known-issues:a-suppression-names-its-case: grep exited $status"
+  echo "FAIL spec-to-code:a-suppression-names-its-case: grep exited $status"
   exit 1
 }
 sup=$(printf '%s\n' "$raw" | grep -v -e dprint-ignore-end -e markdownlint-enable) || true
 
 bad=$(printf '%s\n' "$sup" | grep '<!--' | grep -v 'KI-[a-z0-9-]') || true
 [ -z "$bad" ] || {
-  echo "FAIL known-issues:a-suppression-names-its-case"
+  echo "FAIL spec-to-code:a-suppression-names-its-case"
   echo "$bad"
   exit 1
 }
@@ -38,7 +38,7 @@ bad=$(printf '%s\n' "$sup" | grep '<!--' | grep -v 'KI-[a-z0-9-]') || true
 known=$(ki_records "$@" | sed -e 's|.*/||' -e 's|\.md$||' | sort -u)
 for c in $(printf '%s\n' "$sup" | grep -oE 'KI-[a-z0-9-]+' | sort -u); do
   printf '%s\n' "$known" | grep -Fxq "$c" || {
-    echo "FAIL known-issues:a-suppression-names-its-case: $c resolves to no record"
+    echo "FAIL spec-to-code:a-suppression-names-its-case: $c resolves to no record"
     exit 1
   }
 done
