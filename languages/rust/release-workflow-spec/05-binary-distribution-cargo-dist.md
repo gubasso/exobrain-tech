@@ -24,7 +24,7 @@ members = ["cargo:."]
 
 [dist]
 ci = "github"
-installers = ["shell", "powershell", "homebrew"]
+installers = ["shell", "powershell"]
 targets = [
   "x86_64-unknown-linux-gnu",
   "aarch64-unknown-linux-gnu",
@@ -32,9 +32,22 @@ targets = [
   "aarch64-apple-darwin",
   "x86_64-pc-windows-msvc",
 ]
-# A Homebrew tap installer needs a tap repo:
-# tap = "<owner>/homebrew-tap"
 ```
+
+**List `homebrew` only when its infrastructure exists.** A Homebrew installer is not
+self-contained the way `shell`/`powershell` are: homebrew-core refuses third-party prebuilt
+binaries, so publishing the formula needs your **own tap repository**, a `publish-jobs`
+entry, and a `repo`-scoped PAT stored as `HOMEBREW_TAP_TOKEN` in the **source** repo:
+
+```toml
+installers = ["shell", "powershell", "homebrew"]
+tap = "<owner>/homebrew-tap"
+publish-jobs = ["homebrew"]
+```
+
+Without all three, a listed `homebrew` installer is dead config. The default stays lean —
+`shell` + `powershell` plus the free `cargo-binstall` path below cover every platform without
+extra repos or long-lived tokens.
 
 ## The generated workflow is `release.yml` — regenerate, don't hand-edit
 

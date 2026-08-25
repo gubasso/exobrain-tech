@@ -412,20 +412,22 @@ Once per project, in order:[^rs-runbook]
 
    jobs:
      release-plz:
+       if: ${{ github.repository_owner == '<owner>' }}
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
            with:
              fetch-depth: 0
+             persist-credentials: false
          - uses: actions/create-github-app-token@v3
            id: app-token
            with:
              app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
              private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+         # `command:` accepts only `release-pr` or `release`; leaving it
+         # unset runs both, which is the whole loop this job wants.
          - uses: release-plz/action@v0.5
            id: release-plz
-           with:
-             command: release-plz
            env:
              GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
    ```

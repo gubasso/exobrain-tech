@@ -51,13 +51,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+      # `command:` accepts only `release-pr` or `release`; leaving it unset
+      # runs both. `command: release-plz` is not a valid value.
       - id: release-plz
         uses: release-plz/action@v0.5
-        with:
-          command: release-plz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+Upstream's own releases split this into two jobs — `command: release-pr` under a per-ref
+`concurrency` group (`cancel-in-progress: false`) and `command: release` under **no** concurrency
+group, since cancelling a queued release run can skip a publish. The single combined job above is
+the minimal valid form; [04](./04-release-plz-config.md) shows the two-job split.
 
 ## Promoting `master` onto the release tag (the official way)
 

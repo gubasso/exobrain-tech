@@ -45,6 +45,14 @@ trusted publisher ([03](./03-trusted-publishing-oidc.md)), and keeping it distin
 `release.yml` avoids the collision described in
 [workflow file conventions](../../../programming/release-workflow/04-workflow-file-conventions.md):
 
+The shape below is the one release-plz uses for its own releases: two jobs, because the two
+halves want different concurrency. The PR job serializes per ref (`cancel-in-progress: false`) so
+racing pushes cannot fight over the release PR; the release job runs under **no** concurrency
+group, since cancelling a queued release run can skip a publish. `command:` accepts only
+`release-pr` or `release` — there is no `command: release-plz`; leaving it unset runs both, which
+is the minimal single-job form ([00](./00-branch-model-and-release-plz.md)). The
+`github.repository_owner` guard keeps forks from failing on the missing secrets.
+
 ```yaml
 name: release-plz
 
@@ -52,27 +60,54 @@ on:
   push:
     branches: [develop]
 
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
+permissions: {}
 
 jobs:
-  release-plz:
+  release-plz-release:
+    if: ${{ github.repository_owner == '<owner>' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
           private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
       - uses: release-plz/action@v0.5
-        id: release-plz
+        id: release
         with:
-          command: release-plz
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+  release-plz-pr:
+    if: ${{ github.repository_owner == '<owner>' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+      - uses: release-plz/action@v0.5
+        id: release-pr
+        with:
+          command: release-pr
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 ```
@@ -127,8 +162,13 @@ releases, prefer release-plz.
 ## SemVer gating
 
 With `semver_check = true`, release-plz runs [`cargo-semver-checks`](./07-semver-yank-rollback.md)
-on library crates and picks a version bump consistent with the public-API delta. Binary-only crates
-have no public API to check.
+whenever the package has a **library target** and reports the result in the release PR. Two cases
+turn it off deliberately:
+
+- A **binary-only crate** — no library target, so the check skips itself; no config needed.
+- A **binary crate with a test-only lib** (the thin-bin pattern, where the lib exists so the
+  crate's own integration tests can link it): the check runs but audits an API no consumer holds.
+  Set `semver_check = false` with a comment saying why.
 
 ## Reference
 

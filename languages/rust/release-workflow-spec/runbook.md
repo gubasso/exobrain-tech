@@ -67,9 +67,10 @@ Everyday releases after setup are not here — those are just "merge the release
    dist init          # writes dist-workspace.toml + .github/workflows/release.yml
    ```
 
-   Choose shell / PowerShell / Homebrew-tap installers; commit `dist-workspace.toml` and the
-   generated `release.yml` (a **separate** file from `release-plz.yml`). `cargo-binstall` then works
-   from the first cargo-dist Release. →
+   Choose shell / PowerShell installers (add Homebrew only with a tap repo, `publish-jobs`, and a
+   `HOMEBREW_TAP_TOKEN` secret); commit `dist-workspace.toml` and the generated `release.yml` (a
+   **separate** file from `release-plz.yml`). `cargo-binstall` then works from the first cargo-dist
+   Release. →
    [05 — Binary distribution](./05-binary-distribution-cargo-dist.md).
 
 10. **(Optional) Enable "require trusted publishing"** on the crate once an OIDC release has
