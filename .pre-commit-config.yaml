@@ -257,6 +257,17 @@ repos:
         pass_filenames: false
         entry: .hooks/no-named-method.sh
 
+  # Instance policy: this repository is an instance of the documentation canon,
+  # so every mention of it is an upstream dependency reference, declared once.
+  - repo: local
+    hooks:
+      - id: canon-named-once
+        name: the upstream canon is named in one place, unversioned
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/canon-named-once.sh
+
   # --- Spelling (report-only) ---
   #
   # `language: system` because upstream ships this hook as `language: python`

@@ -206,7 +206,7 @@
     {
       "source": "templates/TEMPLATE-adr.md",
       "destination": "_docs/decisions/TEMPLATE-adr.md",
-      "sha256": "4a8889e224db026cc600bc7ad235f5ceedf8e0e4cbd893ab49e6126322afa270",
+      "sha256": "3b3e1beaca7b976c768caba13141e8c9df3bee9bf942e4d3e938fd3094b37691",
       "baseline_sha256": "7b651d5e9a6fa8ae34ec28bccdac9c85ff9fe7af6e59d0528e2b32473e00c131"
     },
     {

@@ -1,5 +1,26 @@
 # Knowledge Base Boundary Specification
 
+<!--TOC-->
+
+- [Purpose](#purpose)
+- [Requirements](#requirements)
+  - [`knowledge-base-boundary:no-knowledge-is-external` — Current operation is self-contained](#knowledge-base-boundaryno-knowledge-is-external--current-operation-is-self-contained)
+    - [Scenario: A gate reads a schema that lives in another project](#scenario-a-gate-reads-a-schema-that-lives-in-another-project)
+  - [`knowledge-base-boundary:the-canon-is-named-once` — The upstream canon is named once](#knowledge-base-boundarythe-canon-is-named-once--the-upstream-canon-is-named-once)
+    - [Scenario: A chapter cites the canon passage that argues the same rule](#scenario-a-chapter-cites-the-canon-passage-that-argues-the-same-rule)
+  - [`knowledge-base-boundary:a-tool-input-is-pinned` — A tool input resolves to one pinned revision](#knowledge-base-boundarya-tool-input-is-pinned--a-tool-input-resolves-to-one-pinned-revision)
+    - [Scenario: An input is added without a lock entry](#scenario-an-input-is-added-without-a-lock-entry)
+  - [`knowledge-base-boundary:no-method-is-named` — The repository names no planning method](#knowledge-base-boundaryno-method-is-named--the-repository-names-no-planning-method)
+    - [Scenario: A docs-root directory serves an adjacent domain](#scenario-a-docs-root-directory-serves-an-adjacent-domain)
+  - [`knowledge-base-boundary:a-retired-name-does-not-return` — A retired name does not return](#knowledge-base-boundarya-retired-name-does-not-return--a-retired-name-does-not-return)
+    - [Scenario: A removed dependency is reintroduced by a later change](#scenario-a-removed-dependency-is-reintroduced-by-a-later-change)
+  - [`knowledge-base-boundary:private-material-stays-in-the-vault` — Private material stays in the vault](#knowledge-base-boundaryprivate-material-stays-in-the-vault--private-material-stays-in-the-vault)
+    - [Scenario: A guide needs a real host to be useful](#scenario-a-guide-needs-a-real-host-to-be-useful)
+  - [`knowledge-base-boundary:a-knowledge-article-is-not-metadata` — Knowledge never lives in `_docs/`](#knowledge-base-boundarya-knowledge-article-is-not-metadata--knowledge-never-lives-in-_docs)
+    - [Scenario: A document explains a tool this repository also uses](#scenario-a-document-explains-a-tool-this-repository-also-uses)
+
+<!--TOC-->
+
 ## Purpose
 
 What may enter this repository and what may not: the split between the library and its metadata, the
@@ -27,6 +48,24 @@ state because the lock fixes the revision every gate runs. Canon provenance is m
 not an input to routine verification (ADR-source-the-documentation-canon-upstream).
 
 Verify: `pre-commit run spec-driven-docs-verify --all-files`
+
+### `knowledge-base-boundary:the-canon-is-named-once` — The upstream canon is named once
+
+Where the upstream documentation canon is named, this repository MUST name it only in the root
+`AGENTS.md`, as a project URL carrying no version.
+
+#### Scenario: A chapter cites the canon passage that argues the same rule
+
+- GIVEN a library page restating a rule the canon also states
+- WHEN it links that canon passage at a pinned tag
+- THEN the commit fails, because the version now has a second home and a bucket has taken a
+  dependency it does not own (ADR-the-upstream-canon-is-named-once)
+
+The decision log and the vendored payload are exempt: a record states its own moment, and the
+payload is canon-written provenance. The version implemented lives in
+`.spec-driven-docs/manifest.json`, which the verifier reads and an upgrade rewrites.
+
+Verify: `pre-commit run canon-named-once --all-files`
 
 ### `knowledge-base-boundary:a-tool-input-is-pinned` — A tool input resolves to one pinned revision
 

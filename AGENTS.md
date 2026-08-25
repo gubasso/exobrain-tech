@@ -18,7 +18,7 @@ buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platform
 the knowledge within a bucket.
 
 `_docs/` is not the product. `specs/` states what binds; the Diátaxis zones (`decisions/`, `guides/`,
-`reference/`, `explanation/`) hold the rest, following the spec-driven-docs method. Never place a
+`reference/`, `explanation/`) hold the rest, following the documentation canon below. Never place a
 knowledge article there. Placement test: "Is this about how the KB works?" → `_docs/`; "Is this
 knowledge the library serves?" → the owning bucket. Cross-link from `_docs/` only when the product
 reference must mention it (ADR-docs-vs-library-boundary).
@@ -33,8 +33,10 @@ complementary domains, and nothing names what fills them (ADR-the-repository-nam
 Non-negotiable: understanding, linting, formatting, testing, and building this checkout use only
 local files. `_docs/specs/` and `_docs/decisions/` are instance-owned; `.spec-driven-docs/` is the
 pinned managed projection, and `.spec-driven-docs/verify.sh --target . --offline` checks its hashes.
-The tagged [documentation canon](https://github.com/gubasso/spec-driven-docs/tree/v0.1.4) supplies
-method doctrine and upgrade material but is not an operational dependency.
+The upstream [documentation canon](https://github.com/gubasso/spec-driven-docs) supplies method
+doctrine and upgrade material but is not an operational dependency. This link is the only place
+that names it; `.spec-driven-docs/manifest.json` records the version this checkout implements
+(ADR-the-upstream-canon-is-named-once).
 
 Load the specs of every domain you touch before acting. Each rule has a stable ID that commits,
 reviews, and gate failures cite; change its owning spec with the behavior. Load decisions only when

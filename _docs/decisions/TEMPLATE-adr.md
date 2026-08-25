@@ -1,7 +1,7 @@
 Copy the block below to `_docs/decisions/ADR-<slug>.md`. The slug is the identifier: it carries no
 counter, no digit, and never changes once merged. A filled body stays at or below 350 words; a body
-that will not fit is usually two decisions. `programming/spec-driven-docs/04-decisions.md` owns the
-rules this template seeds.
+that will not fit is usually two decisions.
+[SPEC-decision-records](../specs/SPEC-decision-records.md) owns the rules this template seeds.
 
 ```markdown
 # <Short title naming the choice, not the task>

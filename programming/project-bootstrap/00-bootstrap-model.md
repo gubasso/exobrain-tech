@@ -3,7 +3,7 @@
 **Bootstrap** is the once-per-project phase that takes an empty repository to a scaffolded,
 quality-gated baseline ready for feature work. It is a **how-to guide** in the Diátaxis sense —
 task-oriented, ordered, assuming you know what a project is and just need the steps — not a
-tutorial. See [documentation canon / placement](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/01-placement.md).
+tutorial.
 
 ## The once-per-project phase
 
@@ -34,8 +34,7 @@ Every bootstrap fact has exactly one owner, arranged in three descending layers:
 The layers link; they never duplicate. Branch protection lives under
 [`tools/git/branch-protection/`](../../tools/git/branch-protection/) and is _referenced_ from the
 runbook, not copied. Release setup lives in [release-workflow](../release-workflow/README.md). This
-is the single-source-of-truth discipline from
-[documentation canon / single source of truth](https://github.com/gubasso/spec-driven-docs/blob/v0.1.4/method/00-model.md): duplicated
+is the single-source-of-truth discipline: duplicated
 instructions drift, so each fact is owned in one place and pointed to from everywhere else.
 
 ## Relationship to the release phase

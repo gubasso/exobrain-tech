@@ -54,6 +54,9 @@ newtree() {
   rm -rf "$t"
   mkdir -p "$t/_docs/specs" "$t/_docs/decisions" "$t/_docs/reference/known-issues" "$t/.hooks"
   cp "$root/.hooks/unnamed-methods.txt" "$t/.hooks/unnamed-methods.txt"
+  cp "$root/.hooks/upstream-canon.txt" "$t/.hooks/upstream-canon.txt"
+  printf 'A digest naming the upstream [canon](%s).\n' \
+    "$(head -n 1 "$root/.hooks/upstream-canon.txt")" > "$t/AGENTS.md"
 
   cat > "$t/_docs/specs/SPEC-sample.md" << 'EOF'
 # Sample Specification
@@ -261,6 +264,55 @@ rm _docs/reference/method.md
 printf '# A record\n\nThe method was %s.\n' "$named" > _docs/decisions/ADR-a-method-was-chosen.md
 git add -A
 accept "no-named-method" "$root/.hooks/no-named-method.sh"
+
+# --- canon-named-once -------------------------------------------------------
+#
+# The URL is read from the pattern file rather than written out, for the reason
+# the gate keeps it in a file at all: spelled here it would itself be a second
+# place naming the upstream, and this suite would fail the gate it is testing.
+newtree canon-named-once
+canon_gate=$root/.hooks/canon-named-once.sh
+canon=$(head -n 1 "$root/.hooks/upstream-canon.txt")
+accept "canon-named-once" "$canon_gate"
+
+# A second mention, outside the one digest allowed to carry it.
+printf 'See %s for the method.\n' "$canon" > _docs/reference/upstream.md
+git add -A
+reject "canon-named-once" "$canon_gate"
+git rm -q --cached _docs/reference/upstream.md
+rm _docs/reference/upstream.md
+
+# A record names it and passes: the decision log states its own moment.
+printf '# A record\n\nAdopted %s.\n' "$canon" > _docs/decisions/ADR-a-canon-was-adopted.md
+git add -A
+accept "canon-named-once" "$canon_gate"
+git rm -q --cached _docs/decisions/ADR-a-canon-was-adopted.md
+rm _docs/decisions/ADR-a-canon-was-adopted.md
+
+# The vendored payload names itself, which is provenance and not a reference.
+mkdir -p ".${canon##*/}"
+printf '{"canon_source": "%s"}\n' "$canon" > ".${canon##*/}/manifest.json"
+git add -A
+accept "canon-named-once" "$canon_gate"
+
+# A version written into the link, in the one place allowed to name it.
+printf 'A digest naming the upstream [canon](%s/tree/v0.1.5).\n' "$canon" > AGENTS.md
+git add -A
+reject "canon-named-once" "$canon_gate"
+
+# A digest that names no upstream at all: the pointer has to exist, not merely
+# be unique. `at most one` is satisfied by zero, and zero is the state where a
+# reader has nowhere to look.
+printf 'No upstream is named here.\n' > AGENTS.md
+git add -A
+reject "canon-named-once" "$canon_gate"
+
+# A second mention inside the one allowed file, alongside the link. One place
+# means one statement, not one file free to repeat the fact.
+printf 'The upstream [canon](%s) supplies the %s method.\n' \
+  "$canon" "${canon##*/}" > AGENTS.md
+git add -A
+reject "canon-named-once" "$canon_gate"
 
 # --- suppression-names-its-case ---------------------------------------------
 newtree suppression
