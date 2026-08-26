@@ -8,6 +8,14 @@ explains the _why_; this page is only the _what_ and _in what order_. The recurr
 Bash has no registry — **tagging is publishing** ([README](./README.md)); there is no token or
 trusted-publisher step.
 
+## Prerequisites
+
+- A bootstrapped Bash CLI project — see
+  [the bootstrap runbook](../project-bootstrap-spec/runbook.md).
+- A GitHub account able to create the repository and change its settings.
+- A signing key configured for `git tag -s`.
+- Accounts on the distribution channels step 7 reaches: AUR and OBS.
+
 ## Steps
 
 1. **Scaffold the release plumbing.** Add a root `VERSION` file (one line, SemVer)

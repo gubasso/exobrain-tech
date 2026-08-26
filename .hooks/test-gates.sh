@@ -415,4 +415,52 @@ printf "$ghhead"'```text\n%s\n```\n' "$wide" \
   > _docs/reference/known-issues/KI-report-reflowing-tracker.md
 accept "ki-bugzilla-report-width" "$gate"
 
+# --- guide-recipe-shape -----------------------------------------------------
+#
+# The fenced cases are the quiet ones. A template ships the shape it seeds
+# inside a fence, and a scanner reading headings without fence state fails the
+# template for demonstrating the form it teaches -- while a page that only
+# quotes a recipe would be held to a shape it never claimed. The nested case
+# goes further: a template whose steps carry their own fences is wrapped in a
+# longer marker, and a toggle blind to marker length reopens at the inner fence
+# and reads the rest of the block as prose.
+g="$work/guides"
+mkdir -p "$g"
+gate=$root/.hooks/guide-recipe-shape.sh
+
+recipe() {
+  printf '# Task\n\n## Prerequisites\n\n- A checkout.\n\n## Steps\n\n1. Do the thing.\n\n   ```sh\n   run it\n   ```\n\n%b2. Verify.\n\n   ```sh\n   check it\n   ```\n' "$1"
+}
+recipe '' > "$g/ok.md"
+recipe '   - a nested part\n   - another\n\n' > "$g/nested.md"
+printf '# A page\n\nProse only, no steps section.\n' > "$g/not-a-guide.md"
+accept "guide-recipe-shape" "$gate" "$g/ok.md" "$g/nested.md" "$g/not-a-guide.md"
+
+printf '# Task\n\n## Steps\n\n1. Do the thing.\n' > "$g/no-prereq.md"
+reject "guide-recipe-shape" "$gate" "$g/no-prereq.md"
+printf '# Task\n\n## Steps\n\n1. Do the thing.\n\n## Prerequisites\n\n- Too late.\n' > "$g/late-prereq.md"
+reject "guide-recipe-shape" "$gate" "$g/late-prereq.md"
+printf '# Task\n\n## Prerequisites\n\n- A checkout.\n\n## Steps\n\nFirst, some background prose.\n\n1. Do the thing.\n' \
+  > "$g/prose-opener.md"
+reject "guide-recipe-shape" "$gate" "$g/prose-opener.md"
+printf '# Task\n\n## Prerequisites\n\n- A checkout.\n\n## Steps\n\n1. Do the thing.\n\n- a promoted subtask\n' \
+  > "$g/flat-bullet.md"
+reject "guide-recipe-shape" "$gate" "$g/flat-bullet.md"
+printf '# Task\n\n## Prerequisites\n\n- A checkout.\n\n## Steps from scratch\n\n1. Do the thing.\n' \
+  > "$g/renamed-section.md"
+reject "guide-recipe-shape" "$gate" "$g/renamed-section.md"
+
+# One violation is enough: a gate reporting the first file and exiting leaves
+# the rest of the argument list unread, and pre-commit hands it many files.
+accept "guide-recipe-shape" "$gate" "$g/ok.md"
+reject "guide-recipe-shape" "$gate" "$g/ok.md" "$g/no-prereq.md"
+
+# The shape quoted inside a fence is an illustration, not a claim.
+printf '# A page about guides\n\nThe shape:\n\n```markdown\n## Steps\n\nprose, not a step\n```\n' \
+  > "$g/quoted.md"
+accept "guide-recipe-shape" "$gate" "$g/quoted.md"
+printf '# Template\n\n````markdown\n## Prerequisites\n\n- A checkout.\n\n## Steps\n\n1. Do it.\n\n   ```sh\n   run it\n   ```\n\n- a bullet that would fail if the fence reopened\n````\n' \
+  > "$g/template.md"
+accept "guide-recipe-shape" "$gate" "$g/template.md"
+
 echo "test-gates: every gate failed when it should"

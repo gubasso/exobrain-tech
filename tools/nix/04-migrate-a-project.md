@@ -3,6 +3,12 @@
 Do this per-project, incrementally. The dctl images already provide Nix + direnv; this just adds the
 three files to a repo.
 
+## Prerequisites
+
+- Nix and direnv on the host — the dctl images already provide both.
+- The project checked out, with its existing language manager still working.
+- Network access, for the `nix flake lock` in step 3.
+
 ## Steps
 
 1. **Pick the template.** Copy from [`templates/`](templates/) into the repo root:

@@ -1,13 +1,20 @@
 # Create Infra with Docker Apps From Scratch
 
+## Prerequisites
+
+- A VPS reachable over SSH, to act as the entry node.
+- Docker and Docker Compose installed on it.
+- A domain whose records point at that VPS.
+
 ## Steps
 
-- Entry VPS
-  - Netmaker
-  - Traefik (../../infra/networking/traefik.md)
-- Portainer
-- CrowdSec + Traefik [^sec1]
-- Authelia [^auth1]
+1. Stand up the entry VPS.
+   - Netmaker, for the overlay network between nodes.
+   - [Traefik](../../infra/networking/traefik.md), as the reverse proxy in front of everything else.
+2. Add [Portainer](../../infra/containers/docker-portainer.md) as the container manager.
+3. Put CrowdSec behind Traefik [^sec1].
+4. Put Authelia in front of the apps for single sign-on and 2FA [^auth1].
+5. Verify each service answers on its own hostname, through Traefik and past Authelia.
 
 ## After
 

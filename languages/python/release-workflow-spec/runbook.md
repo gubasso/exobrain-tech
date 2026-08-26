@@ -5,7 +5,13 @@ The ordered, **once-per-project** manual steps for a Python package — a **skel
 adopts this. PyPI Trusted Publishing is the analogue of crates.io's, so the shape is nearly
 identical.
 
-## Steps (to expand)
+## Prerequisites
+
+- A Python package with a `pyproject.toml` that builds locally.
+- A GitHub account able to create the repository and change its settings.
+- A PyPI account, for the first manual publish in step 5.
+
+## Steps
 
 1. **Metadata gate.** Fill `pyproject.toml` `[project]` (name, version, description, license,
    classifiers); build locally (`python -m build` or `uv build`) and inspect the wheel + sdist.

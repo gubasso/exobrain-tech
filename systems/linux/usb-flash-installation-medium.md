@@ -56,75 +56,62 @@ is expected.
 If you want, paste the output of `ls -l /dev/disk/by-id/usb-*` and `lsblk -f` (with the USB plugged
 in) and I’ll point to the exact `by-id` path you should use to avoid hitting the wrong disk.
 
-## Steps from scratch
+## Prerequisites
 
-Identify the USB Drive
+- A USB drive whose contents can be destroyed.
+- Root access on the host.
+- The drive's stable path from `ls -l /dev/disk/by-id/usb-*`, so no other disk can be hit.
 
-```sh
-lsblk
-# or
-sudo fdisk -l
-```
+## Steps
 
-**Note:** To restore the USB drive as an empty, usable storage device after using the Arch ISO
-image, the ISO 9660 filesystem signature needs to be removed by running:
+1. Identify the USB drive.
 
-```sh
-sudo wipefs --all /dev/disk/by-id/usb-_My_flash_drive_
-```
+   ```sh
+   lsblk
+   # or
+   sudo fdisk -l
+   ```
 
-- Has to pop of a message with success
+2. Remove the ISO 9660 signature a previous image write left behind, so the drive can serve as
+   ordinary storage again.
 
-...as root, before [repartitioning](https://wiki.archlinux.org/title/Repartition "Repartition") and
-[reformatting](https://wiki.archlinux.org/title/Reformat "Reformat") the USB drive.
+   ```sh
+   sudo wipefs --all /dev/disk/by-id/usb-_My_flash_drive_
+   ```
 
-Check/Set Partitioning
+   - Expected: a success message naming each signature removed.
+   - Run as root, before [repartitioning](https://wiki.archlinux.org/title/Repartition "Repartition")
+     and [reformatting](https://wiki.archlinux.org/title/Reformat "Reformat") the USB drive.
 
-```sh
-sudo parted -s /dev/sdX mklabel msdos mkpart primary fat32 0% 100%
-```
+3. Create a partition table and a partition covering the whole drive.
 
-- `-s`: Run in script mode, which suppresses interactive prompts.
-- `mklabel msdos`: Creates a new MBR (DOS) partition table. You can replace `msdos` with `gpt` if
-  you need a GPT partition table.
-- `mkpart primary fat32 0% 100%`: Creates a primary partition starting from 0% to 100% of the disk
-  space and labels it as FAT32. You can replace `fat32` with `ext4`, `ntfs`, etc., depending on the
-  desired file system.
+   ```sh
+   sudo parted -s /dev/sdX mklabel msdos mkpart primary fat32 0% 100%
+   ```
 
-This single command will:
+   - `-s` runs in script mode, which suppresses interactive prompts.
+   - `mklabel msdos` creates an MBR (DOS) partition table; use `gpt` for a GPT one.
+   - `mkpart primary fat32 0% 100%` creates a primary partition from 0% to 100% of the disk and
+     labels it FAT32; `ext4` or `ntfs` where another filesystem is wanted.
+   - The partition is created but not formatted — step 4 is what makes it usable.
 
-1. Create a new partition table.
-2. Create a primary partition covering the entire disk.
-3. Label it with the specified file system type. After running this command, you can then format the
-   partition if necessary using a tool like `mkfs` (e.g., `sudo mkfs.vfat /dev/sdX1` for FAT32).
-   However, the `parted` command above is sufficient for creating the partition structure itself.
+4. Format the partition.
 
-The parted command you used creates the partition but does not actually format it with a filesystem.
-To format the partition (which is necessary to make it usable for storing files), you need to run a
-command like mkfs.
+   ```sh
+   sudo mkfs.fat -F 32 /dev/disk/by-id/usb-My_flash_drive-partn
+   ```
 
-```sh
-sudo mkfs.vfat /dev/sdX1
-# updated
-sudo mkfs.fat -F 32 /dev/disk/by-id/usb-My_flash_drive-partn
-```
+   - Older form, by device node: `sudo mkfs.vfat /dev/sdX1`, with `/dev/sdX1` replaced by the
+     partition created above.
 
-Replace `/dev/sdX1` with the appropriate partition name.
+5. Confirm the drive is ready.
 
-This will format the partition you created with `parted` into the specified filesystem. After this
-step, your USB drive should be ready to use.
+   ```sh
+   lsblk -f
+   ls -l /dev/disk/by-id/usb-*
+   ```
 
-To check the partition format:
-
-```sh
-lsblk -f
-```
-
-List the usb drive:
-
-```sh
-ls -l /dev/disk/by-id/usb-*
-```
+   - Expected: the partition reports its filesystem, and the drive is listed under `by-id`.
 
 ## Write
 

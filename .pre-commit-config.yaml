@@ -257,6 +257,17 @@ repos:
         pass_filenames: false
         entry: .hooks/no-named-method.sh
 
+  # Instance policy: a guide in this library is a recipe. The gate reads the
+  # section shape a reader depends on; the judgment rules it cannot decide are
+  # listed as unenforced in `_docs/specs/SPEC-guides.md`.
+  - repo: local
+    hooks:
+      - id: guide-recipe-shape
+        name: a guide is prerequisites then ordered steps
+        language: system
+        types: [markdown]
+        entry: .hooks/guide-recipe-shape.sh
+
   # Instance policy: this repository is an instance of the documentation canon,
   # so every mention of it is an upstream dependency reference, declared once.
   - repo: local
