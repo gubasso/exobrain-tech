@@ -9,15 +9,16 @@ without the removed `--allow-new`.
 
 ## Doing
 
-| Document                                         | What it gets you                                                                                                             |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| [parallel-workspace.md](./parallel-workspace.md) | A second working directory backed by the same repo — created on `main`, developed independently, landed with a bookmark move |
+| Document                                         | What it gets you                                                                                                                         |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| [parallel-workspace.md](./parallel-workspace.md) | A second working directory backed by the same repo — created from your last commit, developed independently, landed with a bookmark move |
 
 ## Understanding
 
 | Document                                                       | What it explains                                                                                                                                   |
 | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) | Why landing work from a workspace is a bookmark move rather than a merge, how `<workspace>@` addresses another working copy, and what staleness is |
+| [what-names-a-change.md](./what-names-a-change.md)             | The four names a change carries — directory, workspace, description, bookmark — walked through one worked scenario with commit graphs              |
 
 ## Related
 
