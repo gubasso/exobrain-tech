@@ -4,28 +4,28 @@ A jj workspace is a second working copy — its own files plus a `.jj/` director
 the same repo. Every workspace shares one commit graph and one operation log, so a commit
 made in one is visible from all of them the moment it exists. This walks what that changes
 about a parallel-directory workflow, alongside the recipe in
-[parallel-workspace.md](./parallel-workspace.md). Names carry a kind prefix, per the
-convention in [README.md](./README.md).
+[parallel-workspace.md](./parallel-workspace.md). Names carry a kind prefix while they are
+jj's alone, per the convention in [README.md](./README.md).
 
 ## The scenario
 
 A repo at `~/src/app` holds a half-finished refactor. A bug report arrives that needs a fix
-against the release line `bkmrk-master`, and the refactor is not in a state worth
-interrupting.
+against the release line `master`, and the refactor is not in a state worth interrupting.
 
 ### Adding the workspace
 
 ```sh
 cd ~/src/app
 jj git fetch
-jj workspace add -r bkmrk-master@origin ../wkspc-hotfix
+jj workspace add -r master@origin ../wkspc-hotfix
 ```
 
 The workspace is named for its directory, so it is addressed as `wkspc-hotfix@`, while the
-bookmark this work will land under is `bkmrk-hotfix` — two different names, deliberately.
+bookmark this work will land under is `bkmrk-hotfix`, and the branch the remote ends up with is
+`hotfix` — three names, deliberately distinct.
 
 Nothing moved in `~/src/app`. Its `@` still holds the refactor, files untouched. What the
-repo gained is a second working-copy commit, empty, parented on `bkmrk-master@origin`, and a
+repo gained is a second working-copy commit, empty, parented on `master@origin`, and a
 directory whose files match it.
 
 `jj workspace list` now names two workspaces with their roots. From either directory,
@@ -50,10 +50,13 @@ The fix is committed in `../wkspc-hotfix`. Landing it is a bookmark move, not a 
 
 ```sh
 jj bookmark set bkmrk-hotfix
-jj git push --bookmark bkmrk-hotfix
+jj bookmark rename bkmrk-hotfix hotfix
+jj git push --bookmark hotfix
 ```
 
-The `set` is local. The push is what creates the branch named `bkmrk-hotfix` on the remote.
+The `set` is local, and so is the rename: it drops the teaching prefix in the step before the
+name leaves the repo, because the branch takes the bookmark's name character for character. The
+push is what creates the branch `hotfix` on the remote.
 
 The commit was already in the repo `~/src/app` reads from. Nothing was transferred between
 the two directories, because there was never a second copy of the history to transfer. A
@@ -66,7 +69,7 @@ but it is never checked out, which is why two workspaces may sit on the same lin
 Back in `~/src/app`, the refactor should now sit on top of the fix:
 
 ```sh
-jj rebase -b @ -o bkmrk-hotfix
+jj rebase -b @ -o hotfix
 ```
 
 Run from `~/src/app`, this is ordinary. Run the same rebase from `../wkspc-hotfix` and it
@@ -100,7 +103,8 @@ A Git-backed jj repo is colocated by default: `.jj/` and `.git/` side by side, s
 tooling works in the primary directory. `jj workspace add` creates a jj-only workspace —
 `.jj/` and no `.git/`. Anything in that directory that expects a git repo will not find
 one, and a bookmark set here stays only a bookmark until `jj git push` makes it a branch on
-the remote or the colocated primary directory exports it to its own `.git`. Per-workspace Git HEAD is tracked internally as of the development branch after
+the remote under whatever name the bookmark carries at that moment, or the colocated primary
+directory exports it to its own `.git`. Per-workspace Git HEAD is tracked internally as of the development branch after
 0.44.0, which prepares multiple Git worktrees for colocated repos; it is not in a release.
 
 ## Reference

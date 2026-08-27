@@ -5,20 +5,30 @@
 Working notes for Jujutsu, the Git-compatible VCS whose working copy is always a commit and
 whose bookmarks are never checked out. Notes are written against jj 0.44.
 
-Every example name in these notes is prefixed with the kind of thing it names, so no token is
-ambiguous while you are learning which is which:
+Every example name in these notes is prefixed with the kind of thing it names, for as long as
+the name is jj's alone, so no token is ambiguous while you are learning which is which:
 
 | Kind            | Example name       | Written as        | Real repos                       |
 | --------------- | ------------------ | ----------------- | -------------------------------- |
-| bookmark        | `bkmrk-develop`    | bare              | `develop`, `master`, `feat-x`    |
-| remote bookmark | `bkmrk-develop`    | `<name>@origin`   | `develop@origin`                 |
+| bookmark        | `bkmrk-feat-x`     | bare              | `feat-x`                         |
+| remote bookmark | `develop@origin`   | `<name>@origin`   | `develop@origin`                 |
 | workspace       | `wkspc-feat-x`     | `<name>@`         | whatever the directory is called |
 | directory       | `../wkspc-feat-x/` | a filesystem path | any path                         |
 | description     | quoted prose       | `-m "feat: ..."`  | prose                            |
 
-The `bkmrk-` and `wkspc-` prefixes are teaching labels, not a jj convention: your integration
-bookmark is called `develop`, not `bkmrk-develop`. The `@` forms are jj's own syntax and are
-exactly what you type at the prompt.
+The `bkmrk-` and `wkspc-` prefixes are teaching labels, not a jj convention. The `@` forms are
+jj's own syntax and are exactly what you type at the prompt.
+
+A prefix lasts only while the name is jj's alone. A branch takes the bookmark's name character
+for character, so a bookmark drops its prefix in the step before it is pushed:
+
+```sh
+jj bookmark rename bkmrk-feat-x feat-x
+```
+
+A workspace name never becomes a branch, so `wkspc-` stays for the life of the workspace. Names
+that arrive from the remote are branches already and carry no prefix at any point: `develop` is
+the integration line in these notes and `master` the release line.
 
 A bookmark is a reference — a name pointing at one commit id — and it is how jj manages Git
 branches: against a Git repo jj
