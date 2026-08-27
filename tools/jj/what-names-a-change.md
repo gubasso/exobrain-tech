@@ -84,9 +84,8 @@ jj bookmark set bkmrk-feat-x
 ```
 
 A bookmark is a reference: a name pointing at one commit id. A row appears in the bookmark table
-and the graph does not change. So far it is only a bookmark — a row in this repo, which is what
-licenses the prefix. A colocated repo would export it to its own `.git` on the next command; this
-workspace has no `.git/`, and the remote knows nothing until a push.
+and the graph does not change — still only a row in this repo, which licenses the prefix. A
+colocated repo would export it to `.git`; this workspace has none, and nothing leaves until a push.
 
 ```text
 COMMIT GRAPH                                       REPO TABLES
@@ -141,8 +140,9 @@ REPO TABLES                              ORIGIN
 ```
 
 This is where the bookmark becomes a branch someone else can fetch, of that exact name, and the
-mapping runs both ways — a branch made in the backing git repo comes back as a bookmark. The
-directory and workspace names did not travel.
+mapping runs both ways — a branch made in the backing git repo comes back as a bookmark, one line
+of work under two names. The `@origin` rows are jj's record of where origin stood at that moment;
+only fetch and push move them. The directory and workspace names did not travel.
 
 ## Landing and retiring
 

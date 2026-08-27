@@ -20,9 +20,6 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 - The repo has a Git remote named `origin`.
   - check: `jj git remote list`
   - if not: `jj git remote add origin <url>`
-- The bookmark `develop` exists locally and tracks `develop@origin`.
-  - check: `jj bookmark list --tracked develop`, which prints nothing when it is untracked
-  - if not: `jj bookmark track develop@origin`, once
 - The parent directory of the repo is writable.
   - check: `test -w ..`
   - if not: pick a writable parent, or `chmod u+w ..`
@@ -100,11 +97,10 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 8. Point the bookmark `bkmrk-feat-x` at the work so it has a name to push.
 
-   - A bookmark is a reference: a name pointing at one commit id.
-   - It is jj's stand-in for a Git branch, so its name is the one the remote will see.
-   - The branch takes its name from the bookmark, but exists only once pushed (step 11), or
-     exported by a colocated repo — this workspace has no `.git/` to export to.
-   - It is never checked out, so it never advances on its own.
+   - A bookmark is a reference: a name pointing at one commit id, never checked out, so it
+     never advances on its own.
+   - The branch takes its name from the bookmark and exists only once pushed (step 11); a
+     colocated repo exports it, and this workspace has no `.git/` to export to.
    - Until then it is only a bookmark: a row in this repo, free to carry the prefix.
 
    ```sh
@@ -123,9 +119,11 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
      jj git fetch && jj rebase -b @ -o develop@origin
      ```
 
-   - the local bookmark `develop`, when it sits ahead of `develop@origin`
+   - the main directory's own line, when you land there rather than on the remote
 
-     A bookmark is repo-wide, not the main directory's; it resolves here with no fetch.
+     `develop` names its branch, because a colocated repo's Git branch and the bookmark of
+     that name are one line of work; `default@-` names its last commit when no bookmark does.
+     Both are repo-wide, so they resolve here with no fetch and nothing to set up.
 
      ```sh
      jj rebase -b @ -o develop
@@ -165,7 +163,9 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
     - move the bookmark `develop` locally, when no review is involved
 
       The `set` is local and changes nothing on the remote. The push is what writes the
-      branch named `develop` there — updating it if it exists, creating it if not.
+      branch named `develop` there — updating it if it exists, creating it if not. A push is
+      refused when the remote already carries that name untracked; `jj bookmark track
+      develop@origin` clears that, once.
 
       ```sh
       jj bookmark set develop -r feat-x && jj git push --bookmark develop
@@ -192,10 +192,8 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 ## Reference
 
-- [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) — landing, addressing, and
-  recovering a workspace that went stale
-- [what-names-a-change.md](./what-names-a-change.md) — the directory, workspace, description,
-  and bookmark walked through one scenario with commit graphs
+- [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) — landing, addressing, staleness
+- [what-names-a-change.md](./what-names-a-change.md) — the four names walked through one scenario
 - [Working copy](https://docs.jj-vcs.dev/latest/working-copy/) — workspaces and stale working copies
 - [Bookmarks](https://docs.jj-vcs.dev/latest/bookmarks/) — tracking and push semantics
 - [CLI reference](https://docs.jj-vcs.dev/latest/cli-reference/) — every command used above

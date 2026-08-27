@@ -100,12 +100,34 @@ commits stay; only the second working copy goes away.
 ## What a secondary workspace does not have
 
 A Git-backed jj repo is colocated by default: `.jj/` and `.git/` side by side, so git
-tooling works in the primary directory. `jj workspace add` creates a jj-only workspace —
-`.jj/` and no `.git/`. Anything in that directory that expects a git repo will not find
-one, and a bookmark set here stays only a bookmark until `jj git push` makes it a branch on
-the remote under whatever name the bookmark carries at that moment, or the colocated primary
-directory exports it to its own `.git`. Per-workspace Git HEAD is tracked internally as of the development branch after
-0.44.0, which prepares multiple Git worktrees for colocated repos; it is not in a release.
+tooling works in the primary directory. Exactly one directory can be that one, because the
+Git store itself lives there — `jj git colocation enable` works by moving
+`.jj/repo/store/git` to `.git`, and a secondary workspace has no store of its own to move.
+So `jj workspace add` creates a jj-only workspace: `.jj/` and no `.git/`. Per-workspace Git
+HEAD is tracked internally as of the development branch after 0.44.0, which prepares
+multiple Git worktrees for colocated repos; it is not in a release.
+
+What that costs is narrower than it sounds. One commit store and one bookmark table serve
+every workspace, so a Git branch and the bookmark of that name are one line of work under
+two names, and this directory reads every branch, commit, and bookmark exactly as the
+primary one does. What it lacks is a place a `git` command can run.
+
+### When the two sets of books disagree
+
+jj keeps its own bookmark table and syncs it with the backing Git repo at both ends of every
+command run in a colocated workspace. A jj-only workspace triggers no such sync, so a branch
+that plain `git` wrote in the primary directory stays invisible here until something reads
+it across:
+
+```sh
+jj git import
+```
+
+`jj git export` is the same in the other direction, and both run from a jj-only workspace.
+The gap opens only when `git` writes a ref in the primary directory and no jj command runs
+there afterwards; any jj command in that directory closes it, and driving that directory
+with jj rather than git means it never opens. Import abandons commits Git can no longer
+reach, so `jj undo` is the way back from one that read in a force-moved branch.
 
 ## Reference
 

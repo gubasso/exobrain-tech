@@ -19,6 +19,10 @@ the name is jj's alone, so no token is ambiguous while you are learning which is
 The `bkmrk-` and `wkspc-` prefixes are teaching labels, not a jj convention. The `@` forms are
 jj's own syntax and are exactly what you type at the prompt.
 
+A remote bookmark `<name>@origin` is jj's own record of where that branch stood on the remote as
+of the last fetch or push. You read it and pass it to commands; nothing you type moves it, and
+only `jj git fetch` and `jj git push` change what it points at.
+
 A prefix lasts only while the name is jj's alone. A branch takes the bookmark's name character
 for character, so a bookmark drops its prefix in the step before it is pushed:
 
