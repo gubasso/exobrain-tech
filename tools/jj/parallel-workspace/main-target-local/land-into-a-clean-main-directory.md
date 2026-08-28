@@ -6,7 +6,7 @@ standing on it. Three commands get there, and they differ in what they leave beh
 main directory carries work of its own, none of this applies — that is
 [land-over-work-in-progress.md](./land-over-work-in-progress.md).
 
-The recipe is [parallel-workspace-local.md](../parallel-workspace-local.md); this walks its
+The recipe is [recipe.md](./recipe.md); this walks its
 step 7.
 
 ## The scenario
@@ -148,5 +148,5 @@ of this one. Reach for `jj edit` only to amend the change itself, and expect the
 ## Reference
 
 - [land-over-work-in-progress.md](./land-over-work-in-progress.md) — the same landing, over a change
-- [../workspaces-share-one-repo.md](../workspaces-share-one-repo.md) — what staleness is
+- [../../workspaces-share-one-repo.md](../../workspaces-share-one-repo.md) — what staleness is
 - [CLI reference](https://docs.jj-vcs.dev/latest/cli-reference/) — `jj new`, `jj rebase`, `jj edit`

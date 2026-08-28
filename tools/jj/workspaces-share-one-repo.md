@@ -3,9 +3,9 @@
 A jj workspace is a second working copy — its own files plus a `.jj/` directory linked to
 the same repo. Every workspace shares one commit graph and one operation log, so a commit
 made in one is visible from all of them the moment it exists. This walks what that changes
-about a parallel-directory workflow, alongside the recipe in
-[parallel-workspace.md](./parallel-workspace.md). Names carry a kind prefix while they are
-jj's alone, per the convention in [README.md](./README.md).
+about a parallel-directory workflow, alongside the
+[remote recipe](./parallel-workspace/main-target-remote/recipe.md). Names carry a kind prefix
+while they are jj's alone, per the convention in [README.md](./README.md).
 
 ## The scenario
 
@@ -26,7 +26,8 @@ bookmark this work will land under is `bkmrk-hotfix`, and the branch the remote 
 
 Nothing moved in `~/src/app`. Its `@` still holds the refactor, files untouched. What the
 repo gained is a second working-copy commit, empty, parented on `master@origin`, and a
-directory whose files match it.
+directory whose files match it. Without `-r`, that commit takes the parents of the current
+workspace's `@` instead — the last commit you made, without the change in progress.
 
 `jj workspace list` now names two workspaces with their roots. From either directory,
 `jj log` shows both lines of work in one graph — there is no fetch or push between them.

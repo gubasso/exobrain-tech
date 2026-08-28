@@ -3,7 +3,7 @@
 Creates a second working directory backed by the same jj repo, develops a change there, and
 lands it in the main directory. No remote is involved at any point, and no bookmark: the two
 directories address each other by workspace name. The `wkspc-` prefix is a teaching label, per
-[README.md](./README.md), and it stays for the life of the workspace. One change at a time; sparse
+[README.md](../../README.md), and it stays for the life of the workspace. One change at a time; sparse
 checkouts and conflict resolution are out of scope.
 
 The steps run one worked example end to end: a repo at `~/code/repo`, one edit to
@@ -24,10 +24,8 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 1. Create the workspace as a sibling directory.
 
-   The new working-copy commit takes the parents of the current workspace's `@` — the last commit
-   you made, without the change in progress. The workspace name defaults to the basename of the
-   destination, so this one is addressed as `wkspc-feat-x@`. Keep the destination a sibling: a
-   nested one makes a repo inside one.
+   The workspace name defaults to the basename of the destination, so this one is addressed as
+   `wkspc-feat-x@`. Keep the destination a sibling: a nested one makes a repo inside one.
 
    ```sh
    jj workspace add ../wkspc-feat-x
@@ -92,9 +90,9 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 7. Land the change by the route the state of this directory calls for. Both routes run before
    step 8, which deletes the workspace row that `wkspc-feat-x@` resolves through.
 
-   - [land-into-a-clean-main-directory.md](./parallel-workspace-local/land-into-a-clean-main-directory.md)
+   - [land-into-a-clean-main-directory.md](./land-into-a-clean-main-directory.md)
      — this directory has nothing in progress
-   - [land-over-work-in-progress.md](./parallel-workspace-local/land-over-work-in-progress.md)
+   - [land-over-work-in-progress.md](./land-over-work-in-progress.md)
      — this directory carries a change of its own
 
 8. Retire the workspace `wkspc-feat-x@` and delete its directory.
@@ -118,12 +116,12 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 ## Reference
 
-- [parallel-workspace.md](./parallel-workspace.md) — the same recipe against a remote
-- [land-into-a-clean-main-directory.md](./parallel-workspace-local/land-into-a-clean-main-directory.md)
+- [main-target-remote/recipe.md](../main-target-remote/recipe.md) — the same recipe against a remote
+- [land-into-a-clean-main-directory.md](./land-into-a-clean-main-directory.md)
   — landing where nothing is in progress
-- [land-over-work-in-progress.md](./parallel-workspace-local/land-over-work-in-progress.md)
+- [land-over-work-in-progress.md](./land-over-work-in-progress.md)
   — landing where the main directory carries a change
-- [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) — landing, addressing, staleness
-- [what-names-a-change.md](./what-names-a-change.md) — the four names walked through one scenario
+- [workspaces-share-one-repo.md](../../workspaces-share-one-repo.md) — landing, addressing, staleness
+- [what-names-a-change.md](../../what-names-a-change.md) — the four names walked through one scenario
 - [Revsets](https://docs.jj-vcs.dev/latest/revsets/) — `@`, `<workspace>@`, and `working_copies()`
 - [CLI reference](https://docs.jj-vcs.dev/latest/cli-reference/) — every command used above

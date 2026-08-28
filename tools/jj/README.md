@@ -45,19 +45,16 @@ own `.git` on the next command, and a branch on the remote when you `jj git push
 
 ## Doing
 
-| Document                                                     | What it gets you                                                                                                      |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| [parallel-workspace.md](./parallel-workspace.md)             | A second working directory backed by the same repo, developed independently and landed on `develop` at the remote     |
-| [parallel-workspace-local.md](./parallel-workspace-local.md) | The same second directory with no remote in it: the two directories address each other by workspace name, no bookmark |
+| Document                                     | What it gets you                                                                                                                                                       |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [parallel-workspace/](./parallel-workspace/) | A second working directory backed by the same repo, developed independently and landed either on `develop` at the remote or in the main directory with no remote in it |
 
 ## Understanding
 
-| Document                                                                                                                       | What it explains                                                                                                                                   |
-| ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [workspaces-share-one-repo.md](./workspaces-share-one-repo.md)                                                                 | Why landing work from a workspace is a bookmark move rather than a merge, how `<workspace>@` addresses another working copy, and what staleness is |
-| [what-names-a-change.md](./what-names-a-change.md)                                                                             | The four names a change carries — directory, workspace, description, bookmark — walked through one worked scenario with commit graphs              |
-| [parallel-workspace-local/land-into-a-clean-main-directory.md](./parallel-workspace-local/land-into-a-clean-main-directory.md) | The routes that land a workspace change in a main directory with nothing in progress, and what `jj edit` costs                                     |
-| [parallel-workspace-local/land-over-work-in-progress.md](./parallel-workspace-local/land-over-work-in-progress.md)             | The routes that land it over a change of your own, and which one strands that change                                                               |
+| Document                                                       | What it explains                                                                                                                                   |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) | Why landing work from a workspace is a bookmark move rather than a merge, how `<workspace>@` addresses another working copy, and what staleness is |
+| [what-names-a-change.md](./what-names-a-change.md)             | The four names a change carries — directory, workspace, description, bookmark — walked through one worked scenario with commit graphs              |
 
 ## Related
 

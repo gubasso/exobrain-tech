@@ -1,7 +1,8 @@
 # The four names a change carries in jj
 
 A change worked on in a second directory ends up with four names that all tend to say the same
-word. This walks one through the recipe in [./parallel-workspace.md](./parallel-workspace.md).
+word. This walks one through the
+[remote recipe](./parallel-workspace/main-target-remote/recipe.md).
 
 | Name               | Written as         | Lives in                         | Answers                                        | Who sees it                |
 | ------------------ | ------------------ | -------------------------------- | ---------------------------------------------- | -------------------------- |
@@ -53,14 +54,11 @@ REPO TABLES
 One directory, one new row in the workspace table. The workspace name came from the directory
 basename; that is the only link between the two.
 
-## Entering it
+## Entering it, and editing
 
-`cd ../wkspc-feat-x && jj st` changes nothing in the repo. You moved, so `@` now resolves to `D`
-instead of `C`, and the revset `default@` names `C`.
-
-## Editing
-
-jj snapshots on every command, rewriting `D` in place: same change id, new commit hash.
+`cd ../wkspc-feat-x && jj st` changes nothing in the repo: you moved, so `@` now resolves to `D`
+instead of `C`, and the revset `default@` names `C`. jj then snapshots on every command, rewriting
+`D` in place: same change id, new commit hash.
 
 ```text
 COMMIT GRAPH                            REPO TABLES
@@ -120,8 +118,7 @@ jj bookmark rename bkmrk-feat-x feat-x
 ```
 
 A branch takes the bookmark's name character for character, so the label comes off in the last
-step before the name leaves the repo. No commit moves, the row now reads `feat-x -> D`, and a
-clean rename prints nothing.
+step before the name leaves the repo. No commit moves, and the row now reads `feat-x -> D`.
 
 ## Pushing
 
@@ -152,8 +149,9 @@ REPO TABLES
   bookmarks:   develop -> D      feat-x -> D
 ```
 
-`jj bookmark set develop -r feat-x` is the landing: a local pointer move, no merge, because both
-directories always wrote into one repo; the remote branch moves only when that bookmark is pushed.
+`jj bookmark set develop -r feat-x` is one of the two landings, the one with no review in it: a
+local pointer move, no merge, because both directories always wrote into one repo, and the remote
+branch moves only when that bookmark is pushed.
 The move is the bookmark's alone, so `~/code/repo` still stands on `C` and its files still lack
 the change; `jj new develop@origin` there puts it on a fresh `G` above `D`, and the empty `C` goes.
 `jj workspace forget wkspc-feat-x` drops the workspace row and touches no commit.
@@ -196,7 +194,7 @@ label. They looked coupled above only because the bookmark was set while standin
 
 ## Reference
 
-- [./parallel-workspace.md](./parallel-workspace.md) — the recipe these steps come from
+- [remote recipe](./parallel-workspace/main-target-remote/recipe.md) — where these steps come from
 - [./workspaces-share-one-repo.md](./workspaces-share-one-repo.md) — landing and staleness
 - [Bookmarks](https://docs.jj-vcs.dev/latest/bookmarks/) — tracking, push, fast-forward rule
 - [Revsets](https://docs.jj-vcs.dev/latest/revsets/) — `@`, `<workspace>@`, `working_copies()`

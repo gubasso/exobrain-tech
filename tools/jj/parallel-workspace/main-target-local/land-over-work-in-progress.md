@@ -6,7 +6,7 @@ on the old base. Landing the workspace's change means deciding what happens to i
 directory is idle, the simpler set applies:
 [land-into-a-clean-main-directory.md](./land-into-a-clean-main-directory.md).
 
-The recipe is [parallel-workspace-local.md](../parallel-workspace-local.md); this walks its
+The recipe is [recipe.md](./recipe.md); this walks its
 step 7.
 
 ## The scenario
@@ -29,7 +29,6 @@ Two lines on one base, and `notes.md` on disk here:
 │ ○  vzurrxsk  feat: teach parser about arrays
 ├─╯
 ○  ylkmwvrp  docs: add readme
-◆  zzzzzzzz   (empty)
 ```
 
 ```sh
@@ -76,16 +75,26 @@ graph stays linear: this is not a merge, and no commit here has two parents.
 
 ## Route 2: `jj rebase -r`
 
-`jj rebase -o` takes `-b @` as its source, which moves every commit on the line `@` belongs to. Give
-it a line of two:
+Route 1 named a destination and no source, so `jj rebase` used its default, `-b @`: every commit on
+the line `@` belongs to. On a line of one that is invisible — stack a second commit and it stops
+being:
+
+```sh
+jj describe -m "wip: part one"
+jj new
+echo 'and the rest' > notes-two.md
+jj describe -m "wip: part two"
+```
 
 ```text
-@  omyxltzy  wip: part two
-○  wylmpyum  wip: part one
-│ ○  outtxnnz  feat: teach parser about arrays
+@  okrkrmtm  wip: part two
+○  uvuquzmp  wip: part one
+│ ○  vywzkxzt  feat: teach parser about arrays
 ├─╯
-○  kprnpomo  docs: add readme
+○  qkvmxluv  docs: add readme
 ```
+
+The default source carries the whole line:
 
 ```sh
 jj rebase -o 'wkspc-feat-x@'
@@ -96,10 +105,10 @@ Rebased 2 commits to destination.
 ```
 
 ```text
-@  omyxltzy  wip: part two
-○  wylmpyum  wip: part one
-○  outtxnnz  feat: teach parser about arrays
-○  kprnpomo  docs: add readme
+@  okrkrmtm  wip: part two
+○  uvuquzmp  wip: part one
+○  vywzkxzt  feat: teach parser about arrays
+○  qkvmxluv  docs: add readme
 ```
 
 `-r` moves the one commit you name and leaves the rest of the line where it is:
@@ -110,22 +119,22 @@ jj rebase -r @ -o 'wkspc-feat-x@'
 
 ```text
 Rebased 1 commits to destination.
-Working copy  (@) now at: nszulwkl e9baaf04 wip: part two
-Parent commit (@-)      : ypuukpol 9af7809f feat: teach parser about arrays
+Working copy  (@) now at: okrkrmtm 6efbbc51 wip: part two
+Parent commit (@-)      : vywzkxzt 8669a9cd feat: teach parser about arrays
 Added 1 files, modified 0 files, removed 1 files
 ```
 
 ```text
-@  nszulwkl  wip: part two
-○  ypuukpol  feat: teach parser about arrays
-│ ○  vnrpopwo  wip: part one
+@  okrkrmtm  wip: part two
+○  vywzkxzt  feat: teach parser about arrays
+│ ○  uvuquzmp  wip: part one
 ├─╯
-○  nkvnkvyo  docs: add readme
+○  qkvmxluv  docs: add readme
 ```
 
-`part one` stayed behind, and `removed 1 files` is its file leaving the disk — the commit you moved
-no longer has it as an ancestor. That is the tool for lifting one commit out of a line, and the
-wrong default for taking a line onto the change.
+`part one` stayed behind, and `notes.md` left the disk with it: the commit that introduced that file
+is no longer an ancestor of where you stand. Nothing is lost, yet half your own work now sits off to
+the side. That is the tool for lifting one commit out of a line, and the wrong default here.
 
 ## Route 3: `jj new`, and the repair
 
@@ -187,5 +196,5 @@ That is route 1's result, reached in three commands instead of one.
 ## Reference
 
 - [land-into-a-clean-main-directory.md](./land-into-a-clean-main-directory.md) — the idle case
-- [../workspaces-share-one-repo.md](../workspaces-share-one-repo.md) — addressing and staleness
+- [../../workspaces-share-one-repo.md](../../workspaces-share-one-repo.md) — addressing and staleness
 - [CLI reference](https://docs.jj-vcs.dev/latest/cli-reference/) — `jj rebase`, `jj new`, `jj edit`
