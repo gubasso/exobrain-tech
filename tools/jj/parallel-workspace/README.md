@@ -30,6 +30,8 @@ moved, land, retire the workspace. They split on where the change has to arrive.
 
 ## Reference
 
+- [../one-directory/](../one-directory/) — the same change developed where you already stand, with
+  no second working copy and no directory to retire
 - [../workspaces-share-one-repo.md](../workspaces-share-one-repo.md) — why landing is a bookmark
   move rather than a merge, how `<workspace>@` addresses another working copy, and what staleness is
 - [../what-names-a-change.md](../what-names-a-change.md) — the four names a change picks up along
