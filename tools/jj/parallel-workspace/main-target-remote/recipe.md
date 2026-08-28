@@ -70,8 +70,8 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 5. Describe the change once you know what it did.
 
-   An undescribed commit is discarded as soon as it stops being the working copy, so
-   describing it is what makes the change durable.
+   Only an empty, undescribed commit is discarded when it stops being the working copy, so
+   describing this one is what makes it findable rather than what saves it.
 
    ```sh
    jj describe -m "feat: teach parser about arrays"
