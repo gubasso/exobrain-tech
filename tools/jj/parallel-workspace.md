@@ -16,7 +16,7 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
   - check: `jj workspace root`
   - if not:
     - `jj git clone <url>`
-    - or `jj git init --colocate` where a Git repo already exists
+    - or `jj git init` where a Git repo already exists, which adopts it
 - The repo has a Git remote named `origin`.
   - check: `jj git remote list`
   - if not: `jj git remote add origin <url>`
@@ -33,6 +33,8 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
    ```
 
 2. Fetch the remote so the remote bookmark `develop@origin` names the current tip.
+
+   `develop@origin` is a remote bookmark, created and moved by jj alone at fetch and push.
 
    ```sh
    jj git fetch
@@ -99,9 +101,8 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
    - A bookmark is a reference: a name pointing at one commit id, never checked out, so it
      never advances on its own.
-   - The branch takes its name from the bookmark and exists only once pushed (step 11); a
-     colocated repo exports it, and this workspace has no `.git/` to export to.
-   - Until then it is only a bookmark: a row in this repo, free to carry the prefix.
+   - The branch takes its name from the bookmark and exists only once pushed (step 11);
+     until then it is only a bookmark, a row in this repo, free to carry the prefix.
 
    ```sh
    jj bookmark set bkmrk-feat-x
