@@ -15,7 +15,7 @@
 - [Merge / Diff conflicts](#merge--diff-conflicts)
   - [Merge just a file/path from another branch](#merge-just-a-filepath-from-another-branch)
   - [merge from stash](#merge-from-stash)
-- [Development & release workflow](#development--release-workflow)
+- [Development workflow](#development-workflow)
   - [External reading](#external-reading)
 - [Related](#related)
 - [Development Docs](#development-docs)
@@ -175,18 +175,11 @@ git restore --staged <file>...
 git restore --staged .
 ```
 
-## Development & release workflow
+## Development workflow
 
-The canonical branch model and release process — `develop` integrates, `master` holds releases, and
-CI promotes on a tag — now lives in the general shelf. This README keeps only the git command
-mechanics; the workflow model and its per-language bindings are documented there:
-
-- [Development & release workflow — general principles](../../programming/release-workflow/) — the
-  `develop`/`master` branch model, the automated release-PR pattern, and Trusted Publishing / OIDC.
-- [branch-protection/](./branch-protection/) — the platform runbooks and rulesets that **enforce**
-  the model (GitHub Rulesets / GitLab protected branches, bypass actor, tag protection).
-- [feature-lifecycle.md](./feature-lifecycle.md) + [rebase-workflow.md](./rebase-workflow.md) — the
-  day-to-day feature-branch loop that feeds `develop`.
+This README keeps the git command mechanics. The day-to-day loop that feeds `develop` is documented
+in [feature-lifecycle.md](./feature-lifecycle.md) and
+[rebase-workflow.md](./rebase-workflow.md).
 
 ### External reading
 
@@ -213,8 +206,6 @@ mechanics; the workflow model and its per-language bindings are documented there
   - checking, fixing, and setting up `glab` authentication (keyring + HTTPS credential helper)
 - [gh-auth.md](./gh-auth.md)
   - checking, fixing, and setting up `gh` authentication (keyring + HTTPS credential helper)
-- [branch-protection/](./branch-protection/)
-  - GitHub/GitLab branch-protection rulesets, scripts, and workflows
 - [workflows/](./workflows/)
   - end-to-end git workflow guides
 - [cmds-examples.md](./cmds-examples.md)

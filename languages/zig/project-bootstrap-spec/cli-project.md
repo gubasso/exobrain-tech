@@ -27,6 +27,6 @@ ordering**; the buildable, gated project comes from the [binding runbook](./runb
 
 ## Later phases
 
-Shipping prebuilt CLI binaries (cross-compiled release artifacts, installers) is release-phase work,
+Shipping prebuilt CLI binaries (cross-compiled release artifacts, installers) is later-phase work,
 not bootstrap. Zig's built-in cross-compilation makes this straightforward later; bootstrap stops at
 a working, gated CLI executable.

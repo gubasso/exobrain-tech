@@ -6,6 +6,4 @@ topic files here — the [`AGENTS.md`](./AGENTS.md) Source Map indexes them file
 
 - [`project-bootstrap-spec/`](project-bootstrap-spec/README.md) — bootstrap a new Python project:
   toolchain, layout, quality gates, and implementation-kinds.
-- [`release-workflow-spec/`](release-workflow-spec/README.md) — the Python release & publishing
-  phase that follows bootstrap.
 - [`cli-spec/`](cli-spec/README.md) — the detailed Python CLI structure spec.

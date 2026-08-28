@@ -39,13 +39,8 @@ overlay that slots into it.
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
    security if not already done.
 
-7. **When ready to release,** hand off to
-   `../release-workflow-spec/runbook.md` (path: `../release-workflow-spec/runbook.md`) — the later Python
-   release phase (build, PyPI Trusted Publishing).
-
 ## Reference
 
 - [00 — Toolchain & layout](./00-toolchain-and-layout.md) ·
   [01 — Quality gates](./01-quality-gates.md) ·
-  [general runbook](../../../programming/project-bootstrap/runbook.md) ·
-  `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`)
+  [general runbook](../../../programming/project-bootstrap/runbook.md)

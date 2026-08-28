@@ -13,7 +13,7 @@ setup that takes an empty repo to a scaffolded, gated, `require`-able project re
 work. It **overlays** the general spine (repo, license, governance, dev env, CI, security) and never
 restates it; it owns only the Lua ecosystem choices (runtime, LuaRocks/rockspec, quality gates) and
 one implementation-kind ordering (rock library). Publishing (`luarocks upload`, publish-grade
-rockspec metadata) is a later release phase, out of scope here.
+rockspec metadata) is a later phase, out of scope here.
 
 ## Key Points
 
@@ -25,7 +25,7 @@ rockspec metadata) is a later release phase, out of scope here.
 - **Package manager:** LuaRocks is the de-facto manager. The manifest is a **rockspec**
   (`<name>-<version>.rockspec`) declaring `package`, `version`, `source`, `dependencies`, and a
   `build` section mapping module names to files. Keep the bootstrap rockspec minimal (`dev-1`);
-  publish-grade metadata (license, tagged `source`, labels) is release-phase. `luarocks make` /
+  publish-grade metadata (license, tagged `source`, labels) is later-phase. `luarocks make` /
   `luarocks build` installs locally into the project tree.
 - **Layout:** module tree addressed by `require` via `package.path` — `foo.bar` maps to
   `foo/bar.lua` (or `foo/bar/init.lua`). Line up the rockspec `modules` map with `require` strings,
@@ -43,7 +43,7 @@ rockspec metadata) is a later release phase, out of scope here.
   out `src/<name>/init.lua` + submodules matching the `modules` map → verify the build locally with
   `luarocks make`/`luarocks build` and confirm the module is `require`-able from the devShell → add
   `busted` specs under `spec/` covering the public API. Stops at a locally-buildable, gated,
-  `require`-able rock; tagging a real rockspec and `luarocks upload` is release-phase.
+  `require`-able rock; tagging a real rockspec and `luarocks upload` is later-phase.
 - **Automation:** `bootstrap-nix` provisions the devShell hosting runtime + tooling;
   `bootstrap-precommit` and `bootstrap-taskrunner` wire the gates; `bootstrap-ci` continues the
   general spine. The notes are the SoT; see general `07-automation-with-cog.md`.

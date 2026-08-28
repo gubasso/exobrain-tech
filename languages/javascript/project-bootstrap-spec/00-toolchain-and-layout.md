@@ -19,9 +19,8 @@ npm init -y      # or: pnpm init
 
 Set the minimum now: `name`, `version`, `description`, and `"type": "module"` for ESM. Add
 `"private": true` unless this is a package you intend to publish. Leave publish-grade metadata
-(`files`, `exports`, `publishConfig`, `repository`, `keywords`) to the release phase — it is owned
-by [`../release-workflow-spec/`](../release-workflow-spec/README.md), so do not duplicate that gate
-here. Bootstrap only needs enough to install, build, and test.
+(`files`, `exports`, `publishConfig`, `repository`, `keywords`) to the publishing phase. Bootstrap
+only needs enough to install, build, and test.
 
 ## Module type — ESM
 

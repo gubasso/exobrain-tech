@@ -22,9 +22,8 @@ the same job — pick one and keep it as the single owner: **Poetry**, **PDM**, 
 `pyproject.toml` is the single project manifest. Set the minimum now under `[project]`: `name`,
 `version`, `requires-python`, and a short `description`. Declare the build backend in
 `[build-system]` (e.g. `hatchling`, or `uv_build` for uv-native builds). Leave publish-grade
-metadata (`license`, `authors`, `readme`, `urls`, `classifiers`, `keywords`) to the release phase —
-it is owned by `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`), so do not
-duplicate that gate here. Bootstrap only needs enough to build, import, and test.
+metadata (`license`, `authors`, `readme`, `urls`, `classifiers`, `keywords`) to the publishing
+phase. Bootstrap only needs enough to build, import, and test.
 
 ## src layout
 

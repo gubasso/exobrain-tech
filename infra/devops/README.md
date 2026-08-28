@@ -5,7 +5,6 @@
 <!--TOC-->
 
 - [Related](#related)
-- [CI / CD](#ci--cd)
 - [Proxy / Reverse Proxy](#proxy--reverse-proxy)
 - [Network / DNS](#network--dns)
 - [Organization](#organization)
@@ -21,11 +20,6 @@
 - [home server](../server-vps/server-vps-home_server.md)
 - [dns](../networking/dns.md)
 - [backups](./backups.md)
-
-## CI / CD
-
-- [github-actions-ci-cd.md](./github-actions-ci-cd.md) — retired page; it now redirects to the
-  release-workflow shelf and the Rust release spec that superseded it.
 
 ## Proxy / Reverse Proxy
 

@@ -9,7 +9,7 @@ token-estimate: 300
 ## Scope
 
 Git command references and workflow notes. Top-level material covers day-to-day commands, branching,
-diffs, and repo administration; subtrees cover branch protection and workflow-specific runbooks.
+diffs, and repo administration; subtrees cover workflow-specific runbooks.
 
 ## Key Points
 
@@ -25,5 +25,4 @@ diffs, and repo administration; subtrees cover branch protection and workflow-sp
 
 ## Maintenance Notes
 
-- Branch protection has its own AGENTS digest.
 - Workflow runbooks are summarized here because they do not have a separate digest.

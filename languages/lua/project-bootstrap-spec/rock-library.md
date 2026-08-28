@@ -26,5 +26,5 @@ a `require`-addressable module tree, and a local build/install loop. This file o
 
 ## Publishing (later phase)
 
-Tagging a real `<name>-<version>` rockspec and `luarocks upload` to luarocks.org is release-phase
+Tagging a real `<name>-<version>` rockspec and `luarocks upload` to luarocks.org is later-phase
 work, not bootstrap. Bootstrap stops at a locally-buildable, gated, `require`-able rock.

@@ -34,4 +34,4 @@ from the [binding runbook](./runbook.md) first.
 A downstream project adds this library to its own `build.zig.zon` with
 `zig fetch --save <url-or-path>` (which records a content hash), then imports the exported module in
 its `build.zig` via `dependency(...).module("<name>")`. Bootstrap's job is to make that surface
-exist and stay green; publishing/tagging is later release-phase work.
+exist and stay green; publishing and tagging are later-phase work.

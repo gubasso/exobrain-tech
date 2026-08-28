@@ -12,8 +12,7 @@ JavaScript/TypeScript/Node binding of the general `programming/project-bootstrap
 once-per-project Node setup that takes an empty repo to a scaffolded, gated project ready for
 feature work. It **overlays** the general spine (repo, license, governance, dev env, CI, security)
 and never restates it; it owns only the Node ecosystem choices and the two implementation-kind
-orderings (CLI, web-app). Publishing/deploy is out of scope — it hands off to
-`../release-workflow-spec/`.
+orderings (CLI, web-app). Publishing and deploy are out of scope.
 
 ## Key Points
 
@@ -22,8 +21,8 @@ orderings (CLI, web-app). Publishing/deploy is out of scope — it hands off to
   (`package-lock.json` or `pnpm-lock.yaml`); do not mix the two in one repo.
 - **Init:** `npm init -y` (or `pnpm init`). Set only `name`, `version`, `description`, and
   `"type": "module"` (ESM); add `"private": true` unless publishing. Publish-grade metadata
-  (`files`, `exports`, `publishConfig`, `repository`, `keywords`) is deferred to the release phase —
-  do not duplicate that gate here.
+  (`files`, `exports`, `publishConfig`, `repository`, `keywords`) is deferred to the publishing
+  phase — do not duplicate that gate here.
 - **Module type:** ESM via `"type": "module"` (`import`/`export`); `.cjs` for the rare CommonJS
   file. Aligns with TypeScript and Vite.
 - **Layout:** code under `src/`, emitted output under `dist/` (git-ignored).
@@ -43,17 +42,16 @@ orderings (CLI, web-app). Publishing/deploy is out of scope — it hands off to
   `#!/usr/bin/env node` shebang; arg parsing via `util.parseArgs` (simple), `commander`/`yargs`, or
   `oclif`; non-zero exit + readable errors, no silent unhandled rejections; stdout vs stderr split
   with `--verbose`/`--quiet`; optional config precedence file + env + flags. Keep the `tsc` build
-  and `bin` path in sync. Binary distribution (`pkg`, Node SEA) is release-phase.
+  and `bin` path in sync. Binary distribution (`pkg`, Node SEA) is later-phase.
 - **Web-app kind:** scaffold with `Vite` (`npm create vite@latest -- --template react-ts`, also
   `vue-ts`/`svelte-ts`/`vanilla-ts`); fold generated scripts and framework eslint plugins into the
   existing gates (vitest is Vite-native and reuses the config) rather than duplicating; ensure
   `dev`/`build`/`preview` scripts and git-ignored `dist/`; follow sibling framework review guides.
-  Deployment is release-phase.
+  Deployment is later-phase.
 
 ## Maintenance Notes
 
-- General spine: `../../../programming/project-bootstrap/`. Release handoff (Changesets, npm
-  publish): `../release-workflow-spec/`. Nix devShell host:
+- General spine: `../../../programming/project-bootstrap/`. Nix devShell host:
   `../../../tools/nix/02-per-project-devshell.md`.
 - `library-project.md` (an npm-published package) is a declared followup kind; add it when it lands.
 - The Node tooling landscape (`vite`, `vitest`, flat eslint) moves fast — re-verify the default-tool

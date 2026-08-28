@@ -58,6 +58,6 @@ failures surface locally in seconds. `bootstrap-precommit` automates the hook co
 
 ## Publish-readiness (later phase)
 
-Publish-grade checks (`uv build`, `twine check`, metadata completeness) belong to the release phase,
-not bootstrap — see `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`). Bootstrap
-only guarantees the project builds, formats, lints, typechecks, tests, and audits clean.
+Publish-grade checks (`uv build`, `twine check`, metadata completeness) belong to the publishing
+phase, not bootstrap. Bootstrap only guarantees the project builds, formats, lints, typechecks,
+tests, and audits clean.

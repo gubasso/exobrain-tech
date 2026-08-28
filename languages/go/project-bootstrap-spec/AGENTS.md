@@ -54,8 +54,6 @@ service). Do the general steps first, then this overlay.
   `../../../tools/nix/02-per-project-devshell.md`.
 - `library-project.md` is a declared followup kind; add it when a Go
   library is bootstrapped.
-- The Go `release-workflow-spec/` (release & publishing phase — binary distribution via release
-  archives, `go install`, GoReleaser; container images and deploy manifests) is **intentionally
-  deferred**: it is a placeholder that stays unimplemented until an explicit Go release need arises.
-  Bootstrap stops at a working, gated module. Do not claim a full release shelf exists.
+- Binary distribution, container images, and deploy manifests are out of scope here. Bootstrap
+  stops at a working, gated module.
 - No conflicts among the current source files.

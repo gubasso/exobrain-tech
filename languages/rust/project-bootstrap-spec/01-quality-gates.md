@@ -41,6 +41,6 @@ locally in seconds.
 
 ## Publish-readiness (later phase)
 
-Publish-grade checks (`cargo publish --dry-run`, metadata completeness) belong to the release phase,
-not bootstrap — see `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`). Bootstrap
-only guarantees the crate builds, formats, lints, and audits clean.
+Publish-grade checks (`cargo publish --dry-run`, metadata completeness) belong to the publishing
+phase, not bootstrap. Bootstrap only guarantees the crate builds, formats, lints, and audits
+clean.

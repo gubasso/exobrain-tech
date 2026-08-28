@@ -37,10 +37,6 @@ overlay that slots into it.
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
    security if not already done. _Automate:_ `bootstrap-ci`.
 
-6. **When ready to release,** hand off to
-   `../release-workflow-spec/runbook.md` (path: `../release-workflow-spec/runbook.md`) — the later Bash
-   release phase (tag, git-cliff changelog, Makefile, `install.sh`, AUR, OBS).
-
 ## Reference
 
 - [00 — Toolchain & layout](./00-toolchain-and-layout.md) ·

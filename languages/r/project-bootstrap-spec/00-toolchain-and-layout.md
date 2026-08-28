@@ -20,7 +20,7 @@ additions live in [`package-project.md`](./package-project.md) and
 For a package, set the minimum now: `Package`, `Title`, `Version`, `Depends: R (>= x.y)`, and the
 imports you already know (`usethis::use_package("<pkg>")` maintains the `Imports:` field). Leave
 publish-grade metadata (full `Authors@R`, `License` finalisation, `URL`/`BugReports`, CRAN
-`cran-comments.md`) to the release phase — bootstrap only needs enough to build, load, and test.
+`cran-comments.md`) to the publishing phase — bootstrap only needs enough to build, load, and test.
 
 An analysis project has no `DESCRIPTION`; its dependency contract is `renv.lock` (see below).
 

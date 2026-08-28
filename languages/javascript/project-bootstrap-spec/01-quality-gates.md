@@ -64,6 +64,5 @@ locally in seconds. A `lint-staged` setup can scope prettier/eslint to changed f
 ## Publish-readiness (later phase)
 
 Publish-grade checks (`npm publish --dry-run`, `exports`/`files` correctness, changelog) belong to
-the release phase, not bootstrap — see
-[`../release-workflow-spec/`](../release-workflow-spec/README.md). Bootstrap only guarantees the
-project formats, lints, typechecks, tests, and audits clean.
+the publishing phase, not bootstrap. Bootstrap only guarantees the project formats, lints,
+typechecks, tests, and audits clean.

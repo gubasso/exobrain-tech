@@ -26,4 +26,4 @@ parsing, and a consistent exit-code strategy. This file owns only the **bootstra
 ## Distribution (later phase)
 
 Packaging and installing the built binary (system packages, `make install` prefixes) is
-release-phase work, not bootstrap. Bootstrap stops at a working, gated CLI executable.
+later-phase work, not bootstrap. Bootstrap stops at a working, gated CLI executable.

@@ -16,9 +16,6 @@ then the JavaScript specifics here.
 2. Follow this [`runbook.md`](./runbook.md) for the JavaScript-specific overlay steps.
 3. Jump to your implementation-kind file (e.g. [`cli-project.md`](./cli-project.md) or
    [`web-app.md`](./web-app.md)).
-4. When ready to publish, hand off to
-   [`../release-workflow-spec/`](../release-workflow-spec/README.md) — the later JavaScript/Node
-   release phase.
 
 ## Index
 
@@ -40,7 +37,5 @@ then the JavaScript specifics here.
 
 - [General project-bootstrap](../../../programming/project-bootstrap/README.md) — the cross-language
   recipe this binding overlays.
-- [`../release-workflow-spec/`](../release-workflow-spec/README.md) — the later JavaScript/Node
-  release & publishing phase (Changesets, npm publish).
 - [nix/02 — per-project devShell](../../../tools/nix/02-per-project-devshell.md) — how a Nix
   devShell hosts the Node toolchain.

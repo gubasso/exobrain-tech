@@ -3,14 +3,11 @@
 ./infra/sandbox-isolation-backends/20-decision-libkrun-linux.md
 ./infra/sandbox-isolation-backends/30-libkrun-vs-firecracker.md
 ./infra/sandbox-isolation-backends/60-podman-libkrun-operational-notes.md
-./languages/bash/release-workflow-spec/05-obs-multi-distro.md
-./languages/rust/cookbook-ship-rust-project/README.md
 ./languages/rust/cli-spec/02-subcommand-pattern.md
 ./languages/rust/cli-spec/03-error-handling.md
 ./languages/rust/cli-spec/07-dependencies.md
 ./languages/rust/cli-spec/08-naming-and-visibility.md
 ./languages/rust/cli-spec/10-reference-projects.md
-./languages/rust/release-workflow-spec/00-branch-model-and-release-plz.md
 ./programming/cli-design/00-architecture.md
 ./programming/cli-design/01-logging-and-output.md
 ./programming/cli-design/02-error-messages.md

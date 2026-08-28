@@ -13,8 +13,8 @@ Never commit secrets. Enforce it on three fronts:
   through.
 - **Rotate** — if a secret is ever committed, rotate it; scrubbing history is not enough.
 
-Prefer keyless auth (OIDC / Trusted Publishing) wherever the release phase supports it, so there is
-no long-lived registry secret to leak.
+Prefer keyless auth (OIDC) wherever a workflow supports it, so there is no long-lived secret to
+leak.
 
 ## Dependency review & audit
 
@@ -29,8 +29,7 @@ Track and vet dependencies:
 [OpenSSF Scorecard](https://github.com/ossf/scorecard) is a measurable baseline: it scores a repo on
 branch protection, pinned dependencies, token permissions, CI-test presence, and more. Use its
 checks as the target checklist for the security posture — most map directly to steps already in this
-runbook (branch protection in chapter [05](./05-ci-and-release-readiness.md), least-privilege CI
-tokens, etc.).
+runbook (CI in chapter [05](./05-ci.md), least-privilege CI tokens, etc.).
 
 ## Automation
 

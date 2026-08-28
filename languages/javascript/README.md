@@ -7,5 +7,3 @@ by file.
 
 - [`project-bootstrap-spec/`](project-bootstrap-spec/README.md) — bootstrap a new JavaScript/Node
   project: toolchain & layout, quality gates, and implementation-kinds (Node CLI, web app).
-- [`release-workflow-spec/`](release-workflow-spec/README.md) — the later JavaScript/Node release &
-  publishing phase.

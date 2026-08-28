@@ -53,6 +53,5 @@ local use one command each.
 
 ## Distribution-readiness (later phase)
 
-Shipping the scripts (an `install.sh`, AUR/OBS packaging, changelog) belongs to the release phase,
-not bootstrap — see [`../release-workflow-spec/`](../release-workflow-spec/README.md). Bootstrap
-only guarantees the scripts format, lint, and test clean.
+Shipping the scripts (an `install.sh`, AUR/OBS packaging, changelog) belongs to the distribution
+phase, not bootstrap. Bootstrap only guarantees the scripts format, lint, and test clean.

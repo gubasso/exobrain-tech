@@ -12,7 +12,7 @@ Zig binding of the general `programming/project-bootstrap/` shelf: the once-per-
 setup that takes an empty repo to a scaffolded, buildable, gated project ready for feature work. It
 **overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates
 it; it owns only the Zig ecosystem choices and the two implementation-kind orderings (CLI, library).
-Shipping prebuilt/cross-compiled binaries and publishing/tagging are release-phase, out of scope.
+Shipping prebuilt/cross-compiled binaries and publishing/tagging are later-phase, out of scope.
 
 ## Key Points
 

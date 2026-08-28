@@ -34,8 +34,8 @@ This file owns only the **bootstrap-time ordering**; deeper authoring patterns l
 
 ## Distribution (later phase)
 
-Actually publishing to the npm registry (versioning, provenance, release automation) is
-release-phase work and is not owned here. Bootstrap stops at a buildable, gated, `--dry-run`-clean
+Actually publishing to the npm registry (versioning, provenance, publishing automation) is
+later-phase work and is not owned here. Bootstrap stops at a buildable, gated, `--dry-run`-clean
 package.
 
 ## Other kinds

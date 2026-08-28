@@ -38,13 +38,8 @@ JavaScript overlay that slots into it.
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
    security if not already done.
 
-7. **When ready to release,** hand off to
-   [`../release-workflow-spec/README.md`](../release-workflow-spec/README.md) — the later
-   JavaScript/Node release phase (Changesets, npm publish).
-
 ## Reference
 
 - [00 — Toolchain & layout](./00-toolchain-and-layout.md) ·
   [01 — Quality gates](./01-quality-gates.md) ·
-  [general runbook](../../../programming/project-bootstrap/runbook.md) ·
-  [`../release-workflow-spec/`](../release-workflow-spec/README.md)
+  [general runbook](../../../programming/project-bootstrap/runbook.md)

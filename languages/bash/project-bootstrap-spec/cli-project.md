@@ -37,6 +37,5 @@ of [`../cli-spec/`](../cli-spec/README.md).
 
 ## Distribution (later phase)
 
-Shipping the CLI (an `install.sh`, XDG install paths, AUR/OBS packages) is release-phase work — see
-[`../release-workflow-spec/`](../release-workflow-spec/README.md). Bootstrap stops at a working,
-gated CLI script.
+Shipping the CLI (an `install.sh`, XDG install paths, AUR/OBS packages) is later-phase work.
+Bootstrap stops at a working, gated CLI script.

@@ -9,17 +9,12 @@ implementation-kinds.
 This binding **overlays** the general spine; it does not restate it. Read the general recipe first,
 then the Rust specifics here.
 
-For a condensed, copy-paste hands-on path across bootstrap **and** release in one file, see the
-cookbook (path: `../cookbook/README.md`) — it inlines and footnotes the chapters here.
-
 ## How to use this binding
 
 1. Read the general [hub](../../../programming/project-bootstrap/README.md) and
    [general runbook](../../../programming/project-bootstrap/runbook.md) — the cross-language _what_.
 2. Follow this [`runbook.md`](./runbook.md) for the Rust-specific overlay steps.
 3. Jump to your implementation-kind file (e.g. [`cli-project.md`](./cli-project.md)).
-4. When ready to publish, hand off to
-   `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`) — the later Rust release phase.
 
 ## Index
 
@@ -39,6 +34,4 @@ cookbook (path: `../cookbook/README.md`) — it inlines and footnotes the chapte
 
 - [General project-bootstrap](../../../programming/project-bootstrap/README.md) — the cross-language
   recipe this binding overlays.
-- `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`) — the later Rust release &
-  publishing phase.
 - [`../cli-spec/`](../cli-spec/README.md) — the detailed Rust CLI structure spec.

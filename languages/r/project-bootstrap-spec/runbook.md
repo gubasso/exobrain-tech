@@ -39,9 +39,8 @@ overlay that slots into it.
    [`analysis-project.md`](./analysis-project.md).
 
 6. **Continue the general spine.** Return to the
-   [general runbook](../../../programming/project-bootstrap/runbook.md) for CI, branch protection,
-   and security if not already done. →
-   [general 05 — CI & release-readiness](../../../programming/project-bootstrap/05-ci-and-release-readiness.md).
+   [general runbook](../../../programming/project-bootstrap/runbook.md) for CI and security if not
+   already done. → [general 05 — CI](../../../programming/project-bootstrap/05-ci.md).
 
 ## Reference
 

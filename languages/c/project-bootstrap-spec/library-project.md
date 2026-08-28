@@ -31,5 +31,5 @@ shared/static build targets, install/export rules, and ABI hygiene. This file ow
 
 ## Versioning & publishing (later phase)
 
-SemVer policy, `soname` bumps on ABI breaks, and packaging/distribution are release-phase concerns,
+SemVer policy, `soname` bumps on ABI breaks, and packaging/distribution are later-phase concerns,
 not bootstrap. Bootstrap stops at a buildable, installable, gated library with a defined public API.

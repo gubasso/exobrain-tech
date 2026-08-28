@@ -34,10 +34,6 @@ overlay that slots into it.
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
    security if not already done.
 
-6. **When ready to release,** hand off to
-   `../release-workflow-spec/runbook.md` (path: `../release-workflow-spec/runbook.md`) — the later Rust
-   release phase (release-plz, Trusted Publishing, cargo-dist).
-
 ## Reference
 
 - [00 — Toolchain & layout](./00-toolchain-and-layout.md) ·

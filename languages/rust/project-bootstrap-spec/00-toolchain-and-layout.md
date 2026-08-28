@@ -15,10 +15,8 @@ crate).
 ## `Cargo.toml` baseline metadata
 
 Set the minimum now: `name`, `version`, `edition`, and a short `description`. Leave publish-grade
-metadata (`license`, `repository`, `keywords`, `categories`, `exclude`) to the release phase — it is
-owned by
-[`../release-workflow-spec/01-crate-metadata.md`](../release-workflow-spec/01-crate-metadata.md), so
-do not duplicate that gate here. Bootstrap only needs enough to build and test.
+metadata (`license`, `repository`, `keywords`, `categories`, `exclude`) to the publishing phase.
+Bootstrap only needs enough to build and test.
 
 ## Toolchain pinning + Nix
 

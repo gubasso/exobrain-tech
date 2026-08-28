@@ -9,12 +9,5 @@ Cross-cutting workflow notes that are not tied to one language or tool.
 
 ## See also
 
-Release and rebase workflows are owned elsewhere:
-
-- [tech/programming/release-workflow/](../programming/release-workflow/) — the **general release
-  workflow**: branch model, release-PR pattern, Trusted Publishing. Per-language bindings sit under
-  `tech/languages/*/release-workflow-spec/`.
-- [tech/languages/bash/release-workflow-spec/](../languages/bash/release-workflow-spec/) — releasing
-  a **bash program**.
 - [tech/tools/git/rebase-workflow.md](../tools/git/rebase-workflow.md) — the canonical **git
   rebase** reference.

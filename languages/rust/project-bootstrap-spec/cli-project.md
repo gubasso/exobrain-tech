@@ -31,6 +31,5 @@ For testing, dependencies, naming, and style, continue through the rest of
 
 ## Binary distribution (later phase)
 
-Shipping prebuilt CLI binaries (installers, `cargo-binstall`) is release-phase work via cargo-dist —
-see `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`). Bootstrap stops at a working,
-gated CLI crate.
+Shipping prebuilt CLI binaries (installers, `cargo-binstall`) is later-phase work. Bootstrap stops
+at a working, gated CLI crate.

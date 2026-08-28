@@ -19,8 +19,7 @@ Everyday work after setup is not here; this is the one-time scaffold.
 
 1. **Create the repo and pick the default branch.** Create an empty repo on the forge and clone it;
    set the default branch to `develop` if you follow the develop/master model. →
-   [00 — Bootstrap model](./00-bootstrap-model.md),
-   branch-protection first-run (path: `../../tools/git/branch-protection/first-run-enablement.md`).
+   [00 — Bootstrap model](./00-bootstrap-model.md).
 
 2. **Lay the repository foundation:** add `.gitignore`, a `LICENSE` (SPDX identifier), and a
    `README` skeleton at the repo root. →
@@ -39,11 +38,8 @@ Everyday work after setup is not here; this is the one-time scaffold.
    entry point for common recipes). → [04 — Quality gates](./04-quality-gates.md). _Automate:_
    `bootstrap-precommit`, `bootstrap-taskrunner`.
 
-6. **Stand up CI and release-readiness:** a first CI workflow (build + test + gates) and branch
-   protection. Release _setup_ itself lives in the later phase. →
-   [05 — CI & release-readiness](./05-ci-and-release-readiness.md). _Automate:_ `bootstrap-ci`.
-   Links: [`../release-workflow/`](../release-workflow/README.md),
-   [`../../tools/git/branch-protection/`](../../tools/git/branch-protection/).
+6. **Stand up CI:** a first CI workflow that builds, tests, and runs the gates on every push and
+   pull request. → [05 — CI](./05-ci.md). _Automate:_ `bootstrap-ci`.
 
 7. **Establish the security baseline:** secrets hygiene, dependency review/audit, and the OpenSSF
    Scorecard checklist. → [06 — Security baseline](./06-security-baseline.md).
@@ -51,9 +47,7 @@ Everyday work after setup is not here; this is the one-time scaffold.
 8. **Apply language + implementation-kind overlays.** Jump to your language binding and follow its
    runbook, then its implementation-kind file. →
    [`project-bootstrap-spec/`](../../languages/rust/project-bootstrap-spec/README.md) (Rust
-   reference binding). _Fast path (Rust):_ the
-   Rust cookbook (path: `../../languages/rust/cookbook/README.md`) is a single-file, copy-paste runbook
-   spanning these steps plus the later release phase.
+   reference binding).
 
 ## Automation
 
@@ -64,7 +58,5 @@ reconciliation rule.
 
 ## Reference
 
-- [00 — Bootstrap model](./00-bootstrap-model.md) ·
-  [05 — CI & release-readiness](./05-ci-and-release-readiness.md) ·
-  [07 — Automation with cog](./07-automation-with-cog.md) ·
-  branch-protection first-run (path: `../../tools/git/branch-protection/first-run-enablement.md`)
+- [00 — Bootstrap model](./00-bootstrap-model.md) · [05 — CI](./05-ci.md) ·
+  [07 — Automation with cog](./07-automation-with-cog.md)

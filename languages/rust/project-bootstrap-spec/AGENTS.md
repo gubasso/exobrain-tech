@@ -12,7 +12,7 @@ Rust binding of the general `programming/project-bootstrap/` shelf: the once-per
 setup that takes an empty repo to a scaffolded, gated, buildable crate ready for feature work. It
 **overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates
 it; it owns only the Rust ecosystem choices and the CLI implementation-kind ordering. Publishing is
-out of scope — it hands off to `../release-workflow-spec/`.
+out of scope.
 
 ## Key Points
 
@@ -23,8 +23,7 @@ out of scope — it hands off to `../release-workflow-spec/`.
   not already a crate.
 - **`Cargo.toml` baseline:** set the minimum now — `name`, `version`, `edition`, short `description`
   — enough to build and test. Publish-grade metadata (`license`, `repository`, `keywords`,
-  `categories`, `exclude`) is deferred to the release phase, owned by
-  `../release-workflow-spec/01-crate-metadata.md`; do not duplicate that gate here.
+  `categories`, `exclude`) is deferred to the publishing phase; do not duplicate that gate here.
 - **Toolchain pin + Nix:** a `rust-toolchain.toml` pins the channel/version and required components
   (e.g. `clippy`, `rustfmt`); a Nix devShell reads that file so local and CI share one toolchain
   (`nix/03-rust-toolchain`), closing the "works on my machine" gap before any code is written.
@@ -44,15 +43,13 @@ out of scope — it hands off to `../release-workflow-spec/`.
   handling (consistent error type + exit-code strategy), (4) logging (structured, level-controlled),
   (5) configuration (file + env + flag precedence). This file owns only the bootstrap-time
   _ordering_ and delegates every detail to `../cli-spec/`.
-- **Release handoff:** publish-readiness (`cargo publish --dry-run`, metadata completeness) and
-  binary distribution (installers, `cargo-binstall`, cargo-dist) are release-phase work — hand off
-  to `../release-workflow-spec/` (release-plz, Trusted Publishing, cargo-dist). Bootstrap stops at a
-  crate that builds, formats, lints, and audits clean.
+- **Publishing is out of scope:** publish-readiness (`cargo publish --dry-run`, metadata
+  completeness) and binary distribution (installers, `cargo-binstall`) are later-phase work.
+  Bootstrap stops at a crate that builds, formats, lints, and audits clean.
 
 ## Maintenance Notes
 
-- General spine: `../../../programming/project-bootstrap/`. Release handoff (release-plz, Trusted
-  Publishing, cargo-dist): `../release-workflow-spec/`. Detailed CLI structure: `../cli-spec/`.
+- General spine: `../../../programming/project-bootstrap/`. Detailed CLI structure: `../cli-spec/`.
 - `library-project.md` and `web-service.md` are declared followup kinds; add them when those kinds are bootstrapped.
 - Automation contract lives in general `07-automation-with-cog.md` — the runbook owns the _what_,
   `bootstrap-rust` (cog) the _how_.

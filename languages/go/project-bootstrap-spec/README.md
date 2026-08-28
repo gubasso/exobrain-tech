@@ -39,7 +39,3 @@ then the Go specifics here.
   recipe this binding overlays.
 - [nix/02 — Per-project devShell](../../../tools/nix/02-per-project-devshell.md) — how the Nix
   devShell hosts the Go toolchain.
-
-The Go [`release-workflow-spec/`](../release-workflow-spec/README.md) (the later release &
-publishing phase) is **intentionally deferred** — the linked placeholder explains that it stays
-unimplemented until an explicit Go release need arises.

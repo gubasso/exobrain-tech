@@ -14,8 +14,6 @@ then the Bash specifics here.
    [general runbook](../../../programming/project-bootstrap/runbook.md) — the cross-language _what_.
 2. Follow this [`runbook.md`](./runbook.md) for the Bash-specific overlay steps.
 3. Jump to your implementation-kind file (e.g. [`cli-project.md`](./cli-project.md)).
-4. When ready to publish, hand off to
-   [`../release-workflow-spec/`](../release-workflow-spec/README.md) — the later Bash release phase.
 
 ## Index
 
@@ -37,6 +35,4 @@ kind.
 
 - [General project-bootstrap](../../../programming/project-bootstrap/README.md) — the cross-language
   recipe this binding overlays.
-- [`../release-workflow-spec/`](../release-workflow-spec/README.md) — the later Bash release &
-  distribution phase (tag, git-cliff changelog, Makefile, `install.sh`, AUR, OBS).
 - [`../cli-spec/`](../cli-spec/README.md) — the detailed Bash CLI structure spec.

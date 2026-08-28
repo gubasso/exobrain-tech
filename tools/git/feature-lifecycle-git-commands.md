@@ -182,26 +182,6 @@ git branch -d 42-add-auth-module
 
 ---
 
-## Release
-
-From the main repo, open a PR from the integration branch into the default branch, merge on the
-forge, then pull and tag locally.
-
-```bash
-# Open the release PR on the forge
-cd ~/Projects/org/repo
-gh pr create --base master --head develop --title "Release v1.0.0"   # GitHub
-glab mr create --target-branch master --source-branch develop        # GitLab
-
-# After the PR is merged on the forge — pull and tag locally
-git checkout master
-git pull
-git tag -a v1.0.0 -m "v1.0.0"
-git push origin v1.0.0
-```
-
----
-
 ## Quick Reference
 
 ```text
@@ -247,12 +227,6 @@ CLEANUP:
   cd <main-repo> && git checkout develop && git pull # pull merged changes
   rm -rf <work-clone>                              # delete work-clone
   git branch -d <branch>                           # delete local branch
-
-RELEASE:
-  gh pr create --base master --head develop          # open release PR (GitHub)
-  git checkout master && git pull                  # pull after remote merge
-  git tag -a <version> -m "<version>"              # tag release
-  git push origin <version>                        # push tag
 ```
 
 ---
@@ -287,14 +261,4 @@ git fetch temp-42
 git checkout develop
 git merge --no-ff temp-42/42-add-auth-module
 git remote remove temp-42
-```
-
-For a local release merge (no forge PR):
-
-```bash
-cd ~/Projects/org/repo
-git checkout master
-git merge --no-ff develop
-git tag -a v1.0.0 -m "v1.0.0"
-git push origin master --follow-tags
 ```

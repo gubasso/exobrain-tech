@@ -30,5 +30,4 @@ logging, configuration, and a subcommand shape. This file owns only the **bootst
 ## Binary distribution (later phase)
 
 Shipping the CLI to users (PyPI, `pipx`/`uv tool install`, or frozen executables via `PyInstaller`)
-is release-phase work — see `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`).
-Bootstrap stops at a working, gated CLI project.
+is later-phase work. Bootstrap stops at a working, gated CLI project.

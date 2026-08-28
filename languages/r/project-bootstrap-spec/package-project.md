@@ -43,4 +43,4 @@ tests, lints, and `R CMD check`s clean.
 ## Publishing (later phase)
 
 CRAN submission, `R CMD check --as-cran`, `cran-comments.md`, and reverse-dependency checks are
-release-phase work, not bootstrap. Bootstrap stops at a green, installable package.
+later-phase work, not bootstrap. Bootstrap stops at a green, installable package.

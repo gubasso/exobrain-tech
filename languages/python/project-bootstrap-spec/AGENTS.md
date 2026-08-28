@@ -12,7 +12,7 @@ Python binding of the general `programming/project-bootstrap/` shelf: the once-p
 Python setup that takes an empty repo to a scaffolded, gated project ready for feature work. It
 **overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates
 it; it owns only the Python ecosystem choices and the two implementation-kind orderings (CLI,
-library). Publishing is out of scope — it hands off to `../release-workflow-spec/`.
+library). Publishing is out of scope.
 
 ## Key Points
 
@@ -23,7 +23,7 @@ library). Publishing is out of scope — it hands off to `../release-workflow-sp
 - **Manifest:** `pyproject.toml` (PEP 621). Bootstrap sets only `name`, `version`,
   `requires-python`, `description`, and a `[build-system]` backend (`hatchling` or `uv_build`).
   Publish-grade metadata (`license`, `authors`, `readme`, `urls`, `classifiers`, `keywords`) is
-  deferred to the release phase — do not duplicate that gate here.
+  deferred to the publishing phase — do not duplicate that gate here.
 - **Layout:** src layout — importable package under `src/<name>/`, `tests/` outside `src/` so tests
   run against the installed package.
 - **Interpreter pin:** `.python-version` (single line) pins one interpreter; `uv` reads it to manage
@@ -45,8 +45,7 @@ library). Publishing is out of scope — it hands off to `../release-workflow-sp
 
 ## Maintenance Notes
 
-- General spine: `../../../programming/project-bootstrap/`. Release handoff (PyPI Trusted
-  Publishing): `../release-workflow-spec/`. Detailed CLI structure: `../cli-spec/`.
+- General spine: `../../../programming/project-bootstrap/`. Detailed CLI structure: `../cli-spec/`.
 - `web-service.md` is a declared followup kind; add it when it lands.
 - The Python packaging landscape (`uv`, `ruff`) moves fast — re-verify the default-tool choices
   against upstream on a cadence when regenerating.

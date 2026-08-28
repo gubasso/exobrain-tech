@@ -29,6 +29,5 @@ Python binding: a public API surface, packaging metadata, and docs. This file ow
 ## Publishing (later phase)
 
 Publish-grade metadata (`license`, `authors`, `classifiers`, `urls`), building the sdist/wheel
-(`uv build`), and uploading to PyPI via Trusted Publishing are release-phase work — see
-`../release-workflow-spec/` (path: `../release-workflow-spec/README.md`). Bootstrap stops at a buildable,
+(`uv build`), and uploading to PyPI are later-phase work. Bootstrap stops at a buildable,
 importable, gated package.

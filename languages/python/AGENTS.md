@@ -30,10 +30,7 @@ conventions.
 
 ## Maintenance Notes
 
-- CLI-spec has its own AGENTS.md; this digest covers only the top-level Python files. The
-  `release-workflow-spec/` **stub** (release-please / python-semantic-release + PyPI Trusted
-  Publishing) is the Python binding of `programming/release-workflow/`, to be expanded when
-  adopted.
+- CLI-spec has its own AGENTS.md; this digest covers only the top-level Python files.
 - Framework notes (Eve, Flask, MongoDB) are reference-link collections; load directly when relevant.
 - Environment-manager guidance is cross-cutting; its home is
   `workflows/development-tools-workflow.md` — the Python notes only cross-link it.

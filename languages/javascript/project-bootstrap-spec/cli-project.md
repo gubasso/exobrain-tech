@@ -35,5 +35,5 @@ Keep the build (`tsc` → `dist/`) and the `bin` path in sync so the published c
 ## Binary distribution (later phase)
 
 Publishing the CLI to npm (and any standalone-binary packaging, e.g. via `pkg` or Node SEA) is
-release-phase work — see [`../release-workflow-spec/`](../release-workflow-spec/README.md).
-Bootstrap stops at a working, gated CLI package that runs locally via `node` or a linked `bin`.
+later-phase work. Bootstrap stops at a working, gated CLI package that runs locally via `node` or a
+linked `bin`.

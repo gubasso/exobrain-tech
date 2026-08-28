@@ -64,4 +64,4 @@ The R analogue of the general security baseline is keeping `renv.lock` reviewed 
 for known-vulnerable dependencies with
 [`oysteR`](https://sonatype-nexus-community.github.io/oysteR/) (OSS Index audit). Run it in CI
 alongside the other gates. Publish-readiness checks (CRAN policy, `R CMD check --as-cran`) belong to
-a later release phase, not bootstrap.
+a later phase, not bootstrap.

@@ -1,8 +1,8 @@
 # Feature Lifecycle
 
 Every code change starts from a forge issue. Three entry points — from an existing issue, from a new
-issue, and from uncommitted changes — converge on a shared lifecycle of sync, work, finish, cleanup,
-and release.
+issue, and from uncommitted changes — converge on a shared lifecycle of sync, work, finish, and
+cleanup.
 
 A **work-clone** is an isolated clone of the repository created with `git clone --reference`, placed
 as a sibling directory: `~/Projects/<org>/<repo>.<issue>-<slug>`. It shares the main repo's object
@@ -86,13 +86,6 @@ After the PR is merged on the forge:
 2. Remove the work-clone
 3. Delete the local feature branch — the forge auto-deletes the remote branch on merge
 4. Close the terminal window if one was opened
-
-### Release
-
-From the main repository, open a PR from the integration branch into the default branch on the
-forge, merge remotely, pull locally, tag the release, and push the tag. See
-[feature-lifecycle-git-commands](./feature-lifecycle-git-commands.md) for the full command
-reference.
 
 ---
 

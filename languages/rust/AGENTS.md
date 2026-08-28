@@ -9,8 +9,8 @@ token-estimate: 500
 ## Scope
 
 Rust language notes at the top level: general Rust guidance, framework notes, database integration
-patterns, and pointers to the bootstrap, CLI, and release/publishing sub-shelves (each of which
-carries its own nested digest).
+patterns, and pointers to the bootstrap and CLI sub-shelves (each of which carries its own nested
+digest).
 
 ## Key Points
 
@@ -23,19 +23,8 @@ carries its own nested digest).
 - **Bootstrap**: the `project-bootstrap-spec/` sub-shelf is the rust binding of the general
   `programming/project-bootstrap/` shelf — toolchain/layout, quality gates, and the CLI
   implementation-kind. Own nested `AGENTS.md`.
-- **Release & publishing**: the `release-workflow-spec/` sub-shelf is the unified rust binding of
-  the general `programming/release-workflow/` shelf — release-plz on `develop`, `master`
-  promotion onto the release tag, crates.io Trusted Publishing (register `release-plz.yml`, not
-  `release.yml`), crate metadata, token scopes, helper scripts, SemVer/yank, cargo-dist binary
-  distribution, and a per-new-project runbook. Own nested `AGENTS.md`.
-- **Cookbook**: the `cookbook/` sub-shelf is a single-file, TLDR ship-it runbook (scaffold → quality
-  gates → branch security → CI → release/publish) that inlines and footnotes the bootstrap and
-  release specs. It is the sanctioned SoT/DRY exception (repo `AGENTS.md`;
-  ADR-cookbook-duplication-exception) — do **not**
-  de-duplicate it against the specs. Own nested `AGENTS.md`.
 
 ## Maintenance Notes
 
-- `cli-spec/`, `project-bootstrap-spec/`, and `release-workflow-spec/` each have their own digest
-  and are not expanded here.
+- `cli-spec/` and `project-bootstrap-spec/` each have their own digest and are not expanded here.
 - Regenerate when the area's knowledge changes.

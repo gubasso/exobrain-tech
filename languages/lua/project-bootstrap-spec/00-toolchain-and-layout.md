@@ -34,7 +34,7 @@ build = {
 ```
 
 Keep the bootstrap rockspec minimal (`dev-1`); publish-grade metadata (license, tagged `source`,
-labels) is release-phase work. Use `luarocks make` / `luarocks build` to install locally into the
+labels) is later-phase work. Use `luarocks make` / `luarocks build` to install locally into the
 project tree.
 
 ## Module & `require` layout

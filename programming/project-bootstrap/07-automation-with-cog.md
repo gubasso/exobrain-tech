@@ -20,20 +20,19 @@ match.
 Each bootstrap domain maps to exactly one cog skill. This is a routing table, **not** a restatement
 of the steps — the steps live in the runbook and chapters.
 
-| Bootstrap domain            | Runbook step | cog skill                 |
-| --------------------------- | ------------ | ------------------------- |
-| Repository foundation       | 2            | `bootstrap-repo`          |
-| Governance & docs           | 3            | `bootstrap-governance`    |
-| Local dev environment (Nix) | 4            | `bootstrap-nix`           |
-| Editorconfig                | 4            | `bootstrap-editorconfig`  |
-| Pre-commit hooks            | 5            | `bootstrap-precommit`     |
-| Task runner                 | 5            | `bootstrap-taskrunner`    |
-| CI workflow                 | 6            | `bootstrap-ci`            |
-| Rust crate skeleton         | language     | `bootstrap-rust`          |
-| Cargo publishing            | release      | `bootstrap-cargo-publish` |
+| Bootstrap domain            | Runbook step | cog skill                |
+| --------------------------- | ------------ | ------------------------ |
+| Repository foundation       | 2            | `bootstrap-repo`         |
+| Governance & docs           | 3            | `bootstrap-governance`   |
+| Local dev environment (Nix) | 4            | `bootstrap-nix`          |
+| Editorconfig                | 4            | `bootstrap-editorconfig` |
+| Pre-commit hooks            | 5            | `bootstrap-precommit`    |
+| Task runner                 | 5            | `bootstrap-taskrunner`   |
+| CI workflow                 | 6            | `bootstrap-ci`           |
+| Rust crate skeleton         | language     | `bootstrap-rust`         |
 
-Language- and release-specific skills (`bootstrap-rust`, `bootstrap-cargo-publish`) belong to the
-language binding and the release phase respectively, not to the general spine.
+A language-specific skill (`bootstrap-rust`) belongs to the language binding, not to the general
+spine.
 
 ## Using the annotations
 

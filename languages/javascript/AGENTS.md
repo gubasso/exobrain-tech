@@ -31,6 +31,3 @@ plus general language and framework references.
 - Review guides are loaded on demand by the review-code-deep skill based on file extensions in the
   diff.
 - No CLI-spec subdirectory exists for JavaScript; CLI patterns use the general `cli-design/` canon.
-- The `release-workflow-spec/` **stub** (Changesets + `changesets/action` + npm Trusted Publishing
-  OIDC) is the JS/Node binding of `programming/release-workflow/`, to be expanded when adopted;
-  it cross-links the `node-npm.md` Releases section.

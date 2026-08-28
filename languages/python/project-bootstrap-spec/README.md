@@ -16,9 +16,6 @@ then the Python specifics here.
 2. Follow this [`runbook.md`](./runbook.md) for the Python-specific overlay steps.
 3. Jump to your implementation-kind file (e.g. [`cli-project.md`](./cli-project.md) or
    [`library-project.md`](./library-project.md)).
-4. When ready to publish, hand off to
-   `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`) — the later Python release
-   phase.
 
 ## Index
 
@@ -40,5 +37,3 @@ then the Python specifics here.
 
 - [General project-bootstrap](../../../programming/project-bootstrap/README.md) — the cross-language
   recipe this binding overlays.
-- `../release-workflow-spec/` (path: `../release-workflow-spec/README.md`) — the later Python release &
-  publishing phase.

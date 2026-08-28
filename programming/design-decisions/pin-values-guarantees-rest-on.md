@@ -38,5 +38,4 @@ does not change when the two values coincide today.
 
 ## Status
 
-Accepted. Same shape as [the committed-version rule](./version-source-of-truth.md): one place authors the value and
-nothing load-bearing is left implicit.
+Accepted. One place authors the value and nothing load-bearing is left implicit.

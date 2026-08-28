@@ -39,6 +39,5 @@ Layer these on the initialized package in order:
 
 ## Deployment (later phase)
 
-Building for production and deploying the bundle (static host, CDN, container) is
-release/deploy-phase work — see [`../release-workflow-spec/`](../release-workflow-spec/README.md).
+Building for production and deploying the bundle (static host, CDN, container) is later-phase work.
 Bootstrap stops at an app that runs via `npm run dev` and builds clean via `npm run build`.

@@ -14,7 +14,7 @@ authoring. It **overlays** the general spine (repo, license, governance, dev env
 never restates it; it owns only the CSS ecosystem choices — stylesheet architecture/naming, the
 processing pipeline, the npm/pnpm package manager in a Nix devShell, the stylelint/prettier gates —
 plus the one implementation-kind ordering (stylesheet-library). Publishing to npm is out of scope —
-it hands off to the release phase.
+it hands off to a later phase.
 
 ## Key Points
 
@@ -50,7 +50,7 @@ it hands off to the release phase.
   without a rebuild); BEM components dereferencing tokens (never literals); a `dist/` build (Vite
   library mode or `sass`/`postcss-cli`, shipping compiled `.css` plus Sass partials); npm packaging
   (`main`/`style`, `exports`, `sideEffects: ["*.css"]`, `files`/`.npmignore`), validated with
-  `npm publish --dry-run`. Actual npm publishing is release-phase, not owned here.
+  `npm publish --dry-run`. Actual npm publishing is later-phase, not owned here.
 - **Automation:** `bootstrap-nix` (Node devShell), `bootstrap-precommit` (hooks),
   `bootstrap-taskrunner` (build/lint recipes), `bootstrap-ci`. The runbook steps are the SoT — see
   general `07-automation-with-cog.md`.

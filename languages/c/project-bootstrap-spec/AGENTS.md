@@ -12,7 +12,7 @@ C binding of the general `programming/project-bootstrap/` shelf: the once-per-pr
 that takes an empty repo to a scaffolded, gated project ready for feature work. It **overlays** the
 general spine (repo, license, governance, dev env, CI, security) and never restates it; it owns only
 the C ecosystem choices and the two implementation-kind orderings (CLI, library). Packaging,
-install/distribution, and versioning are out of scope — they are release-phase work.
+install/distribution, and versioning are out of scope — they are later-phase work.
 
 ## Key Points
 

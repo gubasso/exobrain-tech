@@ -12,7 +12,7 @@ R binding of the general `programming/project-bootstrap/` shelf: the once-per-pr
 that takes an empty repo to a scaffolded, gated, reproducible project ready for feature work. It
 **overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates
 it; it owns only the R ecosystem choices and the two implementation-kind orderings (package,
-analysis). Publishing (CRAN) is out of scope — it hands off to a later release phase.
+analysis). Publishing (CRAN) is out of scope — it hands off to a later phase.
 
 ## Key Points
 
@@ -26,7 +26,7 @@ analysis). Publishing (CRAN) is out of scope — it hands off to a later release
 - **Metadata:** package `DESCRIPTION` bootstrap-minimum is `Package`, `Title`, `Version`,
   `Depends: R (>= x.y)`, and known imports via `usethis::use_package("<pkg>")` (`Imports:`).
   Publish-grade metadata (full `Authors@R`, `License`, `URL`/`BugReports`, `cran-comments.md`) is
-  deferred to release. Analysis projects have no `DESCRIPTION` — their dependency contract is
+  deferred to a later phase. Analysis projects have no `DESCRIPTION` — their dependency contract is
   `renv.lock`.
 - **R version pin + Nix:** pin the minimum in `DESCRIPTION` `Depends:` and/or `renv.lock`; a Nix
   devShell provides that exact R + system libs so local and CI share one interpreter. Nix owns the

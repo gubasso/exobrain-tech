@@ -12,8 +12,8 @@ Bash binding of the general `programming/project-bootstrap/` shelf: the once-per
 setup that takes an empty repo to a scaffolded, strict-mode, gated script project ready for feature
 work. It **overlays** the general spine (repo, license, governance, dev env, CI, security) and never
 restates it; it owns only the Bash ecosystem choices (script layout, strict mode, the
-shfmt/shellcheck/bats gates) and the CLI implementation-kind ordering. Distribution is out of scope
-— it hands off to `../release-workflow-spec/`.
+shfmt/shellcheck/bats gates) and the CLI implementation-kind ordering. Distribution is out of
+scope.
 
 ## Key Points
 
@@ -54,9 +54,8 @@ shfmt/shellcheck/bats gates) and the CLI implementation-kind ordering. Distribut
 
 ## Maintenance Notes
 
-- General spine: `../../../programming/project-bootstrap/`. Release/distribution handoff (tag,
-  git-cliff changelog, Makefile, `install.sh`, AUR, OBS): `../release-workflow-spec/`. Detailed Bash
-  CLI structure: `../cli-spec/`.
+- General spine: `../../../programming/project-bootstrap/`. Detailed Bash CLI structure:
+  `../cli-spec/`.
 - `library-project.md` (a sourced function library) is a declared followup kind; add it when it lands.
 - Re-verify the default-tool flags (`shfmt`, `shellcheck -S style`, `bats-core`) against upstream on
   a cadence when regenerating.

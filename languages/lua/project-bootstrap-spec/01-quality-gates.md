@@ -45,5 +45,5 @@ locally in seconds.
 
 ## Publish-readiness (later phase)
 
-Publish-grade checks (`luarocks upload`, rockspec metadata completeness) belong to a later release
+Publish-grade checks (`luarocks upload`, rockspec metadata completeness) belong to a later publishing
 phase, not bootstrap. Bootstrap only guarantees the project formats, lints, and tests clean.
