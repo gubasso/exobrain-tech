@@ -68,9 +68,10 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 5. Rebase onto the main directory's line, whenever that line moves.
 
-   `default@-` is the commit that directory is building on. `default@` is its working copy,
-   normally an empty commit, and parenting the change there wedges that empty commit into the
-   history for good.
+   `default@` is that directory's working copy: an empty commit jj discards the moment the
+   working copy leaves it. Parent the change there and it has a descendant, so it can never be
+   discarded and stays in the history. `default@-` is the commit under it, the work that
+   directory builds on.
 
    ```sh
    jj rebase -o 'default@-'
@@ -82,29 +83,27 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
    Parent commit (@-)      : zluyltwo af932ccb docs: add readme
    ```
 
-6. Return to the main directory and take the change onto its line.
-
-   - `wkspc-feat-x@` resolves only while the workspace exists, so this runs before step 7.
-   - Where that directory carries a change of its own in progress, `jj rebase -o 'wkspc-feat-x@'`
-     puts that change on top of this one instead of leaving it a sibling.
+6. Return to the main directory.
 
    ```sh
-   cd - && jj new 'wkspc-feat-x@'
+   cd -
    ```
 
-   ```text
-   Working copy  (@) now at: zqtzskyu fc856264 (empty) (no description set)
-   Parent commit (@-)      : pyzykowm 20f75034 feat: teach parser about arrays
-   Added 0 files, modified 1 files, removed 0 files
-   ```
+7. Land the change by the route the state of this directory calls for. Both routes run before
+   step 8, which deletes the workspace row that `wkspc-feat-x@` resolves through.
 
-7. Retire the workspace `wkspc-feat-x@` and delete its directory.
+   - [land-into-a-clean-main-directory.md](./parallel-workspace-local/land-into-a-clean-main-directory.md)
+     — this directory has nothing in progress
+   - [land-over-work-in-progress.md](./parallel-workspace-local/land-over-work-in-progress.md)
+     — this directory carries a change of its own
+
+8. Retire the workspace `wkspc-feat-x@` and delete its directory.
 
    ```sh
    jj workspace forget wkspc-feat-x && rm -rf ../wkspc-feat-x
    ```
 
-8. Verify the workspace is gone and the main directory stands on the change.
+9. Verify the workspace is gone and the main directory stands on the change.
 
    ```sh
    jj workspace list && jj log -r '@-'
@@ -120,6 +119,10 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 ## Reference
 
 - [parallel-workspace.md](./parallel-workspace.md) — the same recipe against a remote
+- [land-into-a-clean-main-directory.md](./parallel-workspace-local/land-into-a-clean-main-directory.md)
+  — landing where nothing is in progress
+- [land-over-work-in-progress.md](./parallel-workspace-local/land-over-work-in-progress.md)
+  — landing where the main directory carries a change
 - [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) — landing, addressing, staleness
 - [what-names-a-change.md](./what-names-a-change.md) — the four names walked through one scenario
 - [Revsets](https://docs.jj-vcs.dev/latest/revsets/) — `@`, `<workspace>@`, and `working_copies()`
