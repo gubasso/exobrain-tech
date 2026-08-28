@@ -148,12 +148,14 @@ only fetch and push move them. The directory and workspace names did not travel.
 
 ```text
 REPO TABLES
-  workspaces:  default@ -> C             (the wkspc-feat-x@ row is gone)
+  workspaces:  default@ -> G             (the wkspc-feat-x@ row is gone)
   bookmarks:   develop -> D      feat-x -> D
 ```
 
 `jj bookmark set develop -r feat-x` is the landing: a local pointer move, no merge, because both
 directories always wrote into one repo; the remote branch moves only when that bookmark is pushed.
+The move is the bookmark's alone, so `~/code/repo` still stands on `C` and its files still lack
+the change; `jj new develop@origin` there puts it on a fresh `G` above `D`, and the empty `C` goes.
 `jj workspace forget wkspc-feat-x` drops the workspace row and touches no commit.
 
 ## The rule that catches people

@@ -1,9 +1,11 @@
 # Work on a change in a parallel directory with jj
 
 Creates a second working directory backed by the same jj repo, develops a change there
-independently, and lands it on the integration bookmark `develop`. One change at a time; sparse
-checkouts and conflict resolution are out of scope. Names carry a kind prefix while they are only
-names in this repo, per [README.md](./README.md); a bookmark drops it before becoming a branch.
+independently, and lands it on the integration line `develop` at the remote. Landing in the main
+directory instead, with no remote, is [parallel-workspace-local.md](./parallel-workspace-local.md).
+One change at a time; sparse checkouts and conflict resolution are out of scope. Names carry a kind
+prefix while they are only names in this repo, per [README.md](./README.md); a bookmark drops it
+before becoming a branch.
 
 The steps run one worked example end to end: a repo at `~/code/repo`, one edit to
 `src/parser.rs`, developed in `../wkspc-feat-x/` and landed as the branch `feat-x`.
@@ -112,23 +114,14 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
    Created 1 bookmarks pointing to rzvqmyuk 4b8e2a15 bkmrk-feat-x | feat: teach parser about arrays
    ```
 
-9. Rebase onto the line this work belongs on, whenever that line moves, by one of:
+9. Rebase onto the remote tip, whenever it moves.
 
-   - the remote tip `develop@origin`, when the branch is shared and review runs against origin
+   The fetch is what moves `develop@origin`, and `jj rebase` takes `-b @` as its source when
+   none is given.
 
-     ```sh
-     jj git fetch && jj rebase -b @ -o develop@origin
-     ```
-
-   - the main directory's own line, when you land there rather than on the remote
-
-     `develop` names its branch, because a colocated repo's Git branch and the bookmark of
-     that name are one line of work; `default@-` names its last commit when no bookmark does.
-     Both are repo-wide, so they resolve here with no fetch and nothing to set up.
-
-     ```sh
-     jj rebase -b @ -o develop
-     ```
+   ```sh
+   jj git fetch && jj rebase -o develop@origin
+   ```
 
 10. Rename the bookmark to the name the branch will carry. This is the last step before the
     name leaves the repo, and the only moment it changes.
@@ -163,36 +156,54 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
     - move the bookmark `develop` locally, when no review is involved
 
-      The `set` is local and changes nothing on the remote. The push is what writes the
-      branch named `develop` there — updating it if it exists, creating it if not. A push is
-      refused when the remote already carries that name untracked; `jj bookmark track
-      develop@origin` clears that, once.
+      The `set` is local and changes nothing on the remote; the push is what moves the branch
+      named `develop` there. A push is refused when the remote carries that name untracked;
+      `jj bookmark track develop@origin` clears that, once.
 
       ```sh
       jj bookmark set develop -r feat-x && jj git push --bookmark develop
       ```
 
-13. Retire the workspace `wkspc-feat-x@` and delete its directory.
+13. Return to the main directory and start a commit on top of the landed work.
+
+    Either route moves a name alone, and a working copy never follows a name, so that directory
+    sits where it always did and its files lack the change until you move it. A push updates
+    `develop@origin` too, so this one address serves both routes.
 
     ```sh
-    cd - && jj workspace forget wkspc-feat-x && rm -rf ../wkspc-feat-x
+    cd - && jj new develop@origin
     ```
 
-14. Verify the workspace is gone and the work is on `develop`.
+    ```text
+    Working copy  (@) now at: rlvkpnrz 504e3d8c (empty) (no description set)
+    Parent commit (@-)      : rzvqmyuk 7c21ef60 develop feat-x | feat: teach parser about arrays
+    Added 0 files, modified 1 files, removed 0 files
+    ```
+
+14. Retire the workspace `wkspc-feat-x@` and delete its directory.
 
     ```sh
-    jj workspace list && jj log -r develop
+    jj workspace forget wkspc-feat-x && rm -rf ../wkspc-feat-x
+    ```
+
+15. Verify the workspace is gone and the main directory sits on the landed work.
+
+    ```sh
+    jj workspace list && jj log -r 'develop@origin::'
     ```
 
     ```text
     default: . rlvkpnrz 504e3d8c (empty) (no description set)
-    ○  rzvqmyuk you@example.com 2026-08-27 14:02:11 develop 7c21ef60
+    @  rlvkpnrz you@example.com 2026-08-27 14:02:11 504e3d8c
+    │  (empty) (no description set)
+    ◆  rzvqmyuk you@example.com 2026-08-27 14:02:11 develop feat-x 7c21ef60
     │  feat: teach parser about arrays
     ~
     ```
 
 ## Reference
 
+- [parallel-workspace-local.md](./parallel-workspace-local.md) — the same recipe with no remote
 - [workspaces-share-one-repo.md](./workspaces-share-one-repo.md) — landing, addressing, staleness
 - [what-names-a-change.md](./what-names-a-change.md) — the four names walked through one scenario
 - [Working copy](https://docs.jj-vcs.dev/latest/working-copy/) — workspaces and stale working copies

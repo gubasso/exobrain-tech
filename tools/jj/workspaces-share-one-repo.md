@@ -69,10 +69,11 @@ but it is never checked out, which is why two workspaces may sit on the same lin
 Back in `~/src/app`, the refactor should now sit on top of the fix:
 
 ```sh
-jj rebase -b @ -o hotfix
+jj rebase -o hotfix
 ```
 
-Run from `~/src/app`, this is ordinary. Run the same rebase from `../wkspc-hotfix` and it
+`jj rebase` takes `-b @` as its source when none is given. Run from `~/src/app`, this is
+ordinary. Run the same rebase from `../wkspc-hotfix` and it
 rewrites a commit that another workspace has checked out. The repo records the new commit
 immediately; the files in `~/src/app` still match the old one. That workspace is stale —
 its `.jj/working_copy/` records an operation older than the repo's current one.

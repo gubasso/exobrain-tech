@@ -45,9 +45,10 @@ own `.git` on the next command, and a branch on the remote when you `jj git push
 
 ## Doing
 
-| Document                                         | What it gets you                                                                                                                         |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| [parallel-workspace.md](./parallel-workspace.md) | A second working directory backed by the same repo — created from your last commit, developed independently, landed with a bookmark move |
+| Document                                                     | What it gets you                                                                                                      |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| [parallel-workspace.md](./parallel-workspace.md)             | A second working directory backed by the same repo, developed independently and landed on `develop` at the remote     |
+| [parallel-workspace-local.md](./parallel-workspace-local.md) | The same second directory with no remote in it: the two directories address each other by workspace name, no bookmark |
 
 ## Understanding
 
