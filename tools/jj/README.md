@@ -45,10 +45,11 @@ own `.git` on the next command, and a branch on the remote when you `jj git push
 
 ## Doing
 
-| Document                                     | What it gets you                                                                                                                                                       |
-| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [one-directory/](./one-directory/)           | A change stacked in the directory you are already in, with no second working copy and no branch checked out, landed on `develop` at the remote                         |
-| [parallel-workspace/](./parallel-workspace/) | A second working directory backed by the same repo, developed independently and landed either on `develop` at the remote or in the main directory with no remote in it |
+| Document                                           | What it gets you                                                                                                                                                       |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [one-directory/](./one-directory/)                 | A change stacked in the directory you are already in, with no second working copy and no branch checked out, landed on `develop` at the remote                         |
+| [parallel-workspace/](./parallel-workspace/)       | A second working directory backed by the same repo, developed independently and landed either on `develop` at the remote or in the main directory with no remote in it |
+| [review-a-pull-request/](./review-a-pull-request/) | Someone else's branch in the directory you are already in, either read and left untouched or tracked so your own commits reach the pull request                        |
 
 ## Understanding
 

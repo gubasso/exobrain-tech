@@ -12,6 +12,8 @@
     - [Scenario: A step runs a command the guide never installs](#scenario-a-step-runs-a-command-the-guide-never-installs)
   - [`guides:a-subtask-nests-under-its-step` — A subtask nests under its step](#guidesa-subtask-nests-under-its-step--a-subtask-nests-under-its-step)
     - [Scenario: A step's parts are promoted to steps](#scenario-a-steps-parts-are-promoted-to-steps)
+  - [`guides:a-step-shows-its-output` — A step shows its output](#guidesa-step-shows-its-output--a-step-shows-its-output)
+    - [Scenario: A step describes its result in a sentence](#scenario-a-step-describes-its-result-in-a-sentence)
   - [`guides:a-guide-ends-in-a-verification` — A guide ends in a verification](#guidesa-guide-ends-in-a-verification--a-guide-ends-in-a-verification)
     - [Scenario: A guide stops at the last edit](#scenario-a-guide-stops-at-the-last-edit)
   - [`guides:explanation-moves-to-a-companion` — Explanation moves to a companion document](#guidesexplanation-moves-to-a-companion--explanation-moves-to-a-companion-document)
@@ -83,6 +85,19 @@ the step.
 
 Verify: `pre-commit run guide-recipe-shape --all-files`
 
+### `guides:a-step-shows-its-output` — A step shows its output
+
+The author MUST follow a step's command with the output the reader should see, and MUST NOT spend
+prose describing what that output already carries.
+
+#### Scenario: A step describes its result in a sentence
+
+- GIVEN a step whose command prints the position the working copy moved to
+- WHEN the step describes that position in prose instead of showing it
+- THEN the reader cannot tell whether their own run matched, and the transcript replaces the sentence
+
+Verify: reviewer confirms each step's command is followed by its output rather than a description of it
+
 ### `guides:a-guide-ends-in-a-verification` — A guide ends in a verification
 
 The author MUST make the last step a check the reader runs to confirm the result.
@@ -129,6 +144,7 @@ No command decides these; review does. Each is asked of every guide in the chang
 | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `guides:a-step-is-one-action`             | Does any step name a second action?                                                         |
 | `guides:a-step-leaves-no-gap`             | Does any step assume state nothing earlier produced?                                        |
+| `guides:a-step-shows-its-output`          | Does any step describe an output it could have shown?                                       |
 | `guides:a-guide-ends-in-a-verification`   | Does the reader learn whether it worked?                                                    |
 | `guides:explanation-moves-to-a-companion` | Is any prose there for a reason other than a decision, a hazard, or an ordering constraint? |
 | `guides:a-companion-walks-a-scenario`     | Does the companion show a run, or only argue?                                               |

@@ -63,9 +63,10 @@ rule onto older files is ordinary pre-commit work (ADR-a-stated-rule-is-applied-
 - Every size budget in `_docs/specs/SPEC-docs-format.md` is gated. Over budget, a document splits.
 - A guide is a recipe, not an essay: prerequisites, then ordered steps, one imperative action each,
   the command in a fence, subtasks nested under their step, and a last step that verifies the result.
-  Depth goes to a companion document that walks a scenario. `_docs/specs/SPEC-guides.md` owns the
-  rules and `_docs/specs/SPEC-guides/TEMPLATE-guide.md` is the skeleton to copy
-  (ADR-a-guide-is-a-recipe).
+  Depth goes to a companion document that walks a scenario. Every command is followed by the output
+  the reader should see, simulated from a worked example the whole guide runs, and no sentence
+  describes what a transcript already shows. `_docs/specs/SPEC-guides.md` owns the rules and
+  `_docs/specs/SPEC-guides/TEMPLATE-guide.md` is the skeleton to copy (ADR-a-guide-is-a-recipe).
 - This root digest stays plain and frontmatter-free; per-directory digests carry frontmatter.
 
 ## Executable artifacts and tools
