@@ -12,6 +12,12 @@ moved, land, retire the workspace. They split on where the change has to arrive.
 | other people, through `origin`          | `main-target-remote/` | a bookmark, pushed as a branch      |
 | only the main directory on this machine | `main-target-local/`  | the workspace name, and no bookmark |
 
+## Starting
+
+| Document                                                                                 | What it gets you                                                                                                                                |
+| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| [start-while-the-main-directory-is-busy.md](./start-while-the-main-directory-is-busy.md) | The workspace parented on `master@origin` with `-r` while the main directory holds unfinished work on another line, and nothing there disturbed |
+
 ## Landing at the remote
 
 | Document                                                                              | What it gets you                                                                                                                   |
