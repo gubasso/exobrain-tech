@@ -13,6 +13,15 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 - `jj` 0.44 or later is on `PATH`.
   - check: `jj --version`
+- The current directory is a jj workspace.
+  - check: `jj workspace root`
+  - if not:
+
+    ```sh
+    jj git clone <url>   # a fresh checkout
+    jj git init          # or adopt the Git repo already here
+    # both colocate on their own: --colocate is inert unless git.colocate = false
+    ```
 - The current directory is the workspace the repo was created with, named `default`.
   - check: `jj workspace list` names it `default`
   - if it carries another name, use that name wherever these steps write `default`

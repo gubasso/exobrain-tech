@@ -24,6 +24,13 @@ jj new develop@origin
   - check: `jj --version`
 - The current directory is a jj workspace with a Git remote named `origin`.
   - check: `jj workspace root && jj git remote list`
+  - if not:
+
+    ```sh
+    jj git clone <url>   # a fresh checkout
+    jj git init          # or adopt the Git repo already here
+    # both colocate on their own: --colocate is inert unless git.colocate = false
+    ```
 - The branch name behind the pull request, and whether it lives in a fork, are known.
   - check: `gh pr view 42 --json headRefName,isCrossRepository,headRepositoryOwner`
 

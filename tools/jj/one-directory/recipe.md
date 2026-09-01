@@ -35,8 +35,12 @@ what each prints and where the run forks.
 - The current directory is a jj workspace.
   - check: `jj workspace root`
   - if not:
-    - `jj git clone <url>`
-    - or `jj git init` where a Git repo already exists, which adopts it
+
+    ```sh
+    jj git clone <url>   # a fresh checkout
+    jj git init          # or adopt the Git repo already here
+    # both colocate on their own: --colocate is inert unless git.colocate = false
+    ```
 - The repo has a Git remote named `origin`.
   - check: `jj git remote list`
   - if not: `jj git remote add origin <url>`
