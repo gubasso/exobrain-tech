@@ -43,6 +43,11 @@ none of them advances on its own the way the current Git branch does. A name you
 `jj bookmark set` is a bookmark and nothing more; it becomes a branch in a colocated repo's
 own `.git` on the next command, and a branch on the remote when you `jj git push` it.
 
+Every repo in these notes is colocated — `.jj/` and `.git/` side by side, so git tooling keeps
+working. `jj git init` and `jj git clone` do that on their own, so never pass `--colocate`: the flag
+is inert unless `git.colocate` is set to `false`, and `--no-colocate` is the one that changes
+anything.
+
 ## Doing
 
 | Document                                           | What it gets you                                                                                                                                                       |
