@@ -33,19 +33,20 @@
 
 ### Merge branches (one-liner)
 
-The easiest option is to merge the target branch (e.g. `develop`) into the feature branch using
-something like the following:
+To merge the target branch (e.g. `master`) into the feature branch, switch to the branch that
+receives the merge first:
 
 ```sh
-git checkout feature
-git merge develop
+git switch feat/auth
+git merge master
 ```
 
-Or, you can condense this to a one-liner:
+`git merge` always merges into the current branch. Naming two branches, as in
+`git merge feat/auth master`, merges both of them into whatever is checked out — an octopus merge, not
+a shorthand for the two commands above.
 
-```sh
-git merge feature develop
-```
+On a trunk you would rebase rather than merge — see [rebase-workflow.md](./rebase-workflow.md) —
+but the mechanics above are what a merge does.
 
 ### Checkout vs Switch
 
@@ -63,23 +64,23 @@ git for-each-ref --format="%(refname:short) %(upstream:track) %(upstream:remoten
 ### Clone and switch to a branch
 
 ```sh
-git checkout -b new-branch-name origin/new-branch-name
+git checkout -b feat/auth origin/feat/auth
 ```
 
 You can do it in one shot with `git`—create the local branch **with the same name** and set it to
 track the remote branch.
 
-Assuming the remote is `origin` and the branch is `my-feature`:
+Assuming the remote is `origin` and the branch is `feat/auth`:
 
 ```bash
 git fetch origin
-git checkout -b my-feature origin/my-feature
+git checkout -b feat/auth origin/feat/auth
 ```
 
 That:
 
-- creates local branch `my-feature`
-- sets its upstream to `origin/my-feature` (so `git pull`/`git push` work without extra args)
+- creates local branch `feat/auth`
+- sets its upstream to `origin/feat/auth` (so `git pull`/`git push` work without extra args)
 
 ---
 
@@ -87,13 +88,13 @@ On newer Git, there’s also this shorter form:
 
 ```bash
 git fetch origin
-git switch --track origin/my-feature
+git switch --track origin/feat/auth
 ```
 
 If the local branch doesn’t exist yet, this will:
 
-- create a local `my-feature`
-- automatically track `origin/my-feature`
+- create a local `feat/auth`
+- automatically track `origin/feat/auth`
 
 You can confirm they’re associated with:
 
@@ -110,22 +111,22 @@ git branch -vv
 Rename local branch:
 
 ```sh
-git checkout old-name
-git branch -m new-name
+git checkout <old-name>
+git branch -m <new-name>
 # or
 git checkout master
-git branch -m old-name new-name
+git branch -m <old-name> <new-name>
 ```
 
 Rename remote branch:
 
 ```sh
 # deleting and creating new
-git push origin --delete old-name
-git push origin -u new-name
-# or by by overwriting it
-git push origin :old-name new-name
-git push origin –u new-name
+git push origin --delete <old-name>
+git push origin -u <new-name>
+# or by overwriting it
+git push origin :<old-name> <new-name>
+git push origin --set-upstream <new-name>
 ```
 
 ### Delete branches
@@ -161,7 +162,7 @@ merge file / merge path / merge dir
 tldr;
 
 ```sh
-git checkout source_branch -- path/to/file
+git checkout <source-branch> -- path/to/file
 # resolve conflicts if any
 git commit -am '...'
 ```
@@ -177,9 +178,10 @@ git restore --staged .
 
 ## Development workflow
 
-This README keeps the git command mechanics. The day-to-day loop that feeds `develop` is documented
-in [feature-lifecycle.md](./feature-lifecycle.md) and
-[rebase-workflow.md](./rebase-workflow.md).
+This README keeps the git command mechanics. The day-to-day loop that feeds the trunk is documented
+in [feature-lifecycle.md](./feature-lifecycle.md) and [rebase-workflow.md](./rebase-workflow.md);
+the branching model behind it is
+[trunk-based development](../../workflows/trunk-based-development.md).
 
 ### External reading
 

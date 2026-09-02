@@ -11,7 +11,7 @@ the name is jj's alone, so no token is ambiguous while you are learning which is
 | Kind            | Example name       | Written as        | Real repos                       |
 | --------------- | ------------------ | ----------------- | -------------------------------- |
 | bookmark        | `bkmrk-feat-x`     | bare              | `feat-x`                         |
-| remote bookmark | `develop@origin`   | `<name>@origin`   | `develop@origin`                 |
+| remote bookmark | `master@origin`    | `<name>@origin`   | `master@origin`                  |
 | workspace       | `wkspc-feat-x`     | `<name>@`         | whatever the directory is called |
 | directory       | `../wkspc-feat-x/` | a filesystem path | any path                         |
 | description     | quoted prose       | `-m "feat: ..."`  | prose                            |
@@ -31,8 +31,8 @@ jj bookmark rename bkmrk-feat-x feat-x
 ```
 
 A workspace name never becomes a branch, so `wkspc-` stays for the life of the workspace. Names
-that arrive from the remote are branches already and carry no prefix at any point: `develop` is
-the integration line in these notes and `master` the release line.
+that arrive from the remote are branches already and carry no prefix at any point: `master` is the
+trunk in these notes, and `release/1.1` an older line where a guide needs one.
 
 A bookmark is a reference — a name pointing at one commit id — and it is how jj manages Git
 branches: against a Git repo jj
@@ -50,11 +50,11 @@ anything.
 
 ## Doing
 
-| Document                                           | What it gets you                                                                                                                                                       |
-| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [one-directory/](./one-directory/)                 | A change stacked in the directory you are already in, with no second working copy and no branch checked out, landed on `develop` at the remote                         |
-| [parallel-workspace/](./parallel-workspace/)       | A second working directory backed by the same repo, developed independently and landed either on `develop` at the remote or in the main directory with no remote in it |
-| [review-a-pull-request/](./review-a-pull-request/) | Someone else's branch in the directory you are already in, either read and left untouched or tracked so your own commits reach the pull request                        |
+| Document                                           | What it gets you                                                                                                                                                      |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [one-directory/](./one-directory/)                 | A change stacked in the directory you are already in, with no second working copy and no branch checked out, landed on `master` at the remote                         |
+| [parallel-workspace/](./parallel-workspace/)       | A second working directory backed by the same repo, developed independently and landed either on `master` at the remote or in the main directory with no remote in it |
+| [review-a-pull-request/](./review-a-pull-request/) | Someone else's branch in the directory you are already in, either read and left untouched or tracked so your own commits reach the pull request                       |
 
 ## Understanding
 

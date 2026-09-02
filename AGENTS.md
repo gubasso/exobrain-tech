@@ -50,6 +50,10 @@ cites answers something, that is the answer — including whether work earns a r
 or its own commit. Report only what is still open; a closed item hides the live ones. Retrofitting a
 rule onto older files is ordinary pre-commit work (ADR-a-stated-rule-is-applied-not-re-raised).
 
+`master` is the trunk: the only permanent branch and the repository default. Work reaches it through
+a short-lived branch and one squash-merged pull request, never a direct push
+(ADR-master-is-the-trunk).
+
 ## Authoring
 
 - Keep each fact in one source of truth and cross-link instead of duplicating.

@@ -26,8 +26,8 @@ is updated rather than dated.
 - Example names carry the kind-prefix convention `README.md` defines: `bkmrk-` and `wkspc-` while
   the name is jj's alone, dropped the moment the name becomes a branch. Names arriving from a remote
   carry no prefix.
-- The example vocabulary is shared across the bucket: `develop` is the integration line, `master`
-  the release line, `feat-x` the change under work, `origin` the remote.
+- The example vocabulary is shared across the bucket: `master` is the trunk, `feat-x` the change
+  under work, `origin` the remote. A guide that needs an older line names it `release/1.1`.
 - A revset or flag a guide relies on is verified against the upstream reference before it ships, and
   the reference page is linked from the guide's `## Reference` section.
 

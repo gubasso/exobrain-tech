@@ -2,33 +2,31 @@
 
 ## Download changes to another branch
 
-I am at master branch and run: git fetch origin develop:develop
+I am at master branch and run: git fetch origin feat/auth:feat/auth
 
 ---
 
-The command you ran (`git fetch origin develop:develop`) fetches the `develop` branch from the
-remote repository (in this case, `origin`) and updates (or creates) a local branch called `develop`
-to match the remote one. Here’s a breakdown of the command:
+The command you ran (`git fetch origin feat/auth:feat/auth`) fetches the `feat/auth` branch from the
+remote repository (in this case, `origin`) and updates (or creates) a local branch called
+`feat/auth` to match the remote one. Here’s a breakdown of the command:
 
 - `git fetch`: Fetches changes from the remote repository without modifying your working directory
   or active branch.
 - `origin`: Refers to the remote repository, which by default is often named `origin`.
-- `develop:develop`: The syntax `remote_branch:local_branch`. This means you are fetching the
-  `develop` branch from `origin` and updating or creating a local branch called `develop`. Since
+- `feat/auth:feat/auth`: The syntax `remote_branch:local_branch`. This means you are fetching the
+  `feat/auth` branch from `origin` and updating or creating a local branch called `feat/auth`. Since
   you're currently on the `master` branch, this will not affect your current branch. The fetched
-  branch (`develop`) will be available in your local repository but won't be checked out or merged
-  into `master` unless you explicitly switch to `develop` or merge it.If you want to merge the
-  `develop` branch into `master` after fetching, you could do:
+  branch will be available in your local repository but won't be checked out or merged into `master`
+  unless you explicitly switch to it or merge it.
+
+To check out the branch you just fetched:
 
 ```bash
-git merge develop
+git checkout feat/auth
 ```
 
-Or, if you want to check out `develop`, you would do:
-
-```bash
-git checkout develop
-```
+Merging it into `master` locally is not how work reaches the trunk — the branch lands through a
+squash-merged pull request. Fetching it like this is for reading or reviewing it.
 
 ## Get the diff from the start of a branch
 

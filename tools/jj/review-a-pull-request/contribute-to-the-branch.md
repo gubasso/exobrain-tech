@@ -20,7 +20,7 @@ jj new
 jj bookmark set feat-x -r qpvuntsm
 jj git push --bookmark feat-x
 jj git fetch && jj rebase -b qpvuntsm -d feat-x@origin
-jj bookmark forget feat-x && jj new develop@origin
+jj bookmark forget feat-x && jj new master@origin
 ```
 
 ## Prerequisites
@@ -190,21 +190,21 @@ jj bookmark forget feat-x && jj new develop@origin
 
     - Drop the local bookmark: `jj bookmark forget feat-x`, which does not mark the branch for
       deletion. `jj bookmark delete feat-x` would, removing it from the remote at the next push.
-    - Return to the integration line: `jj new develop@origin`
+    - Return to the trunk: `jj new master@origin`
 
-13. Verify the branch is no longer yours to move and the directory sits on the integration line.
+13. Verify the branch is no longer yours to move and the directory sits on the trunk.
 
     ```sh
     jj bookmark list && jj log -r '@'
     ```
 
     ```text
-    develop: zzkytpwl 7b22a8cb docs: fix typo
+    master: zzkytpwl 7b22a8cb docs: fix typo
       @origin: zzkytpwl 7b22a8cb docs: fix typo
     @  kntqzsrs  (empty)
     ```
 
-    Expected: no `feat-x` among the bookmarks, and the working copy parents on `develop@origin`.
+    Expected: no `feat-x` among the bookmarks, and the working copy parents on `master@origin`.
 
 ## Reference
 

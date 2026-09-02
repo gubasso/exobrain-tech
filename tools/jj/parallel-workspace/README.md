@@ -14,17 +14,17 @@ moved, land, retire the workspace. They split on where the change has to arrive.
 
 ## Starting
 
-| Document                                                                                 | What it gets you                                                                                                                                |
-| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| [start-while-the-main-directory-is-busy.md](./start-while-the-main-directory-is-busy.md) | The workspace parented on `master@origin` with `-r` while the main directory holds unfinished work on another line, and nothing there disturbed |
+| Document                                                                                 | What it gets you                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [start-while-the-main-directory-is-busy.md](./start-while-the-main-directory-is-busy.md) | The workspace parented on `master@origin` with `-r` while the main directory holds unfinished work stacked on an earlier trunk commit, and nothing there disturbed |
 
 ## Landing at the remote
 
-| Document                                                                              | What it gets you                                                                                                                   |
-| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| [main-target-remote/recipe.md](./main-target-remote/recipe.md)                        | The whole run against a remote: workspace, bookmark, rebase onto `develop@origin`, rename, push, land, retire                      |
-| [land-through-a-pull-request.md](./main-target-remote/land-through-a-pull-request.md) | The remote merges the branch and a fetch reads the position back, leaving a two-parent commit at the tip and your change immutable |
-| [land-by-moving-the-bookmark.md](./main-target-remote/land-by-moving-the-bookmark.md) | No review: you point `develop` at the work and push, the line stays linear, and one commit wears both names                        |
+| Document                                                                              | What it gets you                                                                                                                                      |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [main-target-remote/recipe.md](./main-target-remote/recipe.md)                        | The whole run against a remote: workspace, bookmark, rebase onto `master@origin`, rename, push, land, retire                                          |
+| [land-through-a-pull-request.md](./main-target-remote/land-through-a-pull-request.md) | The remote squashes the branch into one new commit and a fetch reads the position back, leaving your change a still-mutable sibling to retire by hand |
+| [land-by-moving-the-bookmark.md](./main-target-remote/land-by-moving-the-bookmark.md) | No review: you point `master` at the work and push, the line stays linear, and one commit wears both names                                            |
 
 ## Landing in the main directory
 

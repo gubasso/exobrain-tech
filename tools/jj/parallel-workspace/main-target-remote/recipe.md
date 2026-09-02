@@ -1,7 +1,7 @@
 # Work on a change in a parallel directory with jj
 
 Creates a second working directory backed by the same jj repo, develops a change there
-independently, and lands it on the integration line `develop` at the remote. Landing in the main
+independently, and lands it on the trunk `master` at the remote. Landing in the main
 directory instead, with no remote, is [main-target-local/recipe.md](../main-target-local/recipe.md).
 One change at a time; sparse checkouts and conflict resolution are out of scope. Names carry a kind
 prefix while they are only names in this repo, per [README.md](../../README.md); a bookmark drops it
@@ -32,7 +32,7 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 ## Steps
 
-1. Fetch the remote so the remote bookmark `develop@origin` names the current tip.
+1. Fetch the remote so the remote bookmark `master@origin` names the current tip.
 
    ```sh
    jj git fetch
@@ -41,7 +41,7 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 2. Create the workspace as a sibling directory.
 
    The workspace name defaults to the basename of the destination, so this one is addressed as
-   `wkspc-feat-x@`. Pass `-r develop@origin` to start from the remote tip instead of this
+   `wkspc-feat-x@`. Pass `-r master@origin` to start from the remote tip instead of this
    directory's line, and keep the destination a sibling: a nested one makes a repo inside one.
 
    ```sh
@@ -94,7 +94,7 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 7. Rebase onto the remote tip, whenever it moves.
 
    ```sh
-   jj git fetch && jj rebase -o develop@origin
+   jj git fetch && jj rebase -o master@origin
    ```
 
 8. Rename the bookmark to the name the branch will carry.
@@ -119,30 +119,30 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
      bookmark: feat-x [add to 7c21ef60d3a4]
    ```
 
-10. Land the work on `develop` by the route review calls for.
+10. Land the work on `master` by the route review calls for.
 
     - [land-through-a-pull-request.md](./land-through-a-pull-request.md)
       — the remote merges the branch, and a fetch brings the position back
     - [land-by-moving-the-bookmark.md](./land-by-moving-the-bookmark.md)
-      — no review, so you move `develop` yourself and push it
+      — no review, so you move `master` yourself and push it
 
 11. Return to the main directory and start a commit on top of the landed work.
 
     Either route moves a name alone, and a working copy never follows a name, so this directory
     lacks the change until you move it. `jj new`, `jj rebase`, and `jj edit` all get you there and
     differ in what they leave behind. The local recipe's companions compare the three against a
-    workspace rather than `develop@origin`, idle case first:
+    workspace rather than `master@origin`, idle case first:
 
     - [land-into-a-clean-main-directory.md](../main-target-local/land-into-a-clean-main-directory.md)
     - [land-over-work-in-progress.md](../main-target-local/land-over-work-in-progress.md)
 
     ```sh
-    cd - && jj new develop@origin
+    cd - && jj new master@origin
     ```
 
     ```text
     Working copy  (@) now at: rlvkpnrz 504e3d8c (empty) (no description set)
-    Parent commit (@-)      : rzvqmyuk 7c21ef60 develop feat-x | feat: teach parser about arrays
+    Parent commit (@-)      : rzvqmyuk 7c21ef60 master feat-x | feat: teach parser about arrays
     Added 0 files, modified 1 files, removed 0 files
     ```
 
@@ -155,14 +155,14 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 13. Verify the workspace is gone and the main directory sits on the landed work.
 
     ```sh
-    jj workspace list && jj log -r 'develop@origin::'
+    jj workspace list && jj log -r 'master@origin::'
     ```
 
     ```text
     default: . rlvkpnrz 504e3d8c (empty) (no description set)
     @  rlvkpnrz you@example.com 2026-08-27 14:02:11 504e3d8c
     │  (empty) (no description set)
-    ◆  rzvqmyuk you@example.com 2026-08-27 14:02:11 develop feat-x 7c21ef60
+    ◆  rzvqmyuk you@example.com 2026-08-27 14:02:11 master feat-x 7c21ef60
     │  feat: teach parser about arrays
     ~
     ```

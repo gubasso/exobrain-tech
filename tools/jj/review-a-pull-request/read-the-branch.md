@@ -6,16 +6,16 @@ work needs no name. Pushing commits onto the branch is
 [./contribute-to-the-branch.md](./contribute-to-the-branch.md).
 
 The steps run one worked example: pull request 42, proposing the branch `feat-x` against the
-integration line `develop`.
+trunk `master`.
 
 ## The whole run
 
 ```sh
 jj git fetch
-jj log -r 'develop@origin..feat-x@origin'
+jj log -r 'master@origin..feat-x@origin'
 jj new feat-x@origin
-jj diff --from 'fork_point(develop@origin | feat-x@origin)' --to feat-x@origin
-jj new develop@origin
+jj diff --from 'fork_point(master@origin | feat-x@origin)' --to feat-x@origin
+jj new master@origin
 ```
 
 ## Prerequisites
@@ -61,7 +61,7 @@ jj new develop@origin
    ```
 
    ```text
-   develop: zzkytpwl 7b22a8cb docs: fix typo
+   master: zzkytpwl 7b22a8cb docs: fix typo
      @origin: zzkytpwl 7b22a8cb docs: fix typo
    feat-x@origin: nlksuwmv 865cc949 feat: teach parser about arrays
    ```
@@ -69,7 +69,7 @@ jj new develop@origin
 3. Read which commits the pull request proposes.
 
    ```sh
-   jj log -r 'develop@origin..feat-x@origin'
+   jj log -r 'master@origin..feat-x@origin'
    ```
 
    ```text
@@ -101,11 +101,11 @@ jj new develop@origin
 
 5. Read the diff the pull request contributes.
 
-   `fork_point()` is where the branch left `develop`, so whatever `develop` gained afterwards stays
+   `fork_point()` is where the branch left `master`, so whatever `master` gained afterwards stays
    out of the diff.
 
    ```sh
-   jj diff --from 'fork_point(develop@origin | feat-x@origin)' --to feat-x@origin
+   jj diff --from 'fork_point(master@origin | feat-x@origin)' --to feat-x@origin
    ```
 
    ```text
@@ -117,17 +117,17 @@ jj new develop@origin
 6. Leave the branch once the review is done.
 
    ```sh
-   jj new develop@origin
+   jj new master@origin
    ```
 
    ```text
    Working copy  (@) now at: kntqzsrs 0f3b1c48 (empty) (no description set)
-   Parent commit (@-)      : zzkytpwl 7b22a8cb develop develop@origin | docs: fix typo
+   Parent commit (@-)      : zzkytpwl 7b22a8cb master master@origin | docs: fix typo
    ```
 
    - Added a fork remote in step 1: `jj git remote remove fork`
 
-7. Verify the directory sits on the integration line and the review left no name behind.
+7. Verify the directory sits on the trunk and the review left no name behind.
 
    ```sh
    jj log -r '@' && jj bookmark list
@@ -135,11 +135,11 @@ jj new develop@origin
 
    ```text
    @  kntqzsrs  (empty)
-   develop: zzkytpwl 7b22a8cb docs: fix typo
+   master: zzkytpwl 7b22a8cb docs: fix typo
      @origin: zzkytpwl 7b22a8cb docs: fix typo
    ```
 
-   Expected: the working copy parents on `develop@origin`, and no bookmark names the reviewed
+   Expected: the working copy parents on `master@origin`, and no bookmark names the reviewed
    branch.
 
 ## Reference

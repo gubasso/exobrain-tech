@@ -24,11 +24,11 @@ DISK                          COMMIT GRAPH
 
 REPO TABLES
   workspaces:  default@ -> C
-  bookmarks:   develop -> B    develop@origin -> B
+  bookmarks:   master -> B    master@origin -> B
 ```
 
 Three of the four names already exist: the directory, the workspace `default@`, the bookmark
-`develop`. `C` is empty and undescribed, so jj discards it once it is no longer checked out.
+`master`. `C` is empty and undescribed, so jj discards it once it is no longer checked out.
 
 ## Adding the workspace
 
@@ -48,7 +48,7 @@ DISK                               COMMIT GRAPH
 
 REPO TABLES
   workspaces:  default@ -> C          wkspc-feat-x@ -> D
-  bookmarks:   develop -> B           develop@origin -> B
+  bookmarks:   master -> B           master@origin -> B
 ```
 
 One directory, one new row in the workspace table. The workspace name came from the directory
@@ -63,7 +63,7 @@ instead of `C`, and the revset `default@` names `C`. jj then snapshots on every 
 ```text
 COMMIT GRAPH                            REPO TABLES
 @  D   parser.rs +12 -1                   workspaces:  default@ -> C  wkspc-feat-x@ -> D
-◆  B   docs: fix typo                     bookmarks:   develop -> B
+◆  B   docs: fix typo                     bookmarks:   master -> B
 ```
 
 ## Describing
@@ -89,9 +89,9 @@ colocated repo would export it to `.git`; this workspace has none, and nothing l
 COMMIT GRAPH                                       REPO TABLES
 ○  C   (empty)                    default@         workspaces:  default@ -> C
 │ @  D   feat: teach parser...    bkmrk-feat-x                  wkspc-feat-x@ -> D
-├─╯                                                bookmarks:   develop -> B
-◆  B   docs: fix typo             develop                       bkmrk-feat-x -> D
-                                                                develop@origin -> B
+├─╯                                                bookmarks:   master -> B
+◆  B   docs: fix typo             master                       bkmrk-feat-x -> D
+                                                                master@origin -> B
 ```
 
 Two rows point at `D`: jj moves `wkspc-feat-x@` on every command; `bkmrk-feat-x` is yours to move.
@@ -103,10 +103,10 @@ A colleague lands `E`. The rebase replays your change on top of it.
 ```text
 BEFORE                                   AFTER
 ○  E   fix: null deref                   @  D   feat: parser...  bkmrk-feat-x
-│      develop@origin                    ○  E   fix: null deref
-│ @  D   feat: parser...  bkmrk-feat-x   │      develop@origin
+│      master@origin                    ○  E   fix: null deref
+│ @  D   feat: parser...  bkmrk-feat-x   │      master@origin
 ├─╯                                      ◆  B   docs: fix typo
-◆  B   docs: fix typo  develop           ○  A   feat: add parser
+◆  B   docs: fix typo  master           ○  A   feat: add parser
 ```
 
 `bkmrk-feat-x` moved with `D`, untouched by hand.
@@ -130,9 +130,9 @@ The first time any of these names leaves the machine.
 
 ```text
 REPO TABLES                              ORIGIN
-  bookmarks:  develop -> B               refs/heads/develop -> E
+  bookmarks:  master -> B               refs/heads/master -> E
               feat-x -> D                refs/heads/feat-x  -> D
-              develop@origin -> E
+              master@origin -> E
               feat-x@origin -> D
 ```
 
@@ -146,14 +146,14 @@ only fetch and push move them. The directory and workspace names did not travel.
 ```text
 REPO TABLES
   workspaces:  default@ -> G             (the wkspc-feat-x@ row is gone)
-  bookmarks:   develop -> D      feat-x -> D
+  bookmarks:   master -> D      feat-x -> D
 ```
 
-`jj bookmark set develop -r feat-x` is one of the two landings, the one with no review in it: a
+`jj bookmark set master -r feat-x` is one of the two landings, the one with no review in it: a
 local pointer move, no merge, because both directories always wrote into one repo, and the remote
 branch moves only when that bookmark is pushed.
 The move is the bookmark's alone, so `~/code/repo` still stands on `C` and its files still lack
-the change; `jj new develop@origin` there puts it on a fresh `G` above `D`, and the empty `C` goes.
+the change; `jj new master@origin` there puts it on a fresh `G` above `D`, and the empty `C` goes.
 `jj workspace forget wkspc-feat-x` drops the workspace row and touches no commit.
 
 ## The rule that catches people
@@ -185,7 +185,7 @@ The workspace table is its mirror image, which is why the two blur together:
   workspaces:  default@      -> C     one row per directory, jj owns it, never pushed
                wkspc-feat-x@ -> D
 
-  bookmarks:   develop       -> D     repo-wide, you own it, pushed to origin
+  bookmarks:   master       -> D     repo-wide, you own it, pushed to origin
                feat-x        -> D
 ```
 

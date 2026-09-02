@@ -1,14 +1,14 @@
-# Start a workspace off another line while the main directory is busy
+# Start a workspace off the trunk while the main directory is busy
 
-Creates the second working directory parented on the release line `master` while the main directory
+Creates the second working directory parented on the trunk `master` while the main directory
 holds unfinished work on a different line, leaving that work untouched. Covers the start of the run
 only; landing is [main-target-remote/recipe.md](./main-target-remote/recipe.md) or
 [main-target-local/recipe.md](./main-target-local/recipe.md). Names carry a kind prefix while they
 are only names in this repo, per [README.md](../README.md).
 
 The steps run one worked example end to end: a repo at `~/code/repo` whose working copy holds an
-edit on the change `feat: teach parser about arrays`, stacked on `develop@origin`, and a viewport
-fix started from `master@origin` in `../wkspc-feat-y/`.
+edit on the change `feat: teach parser about arrays`, stacked on an earlier trunk commit, and a
+viewport fix started from `master@origin` in `../wkspc-feat-y/`.
 
 ## The whole run
 
@@ -44,7 +44,7 @@ jj bookmark set bkmrk-feat-y
 
 ## Steps
 
-1. Fetch the remote so `master@origin` names the release tip.
+1. Fetch the remote so `master@origin` names the trunk tip.
 
    ```sh
    jj git fetch
@@ -64,7 +64,7 @@ jj bookmark set bkmrk-feat-y
    Working copy changes:
    M src/lexer.rs
    Working copy  (@) : zorplrpy f4a55a8c feat: teach parser about arrays
-   Parent commit (@-): mryvwqyn 29233cfe develop@origin | docs: fix typo
+   Parent commit (@-): mryvwqyn 29233cfe docs: fix typo
    ```
 
 3. Create the workspace parented on `master@origin`.
@@ -109,10 +109,10 @@ jj bookmark set bkmrk-feat-y
    Working copy changes:
    M src/lexer.rs
    Working copy  (@) : zorplrpy f4a55a8c feat: teach parser about arrays
-   Parent commit (@-): mryvwqyn 29233cfe develop@origin | docs: fix typo
+   Parent commit (@-): mryvwqyn 29233cfe docs: fix typo
    ```
 
-5. Enter the workspace directory and confirm its parent is the release tip.
+5. Enter the workspace directory and confirm its parent is the trunk tip.
 
    ```sh
    cd ../wkspc-feat-y && jj st

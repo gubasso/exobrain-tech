@@ -5,7 +5,7 @@ of its own, so concurrent work needs no second directory and no bookmark until a
 
 | Document                                                           | What it gets you                                                                                                 |
 | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| [./recipe.md](./recipe.md)                                         | The whole run: start on `develop@origin`, describe, restack, name, push, land, move onto the landed work         |
+| [./recipe.md](./recipe.md)                                         | The whole run: start on `master@origin`, describe, restack, name, push, land, move onto the landed work          |
 | [./switching-changes-in-place.md](./switching-changes-in-place.md) | `jj new` plus `jj squash` against `jj edit` for resuming a parked change, and undoing a rewrite you did not mean |
 
 ## Reference
