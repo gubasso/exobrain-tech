@@ -10,7 +10,7 @@ while they are jj's alone, per the convention in [README.md](./README.md).
 ## The scenario
 
 A repo at `~/src/app` holds a half-finished refactor. A bug report arrives that needs a fix
-against the release line `master`, and the refactor is not in a state worth interrupting.
+against the trunk `master`, and the refactor is not in a state worth interrupting.
 
 ### Adding the workspace
 

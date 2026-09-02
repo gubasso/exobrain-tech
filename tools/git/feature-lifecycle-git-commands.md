@@ -12,9 +12,9 @@ Uses `git clone --reference` to create isolated work-clones (feature directories
 - Main repo: `~/Projects/org/repo`
 - Work-clone: `~/Projects/org/repo.<issue>-<slug>` (e.g., `repo.42-add-auth-module`) — a
   `git clone --reference` of the main repo, sharing its object store
-- Integration branch: `develop`
-- Default branch: `master`
-- Feature branch: `<issue>-<slug>` (e.g., `42-add-auth-module`)
+- Trunk: `master` — the only permanent branch, and the repository default
+- Short-lived branch: `<issue>-<slug>` (e.g., `42-add-auth-module`), or `<type>/<slug>` where no
+  issue mints the name
 
 ---
 
@@ -41,7 +41,7 @@ The issue already exists on the forge. Let the forge create and name the branch,
 
 ```bash
 # 1. Let the forge create the branch (from the main repo)
-gh issue develop 42 --base develop                 # GitHub — creates remote branch
+gh issue develop 42 --base master                 # GitHub — creates remote branch
 
 # 2. Retrieve the branch name the forge chose
 BRANCH=$(gh issue develop 42 --list --json headRefName --jq '.[0].headRefName')
@@ -68,7 +68,7 @@ Create the issue from the CLI first, then let the forge create and name the bran
 gh issue create --title "Add auth module"        # GitHub → returns URL with ID
 
 # 2. Let the forge create the branch
-gh issue develop 42 --base develop
+gh issue develop 42 --base master
 
 # 3. Retrieve the branch name the forge chose
 BRANCH=$(gh issue develop 42 --list --json headRefName --jq '.[0].headRefName')
@@ -95,7 +95,7 @@ git stash
 gh issue create --title "Add auth module"        # → issue #42
 
 # 3. Let the forge create the branch
-gh issue develop 42 --base develop
+gh issue develop 42 --base master
 
 # 4. Retrieve the branch name the forge chose
 BRANCH=$(gh issue develop 42 --list --json headRefName --jq '.[0].headRefName')
@@ -134,11 +134,11 @@ git push -u origin 42-add-auth-module
 
 ## Rebase
 
-Keep the feature branch current with the integration branch.
+Keep the branch current with the trunk.
 
 ```bash
 git fetch origin
-git rebase origin/develop
+git rebase origin/master
 git push --force-with-lease
 ```
 
@@ -153,31 +153,33 @@ cd ~/Projects/org/repo.42-add-auth-module
 git push -u origin 42-add-auth-module
 
 # GitHub
-gh pr create --base develop --head 42-add-auth-module
+gh pr create --base master --head 42-add-auth-module
 
 # GitLab
-glab mr create --target-branch develop --source-branch 42-add-auth-module
+glab mr create --target-branch master --source-branch 42-add-auth-module
 ```
 
-Add `--draft` for a draft PR or MR.
+Add `--draft` for a draft PR or MR. The request lands by squash merge, so its title becomes the
+trunk's commit message.
 
 ---
 
 ## Cleanup
 
-After the PR is merged on the forge, pull the target branch and remove the work-clone.
+After the PR is merged on the forge, pull the trunk and remove the work-clone.
 
 ```bash
 # Pull the merged changes into the main repo
 cd ~/Projects/org/repo
-git checkout develop
+git checkout master
 git pull
 
 # Remove the work-clone
 rm -rf ~/Projects/org/repo.42-add-auth-module
 
-# Delete the local feature branch (remote branch auto-deleted by forge on merge)
-git branch -d 42-add-auth-module
+# Delete the local branch. -D, not -d: after a squash merge its commits are
+# not ancestors of the trunk, so git does not consider it merged.
+git branch -D 42-add-auth-module
 ```
 
 ---
@@ -216,24 +218,30 @@ SYNC:
 
 REBASE:
   git fetch origin                                 # fetch upstream
-  git rebase origin/develop                          # rebase onto integration
+  git rebase origin/master                         # rebase onto the trunk
   git push --force-with-lease                      # force-push safely
 
 FINISH:
-  git push -u origin <branch>                      # push feature branch
-  gh pr create --base develop                        # open PR (GitHub)
+  git push -u origin <branch>                      # push the branch
+  gh pr create --base master                       # open PR (GitHub)
 
 CLEANUP:
-  cd <main-repo> && git checkout develop && git pull # pull merged changes
+  cd <main-repo> && git checkout master && git pull # pull merged changes
   rm -rf <work-clone>                              # delete work-clone
-  git branch -d <branch>                           # delete local branch
+  git branch -D <branch>                           # delete local branch
 ```
 
 ---
 
 ## Appendix — Local Merge
 
-When no forge is available (offline, no remote access), merge locally instead of opening a PR.
+This is not a landing route for a trunk that has a forge. A change reaches such a trunk through a
+pull request carrying the passing check, so a forge that is merely unreachable is waited out: the
+work stays on its branch, and the request is opened when the forge comes back.
+
+What follows applies to a repository that has no forge at all, where no pull request exists to carry
+the review. `--squash` stages the branch's result without recording a merge, and the commit you then
+write is the one commit the trunk takes — the same shape a forge's squash button produces.
 
 Because the work-clone is a separate clone, either fetch from origin after pushing or add it as a
 temporary remote.
@@ -245,11 +253,12 @@ temporary remote.
 cd ~/Projects/org/repo.42-add-auth-module
 git push
 
-# In the main repo — fetch and merge
+# In the main repo — fetch and squash
 cd ~/Projects/org/repo
-git checkout develop
+git checkout master
 git fetch origin
-git merge --no-ff origin/42-add-auth-module
+git merge --squash origin/42-add-auth-module
+git commit -m "feat: add auth module (#42)"
 ```
 
 **Option B — add work-clone as a temporary remote:**
@@ -258,7 +267,8 @@ git merge --no-ff origin/42-add-auth-module
 cd ~/Projects/org/repo
 git remote add temp-42 ~/Projects/org/repo.42-add-auth-module
 git fetch temp-42
-git checkout develop
-git merge --no-ff temp-42/42-add-auth-module
+git checkout master
+git merge --squash temp-42/42-add-auth-module
+git commit -m "feat: add auth module (#42)"
 git remote remove temp-42
 ```

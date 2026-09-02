@@ -1,25 +1,26 @@
 # Git Rebase Workflow
 
-A step-by-step guide for teams using rebase to maintain clean, linear history.
+A step-by-step guide for keeping a linear history on a trunk, using rebase. The branching model
+this runs is [trunk-based development](../../workflows/trunk-based-development.md).
 
 ---
 
 ## Branch Structure
 
 ```text
-master          ← stable releases, version tags (v1.0, v1.1, ...)
-  └── develop   ← integration branch, all features merge here
-       ├── feature/*   ← new functionality
-       ├── fix/*       ← bug fixes
-       └── chore/*     ← refactors, CI, docs, dependencies
+master          ← the trunk: the only permanent branch, always releasable
+  ├── feat/*    ← new functionality
+  ├── fix/*     ← bug fixes
+  └── chore/*   ← refactors, CI, docs, dependencies
 ```
 
 ### Rules
 
-- `master` and `develop` are **shared branches** — never rebase them, only merge into them.
-- `feature/*`, `fix/*`, `chore/*` are **personal branches** — rebase freely before merging.
-- Every commit on `develop` should compile and pass tests.
-- `master` only receives merges from `develop` at release time.
+- `master` is the trunk and the only shared branch — never rebase it.
+- `feat/*`, `fix/*`, `chore/*` are short-lived personal branches — rebase freely, and delete them at
+  the merge.
+- Every commit on `master` compiles, passes tests, and can be released.
+- The trunk is written through squash-merged pull requests only, so one pull request is one commit.
 
 ---
 
@@ -27,18 +28,18 @@ master          ← stable releases, version tags (v1.0, v1.1, ...)
 
 ### 1. Start a feature branch
 
-Always branch from the latest `develop`.
+Always branch from the latest `master`.
 
 ```bash
-git checkout develop
-git pull origin develop
-git checkout -b feature/auth
+git checkout master
+git pull origin master
+git checkout -b feat/auth
 ```
 
 ```text
-develop:        A --- B --- C
+master:         A --- B --- C
                              \
-feature/auth:                 (empty, starts here)
+feat/auth:                    (empty, starts here)
 ```
 
 ### 2. Work on your feature
@@ -60,25 +61,25 @@ git commit -m "add token refresh logic"
 ```
 
 ```text
-develop:        A --- B --- C
+master:         A --- B --- C
                              \
-feature/auth:                 F --- G --- H
+feat/auth:                    F --- G --- H
 ```
 
 Push your branch to remote regularly (backup + visibility):
 
 ```bash
-git push origin feature/auth
+git push origin feat/auth
 ```
 
-### 3. Meanwhile, develop moves forward
+### 3. Meanwhile, the trunk moves forward
 
-Other people merge their work into `develop`. Your branch falls behind.
+Other people land their work on `master`. Your branch falls behind.
 
 ```text
-develop:        A --- B --- C --- D --- E
+master:         A --- B --- C --- D --- E
                              \
-feature/auth:                 F --- G --- H    (based on old C)
+feat/auth:                    F --- G --- H    (based on old C)
 ```
 
 ### 4. Clean up your commits (interactive rebase)
@@ -159,13 +160,13 @@ pick   g7h8i9 add token refresh       ← was third, now first
 pick   a1b2c3 setup auth module       ← was first, now second
 ```
 
-### 5. Rebase onto latest develop
+### 5. Rebase onto the latest trunk
 
-Bring your branch up to date with `develop` without creating merge commits.
+Bring your branch up to date with `master` without creating merge commits.
 
 ```bash
 git fetch origin
-git rebase origin/develop
+git rebase origin/master
 ```
 
 What happens internally:
@@ -173,28 +174,28 @@ What happens internally:
 ```text
 Step 1: Git removes your commits temporarily
 
-  develop:        A --- B --- C --- D --- E
+  master:         A --- B --- C --- D --- E
   patches on the table: [F] [H]
 
-Step 2: Points your branch to the tip of develop
+Step 2: Points your branch to the tip of the trunk
 
-  feature/auth:   A --- B --- C --- D --- E
+  feat/auth:      A --- B --- C --- D --- E
 
 Step 3: Replays your commits one by one
 
-  feature/auth:   A --- B --- C --- D --- E --- F'
-  feature/auth:   A --- B --- C --- D --- E --- F' --- H'
+  feat/auth:      A --- B --- C --- D --- E --- F'
+  feat/auth:      A --- B --- C --- D --- E --- F' --- H'
 
 Done:
 
-  develop:        A --- B --- C --- D --- E
+  master:         A --- B --- C --- D --- E
                                            \
-  feature/auth:                             F' --- H'
+  feat/auth:                                F' --- H'
 ```
 
 ### 6. Resolve conflicts (if any)
 
-If a replayed commit touches the same lines that changed in `develop`, git stops and asks you to
+If a replayed commit touches the same lines that changed on `master`, git stops and asks you to
 resolve.
 
 ```bash
@@ -203,7 +204,7 @@ git status
 
 # Open the file, look for conflict markers (shown indented here):
     <<<<<<< HEAD
-    the code from develop
+    the code from master
     =======
     your code from the commit being replayed
     >>>>>>> F: setup auth module skeleton
@@ -226,7 +227,7 @@ Rebase rewrites commit hashes (F became F', H became H'). The remote still has t
 normal push is rejected.
 
 ```bash
-git push origin feature/auth --force-with-lease
+git push origin feat/auth --force-with-lease
 ```
 
 Why `--force-with-lease` instead of `--force`:
@@ -237,86 +238,68 @@ Why `--force-with-lease` instead of `--force`:
 
 ### 8. Open a Pull Request
 
-Open a PR from `feature/auth` → `develop` on GitHub/GitLab.
+Open a PR from `feat/auth` → `master` on GitHub/GitLab.
 
-At this point your PR shows a clean diff against the latest `develop` with no merge commits and no
+At this point your PR shows a clean diff against the latest `master` with no merge commits and no
 conflicts.
 
 Code review happens here.
 
-### 9. Merge into develop
+### 9. Squash-merge onto the trunk
 
-After approval, merge with `--no-ff` (no fast-forward) to preserve the branch context in history.
-
-```bash
-git checkout develop
-git pull origin develop
-git merge --no-ff feature/auth -m "Merge feature/auth: add authentication module"
-git push origin develop
-```
-
-On GitHub: use the "Create a merge commit" option (not squash, not rebase — you already rebased).
+After approval and a green check, merge from the forge with squash as the merge method. The whole
+branch lands as one commit, and the pull request's title becomes that commit's message — which is
+why the title, not the branch name, is the line that follows the commit convention.
 
 Result:
 
 ```text
-develop: A --- B --- C --- D --- E ----------- M
-                                          \   /
-feature/auth:                              F' - H'
+master:  A --- B --- C --- D --- E --- I
+                                       └─ the branch, as one commit
 ```
 
-The merge commit `M` records when and what was integrated. The individual commits `F'` and `H'` are
-preserved with clean history.
+The trunk takes no direct push, so there is no local `git merge` step here. Rebasing in step 5 is
+what made this squash a clean fast-forward of one commit.
 
-### 10. Delete the feature branch
+### 10. Delete the branch
 
-```bash
-git branch -d feature/auth               # delete local
-git push origin --delete feature/auth     # delete remote
-```
-
----
-
-## Release Flow
-
-When `develop` is stable and ready for release:
+The forge deletes the remote branch when the merge lands. Clean up locally:
 
 ```bash
 git checkout master
 git pull origin master
-git merge --no-ff develop -m "Release v1.1"
-git tag v1.1
-git push origin master --tags
+git branch -D feat/auth
 ```
 
-```text
-master:   v1.0 ──────────────── v1.1 (tag)
-            \                    ↑
-develop:     o─o─o── M₁ ──o── M₂ ─┘
-                 \   ↑  \     ↑
-feature/auth:     F-H┘   \   |
-                           \  |
-fix/login-bug:              X-Y┘
-```
+`-D` rather than `-d`: after a squash merge the branch's own commits are not ancestors of the trunk,
+so git does not consider it merged and `-d` refuses it.
+
+---
+
+## Releasing
+
+A release ships the trunk's tip; nothing merges down to a second permanent branch. The two release
+styles, and when an older line earns a `release/<major>.<minor>` branch, are in
+[trunk-based development](../../workflows/trunk-based-development.md).
 
 ---
 
 ## Conflict Scenario — Full Example
 
-You're working on `feature/auth`. A teammate merges `fix/login-bug` into `develop` that touches the
-same file you edited.
+You're working on `feat/auth`. A teammate lands `fix/login-bug` on `master`, touching the same file
+you edited.
 
 ```text
-develop:        A --- B --- C --- D (teammate's fix, touches auth.py)
+master:         A --- B --- C --- D (teammate's fix, touches auth.py)
                              \
-feature/auth:                 F --- G (your work, also touches auth.py)
+feat/auth:                    F --- G (your work, also touches auth.py)
 ```
 
 You rebase:
 
 ```bash
 git fetch origin
-git rebase origin/develop
+git rebase origin/master
 ```
 
 Git starts replaying. Commit `F` conflicts:
@@ -339,80 +322,74 @@ git rebase --continue             # git now replays G
 If `G` also conflicts, repeat. If not, rebase finishes:
 
 ```text
-develop:        A --- B --- C --- D
+master:         A --- B --- C --- D
                                    \
-feature/auth:                       F' --- G'
+feat/auth:                          F' --- G'
 ```
 
 Push and open PR:
 
 ```bash
-git push origin feature/auth --force-with-lease
+git push origin feat/auth --force-with-lease
 ```
 
 ---
 
 ## Multiple Rebases
 
-It's normal to rebase multiple times during a long-lived branch. Each time develop moves forward:
+A branch that lives more than a few hours is rebased more than once. Each time the trunk moves
+forward:
 
 ```bash
 git fetch origin
-git rebase origin/develop
+git rebase origin/master
 # resolve conflicts if any
-git push origin feature/auth --force-with-lease
+git push origin feat/auth --force-with-lease
 ```
 
-Some teams rebase daily to avoid large conflict pileups at the end.
+Rebase at least daily. A branch that needs more than that is a branch that should have been
+smaller.
 
 ---
 
 ## Quick Reference
 
 ```text
-START FEATURE:
-  git checkout develop && git pull origin develop
-  git checkout -b feature/my-thing
+START:
+  git checkout master && git pull origin master
+  git checkout -b feat/my-thing
 
 WORK:
-  git add -A && git commit -m "description"
-  git push origin feature/my-thing
+  git add -A && git commit -m "feat: description"
+  git push origin feat/my-thing
 
 CLEAN UP (optional):
   git rebase -i HEAD~N
 
-REBASE ONTO DEVELOP:
+REBASE ONTO THE TRUNK:
   git fetch origin
-  git rebase origin/develop
+  git rebase origin/master
   # fix conflicts: edit file → git add → git rebase --continue
   # abort if stuck: git rebase --abort
-  git push origin feature/my-thing --force-with-lease
+  git push origin feat/my-thing --force-with-lease
 
-MERGE (after PR approval):
-  git checkout develop && git pull origin develop
-  git merge --no-ff feature/my-thing
-  git push origin develop
+LAND (after PR approval):
+  squash-merge from the forge; the PR title becomes the commit message
 
 CLEANUP:
-  git branch -d feature/my-thing
-  git push origin --delete feature/my-thing
-
-RELEASE:
   git checkout master && git pull origin master
-  git merge --no-ff develop -m "Release vX.Y"
-  git tag vX.Y
-  git push origin master --tags
+  git branch -D feat/my-thing
 ```
 
 ---
 
 ## Common Mistakes
 
-**Rebasing a shared branch:** Never `git rebase` on `develop` or `master`. These are shared — other
-people pull from them. Rebase rewrites history and breaks everyone else's local copy.
+**Rebasing the trunk:** Never `git rebase` on `master`. Everyone pulls from it, and rebase rewrites
+history, which breaks every other local copy.
 
 **Forgetting to fetch before rebase:** Always `git fetch origin` first. Without it you rebase onto
-your local (stale) copy of develop, not the actual latest.
+your local (stale) copy of the trunk, not the actual latest.
 
 **Using `--force` instead of `--force-with-lease`:** `--force` blindly overwrites.
 `--force-with-lease` checks first. Always use `--force-with-lease`.
@@ -422,7 +399,7 @@ dirty working tree.
 
 ```bash
 git stash
-git rebase origin/develop
+git rebase origin/master
 git stash pop
 ```
 
@@ -438,8 +415,9 @@ upstream project, the mainline branch is not integrated locally — instead it m
 project and is only ever fast-forwarded. Feature branches are still rebased on top of it exactly as
 above.
 
-In this model `master` is the release/mainline branch name, and it tracks the upstream project's
-default branch (kept byte-for-byte identical to `upstream/master`, never diverged locally).
+Here `master` is not your trunk to write — it mirrors the upstream project's default branch, kept
+byte-for-byte identical to `upstream/master` and never diverged locally. Your work lives on branches
+rebased on top of it and reaches the upstream project through a pull request.
 
 ### Remotes & branches
 
@@ -448,7 +426,7 @@ default branch (kept byte-for-byte identical to `upstream/master`, never diverge
 | `upstream` | `master`      | Source of truth (original repo)       |
 | `origin`   | `master`      | Your fork                             |
 | local      | `master`      | Always identical to `upstream/master` |
-| local      | `new-feature` | Your work, rebased on top of `master` |
+| local      | `feat/export` | Your work, rebased on top of `master` |
 
 ### Cheatsheet
 
@@ -460,15 +438,15 @@ git merge --ff-only upstream/master
 git push origin master
 
 # B) Rebase feature branch onto updated master
-git switch new-feature
+git switch feat/export
 git rebase master
 
 # C) Clean up commits before pushing (optional but recommended)
 git rebase -i master          # squash, fixup, reorder
 
 # D) Push feature branch
-git push origin new-feature                    # first time
-git push --force-with-lease origin new-feature # after any rebase (history rewritten)
+git push origin feat/export                    # first time
+git push --force-with-lease origin feat/export # after any rebase (history rewritten)
 ```
 
 ### Recommended global config
@@ -499,7 +477,7 @@ git branch -vv                    # branches + tracking info + ahead/behind
 upstream/master:   A─B─C─D─E
 local master:      A─B─C
 origin/master:     A─B─C
-new-feature:           └─f1─f2   (based on C)
+feat/export:           └─f1─f2   (based on C)
 ```
 
 **Step A — Sync master (fast-forward only).** `git merge --ff-only upstream/master` slides the
@@ -510,7 +488,7 @@ new-feature:           └─f1─f2   (based on C)
 upstream/master:   A─B─C─D─E
 local master:      A─B─C─D─E   ✓ moved forward
 origin/master:     A─B─C─D─E   (after git push)
-new-feature:           └─f1─f2   (still on old C)
+feat/export:           └─f1─f2   (still on old C)
 ```
 
 **Step B — Rebase feature onto master.** `git rebase master` replays `f1` and `f2` on top of `E`,
@@ -519,7 +497,7 @@ producing new commits `f1'` and `f2'` (same diffs, new SHAs).
 ```text
 upstream/master:   A─B─C─D─E
 local master:      A─B─C─D─E
-new-feature:                  └─f1'─f2'
+feat/export:                  └─f1'─f2'
 ```
 
 **Step C — Clean up commits (interactive rebase).** Before pushing, squash or reorder commits so the
@@ -537,8 +515,8 @@ push is rejected if the branch was already pushed. `--force-with-lease` overwrit
 if** nobody else pushed to it in the meantime — safer than `--force`.
 
 ```text
-origin/new-feature:           └─f1'─f2'
-local  new-feature:           └─f1'─f2'
+origin/feat/export:           └─f1'─f2'
+local  feat/export:           └─f1'─f2'
 ```
 
 **Result: fully linear history.**
@@ -565,7 +543,7 @@ git reset --hard HEAD@{3}   # replace 3 with the correct index
 ### Accidentally committed on master
 
 ```bash
-git switch -c rescue-branch       # save your commits on a new branch first
+git switch -c fix/rescue          # save your commits on a new branch first
 git switch master
 git reset --hard upstream/master  # restore master to upstream state exactly
 ```
@@ -574,15 +552,19 @@ git reset --hard upstream/master  # restore master to upstream state exactly
 
 ## Stacked Branches with `git rebase --onto`
 
-If `feature-b` is based on `feature-a` (not on `master`), and you rebase `feature-a`, use `--onto`
-to re-root `feature-b`:
+If `feat/b` is based on `feat/a` (not on `master`), and you rebase `feat/a`, use `--onto` to
+re-root `feat/b`:
 
 ```bash
-git rebase --onto master old-feature-a-tip feature-b
+git rebase --onto master old-feat-a-tip feat/b
 ```
 
-Where `old-feature-a-tip` is the SHA of the last commit of `feature-a` _before_ it was rebased.
-Without `--onto`, `feature-b` will still point to the old `feature-a` commits.
+Where `old-feat-a-tip` is the SHA of the last commit of `feat/a` _before_ it was rebased. Without
+`--onto`, `feat/b` will still point to the old `feat/a` commits.
+
+Stacking is a cost, not a feature: two branches that must land in order keep work off the trunk for
+longer than one short-lived branch should live. Prefer splitting the work so each piece lands on its
+own.
 
 ---
 

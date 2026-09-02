@@ -17,9 +17,10 @@ Everyday work after setup is not here; this is the one-time scaffold.
 
 ## Steps
 
-1. **Create the repo and pick the default branch.** Create an empty repo on the forge and clone it;
-   set the default branch to `develop` if you follow the develop/master model. →
-   [00 — Bootstrap model](./00-bootstrap-model.md).
+1. **Create the repo and set up the trunk.** Create an empty repo on the forge and clone it; make
+   `master` the default branch and the only permanent one, and have the forge delete a branch when
+   its merge lands. → [00 — Bootstrap model](./00-bootstrap-model.md),
+   [trunk-based development](../../workflows/trunk-based-development.md).
 
 2. **Lay the repository foundation:** add `.gitignore`, a `LICENSE` (SPDX identifier), and a
    `README` skeleton at the repo root. →

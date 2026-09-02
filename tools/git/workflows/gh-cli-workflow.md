@@ -1,7 +1,7 @@
 # gh cli workflow
 
-> This keeps `master` to mirror your original flow. If your repository uses a different default
-> branch (for example `main`), replace `master` accordingly. `gh issue develop` defaults to the
+> `master` here is the trunk — the only permanent branch and the repository default. Where a
+> repository names its trunk differently, substitute that name. `gh issue develop` defaults to the
 > repository’s default branch unless you pass `--base`, and `gh pr create` also defaults to the
 > configured merge base or repo default branch when `--base` is omitted. ([GitHub CLI][1])
 
@@ -33,29 +33,37 @@ gh issue create \
 ## 02 — Create PR + Branch from Issue
 
 ```bash
+gh issue develop <issue-id> \
+  --checkout \
+  --name "<issue-id>-issue-title-slug" \
+  --base master
+
 # If no new commits or changes yet
 git commit --allow-empty \
   -m "chore: open draft PR for #<issue-id>" \
   -m "Temporary empty commit used to trigger CI and open a draft PR for issue #<issue-id>."
 git push -u origin HEAD
 
-gh issue develop <issue-id> \
-  --checkout \
-  --name "<issue-id>-issue-title-slug" \
-  --base master
-
 gh pr create \
   --draft \
   --base master \
-  --title 'Draft: Resolve "<issue title>"' \
+  --title 'feat: <issue title, lowercase>' \
   --body "Closes #<issue-id>"
+```
+
+The title is the squash commit's message, so it follows the commit convention from the moment the
+request is created — draft state is carried by `--draft`, not by the title. To correct it later:
+
+```bash
+gh pr edit <pr-id> --title 'feat: <issue title, lowercase>'
 ```
 
 Closest equivalent to GitLab’s “Create merge request” flow:
 
 - Branch → use `gh issue develop <issue-id> --name "<issue-id>-issue-title-slug"` to create and link
   a branch to the issue
-- PR title → set explicitly with `--title 'Draft: Resolve "<issue title>"'`
+- PR title → set explicitly with `--title '<type>: <description>'`, the conventional subject the
+  squash commit will carry
 - PR description → include `Closes #<issue-id>` in `--body` so the issue auto-closes on merge
 
 > `gh issue develop` is the GitHub CLI command for linked issue branches and can check the branch
@@ -112,15 +120,16 @@ gh issue edit <issue-id> --remove-label "in-progress" --add-label "review"
 ## 06 — Merge into Master
 
 ```bash
-gh pr merge <pr-id> --rebase --delete-branch
+gh pr merge <pr-id> --squash --delete-branch
 
 # Close issue if not auto-closed
 gh issue close <issue-id>
 ```
 
-> `gh pr merge` supports `--rebase` and `--delete-branch`. The issue auto-closes if the PR body
-> contains `Closes #<issue-id>` or `Fixes #<issue-id>`; otherwise `gh issue close` is the manual
-> fallback. ([GitHub CLI][6])
+> `gh pr merge` supports `--squash` and `--delete-branch`. Squash is the merge verb the trunk takes,
+> so the request lands as one commit whose message is the request's title. The issue auto-closes if
+> the PR body contains `Closes #<issue-id>` or `Fixes #<issue-id>`; otherwise `gh issue close` is the
+> manual fallback. ([GitHub CLI][6])
 
 ---
 

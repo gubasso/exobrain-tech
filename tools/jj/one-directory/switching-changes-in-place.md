@@ -10,10 +10,10 @@ somewhere relative to it. Two commands do that and they differ in what they rewr
 ```sh
 cd ~/code/repo
 jj git fetch
-jj new develop@origin
+jj new master@origin
 echo 'fn parse_array() {}' > src/parser.rs
 jj describe -m "feat: teach parser about arrays"
-jj new develop@origin -m "fix: reject empty input"
+jj new master@origin -m "fix: reject empty input"
 echo 'fn reject_empty() {}' > src/validate.rs
 ```
 
