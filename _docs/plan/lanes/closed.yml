@@ -9,3 +9,12 @@ stories:
     outcome: done
     closed: "2026-08-12"
     note: the measured survey of what a terminal can draw, and what it costs
+  - id: "003"
+    slug: move-the-documentation-canon-to-0-8-1
+    type: chore
+    points: 3
+    needs: []
+    tags: [governance]
+    outcome: done
+    closed: "2026-09-12"
+    note: the canon serves its gates from its own binary, taken as a pinned tool input

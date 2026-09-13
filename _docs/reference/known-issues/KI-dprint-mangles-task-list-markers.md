@@ -2,8 +2,10 @@
 upstream: https://github.com/dprint/dprint-plugin-markdown/issues
 affects: every document pairing a GFM checklist with an angle placeholder
 state: masked
+filing: ready
 workaround: wrap the block in a dprint-ignore range
 retire_when: a markdown plugin newer than 0.22.0 formats the reproduction below unchanged
+checked: 2026-09-12
 ---
 
 # dprint markdown moves a task-list marker off an angle placeholder

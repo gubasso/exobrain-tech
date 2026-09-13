@@ -28,13 +28,18 @@ rule=knowledge-base-boundary:the-canon-is-named-once
 home=AGENTS.md
 status=0
 
+# `flake.nix` and `flake.lock` name the project as a pinned tool input, which is
+# a tool dependency rather than a reference to a source
+# (ADR-a-flake-pinned-tool-input-is-a-tool-dependency).
 stray=$(git grep -In -F -e "$name" -- \
   ":(exclude)$home" ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
+  ':(exclude)flake.nix' ':(exclude)flake.lock' \
   ":(exclude).$name" |
   sed -e "s/\.$name/PROJECTION/g" \
     -e "s/$name-verify/PROJECTION/g" \
-    -e "s/BEGIN $name managed/PROJECTION/g" \
-    -e "s/END $name managed/PROJECTION/g" |
+    -e "s/urn:$name:/PROJECTION/g" \
+    -e "s/BEGIN $name/PROJECTION/g" \
+    -e "s/END $name/PROJECTION/g" |
   grep -F -e "$name") || true
 [ -z "$stray" ] || {
   echo "FAIL $rule: the upstream canon is named outside $home"
@@ -55,7 +60,9 @@ pinned=$(git grep -In -F -e "$url/" -- \
 # one allowed file is still a second statement of the same fact, and a bare name
 # is a statement a reader cannot follow.
 named=$(git grep -h -F -e "$name" -- "$home" |
-  sed -e "s/\.$name/PROJECTION/g" |
+  sed -e "s/\.$name/PROJECTION/g" \
+    -e "s/BEGIN $name/PROJECTION/g" \
+    -e "s/END $name/PROJECTION/g" |
   grep -o -F -e "$name" | wc -l)
 linked=$(git grep -o -F -e "$url" -- "$home" | wc -l)
 [ "$named" = 1 ] && [ "$linked" = 1 ] || {

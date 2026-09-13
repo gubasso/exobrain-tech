@@ -20,6 +20,18 @@ When an author creates a decision record, the author MUST name it `ADR-<slug>.md
 
 Verify: `find _docs/decisions -name 'ADR-*' | rg '[0-9]' && exit 1 || exit 0`
 
+### `decision-records:a-citation-resolves-to-a-rule` — A citation resolves to a rule
+
+Where a record names what enforces it, the author MUST cite rule IDs the specs still define.
+
+#### Scenario: A rule moves to a domain of its own
+
+- GIVEN a record whose `Enforced by` line cites `distribution:license-declares-both-halves`
+- WHEN the rule is renamed to `release:license-declares-both-halves`
+- THEN the citation resolves to nothing. The gate reports it because the pointer to what binds is the one part of a frozen record that must keep working
+
+Verify: `pre-commit run adr-cites-a-live-rule --all-files`
+
 ### `decision-records:record-is-not-revised` — A decision record is not revised
 
 The author MUST NOT edit a decision record to describe a later design.

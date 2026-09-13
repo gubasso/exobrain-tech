@@ -39,7 +39,7 @@ test-gates:
 
 # Verify the local documentation-canon projection without network access.
 verify-instance:
-    nix develop --command .spec-driven-docs/verify.sh --target . --offline
+    nix develop --command sdd verify --target .
 
 # Nothing to compile for a knowledge base.
 build:

@@ -319,8 +319,14 @@ repos:
         stages: [pre-push]
         # Knowledge base is markdown — don't crawl template/config files.
         types: [markdown]
-        # Args intentionally minimal so lychee.toml owns the behavior.
+        # Args intentionally minimal so lychee.toml owns the behavior. The
+        # version is passed rather than discovered: the hook's shim reads it by
+        # running git describe inside its own checkout, and git exports an
+        # absolute GIT_DIR to a pre-push hook run from a linked worktree, which
+        # redirects that describe at this repository, where no lychee-v* tag
+        # exists. Keep it equal to the rev above.
         args:
+          - LYCHEE_VERSION=0.24.2
           - --no-progress
 
   # --- Commit message: Conventional Commits (single SoT -> committed.toml) ---
@@ -376,131 +382,181 @@ repos:
     hooks:
       - id: spec-driven-docs-verify
         name: verify spec-driven docs instance
-        entry: .spec-driven-docs/verify.sh --target . --offline
+        entry: sdd verify
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: adr-cites-a-live-rule
+        name: 'decision record citations resolve'
+        entry: sdd gate adr-cites-a-live-rule
         language: system
         always_run: true
         pass_filenames: false
       - id: adr-filename-shape
         name: 'decision record filename shape'
-        entry: .spec-driven-docs/hooks/adr-filename-shape.sh
+        entry: sdd gate adr-filename-shape
         language: system
-        files: '^_docs/decisions/.*\.md$'
+        files: '^_docs/decisions/[^/]*\.md$'
       - id: adr-word-cap
         name: 'decision record word cap'
-        entry: .spec-driven-docs/hooks/adr-word-cap.sh
+        entry: sdd gate adr-word-cap
         language: system
         always_run: true
         pass_filenames: false
       - id: agents-digest-size
         name: 'agent digest size'
-        entry: .spec-driven-docs/hooks/agents-digest-size.sh
+        entry: sdd gate agents-digest-size
         language: system
         always_run: true
         pass_filenames: false
       - id: chapter-size-cap
         name: 'chapter and catalog size'
-        entry: .spec-driven-docs/hooks/chapter-size-cap.sh
+        entry: sdd gate chapter-size-cap
         language: system
         always_run: true
         pass_filenames: false
       - id: comparison-dated-tables
         name: 'comparison tables are dated'
-        entry: .spec-driven-docs/hooks/comparison-dated-tables.sh
+        entry: sdd gate comparison-dated-tables
         language: system
-        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+        files: '^(?:.*/)?COMPARISON-[^/]*\.md$'
       - id: comparison-escaped-pipes
         name: 'comparison table pipes are escaped'
-        entry: .spec-driven-docs/hooks/comparison-escaped-pipes.sh
+        entry: sdd gate comparison-escaped-pipes
         language: system
-        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+        files: '^(?:.*/)?COMPARISON-[^/]*\.md$'
       - id: comparison-legend
         name: 'comparison legend'
-        entry: .spec-driven-docs/hooks/comparison-legend.sh
+        entry: sdd gate comparison-legend
         language: system
-        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+        files: '^(?:.*/)?COMPARISON-[^/]*\.md$'
       - id: comparison-one-reference-per-cell
         name: 'one reference per comparison cell'
-        entry: .spec-driven-docs/hooks/comparison-one-reference-per-cell.sh
+        entry: sdd gate comparison-one-reference-per-cell
         language: system
-        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+        files: '^(?:.*/)?COMPARISON-[^/]*\.md$'
       - id: comparison-verdict-word
         name: 'comparison verdict word'
-        entry: .spec-driven-docs/hooks/comparison-verdict-word.sh
+        entry: sdd gate comparison-verdict-word
         language: system
-        files: '(^|/)COMPARISON-[a-z0-9-]+\.md$'
+        files: '^(?:.*/)?COMPARISON-[^/]*\.md$'
       - id: gate-message-cites-a-rule
         name: 'gate messages cite a rule'
-        entry: .spec-driven-docs/hooks/gate-message-cites-a-rule.sh
+        entry: sdd gate gate-message-cites-a-rule
         language: system
         always_run: true
         pass_filenames: false
       - id: instance-manifest
         name: 'instance manifest'
-        entry: .spec-driven-docs/hooks/instance-manifest.sh
+        entry: sdd gate instance-manifest
         language: system
         always_run: true
         pass_filenames: false
       - id: ki-bugzilla-report-width
         name: 'Bugzilla report width'
-        entry: .spec-driven-docs/hooks/ki-bugzilla-report-width.sh
+        entry: sdd gate ki-bugzilla-report-width
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: ki-checked-date
+        name: 'known issue last-check date'
+        entry: sdd gate ki-checked-date
         language: system
         always_run: true
         pass_filenames: false
       - id: ki-filename-shape
         name: 'known issue filename shape'
-        entry: .spec-driven-docs/hooks/ki-filename-shape.sh
+        entry: sdd gate ki-filename-shape
         language: system
-        files: '^_docs/reference/known-issues/.*\.md$'
+        files: '^_docs/reference/known-issues/[^/]*\.md$'
+      - id: ki-filing
+        name: 'known issue filing state'
+        entry: sdd gate ki-filing
+        language: system
+        always_run: true
+        pass_filenames: false
       - id: ki-mechanism-walkthrough
         name: 'known issue mechanism walkthrough'
-        entry: .spec-driven-docs/hooks/ki-mechanism-walkthrough.sh
+        entry: sdd gate ki-mechanism-walkthrough
         language: system
         always_run: true
         pass_filenames: false
       - id: ki-report-body
         name: 'known issue report body'
-        entry: .spec-driven-docs/hooks/ki-report-body.sh
+        entry: sdd gate ki-report-body
         language: system
         always_run: true
         pass_filenames: false
       - id: ki-retire-when
         name: 'known issue retirement condition'
-        entry: .spec-driven-docs/hooks/ki-retire-when.sh
+        entry: sdd gate ki-retire-when
         language: system
         always_run: true
         pass_filenames: false
+      - id: ki-state
+        name: 'known issue state'
+        entry: sdd gate ki-state
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: no-personal-path
+        name: 'no personal path'
+        entry: sdd gate no-personal-path
+        language: system
+        types: [text]
+        exclude: '^(?:systems/security/isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox\.md|systems/linux/packaging/packaging-debian\.md|languages/python/python\.md|infra/containers/docker-mongodb\.md|tools/git/gitolite\.md)$'
       - id: no-self-narration
         name: 'documents state the present'
-        entry: .spec-driven-docs/hooks/no-self-narration.sh
+        entry: sdd gate no-self-narration
         language: system
+        files: '^_docs/(?:.*/)?[^/]*\.md$'
         types: [markdown]
-        exclude: '^_docs/decisions/'
+        exclude: '^_docs/decisions/.*$'
+      - id: prose-stays-unwrapped
+        name: 'prose lines stay unwrapped'
+        entry: sdd gate prose-stays-unwrapped
+        language: system
+        files: '^_docs/(?:.*/)?[^/]*\.md$'
+        types: [markdown]
+        exclude: '^(?:(?:.*/)?CHANGELOG\.md|.*)$'
+      - id: spec-change-is-typed
+        name: 'spec changes are typed'
+        entry: sdd gate spec-change-is-typed
+        language: system
+        always_run: true
+        pass_filenames: false
       - id: spec-requirement-parts
         name: 'spec requirement parts'
-        entry: .spec-driven-docs/hooks/spec-requirement-parts.sh
+        entry: sdd gate spec-requirement-parts
         language: system
-        files: '^_docs/specs/SPEC-.*\.md$'
+        files: '^_docs/specs/SPEC-[^/]*\.md$'
       - id: spec-rule-id-unique
         name: 'spec rule IDs are unique'
-        entry: .spec-driven-docs/hooks/spec-rule-id-unique.sh
+        entry: sdd gate spec-rule-id-unique
         language: system
         always_run: true
         pass_filenames: false
       - id: spec-size-cap
         name: 'spec size cap'
-        entry: .spec-driven-docs/hooks/spec-size-cap.sh
+        entry: sdd gate spec-size-cap
         language: system
         always_run: true
         pass_filenames: false
       - id: spec-verify-hooks-exist
         name: 'spec hook references exist'
-        entry: .spec-driven-docs/hooks/spec-verify-hooks-exist.sh
+        entry: sdd gate spec-verify-hooks-exist
         language: system
         always_run: true
         pass_filenames: false
       - id: suppression-names-its-case
         name: 'suppressions name a known issue'
-        entry: .spec-driven-docs/hooks/suppression-names-its-case.sh
+        entry: sdd gate suppression-names-its-case
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: tracking-registry
+        name: 'tracking registry is valid and current'
+        entry: sdd gate tracking-registry
         language: system
         always_run: true
         pass_filenames: false
