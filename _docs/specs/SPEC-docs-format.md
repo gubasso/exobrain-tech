@@ -20,6 +20,8 @@
     - [Scenario: A digest lists the files of the directory it describes](#scenario-a-digest-lists-the-files-of-the-directory-it-describes)
   - [`docs-format:a-relative-link-is-explicit` — A relative link carries an explicit path](#docs-formata-relative-link-is-explicit--a-relative-link-carries-an-explicit-path)
     - [Scenario: A link names only a basename](#scenario-a-link-names-only-a-basename)
+  - [`docs-format:prose-stays-unwrapped` — Prose stays unwrapped](#docs-formatprose-stays-unwrapped--prose-stays-unwrapped)
+    - [Scenario: A paragraph is hard-wrapped at a column width](#scenario-a-paragraph-is-hard-wrapped-at-a-column-width)
 
 <!--TOC-->
 
@@ -127,3 +129,19 @@ A relative link MUST open with `./`, `../`, or a multi-segment path.
 - THEN the commit fails, because neither a reader nor an LSP can tell which file is meant
 
 Verify: `pre-commit run no-bare-relative-links -a && pre-commit run no-bare-relative-link-defs -a`
+
+### `docs-format:prose-stays-unwrapped` — Prose stays unwrapped
+
+The author MUST keep each paragraph, list item, and blockquote paragraph on one source line. Only fenced code, tables, and explicit hard breaks span more than one line.
+
+A generated `CHANGELOG.md` is exempt: the rule binds the author, and a release tool writes that file at its own wrap width.
+
+Prose the project keeps outside the paths it declares for this gate belongs to the project, so the rule binds its author and no delivered gate judges it. Which paths those are is the project's to state, and the documentation root is only where it starts.
+
+#### Scenario: A paragraph is hard-wrapped at a column width
+
+- GIVEN a paragraph broken across source lines at an arbitrary column
+- WHEN an edit touches one sentence
+- THEN the diff rewraps neighboring lines it never changed, so the paragraph joins back onto one line and the editor soft-wraps it
+
+Verify: `pre-commit run prose-stays-unwrapped --all-files`

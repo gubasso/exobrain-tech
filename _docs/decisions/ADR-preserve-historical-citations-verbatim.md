@@ -18,7 +18,7 @@ link whose target is absent:
 Chosen option: `exclude records from relative-link liveness` — `md-relative-links` excludes
 `_docs/decisions/`, while `md-adr`, `adr-filename-shape`, and `adr-word-cap` continue to bind records.
 
-Enforced by `decision-records:a-merged-record-is-permanent`.
+Enforced by `decision-records:merged-record-is-permanent`.
 
 ## Consequences
 

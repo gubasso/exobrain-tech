@@ -1,0 +1,73 @@
+# What this project's gates judge.
+#
+# Edit this file, then run `sdd hooks --apply`. The managed region of
+# .pre-commit-config.yaml is rendered from here, so it stays wholly owned by
+# sdd and an upgrade never meets your edit.
+#
+# `sdd gate --explain <path>` answers why a gate judged a path, or did not,
+# and names the pattern that decided.
+#
+# Patterns are globs. `*` does not cross a `/` and `**` descends. A leading
+# `!` or `#`, an absolute path, and a `..` component are refused.
+#
+# Four layers compose, in this order, highest last:
+#
+#   1. the gate's registry default
+#   2. its `gates:` entry below
+#   3. a --include or --exclude flag
+#   4. the `reserved:` list, which no gate escapes
+#
+# Every `exclude` layer extends. A `gates:` `include` replaces the registry
+# default rather than adding to it, because an include is a whitelist and
+# extending one could only widen what the gate judges.
+
+# Paths no delivered gate judges. Another tool owns these.
+reserved: []
+
+# Per-gate filters. A gate not named here takes its registry default.
+gates:
+  # This project wraps its prose at 100 columns, and 40 of the 69 documents the
+  # gate would judge are decision records, whose lines cannot be rewritten at
+  # all. The rule stays stated in SPEC-docs-format.md, because the gate message
+  # cites it, and no path reaches the gate until the conversion is decided.
+  # Story 004 carries that decision and removes this entry.
+  prose-stays-unwrapped:
+    exclude:
+      - '**'
+
+  # Five library pages name the home directory of a service account, a
+  # container user, or a placeholder the reader substitutes. None of them is
+  # this author's home, which is what the rule protects against, and a page
+  # teaching the command cannot state it without the path.
+  no-personal-path:
+    exclude:
+      - 'systems/security/isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md'
+      - 'systems/linux/packaging/packaging-debian.md'
+      - 'languages/python/python.md'
+      - 'infra/containers/docker-mongodb.md'
+      - 'tools/git/gitolite.md'
+
+  # The eight library buckets are the product, and a page there may document
+  # another project's defect under a heading of its own. Such a heading names
+  # knowledge this library serves, never a suppression in this repository, and
+  # the records this gate resolves against govern this checkout instead. The
+  # suppressions it exists to catch all sit under the documentation root.
+  suppression-names-its-case:
+    exclude:
+      - 'programming/**'
+      - 'languages/**'
+      - 'systems/**'
+      - 'infra/**'
+      - 'tools/**'
+      - 'platforms/**'
+      - 'workflows/**'
+      - 'data/**'
+
+# Where the writing style comes from: `builtin` routes authors to
+# `sdd method writing-style`, `project` routes them to the document
+# `path` names, and `none` installs no route and imposes no conversion
+# obligation. Edit it, then run `sdd hooks --apply`, which rewrites the
+# documentation block in AGENTS.md as well as the pre-commit block.
+writing_style:
+  source: builtin
+  path: null

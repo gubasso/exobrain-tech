@@ -4,10 +4,19 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    # The documentation canon, taken as the tool that serves its own gates.
+    # The tag in this URL is the version and flake.lock is the content pin, so
+    # a lock entry is mandatory (ADR-a-flake-pinned-tool-input-is-a-tool-dependency).
+    # Freshness is the manager's own verb: nix flake update spec-driven-docs,
+    # with the tag moved to match, followed by sdd upgrade.
+    spec-driven-docs = {
+      url = "github:gubasso/spec-driven-docs/v0.8.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs, flake-utils }:
+    { self, nixpkgs, flake-utils, spec-driven-docs }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -16,6 +25,11 @@
       {
         devShells.default = pkgs.mkShell {
           packages = [
+            # The documentation canon's own binary. It serves every delivered
+            # gate the pre-commit block wires and the offline instance check,
+            # so the projection holds configuration and no scripts.
+            spec-driven-docs.packages.${pkgs.stdenv.hostPlatform.system}.default
+
             pkgs.just                    # task runner
             pkgs.pre-commit              # per-project git hooks
             pkgs.dprint                  # markdown formatter

@@ -1,5 +1,28 @@
 # Known Issues Specification
 
+<!--TOC-->
+
+- [Purpose](#purpose)
+- [Requirements](#requirements)
+  - [`known-issues:case-id-is-a-slug` — A case id is a slug](#known-issuescase-id-is-a-slug--a-case-id-is-a-slug)
+    - [Scenario: Two branches record a vendor defect in parallel](#scenario-two-branches-record-a-vendor-defect-in-parallel)
+  - [`known-issues:a-record-carries-its-retirement-condition` — A record carries its retirement condition](#known-issuesa-record-carries-its-retirement-condition--a-record-carries-its-retirement-condition)
+    - [Scenario: A workaround outlives its bug](#scenario-a-workaround-outlives-its-bug)
+  - [`known-issues:a-record-walks-the-mechanism` — A record walks its mechanism](#known-issuesa-record-walks-the-mechanism--a-record-walks-its-mechanism)
+    - [Scenario: A record names the defect and stops](#scenario-a-record-names-the-defect-and-stops)
+  - [`known-issues:a-filed-record-carries-its-report` — A filed record carries its report](#known-issuesa-filed-record-carries-its-report--a-filed-record-carries-its-report)
+    - [Scenario: A record is filed under deadline](#scenario-a-record-is-filed-under-deadline)
+  - [`known-issues:a-bugzilla-report-body-fits-in-79-columns` — A Bugzilla report body fits in 79 columns](#known-issuesa-bugzilla-report-body-fits-in-79-columns--a-bugzilla-report-body-fits-in-79-columns)
+    - [Scenario: An aligned table is pasted into a Bugzilla comment](#scenario-an-aligned-table-is-pasted-into-a-bugzilla-comment)
+  - [`known-issues:a-record-carries-one-state` — A record carries one state](#known-issuesa-record-carries-one-state--a-record-carries-one-state)
+    - [Scenario: A record states a handling no one defined](#scenario-a-record-states-a-handling-no-one-defined)
+  - [`known-issues:a-record-carries-one-filing-state` — A record carries one filing state](#known-issuesa-record-carries-one-filing-state--a-record-carries-one-filing-state)
+    - [Scenario: A team asks which cases it can file today](#scenario-a-team-asks-which-cases-it-can-file-today)
+  - [`known-issues:a-record-records-its-last-check` — A record records its last check](#known-issuesa-record-records-its-last-check--a-record-records-its-last-check)
+    - [Scenario: A retire condition is never tested against reality](#scenario-a-retire-condition-is-never-tested-against-reality)
+
+<!--TOC-->
+
 ## Purpose
 
 Rules governing known-issue records — the zone that holds an external defect this project works
@@ -72,3 +95,39 @@ inside a fence and at or below 79 columns.
 - THEN it wraps where Bugzilla chooses and the alignment carrying the argument is lost
 
 Verify: `pre-commit run ki-bugzilla-report-width --all-files`
+
+### `known-issues:a-record-carries-one-state` — A record carries one state
+
+The author MUST give every known-issue record exactly one `state:` value, from `investigating`, `mitigated`, `masked` and `monitoring`.
+
+#### Scenario: A record states a handling no one defined
+
+- GIVEN a record carrying `state: closed`
+- WHEN a reader sorts the zone by how each case is handled
+- THEN the record answers with a word the method never defined, and the gate rejects it
+
+Verify: `pre-commit run ki-state --all-files`
+
+### `known-issues:a-record-carries-one-filing-state` — A record carries one filing state
+
+The author MUST give every known-issue record exactly one `filing:` value, from `gathering`, `ready`, `filed` and `deferred`.
+
+#### Scenario: A team asks which cases it can file today
+
+- GIVEN a zone whose records state only how each case is handled
+- WHEN someone looks for the cases whose evidence is ready to file
+- THEN every record has to be read in full, because no field carries the answer
+
+Verify: `pre-commit run ki-filing --all-files`
+
+### `known-issues:a-record-records-its-last-check` — A record records its last check
+
+Where `state:` is `masked` or `monitoring`, the author MUST give the record an ISO `checked:` date not after today, and no other record one.
+
+#### Scenario: A retire condition is never tested against reality
+
+- GIVEN a masked record whose retire condition names two upstream issues
+- WHEN a reader asks whether either one shipped
+- THEN nothing in the record says when anyone last looked, and the mask outlives the bug
+
+Verify: `pre-commit run ki-checked-date --all-files`

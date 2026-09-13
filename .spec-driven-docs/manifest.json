@@ -1,225 +1,166 @@
 {
-  "schema_version": 1,
-  "canon_version": "0.1.5",
-  "canon_source": "https://github.com/gubasso/spec-driven-docs",
-  "canon_ref": "v0.1.5",
-  "profile": "knowledge-base",
-  "docs_root": "_docs",
-  "installed_at": "2026-08-24T00:00:00Z",
-  "managed_files": [
-    {
-      "source": "scripts/verify.sh",
-      "destination": ".spec-driven-docs/verify.sh",
-      "sha256": "dc17d596ae2c196cc01b439c291416f91198cc274e2376fd01a4d614c1ff60ad"
-    },
-    {
-      "source": ".markdownlint/adr.markdownlint-cli2.jsonc",
-      "destination": ".spec-driven-docs/markdownlint/adr.markdownlint-cli2.jsonc",
-      "sha256": "40ce5af8fc9ac349e2d8efb17a8c735463b6ed59469afabc6bf8c09b1c65359e"
-    },
-    {
-      "source": ".markdownlint/spec.markdownlint-cli2.jsonc",
-      "destination": ".spec-driven-docs/markdownlint/spec.markdownlint-cli2.jsonc",
-      "sha256": "85c5697b30b980e6f130f6dfa79960d16eb5a12c77e141ff23b63b0c0e6b055a"
-    },
-    {
-      "source": ".markdownlint/relative-links.markdownlint-cli2.jsonc",
-      "destination": ".spec-driven-docs/markdownlint/relative-links.markdownlint-cli2.jsonc",
-      "sha256": "c489edba99309dcb809edab714d6ed4db44f85a8cd306a594b2f36efe2e6486e"
-    },
-    {
-      "source": "gates/instance/adr-filename-shape.sh",
-      "destination": ".spec-driven-docs/hooks/adr-filename-shape.sh",
-      "sha256": "f4d575a911c13925c9a5343c9ef25a8deb71bba661a28546b11440b3e63e4a4f"
-    },
-    {
-      "source": "gates/instance/adr-word-cap.sh",
-      "destination": ".spec-driven-docs/hooks/adr-word-cap.sh",
-      "sha256": "d103d83a3d16adcbdd7bf120b47a285617280ede4cfa3e9d26befb7e5d568ce6"
-    },
-    {
-      "source": "gates/instance/agents-digest-size.sh",
-      "destination": ".spec-driven-docs/hooks/agents-digest-size.sh",
-      "sha256": "ce51967d5761033563db9571927cf616678fce71069d63ab60a5c885b0df077b"
-    },
-    {
-      "source": "gates/instance/chapter-size-cap.sh",
-      "destination": ".spec-driven-docs/hooks/chapter-size-cap.sh",
-      "sha256": "311dd275e3d0d9c8650c2edebec9f89027d52e64bcc728fec706227be29bbf9b"
-    },
-    {
-      "source": "gates/instance/comparison-dated-tables.sh",
-      "destination": ".spec-driven-docs/hooks/comparison-dated-tables.sh",
-      "sha256": "a6e7be4514534b6d827bf923d0316b374ead61e9a0ab948dac3ad0df5a65a5c2"
-    },
-    {
-      "source": "gates/instance/comparison-escaped-pipes.sh",
-      "destination": ".spec-driven-docs/hooks/comparison-escaped-pipes.sh",
-      "sha256": "6a1f5cbe71e9ea974ce4b78c2ffb1896325e0b0cb27f6aae2fe3fd6f6a3106b7"
-    },
-    {
-      "source": "gates/instance/comparison-legend.sh",
-      "destination": ".spec-driven-docs/hooks/comparison-legend.sh",
-      "sha256": "ff54e674adda5d440e4139b77f7b2e0dc6739c715b25c1f968b657ca62f06ca1"
-    },
-    {
-      "source": "gates/instance/comparison-one-reference-per-cell.sh",
-      "destination": ".spec-driven-docs/hooks/comparison-one-reference-per-cell.sh",
-      "sha256": "70bf047b7a8ea14f0277689c5b5ea65e7bd86d40462729de9fdcc78b0d832bba"
-    },
-    {
-      "source": "gates/instance/comparison-verdict-word.sh",
-      "destination": ".spec-driven-docs/hooks/comparison-verdict-word.sh",
-      "sha256": "c217ff2cafcee1fe265ebb3fc418c1fa9cb6781b7e089661b7e746b28c77cc02"
-    },
-    {
-      "source": "gates/instance/gate-message-cites-a-rule.sh",
-      "destination": ".spec-driven-docs/hooks/gate-message-cites-a-rule.sh",
-      "sha256": "3053b0eb88097c0455530c987894e83363434a7b8325f0bc0673912f8537d9b8"
-    },
-    {
-      "source": "gates/instance/instance-manifest.sh",
-      "destination": ".spec-driven-docs/hooks/instance-manifest.sh",
-      "sha256": "6cb7516b8019e95d3425d6f429c875034befda32f14398c10ff44760eec57bfc"
-    },
-    {
-      "source": "gates/instance/ki-bugzilla-report-width.sh",
-      "destination": ".spec-driven-docs/hooks/ki-bugzilla-report-width.sh",
-      "sha256": "85275a6e1e1371ea901b7528c6687ca9fa5f501e5ee444d26d0265266723e042"
-    },
-    {
-      "source": "gates/instance/ki-filename-shape.sh",
-      "destination": ".spec-driven-docs/hooks/ki-filename-shape.sh",
-      "sha256": "cecc4fb8ce8d6ac84f98c9946763f909f1883b4aee545d850a24d9fa2d70776e"
-    },
-    {
-      "source": "gates/instance/ki-mechanism-walkthrough.sh",
-      "destination": ".spec-driven-docs/hooks/ki-mechanism-walkthrough.sh",
-      "sha256": "b3a1760b9d6b31cce5f195ed953334f3e1b714c6810ad64bebeaa6977de93848"
-    },
-    {
-      "source": "gates/instance/ki-report-body.sh",
-      "destination": ".spec-driven-docs/hooks/ki-report-body.sh",
-      "sha256": "141ecede742fe02aec5260568d88010b921a65e29417bec383c09f6251573a43"
-    },
-    {
-      "source": "gates/instance/ki-retire-when.sh",
-      "destination": ".spec-driven-docs/hooks/ki-retire-when.sh",
-      "sha256": "1a05ee65729c9b3a3cbb25e0b0dfed80b556a28d3b91c714e7e4861b5656487e"
-    },
-    {
-      "source": "gates/instance/lib-instance-paths.sh",
-      "destination": ".spec-driven-docs/hooks/lib-instance-paths.sh",
-      "sha256": "023e294d2c6e33125cda31dfcfd69d59d876e0e25e9e8b9a35a1a39a076aa569"
-    },
-    {
-      "source": "gates/instance/no-self-narration.awk",
-      "destination": ".spec-driven-docs/hooks/no-self-narration.awk",
-      "sha256": "4050fc16bda474295b02fdb60ef9c802ddf6d96520b53ccabe62ebb309fe0d7d"
-    },
-    {
-      "source": "gates/instance/no-self-narration.sh",
-      "destination": ".spec-driven-docs/hooks/no-self-narration.sh",
-      "sha256": "f1accb6ccb4343ba082538c8cc76a5f4cccb0f52ae9039c4facacd760b7935d4"
-    },
-    {
-      "source": "gates/instance/spec-requirement-parts.sh",
-      "destination": ".spec-driven-docs/hooks/spec-requirement-parts.sh",
-      "sha256": "d1e369e008d2f095a8d7afed157eef259c8122eb38de438832978b7c0782f6cf"
-    },
-    {
-      "source": "gates/instance/spec-rule-id-unique.sh",
-      "destination": ".spec-driven-docs/hooks/spec-rule-id-unique.sh",
-      "sha256": "49da4089918eb5a6256f8412c25347047b031579480226b79426db753db671e6"
-    },
-    {
-      "source": "gates/instance/spec-size-cap.sh",
-      "destination": ".spec-driven-docs/hooks/spec-size-cap.sh",
-      "sha256": "2cc375d7275f3d57026cf4c68f2236d8cbc70e9d1f4269c574efff42af8f0691"
-    },
-    {
-      "source": "gates/instance/spec-verify-hooks-exist.sh",
-      "destination": ".spec-driven-docs/hooks/spec-verify-hooks-exist.sh",
-      "sha256": "bd8c2a00863ad60567dbe80e6df0333e1197c1fcf4dd859c8873ace69045e065"
-    },
-    {
-      "source": "gates/instance/suppression-names-its-case.sh",
-      "destination": ".spec-driven-docs/hooks/suppression-names-its-case.sh",
-      "sha256": "96351e42b46f5ae231c377c184d54736bf35754cfeeba7f56f6c31d2f5bcbed9"
-    }
-  ],
   "adopted_files": [
     {
-      "source": "_docs/specs/SPEC-decision-records.md",
+      "baseline_sha256": "e3c7b6a3da71a246d42957658ded8838d76a9b477749e61b4bf856a1538f987e",
+      "destination": ".spec-driven-docs/config.yaml",
+      "sha256": "e3c7b6a3da71a246d42957658ded8838d76a9b477749e61b4bf856a1538f987e",
+      "source": "instance/seeds/config.yaml"
+    },
+    {
+      "baseline_sha256": "1b652c9984683d4732b748ad363d56232095dd5fe9c2d048fd4dab59a468d684",
+      "destination": "_docs/specs/SPEC-budget-debt.md",
+      "sha256": "1b652c9984683d4732b748ad363d56232095dd5fe9c2d048fd4dab59a468d684",
+      "source": "_docs/specs/SPEC-budget-debt.md"
+    },
+    {
+      "baseline_sha256": "e48af91d103a6a680191f30c6e0e43c7d3610edb4d4ba4ee6a783509670865bf",
+      "destination": "_docs/specs/SPEC-writing-policy.md",
+      "sha256": "e48af91d103a6a680191f30c6e0e43c7d3610edb4d4ba4ee6a783509670865bf",
+      "source": "_docs/specs/SPEC-writing-policy.md"
+    },
+    {
+      "baseline_sha256": "78153cfd7ce576a44496c8682cfcf53541a61626af80dfa9fee18958becd46f6",
       "destination": "_docs/specs/SPEC-decision-records.md",
       "sha256": "cedb586950f6445e740f0592a82b9a883889e1bb203966e157311b3ae95bbbd6",
-      "baseline_sha256": "cedb586950f6445e740f0592a82b9a883889e1bb203966e157311b3ae95bbbd6"
+      "source": "_docs/specs/SPEC-decision-records.md"
     },
     {
-      "source": "_docs/specs/SPEC-distribution.md",
-      "destination": "_docs/specs/SPEC-distribution.md",
-      "sha256": "7192b35ba5f504352fc5972ca72fc60d3e1a68da6815ec679467bfe42d2154a4",
-      "baseline_sha256": "5431f0152ea4d1e23394148b5f40db989bdf125b7089f4d2aabf4fb0b6245901"
+      "baseline_sha256": "f86aa3d3d48dc2028b5baf18bb45f1a7bf5ce0300bbfef39b4d0431919b6aeb9",
+      "destination": "_docs/specs/SPEC-instance.md",
+      "sha256": "f86aa3d3d48dc2028b5baf18bb45f1a7bf5ce0300bbfef39b4d0431919b6aeb9",
+      "source": "_docs/specs/SPEC-instance.md"
     },
     {
-      "source": "_docs/specs/SPEC-docs-format.md",
+      "baseline_sha256": "d90c7751f1f6e75fa44bbb78a1ae6a85827a7e7513928dcd06141ac1dafc9ebe",
       "destination": "_docs/specs/SPEC-docs-format.md",
       "sha256": "33fa4cf03862fca403a17c164514c7d6bfde6e65dcb9f3d71d5fc30de8e8b8f7",
-      "baseline_sha256": "0ce5a513ae11ac448b10e754fbdd06dfcdf4d611947a519c40f5ba07582440c1"
+      "source": "_docs/specs/SPEC-docs-format.md"
     },
     {
-      "source": "_docs/specs/SPEC-docs-foundations.md",
+      "baseline_sha256": "632106cc4e4c2a3e6b728407738fa609859f66ae47da175c39e3f7a59761f874",
       "destination": "_docs/specs/SPEC-docs-foundations.md",
       "sha256": "4f520403c4c4f203e543c1a90e0a2b676cd0b3beda3bc727e989cf0394f078fd",
-      "baseline_sha256": "4f520403c4c4f203e543c1a90e0a2b676cd0b3beda3bc727e989cf0394f078fd"
+      "source": "_docs/specs/SPEC-docs-foundations.md"
     },
     {
-      "source": "_docs/specs/SPEC-docs-specs.md",
+      "baseline_sha256": "69185324c489c2f9230b06520417ef6786fbdb1abaf35a2da2ddfb5efae11413",
       "destination": "_docs/specs/SPEC-docs-specs.md",
       "sha256": "a1af339292aab146e2f346f62ac3c2618f784b35addad48a1757b47feb867f5d",
-      "baseline_sha256": "61888891f9abca3622120695a84988c7d82ea19c912e8328565450b5e4820e82"
+      "source": "_docs/specs/SPEC-docs-specs.md"
     },
     {
-      "source": "_docs/specs/SPEC-comparison-docs.md",
+      "baseline_sha256": "e9e3525239db5ad1408ab2b3d9b78624524b36885b7ffa478618a0b65f3de804",
       "destination": "_docs/specs/SPEC-comparison-docs.md",
       "sha256": "31d9debd3ed14e9dabe2c346dbce51223952809b949143dcbc76f490fcb47c08",
-      "baseline_sha256": "31d9debd3ed14e9dabe2c346dbce51223952809b949143dcbc76f490fcb47c08"
+      "source": "_docs/specs/SPEC-comparison-docs.md"
     },
     {
-      "source": "_docs/specs/SPEC-known-issues.md",
+      "baseline_sha256": "00f3396494b816eba4904f90567db12729e99aa8e71e21d3018f40728c07336f",
       "destination": "_docs/specs/SPEC-known-issues.md",
       "sha256": "974ede368bc8c8893ad10182c1d3565f18deaa2949439047ed5cd9a963fcaa0d",
-      "baseline_sha256": "974ede368bc8c8893ad10182c1d3565f18deaa2949439047ed5cd9a963fcaa0d"
+      "source": "_docs/specs/SPEC-known-issues.md"
     },
     {
-      "source": "_docs/specs/SPEC-spec-to-code.md",
+      "baseline_sha256": "9c5c30de7f7ecd78e4d5acd089d1a8bc5e0d5db8fc8215414a0a4a093a1a8928",
       "destination": "_docs/specs/SPEC-spec-to-code.md",
       "sha256": "03be1df7fe30c9391c1b71a13fd850af5a29a8e687d517afe6b5b0f9dccd940a",
-      "baseline_sha256": "edf083255fbfcff2d80dda518428e5c71237c9ceeb0ab2d529426ecb98d2c300"
+      "source": "_docs/specs/SPEC-spec-to-code.md"
     },
     {
-      "source": "templates/TEMPLATE-spec.md",
+      "baseline_sha256": "20c6656e745037d41ca24479296f6ccfe54e3f1614cb460c57fe487797787e31",
+      "destination": "_docs/specs/SPEC-guides.md",
+      "sha256": "d9798ab482725ea378763d07297324265b816581c04ac53bc043c9c99c0c7e74",
+      "source": "_docs/specs/SPEC-guides.md"
+    },
+    {
+      "baseline_sha256": "1d5555c5ba405294e2e7bac79f7b5796520e11a63a25ef15975abe14faa4e4a1",
+      "destination": "_docs/specs/SPEC-writing-style.md",
+      "sha256": "1d5555c5ba405294e2e7bac79f7b5796520e11a63a25ef15975abe14faa4e4a1",
+      "source": "_docs/specs/SPEC-writing-style.md"
+    },
+    {
+      "baseline_sha256": "1d06d5913a17c9ff071463e99f869ee5da5ef2488da5b9967c14fe689f3ed9ca",
+      "destination": "_docs/specs/SPEC-tracking.md",
+      "sha256": "1d06d5913a17c9ff071463e99f869ee5da5ef2488da5b9967c14fe689f3ed9ca",
+      "source": "_docs/specs/SPEC-tracking.md"
+    },
+    {
+      "baseline_sha256": "fef4d042821345c8fb948e5c45e4b24ae5365b8d8bdf3a48f14c98a47e140bab",
+      "destination": "_docs/specs/SPEC-tracking/tracking.schema.json",
+      "sha256": "fef4d042821345c8fb948e5c45e4b24ae5365b8d8bdf3a48f14c98a47e140bab",
+      "source": "_docs/specs/SPEC-tracking/tracking.schema.json"
+    },
+    {
+      "baseline_sha256": "02dda0bbcaedb41598132fb8af48f11fe1e0f774870097687722664b08523388",
+      "destination": "_docs/reference/tracking.yaml",
+      "sha256": "02dda0bbcaedb41598132fb8af48f11fe1e0f774870097687722664b08523388",
+      "source": "templates/TEMPLATE-tracking.yaml"
+    },
+    {
+      "baseline_sha256": "dda48e05b2245b6b1199dec3b8c6f16b86d0c955e8660d4d43aa0fcc92bfb5d2",
       "destination": "_docs/specs/TEMPLATE-spec.md",
       "sha256": "2a77ccdbba13ab7bfa50b6dd5702f21fd71a050e09fae482708590ae13c3f86b",
-      "baseline_sha256": "2a77ccdbba13ab7bfa50b6dd5702f21fd71a050e09fae482708590ae13c3f86b"
+      "source": "templates/TEMPLATE-spec.md"
     },
     {
-      "source": "templates/TEMPLATE-adr.md",
+      "baseline_sha256": "37ecdef6201b00983c816a03680890aad8f6f4fb643fec70ea029ac2dae1658f",
       "destination": "_docs/decisions/TEMPLATE-adr.md",
       "sha256": "3b3e1beaca7b976c768caba13141e8c9df3bee9bf942e4d3e938fd3094b37691",
-      "baseline_sha256": "7b651d5e9a6fa8ae34ec28bccdac9c85ff9fe7af6e59d0528e2b32473e00c131"
+      "source": "templates/TEMPLATE-adr.md"
     },
     {
-      "source": "templates/TEMPLATE-agents-digest.md",
+      "baseline_sha256": "14ca07309ac94599fcda015d2413cd67769a738b1b49f2a22b3a200e8d6c15fd",
       "destination": "_docs/reference/TEMPLATE-agents-digest.md",
       "sha256": "8cfe0ebe9c145405c265c56dd304f88e0bcca3e96d78469d080cabbb364df48e",
-      "baseline_sha256": "90450d471fc3a433cdce576e9be107892c949ff11f86b17959161f8c6ec41887"
+      "source": "templates/TEMPLATE-agents-digest.md"
+    },
+    {
+      "baseline_sha256": "5cd5a28187840f74a681d8aa381f37310eaaff383bc3df39b343f0c88d7c7783",
+      "destination": "_docs/guides/TEMPLATE-guide.md",
+      "sha256": "5cd5a28187840f74a681d8aa381f37310eaaff383bc3df39b343f0c88d7c7783",
+      "source": "templates/TEMPLATE-guide.md"
+    },
+    {
+      "baseline_sha256": "17175f356d71bf0b8b17fdf52403b4344dca37193811e2cb28975b95fbb6ceb3",
+      "destination": "_docs/reference/TEMPLATE-known-issue.md",
+      "sha256": "17175f356d71bf0b8b17fdf52403b4344dca37193811e2cb28975b95fbb6ceb3",
+      "source": "templates/TEMPLATE-known-issue.md"
     }
   ],
+  "canon_source": "https://github.com/gubasso/spec-driven-docs",
+  "canon_version": "0.8.1",
+  "docs_root": "_docs",
+  "installed_at": "2026-08-24T00:00:00Z",
   "integration_blocks": [
     {
-      "path": ".pre-commit-config.yaml",
-      "marker_hash": "9cf5dcc8f8ba30ae55efdd346c2df0ca1637dbc9e528d623f4927ca0d54b5280"
+      "marker_hash": "e5924864e9621cef20f7f7dd80a7387471b99b39f8e06b82e6abda1484b41c1d",
+      "path": ".pre-commit-config.yaml"
+    },
+    {
+      "marker_hash": "c7bc9e8ed63a49844a07ec9e2fabef525d80492f4635877fac85d0b2802154aa",
+      "path": "AGENTS.md"
     }
-  ]
+  ],
+  "managed_files": [
+    {
+      "destination": ".spec-driven-docs/markdownlint/adr.markdownlint-cli2.jsonc",
+      "sha256": "40ce5af8fc9ac349e2d8efb17a8c735463b6ed59469afabc6bf8c09b1c65359e",
+      "source": ".markdownlint/adr.markdownlint-cli2.jsonc"
+    },
+    {
+      "destination": ".spec-driven-docs/markdownlint/spec.markdownlint-cli2.jsonc",
+      "sha256": "85c5697b30b980e6f130f6dfa79960d16eb5a12c77e141ff23b63b0c0e6b055a",
+      "source": ".markdownlint/spec.markdownlint-cli2.jsonc"
+    },
+    {
+      "destination": ".spec-driven-docs/markdownlint/relative-links.markdownlint-cli2.jsonc",
+      "sha256": "c489edba99309dcb809edab714d6ed4db44f85a8cd306a594b2f36efe2e6486e",
+      "source": ".markdownlint/relative-links.markdownlint-cli2.jsonc"
+    }
+  ],
+  "plan_zone": {
+    "kind": "none"
+  },
+  "profile": "knowledge-base",
+  "schema_version": 3
 }

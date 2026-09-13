@@ -82,3 +82,17 @@ Where a requirement names a supporting artifact, the author MUST place that arti
 - THEN it sits in the spec's companion directory rather than in reference
 
 Verify: `for d in _docs/specs/*/; do [ -e "$d" ] || continue; n=$(basename "$d"); [ -f "_docs/specs/$n.md" ] && [ -n "$(ls -A "$d")" ] || exit 1; done`
+
+### `docs-foundations:a-document-carries-no-personal-path` — A document carries no path into a person's home
+
+The author MUST use `~/`, `$HOME/`, or a bracketed placeholder for home-directory paths, except in a file dedicated to one person's environment.
+
+The rule binds an author writing any document, and the gate judges the whole project. Whether a string is a real person's home directory does not depend on which conventions a project follows, so the check has no register to collide with and its value is entirely in breadth. A project that needs a path exempt reserves it in its own declaration.
+
+#### Scenario: A walkthrough is written from the author's own terminal
+
+- GIVEN a chapter that pastes a working command with the author's home directory in it
+- WHEN a second reader follows it
+- THEN the path resolves for nobody else and names someone who never agreed to be named, which the placeholder form avoids at no cost
+
+Verify: `pre-commit run no-personal-path --all-files`

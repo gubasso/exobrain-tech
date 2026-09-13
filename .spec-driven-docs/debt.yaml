@@ -1,0 +1,11 @@
+# Inherited budget violations this project carries.
+#
+# A ceiling is judged instead of the budget and only comes down: run
+# `sdd debt tighten --apply` after a document shrinks. An exception clears
+# once the condition is corrected. Nothing here can be widened.
+schema_version: 1
+
+chapter-size-cap:
+  'tools/git/README.md':
+    lines:
+      ceiling: 374

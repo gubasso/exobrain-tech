@@ -1,2 +1,9 @@
 lane: todo
-stories: []
+stories:
+  - id: "004"
+    slug: decide-whether-prose-stays-unwrapped
+    type: chore
+    points: 3
+    needs: []
+    tags: [governance]
+    note: the delivered gate is wired and parked, and 629 wrapped lines wait on the choice
