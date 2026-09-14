@@ -54,3 +54,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: one declared system, held by evaluating the flake rather than reading it
+  - id: "009"
+    slug: state-the-durable-knowledge-layer
+    type: story
+    points: 3
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: two knowledge sets, a three-step route to a corpus, and version matching by construction

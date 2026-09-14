@@ -1,9 +1,9 @@
 lane: doing
 stories:
-  - id: "009"
-    slug: state-the-durable-knowledge-layer
+  - id: "010"
+    slug: name-the-candidate-and-the-receipt
     type: story
     points: 3
     needs: []
     tags: [library]
-    note: two knowledge sets, a three-step route to a corpus, and version matching by construction
+    note: desired state and attributed installed state, kept apart, with no protocol between releases
