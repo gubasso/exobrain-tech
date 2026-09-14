@@ -28,7 +28,8 @@ planning, project-management, or workflow method (ADR-the-repository-names-no-pl
 ## Documentation canon
 
 Non-negotiable: understanding, linting, formatting, testing, and building this checkout read only
-local files and the tools `flake.nix` pins. `_docs/specs/` and `_docs/decisions/` are instance-owned;
+local files and the tools `flake.nix` pins, on the one system it declares
+(ADR-linux-is-the-only-supported-project-target). `_docs/specs/` and `_docs/decisions/` are instance-owned;
 `.spec-driven-docs/` is the managed projection, and `sdd verify` checks it offline. The upstream
 [documentation canon](https://github.com/gubasso/spec-driven-docs) owns the method and serves the
 delivered gates as a lock-pinned tool, never as a source this repository reads. This link is the only

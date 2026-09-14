@@ -36,3 +36,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: one shelf per vendor, four dated adapters, and nothing personal or another product's
+  - id: "007"
+    slug: state-the-skill-authoring-standard
+    type: story
+    points: 5
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: the whole standard for authoring and evaluating a skill, tool-agnostic and self-contained
