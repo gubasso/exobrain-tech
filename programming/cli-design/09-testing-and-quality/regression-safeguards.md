@@ -43,7 +43,7 @@ contract** — what the program does, not how it does it.
 | Mutation testing        | Tests actually detect changes in production code.          | [09 § Mutation testing](./testing-strategy.md#mutation-testing-as-quality-gate)                   |
 | Contract tests          | API / CLI output schemas remain stable across versions.    | [09a § Contract testing](./testing-tools.md#contract-testing)                                     |
 | Argv-contract tests     | Subprocess invocations produce correct argument vectors.   | [09 § Argv-contract](./testing-strategy.md#argv-contract-tests-for-clis-that-wrap-other-binaries) |
-| Eval harnesses          | AI agent workflows produce correct results over N samples. | [05 § Verification](../05-designing-for-llm-agents.md#5-verification-and-evals)                   |
+| Eval harnesses          | AI agent workflows produce correct results over N samples. | [agent-integration/05](../../agent-integration/05-evaluations.md)                                 |
 
 ### Category 2: Structural quality gates
 
@@ -146,33 +146,16 @@ Sources:
 
 ## Eval harnesses for agent skills
 
-For CLIs that agents consume (or for verifying agent-written code), programmatic evals provide a
-regression signal that's distinct from — and complementary to — the test suite.
-
-### What an eval verifies
-
-- **Deterministic checks**: Did the agent call the right commands? Did it pass `--dry-run` before
-  committing? Did it use `--json` for machine-parseable output?
-- **Rubric-style checks**: Is the final output well-formed? Does it match the expected schema? Did
-  the agent follow the documented workflow?
-- **Statistical signal**: Over N runs (10+ samples per prompt), what's the pass rate? A single
-  sample is meaningless for a non-deterministic system.
-
-### Eval-driven development
-
-Treat eval pass rates like test coverage: track them over time, investigate drops, promote stable
-evals to gated. The eval suite is a separate artifact from the test suite — tests verify the CLI
-works; evals verify the agent uses the CLI correctly.
-
-Sources:
-[OpenAI — Testing Agent Skills Systematically with Evals](https://developers.openai.com/blog/eval-skills)
-· [05 § Verification and Evals](../05-designing-for-llm-agents.md#5-verification-and-evals).
+An eval is a regression signal distinct from the test suite: the suite verifies that the CLI works,
+and an eval verifies that the agent uses it correctly. What an eval checks, how many samples a rate
+needs, and when a stable eval becomes a gate are in
+[agent-integration/05 — Evaluations](../../agent-integration/05-evaluations.md).
 
 ## Verification loops
 
-The pattern from
-[05 § Validation loops](../05-designing-for-llm-agents.md#36-validation-loops-are-gold), generalized
-to agent-written code:
+The validation loop a skill carries, in
+[agent-integration/03 — Skills](../../agent-integration/03-skills.md), generalized to agent-written
+code:
 
 ```text
 1. Agent writes code.

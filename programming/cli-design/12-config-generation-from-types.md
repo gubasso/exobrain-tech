@@ -98,7 +98,7 @@ the trigger fired rather than to route around it with a hidden subcommand.
 
 A `schema` / `--print-config` subcommand is the runtime companion to the committed
 artifacts: expose the JSON Schema
-([05 — `pigeon schema <type>`](./05-designing-for-llm-agents.md)) and let
+([the worked example's `schema` subcommand](../agent-integration/90-worked-example.md)) and let
 `--print-config` dump the effective config
 ([03 — Schema discipline](./03-config-precedence.md#schema-discipline)). Same
 source of truth, three surfaces: committed example, committed schema, live command.
@@ -245,7 +245,8 @@ wasted work the gate will overwrite.
 
 - [11 — XDG scaffolding & `init`](./11-xdg-scaffolding.md) — copy-don't-scaffold; where `init` may write.
 - [03 — Config precedence](./03-config-precedence.md#schema-discipline) — schema discipline, `--print-config`.
-- [05 — Designing for LLM agents](./05-designing-for-llm-agents.md) — `schema` subcommand, `--json`.
+- [05 — Designing for LLM agents](./05-designing-for-llm-agents.md) — machine-readable output as a
+  contract, and the `schema` subcommand that exposes it.
 - [`design-decisions/config-state-ownership/`](../design-decisions/config-state-ownership/README.md) — config is read-only to the tool (the _why_).
 - [`best-practices/pre-commit.md`](../best-practices/pre-commit.md) — freshness-gate hook wiring.
 

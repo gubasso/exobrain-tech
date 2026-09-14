@@ -440,7 +440,7 @@ without shelling out to `man(1)`.
 Config precedence: see
 [`cli-design/03-config-precedence.md`](../../../programming/cli-design/03-config-precedence.md) for
 the canonical 5-layer ladder. Secret handling and missing-config error shape: see
-[`cli-design/05-designing-for-llm-agents.md §2.9`](../../../programming/cli-design/05-designing-for-llm-agents.md#29-config-via-env--file-never-interactive-prompts).
+[`cli-design/05-designing-for-llm-agents.md §2.9`](../../../programming/cli-design/05-designing-for-llm-agents.md#29-configuration-from-the-environment-and-files).
 
 ---
 
