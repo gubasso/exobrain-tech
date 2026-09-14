@@ -120,3 +120,5 @@ convenience for the property that the tool never destroys something it cannot ac
 - [00 — The four layers](./00-model.md) — where a tool's mechanism sits among what a project carries.
 - [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the distinction between
   project artifacts and tool references that decides what a candidate contains.
+- [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
+  lifecycle that renders a candidate twice and writes the receipt last.

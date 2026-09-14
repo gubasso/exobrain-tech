@@ -1,9 +1,9 @@
 lane: doing
 stories:
-  - id: "010"
-    slug: name-the-candidate-and-the-receipt
+  - id: "011"
+    slug: state-the-staging-and-landing-lifecycle
     type: story
-    points: 3
+    points: 5
     needs: []
     tags: [library]
-    note: desired state and attributed installed state, kept apart, with no protocol between releases
+    note: two renders, one invariant, an honest failure story, and cleanup as its own command

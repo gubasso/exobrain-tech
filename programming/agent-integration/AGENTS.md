@@ -105,6 +105,26 @@ one agent runtime is that vendor's shelf under `tools/`, dated.
   overwritten, and the tool never fetches an older release to manufacture the record it lacks.
 - A retired destination is reported and released to the project. It is not deleted.
 
+### Disposable staging and direct landing (09)
+
+- Eight steps: evidence, render to stage, investigate, prepare, render to production, verify,
+  compare against the retained stage, clean under explicit authorization.
+- Production never reads the stage. Remove the stage first and production produces the same result.
+  The two steps share a pure projection, never serialized state, which is what avoids a validity
+  protocol with fingerprints and revalidation.
+- The stage holds the artifact tree, an explanatory receipt, the omissions and conflicts, the
+  changelog and guidance, and version-matched reference material it exposes rather than lands.
+- Landing validates every path and collision before writing, then writes by ownership class, and
+  writes the central receipt last. Files a record does not yet claim are recoverable; the reverse
+  is not.
+- The guarantee is a whole-file boundary on supported local filesystems, under one lock per target.
+  The set is not transactional: no rollback, no all-or-nothing, a possibly completed remote rename
+  re-observed, the observed completed paths reported, version control for recovery, rerun supported.
+- Cleanup is its own destructive command. It identifies the stage by its receipt, refuses a symlink,
+  a filesystem or home root, the project root and its ancestors, and an ambiguous directory, holds
+  the validated boundary through removal, and removes one stage after explicit authorization.
+- A rule states a property. An implementation names the mechanism and the targets where it proved it.
+
 ### Skill security (15)
 
 - A skill from outside the project is code review, not a download.
