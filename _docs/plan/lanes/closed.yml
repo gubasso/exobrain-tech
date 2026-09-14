@@ -72,3 +72,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: desired state and attributed installed state, kept apart, with no protocol between releases
+  - id: "011"
+    slug: state-the-staging-and-landing-lifecycle
+    type: story
+    points: 5
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: two renders, one invariant, an honest failure story, and cleanup as its own command

@@ -141,3 +141,5 @@ prevent.
   and what it does not land.
 - [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) — the candidate
   both renders compute, and the record the last write updates.
+- [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
+  judgment that runs between the two renders, and who owns the version underneath them.

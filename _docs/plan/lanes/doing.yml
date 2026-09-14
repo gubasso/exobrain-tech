@@ -1,9 +1,9 @@
 lane: doing
 stories:
-  - id: "011"
-    slug: state-the-staging-and-landing-lifecycle
+  - id: "012"
+    slug: separate-acquisition-from-migration
     type: story
-    points: 5
+    points: 3
     needs: []
     tags: [library]
-    note: two renders, one invariant, an honest failure story, and cleanup as its own command
+    note: the project selects a version, and an agent works out what its output means here
