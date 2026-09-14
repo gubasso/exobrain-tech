@@ -14,26 +14,27 @@ The mechanism an agent runs is usually a command-line tool, and designing one is
 The shelf's spine is a model of what a project carries, in four layers. Each answers a different
 question, and the index follows it.
 
-| Layer             | The question                            | Where it is stated                                        |
-| ----------------- | --------------------------------------- | --------------------------------------------------------- |
-| Mechanism         | What does the agent run?                | [cli-design](../cli-design/README.md) for the tool itself |
-| Playbook          | What does the agent load for this task? | [03](./03-skills.md), [04](./04-skill-distribution.md)    |
-| Durable knowledge | What does the agent read on demand?     | the project's own documentation                           |
-| Governance        | What binds every session?               | [01](./01-instruction-files.md)                           |
+| Layer             | The question                            | Where it is stated                                                                   |
+| ----------------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
+| Mechanism         | What does the agent run?                | [cli-design](../cli-design/README.md) for the tool itself                            |
+| Playbook          | What does the agent load for this task? | [03](./03-skills.md), [04](./04-skill-distribution.md), [15](./15-skill-security.md) |
+| Durable knowledge | What does the agent read on demand?     | the project's own documentation                                                      |
+| Governance        | What binds every session?               | [01](./01-instruction-files.md)                                                      |
 
 [00 — The four layers](./00-model.md) states the model itself: what each layer carries, what it
 never carries, who ships what, and the three boundary mistakes a design makes.
 
 ## The chapters
 
-| Chapter                                               | What it holds                                                                                                            |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [00 — The four layers](./00-model.md)                 | The model, the ownership rule, and the boundaries a design gets wrong                                                    |
-| [01 — Instruction files](./01-instruction-files.md)   | What the root file carries, why it routes instead of restating, and the generated digest beside it                       |
-| [03 — Skills](./03-skills.md)                         | The portable package, the frontmatter that triggers it, the body, scripts against references, validation loops, security |
-| [04 — Skill distribution](./04-skill-distribution.md) | The two scopes, one source for many runtimes, and what an installer owes a home                                          |
-| [05 — Evaluations](./05-evaluations.md)               | Why an eval is a separate signal from a test, the three levers, and the tests an agent writes badly                      |
-| [90 — Worked example](./90-worked-example.md)         | One project across every layer: the command tree, the outputs, the skill, the instruction lines, and the eval            |
+| Chapter                                               | What it holds                                                                                                                                  |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [00 — The four layers](./00-model.md)                 | The model, the ownership rule, and the boundaries a design gets wrong                                                                          |
+| [01 — Instruction files](./01-instruction-files.md)   | What the root file carries, why it routes instead of restating, and the generated digest beside it                                             |
+| [03 — Skills](./03-skills.md)                         | The portable package, the frontmatter contract, the description as the trigger surface, the body, scripts against references, validation loops |
+| [04 — Skill distribution](./04-skill-distribution.md) | The two scopes, one source for many runtimes, and what an installer owes a home                                                                |
+| [05 — Evaluations](./05-evaluations.md)               | Why an eval is a separate signal from a test, the four suites, the rate and its floor, and the tests an agent writes badly                     |
+| [15 — Skill security](./15-skill-security.md)         | Fetched content as data, least tools, validation before a shell, the plan before the destruction, and the adversarial suite                    |
+| [90 — Worked example](./90-worked-example.md)         | One project across every layer: the command tree, the outputs, the skill, the instruction lines, and the eval                                  |
 
 ## The irreducible defaults
 

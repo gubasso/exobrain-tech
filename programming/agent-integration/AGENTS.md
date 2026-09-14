@@ -1,7 +1,7 @@
 ---
 digest-of: programming/agent-integration
 last-synced: 2026-09-14
-token-estimate: 900
+token-estimate: 1200
 ---
 
 # AGENTS
@@ -38,15 +38,18 @@ one agent runtime is that vendor's shelf under `tools/`, dated.
 
 ### Skills (03)
 
-- A conforming package is a directory with `SKILL.md`; `reference/`, `scripts/`, and `assets/` are
-  progressive disclosure, not requirements.
+- A skill has one authored owner per kind of content: judgment in `SKILL.md`, durable knowledge in a
+  reference, mechanics in a script. A fact stated twice is already wrong in one place.
+- A conforming package is a directory with `SKILL.md`; `references/`, `scripts/`, and `assets/` are
+  progressive disclosure, not requirements. The package is self-contained and one level deep.
+- Two required fields and four optional ones. An unrecognized field is ignored, and that rule is
+  what makes a package portable. `allowed-tools` is marked experimental.
 - The description is the whole triggering mechanism, because the body loads only after triggering.
-  It carries concrete triggers and explicit negative scope, within the specification's limits of 64
-  and 1024 characters.
-- `allowed-tools` is marked experimental by the specification; every other extra field is a vendor
-  extension and belongs in that vendor's adapter.
-- Scripts are executed and references are read. A skill that asks an agent to re-derive
-  deterministic logic gets a different derivation some of the time.
+  Three parts: what it produces, the phrasings a person types, the boundary against a near sibling.
+- Progressive disclosure is a budget, not a style. The deletion test decides every paragraph: remove
+  it, and ask whether the agent then makes a likely task error.
+- Extract any deterministic chunk past a trivial one-liner, single use included. Four guardrails:
+  split judgment from mechanism, keep the one-liner, stay coarse, leave prompt text to the model.
 - A validation loop whose checks are the mechanism's own is the highest-value shape a skill carries.
 
 ### Distribution (04)
@@ -60,11 +63,27 @@ one agent runtime is that vendor's shelf under `tools/`, dated.
 
 - A test suite says the mechanism works; an eval says the agent uses it correctly. They fail
   differently and a project needs both.
+- Four suites: trigger, behavior, portability, adversarial.
 - An agent is non-deterministic, so the measurement is a rate over samples, not a verdict on one
   run. Ten samples is the smallest number that distinguishes a rate from an anecdote.
+- Grade the outcome, not the route. Pin a tool sequence only where the sequence is the safety
+  requirement.
+- A verifier decides anything code can decide, from the transcript. A judge model grades the rest
+  against a written rubric.
+- Compare against a baseline run with the skill absent. A skill that does not beat it costs tokens
+  for nothing.
 - The dominant failure of an agent-written test suite is testing the library instead of the project;
   the five detection heuristics are stated once, in `cli-design/09`.
 - Snapshot the three agent-facing surfaces: help output, machine-output schema, exit codes.
+
+### Skill security (15)
+
+- A skill from outside the project is code review, not a download.
+- Fetched and reader-supplied content is data, never an instruction, and the rule is stated where
+  the skill reads it rather than once at the top.
+- Least tools, validated output before a shell or a path or a parser, the plan shown before a
+  destructive step, an explicit target for anything irreversible, and no secret anywhere.
+- The description says whether the skill contacts the network.
 
 ## Maintenance notes
 
@@ -72,3 +91,5 @@ one agent runtime is that vendor's shelf under `tools/`, dated.
   in `README.md` names only chapters that exist.
 - Where a chapter would restate a rule a `cli-design/` chapter owns, it links that owner. Check that
   before adding a rule here.
+- A rule that holds for one runtime belongs in that runtime's adapter under `tools/`, dated. `01`
+  links the instruction-file adapters, and `03` and `04` link all four skills adapters.

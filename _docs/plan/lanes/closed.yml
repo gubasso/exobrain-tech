@@ -27,3 +27,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: one shelf for the domain, carved out of the chapter that held it, indexed, and rerouted
+  - id: "006"
+    slug: split-the-vendor-facts-by-vendor
+    type: story
+    points: 5
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: one shelf per vendor, four dated adapters, and nothing personal or another product's
