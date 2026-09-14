@@ -35,6 +35,14 @@ Every directory's `README.md` is its index — it defines what the area is for a
 and routes by meaning. It may name the files under it, but not merely to list them. This keeps navigation deterministic and prevents the drift that duplication causes. This shelf's
 [hub README](./README.md) is an example.
 
+## When a tool writes these files for you
+
+A tool that seeds governance documents into a project owns what it wrote and nothing else, and how
+that ownership is recorded, previewed, and upgraded is
+[agent-integration/09 — Disposable staging and direct landing](../agent-integration/09-disposable-staging-and-direct-landing.md).
+This shelf routes the step. It states no rule about the record, the ownership classes, or what
+happens on a later run.
+
 ## Automation
 
 `bootstrap-governance` seeds `CLAUDE.md`, an `AGENTS.md`, and an ADR scaffold (MADR-minimal plus a

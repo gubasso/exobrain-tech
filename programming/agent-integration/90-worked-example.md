@@ -183,3 +183,9 @@ checks:
 
 Ten samples, and the pass rate over time is the regression signal. See
 [05 — Evaluations](./05-evaluations.md) for what that rate means and when it becomes a gate.
+
+## See also
+
+- [91 — Worked example: landing](./91-worked-example-landing.md) — the same shelf applied to a tool
+  that writes files into other projects.
+- [99 — Checklist](./99-checklist.md) — what to walk before shipping.

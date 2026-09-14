@@ -90,3 +90,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: the project selects a version, and an agent works out what its output means here
+  - id: "013"
+    slug: route-the-lifecycle-and-record-its-prior-art
+    type: story
+    points: 5
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: one router skill, gates split by judgment, dated sources, and two tools mapped non-normatively
