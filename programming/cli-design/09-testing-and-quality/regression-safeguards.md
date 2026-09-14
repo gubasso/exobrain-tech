@@ -205,6 +205,8 @@ Add to [99 — Checklist](../99-checklist.md):
 - [09 — Testing Strategy](./testing-strategy.md) — the testing pyramid and principles.
 - [09a — Testing Tools](./testing-tools.md) — per-language testing tool matrix.
 - [10a — Code Quality Tools](./code-quality-tools.md) — per-language quality gate tool matrix.
+- [agent-integration/05 — Evaluations](../../agent-integration/05-evaluations.md) — evals, and the
+  tests an agent writes badly.
 - [05 — Designing for LLM Agents](../05-designing-for-llm-agents.md) — CLI design for agent
   consumption.
 - [04 — Coding Style](../04-coding-style-rust-zig.md) — strict lints, module size caps.

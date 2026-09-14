@@ -1,7 +1,7 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-08-19
-token-estimate: 1450
+last-synced: 2026-09-14
+token-estimate: 1470
 ---
 
 # AGENTS
@@ -77,13 +77,13 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
 
 ### LLM Agent Design (05)
 
-- Default path: CLI plus a thin Skill wrapper; MCP only for stateful/auth/multi-tenant needs. Three
-  layers: CLI (mechanism), SKILL.md (playbook), AGENTS.md (constitution).
-- Every output is a prompt: include affected IDs and next-command suggestions.
-- `--help` is documentation, and the self-documenting machine surfaces are `help`/usage, `doctor`,
-  `init`, completion, and man pages via a subcommand.
-- Verb-noun structure mirroring kubectl/docker/gh. Familiar flag names (`--dry-run`, `--force`,
-  `--yes`). Deterministic and idempotent operations.
+- Default path: a CLI with a thin skill over it; a protocol server only for stateful, per-user, or
+  multi-tenant needs.
+- Every output is a prompt: name what was produced and the commands that follow it.
+- `--help` is documentation; the self-documenting surfaces are usage, `doctor`, `init`, completion,
+  and man pages through a subcommand. Verb-noun structure, familiar flag names, idempotent writes.
+- Everything above the binary — skills, instruction files, distribution, evaluation — is
+  `programming/agent-integration/`.
 
 ### Preflight & Health Checks (06)
 

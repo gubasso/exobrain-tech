@@ -12,16 +12,15 @@ reference.
 
 ## The `AGENTS.md` convention
 
-`AGENTS.md` is a generated **digest** for agent runtime context — a summary of existing source
-notes, never a place for novel guidance. It has become a cross-tool standard for agent-oriented repo
-context (Linux-Foundation-stewarded; see the
-[AGENTS.md guide](https://www.morphllm.com/agents-md-guide)).
+The root instruction file is hand-authored rules and routing, and a per-directory digest is a second
+shape generated from the subtree it maps. What each one carries, and why conflating them costs a
+project the place its conventions live, is
+[agent-integration/01 — Instruction files](../agent-integration/01-instruction-files.md).
 
-When you adopt it, fix the schema up front: required frontmatter (`digest-of`, `last-synced`,
-`token-estimate`) and stable body headings, regenerated from sources rather than hand-edited. The
-digest keeps no index of the directory; the filesystem owns what exists, and a checked-in file list
-drifts on the next add or rename. Because it is generated, it is the _only_ machine-authored artifact the repo trusts;
-everything else is human-authored.
+When you adopt the digest, fix its schema up front: required frontmatter (`digest-of`,
+`last-synced`, `token-estimate`) and stable body headings, regenerated from sources rather than
+hand-edited. The digest keeps no index of the directory; the filesystem owns what exists, and a
+checked-in file list drifts on the next add or rename.
 
 ## ADR scaffold
 

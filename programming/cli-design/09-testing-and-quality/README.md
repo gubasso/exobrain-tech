@@ -31,7 +31,8 @@ Read in this order: strategy first (principles), then tools (implementation), th
 - [General CLI design index](../README.md)
 - [00 — Architecture](../00-architecture.md) — where `tests/`, `support/`, and `snapshots/` sit.
 - [04 — Coding Style](../04-coding-style-rust-zig.md) — strict lints, module size caps.
-- [05 — Designing for LLM Agents](../05-designing-for-llm-agents.md) — agent-specific test hazards.
+- [agent-integration/05 — Evaluations](../../agent-integration/05-evaluations.md) — the hazards of
+  a test an agent wrote, and why an eval is a separate signal.
 - [99 — Checklist](../99-checklist.md) — testing and quality sections.
 - Language-specific guides:
   - [`rust/cli-spec/06-testing-and-quality/`](../../../languages/rust/cli-spec/06-testing-and-quality/)

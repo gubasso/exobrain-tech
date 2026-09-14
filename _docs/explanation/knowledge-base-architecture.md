@@ -44,6 +44,10 @@ draft by rewriting it into its durable home, then deleting the draft.
 
 ## The AGENTS.md digest standard
 
+The library states the general pattern in
+[agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md);
+what follows is how this repository instantiates it.
+
 Every substantial content area carries an `AGENTS.md` **digest**: a concise map of that directory's
 knowledge, loaded first by an agent (human or LLM) before it reads the underlying files. A digest is
 a map, never the source of truth — the content files own the knowledge; the digest summarizes them.
