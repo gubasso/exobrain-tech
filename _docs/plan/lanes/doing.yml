@@ -1,9 +1,9 @@
 lane: doing
 stories:
-  - id: "006"
-    slug: split-the-vendor-facts-by-vendor
+  - id: "007"
+    slug: state-the-skill-authoring-standard
     type: story
     points: 5
     needs: []
     tags: [library]
-    note: one shelf per vendor, four dated adapters, and nothing personal or another product's
+    note: the whole standard for authoring and evaluating a skill, tool-agnostic and self-contained
