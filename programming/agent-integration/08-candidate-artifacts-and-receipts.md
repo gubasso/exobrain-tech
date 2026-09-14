@@ -122,3 +122,5 @@ convenience for the property that the tool never destroys something it cannot ac
   project artifacts and tool references that decides what a candidate contains.
 - [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
   lifecycle that renders a candidate twice and writes the receipt last.
+- [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
+  confidence classes a missing or partial record produces, and what none of them authorizes.
