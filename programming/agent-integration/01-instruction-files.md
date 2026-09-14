@@ -77,3 +77,5 @@ documentation.
 
 - [00 — The four layers](./00-model.md) — why governance is a layer and what it never carries.
 - [03 — Skills](./03-skills.md) — where a procedure goes instead.
+- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the one always-loaded
+  line this file owes a corpus, and where everything after it goes.

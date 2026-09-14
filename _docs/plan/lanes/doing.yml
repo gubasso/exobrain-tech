@@ -1,9 +1,9 @@
 lane: doing
 stories:
-  - id: "008"
-    slug: narrow-the-toolchain-to-one-system
-    type: chore
+  - id: "009"
+    slug: state-the-durable-knowledge-layer
+    type: story
     points: 3
     needs: []
-    tags: [governance]
-    note: one declared system, held by evaluating the flake rather than reading it
+    tags: [library]
+    note: two knowledge sets, a three-step route to a corpus, and version matching by construction

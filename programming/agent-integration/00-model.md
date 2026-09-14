@@ -70,6 +70,8 @@ to the other three layers and states only what has no other owner.
 
 - [01 — Instruction files](./01-instruction-files.md) — the governance layer's artifact.
 - [03 — Skills](./03-skills.md) — the playbook layer's artifact and its portable package shape.
+- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the durable-knowledge
+  layer, and the route that makes a corpus reachable without loading it.
 - [05 — Evaluations](./05-evaluations.md) — how a project checks that the layers work together.
 - [90 — Worked example](./90-worked-example.md) — one project shown across every layer at once.
 - [cli-design/05 — Designing for LLM coding agents](../cli-design/05-designing-for-llm-agents.md) —
