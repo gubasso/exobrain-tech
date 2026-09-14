@@ -88,6 +88,23 @@ one agent runtime is that vendor's shelf under `tools/`, dated.
   executable plan.
 - An id is stable. A renamed topic keeps its id and the old name becomes an alias.
 
+### Candidate artifacts and receipts (08)
+
+- A candidate is what the installed executable projects for one invocation, from its own sources,
+  the target's resolved configuration, and the target's observed capabilities. It is not another
+  release's bundle, not a stored plan, and not installed state.
+- The receipt is attributed installed state, held centrally: producer identity and version, resolved
+  inputs, destination, ownership class, placement, and the digest at the moment of writing.
+- Reading an older receipt schema is bounded record-reading. It is not interpreting another
+  release's content, and conflating the two turns a record format into a protocol.
+- Three ownership classes: a generated file the tool replaces, a seeded file the project owns after
+  creation, and a marked region inside a project-owned file.
+- Provenance lives in the receipt. A generated file carries no version watermark, and a marker names
+  placement rather than a version.
+- Missing provenance reduces certainty and grants nothing. An unattributed whole file is never
+  overwritten, and the tool never fetches an older release to manufacture the record it lacks.
+- A retired destination is reported and released to the project. It is not deleted.
+
 ### Skill security (15)
 
 - A skill from outside the project is code review, not a download.
