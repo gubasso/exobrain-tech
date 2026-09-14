@@ -24,7 +24,15 @@ lint:
 # expected to copy and run. Those five scripts are not gated yet:
 # `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is the story that
 # gates them, and it is what returns shellcheck and shfmt to the devShell.
-test: test-gates verify-instance
+test: test-gates test-one-system verify-instance
+
+# Hold the flake's evaluated output set to the one supported system
+# (ADR-linux-is-the-only-supported-project-target).
+#
+# The claim is about what the flake exposes, so the check evaluates it rather
+# than reading flake.nix as text.
+test-one-system:
+    nix develop --command .hooks/check-one-system.sh
 
 # Prove that each gate this repository adds can be made to fail.
 #
