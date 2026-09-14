@@ -99,3 +99,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: one router skill, gates split by judgment, dated sources, and two tools mapped non-normatively
+  - id: "014"
+    slug: integrate-the-landing-chapters
+    type: story
+    points: 3
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: one worked example of a tool that writes into projects, and one checklist across every layer
