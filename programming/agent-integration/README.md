@@ -14,12 +14,12 @@ The mechanism an agent runs is usually a command-line tool, and designing one is
 The shelf's spine is a model of what a project carries, in four layers. Each answers a different
 question, and the index follows it.
 
-| Layer             | The question                            | Where it is stated                                                                   |
-| ----------------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
-| Mechanism         | What does the agent run?                | [cli-design](../cli-design/README.md) for the tool itself                            |
-| Playbook          | What does the agent load for this task? | [03](./03-skills.md), [04](./04-skill-distribution.md), [15](./15-skill-security.md) |
-| Durable knowledge | What does the agent read on demand?     | [06](./06-documentation-and-discovery.md)                                            |
-| Governance        | What binds every session?               | [01](./01-instruction-files.md)                                                      |
+| Layer             | The question                            | Where it is stated                                                                                  |
+| ----------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Mechanism         | What does the agent run?                | [cli-design](../cli-design/README.md) for the tool, [07](./07-tool-acquisition.md) for obtaining it |
+| Playbook          | What does the agent load for this task? | [03](./03-skills.md), [04](./04-skill-distribution.md), [15](./15-skill-security.md)                |
+| Durable knowledge | What does the agent read on demand?     | [06](./06-documentation-and-discovery.md)                                                           |
+| Governance        | What binds every session?               | [01](./01-instruction-files.md)                                                                     |
 
 [00 — The four layers](./00-model.md) states the model itself: what each layer carries, what it
 never carries, who ships what, and the three boundary mistakes a design makes.
@@ -34,6 +34,7 @@ never carries, who ships what, and the three boundary mistakes a design makes.
 | [04 — Skill distribution](./04-skill-distribution.md)                                        | The two scopes, one source for many runtimes, and what an installer owes a home                                                                |
 | [05 — Evaluations](./05-evaluations.md)                                                      | Why an eval is a separate signal from a test, the four suites, the rate and its floor, and the tests an agent writes badly                     |
 | [06 — Documentation and discovery](./06-documentation-and-discovery.md)                      | Project artifacts against tool references, the three-step route to a corpus, and version matching by construction                              |
+| [07 — Tool acquisition](./07-tool-acquisition.md)                                            | The manager axis against the venue axis, the pin each manager records, the freshness loop, and what a tool owes a project that depends on it   |
 | [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md)            | What a tool would write now, what it wrote last time, the three ownership classes, and why an unattributed file is never overwritten           |
 | [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)  | The eight steps, why production never reads the stage, landing by ownership, the failure behavior, and guarded cleanup                         |
 | [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) | Who selects a version, the order an agent reads evidence, the four confidence classes, and what the tool owes the agent                        |
@@ -58,6 +59,8 @@ A project that does nothing else does these.
 - State the boundary. An agent takes an irreversible action only where the request named it.
 - Check the agent's use of the tool, not only the tool. One prompt, ten samples, and a rate you
   watch over time.
+- Let the project pin the tool through the manager it already runs, and ship the loop that moves
+  that pin, so no consumer sits at a release nobody moves.
 
 ## What this shelf is not
 

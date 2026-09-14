@@ -104,8 +104,10 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
   symlink, a filesystem or home root, the project root, and any ancestor of it.
 - A rule states a property. An implementation names the mechanism and where it proved it.
 
-### Versions and migration (10)
+### Acquisition (07) and versions (10)
 
+- Manager against venue, crossed into one matrix: every pair renders or is manual with a closed
+  reason, one target runs one bump mechanism, and the pin's freshness loop is the tool's obligation.
 - Acquisition belongs to the project and the manager it already uses. Landing does not install,
   execute, fetch, or decode another version. An update is a separate authorized event before
   migration.
@@ -141,9 +143,8 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 
 ## Maintenance notes
 
-- `02` is reserved for the authorization boundary and lands from another project's plan, and `07`
-  and `14` for acquisition and the target model. The index in `README.md` names only chapters that
-  exist.
+- `02` is reserved for the authorization boundary and lands from another project's plan, and `14`
+  for the target model. The index in `README.md` names only chapters that exist.
 - Where a chapter would restate a rule a `cli-design/` chapter owns, it links that owner.
 - A rule that holds for one runtime belongs in that runtime's adapter under `tools/`, dated. `01`
   links the instruction-file adapters, and `03` and `04` link all four skills adapters.
