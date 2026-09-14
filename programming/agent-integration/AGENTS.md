@@ -54,6 +54,10 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 - Two scopes: user, owned by the person; project, committed with the land it drives.
 - One canonical directory linked into each runtime's root keeps several runtimes on one copy.
 - An installer writes only what it declared, removes only what it wrote, and reports what it did.
+- One authored package, materialized per runtime root. One installed name, one owner, and a
+  collision is reported. Upgrade and removal both read the record and leave what it does not claim.
+- Each file is written whole and the record is written last, so a failed install leaves files the
+  record does not yet claim. Rerunning is the fix.
 
 ### Evaluations (05)
 
@@ -112,6 +116,22 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 - A heuristic informs the agent and never becomes the answer a person is shown.
 - The agent owns intent, prerequisites, collisions, retirement, documentation adaptation, the real
   diff, the checks, and cleaning the stage last.
+
+### Router and gates (11)
+
+- One router skill per setup domain. It discovers, gathers evidence, writes an explicit plan, waits
+  for authorization, invokes the mechanical surfaces, and escalates. It restates no chapter's rules.
+- A program decides facts: a path resolves, a schema matches, a record covers, a link resolves, a
+  budget holds. A person or an agent decides intent, semantics, selection, and unattributed
+  ownership.
+- A check states what it holds. A declared build target is proved by invoking the compiler, and a
+  search over the source enforces a narrower policy without standing in for it.
+
+### Prior art (12) and reference implementations (13)
+
+- Every claim in `12` carries a dated primary source, and an inference is labeled as one.
+- `13` maps concept to name for two tools, marks what is unimplemented, and is never normative. Both
+  are x86_64 Linux tools, which is a fact about them rather than a rule.
 
 ## Maintenance notes
 
