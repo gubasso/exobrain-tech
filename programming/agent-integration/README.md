@@ -26,17 +26,18 @@ never carries, who ships what, and the three boundary mistakes a design makes.
 
 ## The chapters
 
-| Chapter                                                                           | What it holds                                                                                                                                  |
-| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| [00 — The four layers](./00-model.md)                                             | The model, the ownership rule, and the boundaries a design gets wrong                                                                          |
-| [01 — Instruction files](./01-instruction-files.md)                               | What the root file carries, why it routes instead of restating, and the generated digest beside it                                             |
-| [03 — Skills](./03-skills.md)                                                     | The portable package, the frontmatter contract, the description as the trigger surface, the body, scripts against references, validation loops |
-| [04 — Skill distribution](./04-skill-distribution.md)                             | The two scopes, one source for many runtimes, and what an installer owes a home                                                                |
-| [05 — Evaluations](./05-evaluations.md)                                           | Why an eval is a separate signal from a test, the four suites, the rate and its floor, and the tests an agent writes badly                     |
-| [06 — Documentation and discovery](./06-documentation-and-discovery.md)           | Project artifacts against tool references, the three-step route to a corpus, and version matching by construction                              |
-| [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) | What a tool would write now, what it wrote last time, the three ownership classes, and why an unattributed file is never overwritten           |
-| [15 — Skill security](./15-skill-security.md)                                     | Fetched content as data, least tools, validation before a shell, the plan before the destruction, and the adversarial suite                    |
-| [90 — Worked example](./90-worked-example.md)                                     | One project across every layer: the command tree, the outputs, the skill, the instruction lines, and the eval                                  |
+| Chapter                                                                                     | What it holds                                                                                                                                  |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [00 — The four layers](./00-model.md)                                                       | The model, the ownership rule, and the boundaries a design gets wrong                                                                          |
+| [01 — Instruction files](./01-instruction-files.md)                                         | What the root file carries, why it routes instead of restating, and the generated digest beside it                                             |
+| [03 — Skills](./03-skills.md)                                                               | The portable package, the frontmatter contract, the description as the trigger surface, the body, scripts against references, validation loops |
+| [04 — Skill distribution](./04-skill-distribution.md)                                       | The two scopes, one source for many runtimes, and what an installer owes a home                                                                |
+| [05 — Evaluations](./05-evaluations.md)                                                     | Why an eval is a separate signal from a test, the four suites, the rate and its floor, and the tests an agent writes badly                     |
+| [06 — Documentation and discovery](./06-documentation-and-discovery.md)                     | Project artifacts against tool references, the three-step route to a corpus, and version matching by construction                              |
+| [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md)           | What a tool would write now, what it wrote last time, the three ownership classes, and why an unattributed file is never overwritten           |
+| [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) | The eight steps, why production never reads the stage, landing by ownership, the failure behavior, and guarded cleanup                         |
+| [15 — Skill security](./15-skill-security.md)                                               | Fetched content as data, least tools, validation before a shell, the plan before the destruction, and the adversarial suite                    |
+| [90 — Worked example](./90-worked-example.md)                                               | One project across every layer: the command tree, the outputs, the skill, the instruction lines, and the eval                                  |
 
 ## The irreducible defaults
 
