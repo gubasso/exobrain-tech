@@ -133,10 +133,17 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 - `13` maps concept to name for two tools, marks what is unimplemented, and is never normative. Both
   are x86_64 Linux tools, which is a fact about them rather than a rule.
 
+### Worked examples (90, 91) and the checklist (99)
+
+- `90` is one project across the four layers. `91` is one tool that writes into other projects,
+  through greenfield, an update, an unattributed collision, a failure part way, a rerun, and cleanup.
+- `99` walks every layer before shipping and names the owner of each section. It restates no rule.
+
 ## Maintenance notes
 
-- `02` is reserved for the authorization boundary and lands from another project's plan. The index
-  in `README.md` names only chapters that exist.
+- `02` is reserved for the authorization boundary and lands from another project's plan, and `07`
+  and `14` for acquisition and the target model. The index in `README.md` names only chapters that
+  exist.
 - Where a chapter would restate a rule a `cli-design/` chapter owns, it links that owner.
 - A rule that holds for one runtime belongs in that runtime's adapter under `tools/`, dated. `01`
   links the instruction-file adapters, and `03` and `04` link all four skills adapters.

@@ -42,6 +42,8 @@ never carries, who ships what, and the three boundary mistakes a design makes.
 | [13 — Reference implementations](./13-reference-implementations.md)                          | Two tools, mapped concept to name, non-normative, with the unimplemented parts marked                                                          |
 | [15 — Skill security](./15-skill-security.md)                                                | Fetched content as data, least tools, validation before a shell, the plan before the destruction, and the adversarial suite                    |
 | [90 — Worked example](./90-worked-example.md)                                                | One project across every layer: the command tree, the outputs, the skill, the instruction lines, and the eval                                  |
+| [91 — Worked example: landing](./91-worked-example-landing.md)                               | One tool that writes into other projects, from greenfield through an update, a collision, a failure part way, a rerun, and cleanup             |
+| [99 — Checklist](./99-checklist.md)                                                          | What to walk before shipping, by layer, each section naming its owner                                                                          |
 
 ## The irreducible defaults
 
