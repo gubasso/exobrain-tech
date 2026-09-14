@@ -1,9 +1,9 @@
 lane: doing
 stories:
-  - id: "012"
-    slug: separate-acquisition-from-migration
+  - id: "013"
+    slug: route-the-lifecycle-and-record-its-prior-art
     type: story
-    points: 3
+    points: 5
     needs: []
     tags: [library]
-    note: the project selects a version, and an agent works out what its output means here
+    note: one router skill, gates split by judgment, dated sources, and two tools mapped non-normatively

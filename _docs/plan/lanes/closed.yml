@@ -81,3 +81,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: two renders, one invariant, an honest failure story, and cleanup as its own command
+  - id: "012"
+    slug: separate-acquisition-from-migration
+    type: story
+    points: 3
+    needs: []
+    tags: [library]
+    outcome: done
+    closed: "2026-09-14"
+    note: the project selects a version, and an agent works out what its output means here

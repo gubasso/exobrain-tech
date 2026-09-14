@@ -50,6 +50,33 @@ not:
 - It reports what it did, in a form a later run can read back, so an install is a fact rather than a
   memory.
 
+## The receipt makes those obligations keepable
+
+A skill installer is a tool writing files into somebody else's tree, so it carries the same record
+the landing chapters describe. The shape below is that record, narrowed to skills.
+
+One package is authored once. What reaches each runtime's root is a materialization of it: the same
+content, at a path that runtime scans. The authored copy is what an edit lands in, and a fix reaches
+every runtime because there is one place to fix.
+
+One installed skill name has one owner. A second installer writing a package under a name the record
+already attributes is a collision, and it is reported rather than resolved, for the reason
+[08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) gives.
+
+An upgrade and a removal both read the record. An upgrade replaces what the record attributes and
+leaves everything else. A removal takes what the record attributes and stops. A file the record does
+not claim stays, whoever put it there and however much it looks like something the installer would
+have written.
+
+Each file is written whole, so a runtime scanning mid-install sees the old package or the new one
+rather than a half-written `SKILL.md`. The record is written last, which leaves a failed install as
+files the record does not yet claim. Rerunning is the fix, and it is safe: the same package is
+computed again and the files already correct are already correct.
+
+Where those roots are is a vendor fact. Each runtime's adapter carries its own, dated, and the
+adapters are linked below. This chapter states what an installer does with a root, never which ones
+exist.
+
 ## See also
 
 - [00 — The four layers](./00-model.md) — why the playbook layer has a distribution question.
@@ -58,7 +85,8 @@ not:
 ## The adapters
 
 Where each runtime scans, in what order it resolves a name, and whether it reads a root another
-runtime owns. Dated, from each runtime's own documentation.
+runtime owns. Dated, from each runtime's own documentation. No adapter states a rule this chapter
+lacks, and this chapter derives nothing from what the current set happens to have in common.
 
 - [tools/claude-code — skills](../../tools/claude-code/skills.md)
 - [tools/codex — skills](../../tools/codex/skills.md)
