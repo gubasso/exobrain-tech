@@ -18,3 +18,12 @@ stories:
     outcome: done
     closed: "2026-09-12"
     note: the canon serves its gates from its own binary, taken as a pinned tool input
+  - id: "005"
+    slug: give-agent-integration-a-shelf
+    type: story
+    points: 8
+    needs: []
+    tags: [library, governance]
+    outcome: done
+    closed: "2026-09-14"
+    note: one shelf for the domain, carved out of the chapter that held it, indexed, and rerouted

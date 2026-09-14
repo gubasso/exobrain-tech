@@ -27,7 +27,9 @@ Everyday work after setup is not here; this is the one-time scaffold.
    [01 — Repository foundation](./01-repository-foundation.md). _Automate:_ `bootstrap-repo`.
 
 3. **Seed governance docs:** `CLAUDE.md` (agent instructions), the `AGENTS.md` convention, and an
-   ADR scaffold for decisions. → [02 — Governance & docs](./02-governance-and-docs.md). _Automate:_
+   ADR scaffold for decisions. → [02 — Governance & docs](./02-governance-and-docs.md) and
+   [agent-integration/01 — Instruction files](../agent-integration/01-instruction-files.md).
+   _Automate:_
    `bootstrap-governance`.
 
 4. **Set up the local dev environment:** a Nix devShell + `.envrc` (direnv) for a reproducible

@@ -112,6 +112,13 @@ waive it in an ADR — don't ship with silent gaps.
 
 → Detail: [05 — Designing for LLM Agents](./05-designing-for-llm-agents.md)
 
+The skill, its distribution, and the evals over it are checked in
+[agent-integration](../agent-integration/README.md): the package and its frontmatter in
+[03](../agent-integration/03-skills.md), the install roots in
+[04](../agent-integration/04-skill-distribution.md), the eval suite in
+[05](../agent-integration/05-evaluations.md), and what the project's instruction file carries in
+[01](../agent-integration/01-instruction-files.md).
+
 ## Preflight & health checks
 
 - [ ] `doctor` aggregates **all** environment prerequisites (not one path); supports `--scope` +

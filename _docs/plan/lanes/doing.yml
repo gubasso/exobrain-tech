@@ -1,9 +1,2 @@
 lane: doing
-stories:
-  - id: "005"
-    slug: give-agent-integration-a-shelf
-    type: story
-    points: 8
-    needs: []
-    tags: [library, governance]
-    note: one shelf for the domain, carved out of the chapter that holds it today
+stories: []
