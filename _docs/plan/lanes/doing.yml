@@ -1,2 +1,9 @@
 lane: doing
-stories: []
+stories:
+  - id: "006"
+    slug: split-the-vendor-facts-by-vendor
+    type: story
+    points: 5
+    needs: []
+    tags: [library]
+    note: one shelf per vendor, four dated adapters, and nothing personal or another product's

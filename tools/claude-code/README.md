@@ -1,13 +1,10 @@
 # Claude Code
 
-Operational guidance for Claude Code and Codex CLI workflows.
+Claude Code's own facts, as dated adapters to the portable rules in
+[agent-integration](../../programming/agent-integration/README.md). A rule that holds for any agent
+runtime lives there, not here.
 
-- [invocation-cheatsheet](./invocation-cheatsheet.md)
-- [memory-file-loading](./memory-file-loading.md) — how CLAUDE.md/AGENTS.md load (eager vs. lazy)
-- [orchestration](orchestration/README.md)
-- [skill-authoring](skill-authoring/README.md)
-
-> Model aliases/effort, Claude & Codex model pricing, and the derived cost × quality matrix moved
-> into the `cog` repo as the source of truth: `docs/reference/models-reference-claude.md`,
-> `docs/reference/models-reference-codex.md`, `docs/reference/model-effort-policy.md`, and
-> `docs/reference/model-effort-claude.toml` / `model-effort-codex.toml`.
+- [memory-file-loading](./memory-file-loading.md) — which instruction files load, which load
+  eagerly, how an import resolves, and how a path-scoped rule loads instead.
+- [skills](./skills.md) — the discovery roots and their precedence, the fields Claude Code adds to
+  the specification, and the turn-scoped permission grants.

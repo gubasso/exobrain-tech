@@ -114,5 +114,13 @@ list of ambiguities the author could not see, and it costs one prompt.
 - [00 — The four layers](./00-model.md) — what the playbook layer never carries.
 - [04 — Skill distribution](./04-skill-distribution.md) — where a package installs.
 - [05 — Evaluations](./05-evaluations.md) — how a skill is checked rather than assumed.
-- [tools/claude-code](../../tools/claude-code/skill-authoring/skill-spec.md) — one vendor's field
-  table, dated, as an adapter to this baseline.
+
+## The adapters
+
+Each of these states one runtime's additions to the baseline above, dated and sourced from that
+runtime's own documentation. None of them weakens the baseline.
+
+- [tools/claude-code — skills](../../tools/claude-code/skills.md)
+- [tools/codex — skills](../../tools/codex/skills.md)
+- [tools/gemini-cli — skills](../../tools/gemini-cli/skills.md)
+- [tools/opencode — skills](../../tools/opencode/skills.md)

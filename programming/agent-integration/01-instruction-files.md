@@ -47,16 +47,31 @@ rather than listing what the filesystem already holds. See
 [project-bootstrap/02 — Governance and docs](../project-bootstrap/02-governance-and-docs.md) for
 that convention and the decision scaffold beside it.
 
-## Vendor differences
+## Where a rule goes under eager and lazy loading
 
-Which filename an agent reads, what loads eagerly against lazily, how an import inside the file
-resolves, and where the user-scoped copy sits are all vendor facts, and they change. Each vendor
-shelf carries them, dated, sourced from that vendor's own documentation.
+Every runtime reads some instruction files at launch and some only when work reaches the subtree
+they describe. Which files fall on which side is a vendor fact, but the seam itself is the thing a
+project splits its instructions along.
+
+A rule that binds one subtree goes to that subtree's own file, where a session working elsewhere
+never pays for it. A rule that crosses subtrees stays at the root, because a runtime that builds its
+chain once at launch, from the repository root to the working directory, never reads a nested file
+at all when the session starts at the root. Leave a plain pointer from the root to the nested file
+rather than an import, since an import is read eagerly wherever it sits and puts the subtree's rules
+back into every session.
 
 One consequence holds whatever the vendor: a file loaded into every session is paid for in every
 session, so the cost of a rule is its length times the number of sessions that never needed it.
 
-For the loading facts, see [tools/claude-code](../../tools/claude-code/memory-file-loading.md).
+## Vendor differences
+
+Which filename an agent reads, what loads eagerly against lazily, how an import inside the file
+resolves, where the user-scoped copy sits, and the size at which a runtime stops reading are all
+vendor facts, and they change. Each vendor shelf carries them, dated, sourced from that vendor's own
+documentation.
+
+- [tools/claude-code — instruction files](../../tools/claude-code/memory-file-loading.md)
+- [tools/codex — instruction files](../../tools/codex/instruction-files.md)
 
 ## See also
 

@@ -54,3 +54,13 @@ not:
 
 - [00 — The four layers](./00-model.md) — why the playbook layer has a distribution question.
 - [03 — Skills](./03-skills.md) — the package this chapter distributes.
+
+## The adapters
+
+Where each runtime scans, in what order it resolves a name, and whether it reads a root another
+runtime owns. Dated, from each runtime's own documentation.
+
+- [tools/claude-code — skills](../../tools/claude-code/skills.md)
+- [tools/codex — skills](../../tools/codex/skills.md)
+- [tools/gemini-cli — skills](../../tools/gemini-cli/skills.md)
+- [tools/opencode — skills](../../tools/opencode/skills.md)

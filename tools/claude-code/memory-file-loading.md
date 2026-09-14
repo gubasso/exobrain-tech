@@ -1,45 +1,82 @@
-# Claude Code memory-file loading
+# Claude Code instruction-file adapter
 
-How Claude Code and the `AGENTS.md`-native CLIs discover author-instruction files, and when each one
-enters the context window.
+Verified 2026-09-14 against <https://code.claude.com/docs/en/memory>.
 
-## Claude Code
+Claude Code's instruction-file facts, against the portable rules in
+[agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md).
 
-- Claude Code reads **`CLAUDE.md`**, not `AGENTS.md`. To share one source with the other agents, a
-  `CLAUDE.md` imports the shared file with `@AGENTS.md`.
-- **Root and ancestor `CLAUDE.md` files load eagerly** at session start, concatenated from the
-  filesystem root down to the working directory (broad → specific).
-- **A nested `CLAUDE.md` in a subdirectory loads on demand** — only when Claude reads a file in that
-  subdirectory. This is the lazy mechanism that scopes rules to a subtree.
-- **`@import` expansion is eager**: an imported file is pulled into context alongside the file that
-  imports it. A root `@import` therefore saves no context; a nested `CLAUDE.md`'s `@import` loads
-  only when that nested file loads.
-- **Import paths resolve relative to the importing file**, not the working directory. A nested
-  `docs/x/CLAUDE.md` imports its sibling as `@AGENTS.md`, never `@docs/x/AGENTS.md` (which would
-  resolve to `docs/x/docs/x/AGENTS.md`). Imports recurse up to four hops; an `@` inside a code span
-  or fenced block is not treated as an import.
-- **`.claude/rules/` with `paths:` frontmatter** is the alternative path-scoped lazy mechanism: a
-  rule file loads only when Claude works with files matching its globs.
+## Which files Claude Code reads
 
-## Codex and other `AGENTS.md`-native CLIs
+`CLAUDE.md`, not `AGENTS.md`. A repository that keeps its instructions in `AGENTS.md` for other
+runtimes writes a `CLAUDE.md` that imports it with `@AGENTS.md`, or symlinks the one to the other
+where no Claude-specific content is needed.
 
-- Codex reads nested `AGENTS.md` files, but **builds its instruction chain eagerly, once at launch**,
-  walking from the Git root down to the current working directory; files closer to the cwd override
-  earlier ones. It is **not** triggered lazily by touching files in a subtree.
-- Consequence: a Codex session launched **from the repo root** never loads a nested `AGENTS.md`
-  deeper in the tree (root → cwd is just the root). A rule that must be seen from a root-launched
-  session has to live in the root `AGENTS.md`.
+| Scope          | Location                                                                         |
+| -------------- | -------------------------------------------------------------------------------- |
+| Managed policy | `/etc/claude-code/CLAUDE.md` on Linux, or the `claudeMd` key in managed settings |
+| User           | `~/.claude/CLAUDE.md`                                                            |
+| Project        | `./CLAUDE.md` or `./.claude/CLAUDE.md`                                           |
+| Local          | `./CLAUDE.local.md`, ignored by version control                                  |
 
-## Design consequence
+They concatenate rather than override, in that order, so a project instruction is read after a user
+one. A managed policy file cannot be excluded.
 
-Split a large author-instructions file only along the eager/lazy seam: subtree-local rules go to a
-nested `AGENTS.md` (plus a one-line `CLAUDE.md` bridge for Claude Code), while cross-cutting rules
-stay in root so both the eager Codex chain and Claude sessions working elsewhere still see them.
-Leave a plain pointer — not an eager `@import` — from root to the nested file.
+## What loads eagerly and what loads lazily
 
-## Sources
+The working directory and every directory above it are read at launch. A `CLAUDE.md` in a
+subdirectory below the working directory is discovered but held back, and enters context when Claude
+reads a file in that subdirectory. Inside one directory, `CLAUDE.local.md` is appended after
+`CLAUDE.md`.
 
-- Claude Code memory & imports: <https://code.claude.com/docs/en/memory>
-- AGENTS.md standard (nested files, nearest-wins): <https://agents.md/>
-- Codex AGENTS.md configuration (eager root→cwd chain):
-  <https://learn.chatgpt.com/docs/agent-configuration/agents-md>
+Ordering runs from the filesystem root down, so the file closest to where the session started is
+read last.
+
+`--add-dir` adds a directory's files without its instructions.
+`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` loads those too.
+
+## Imports are eager wherever they sit
+
+`@path/to/file` expands into context alongside the file that names it, at the moment that file
+loads. A root import therefore saves nothing; a nested file's import loads only when the nested file
+does.
+
+A relative path resolves against the importing file, never the working directory, so a nested
+`docs/x/CLAUDE.md` names its sibling as `@AGENTS.md`. Imports recurse to four hops. An `@` inside a
+code span or a fenced block is text rather than an import.
+
+An import in a project file that resolves outside the working directory is external, and the first
+one prompts for approval. A declined prompt disables external imports for that project and does not
+return.
+
+## Path-scoped rules are the lazy mechanism
+
+`.claude/rules/*.md` is discovered recursively. A rule with no `paths` frontmatter loads at launch,
+with the same weight as `.claude/CLAUDE.md`. A rule carrying `paths` globs loads only when Claude
+reads a file that matches one.
+
+```markdown
+---
+paths:
+  - "src/api/**/*.ts"
+---
+```
+
+`~/.claude/rules/` holds the same shape for every project on the machine, and loads before the
+project's own.
+
+## Size
+
+The documented target is under 200 lines per file. A file over 4 MiB is skipped whole. Splitting
+into imports organizes the text without reducing what a session pays for; scoping a rule to a path
+is what reduces it.
+
+## Survival across compaction
+
+A project-root `CLAUDE.md` is re-read from disk and re-injected after compaction. A nested file and
+a path-scoped rule return only when Claude next reads a file they apply to.
+
+## See also
+
+- [agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md) —
+  what the root file carries whatever the vendor.
+- [skills](./skills.md) — the same vendor's skill facts, and where a procedure goes instead of here.
