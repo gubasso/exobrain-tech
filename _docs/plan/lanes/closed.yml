@@ -117,3 +117,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: two axes crossed once, the form each manager records, and the loop a stale pin needs
+  - id: "016"
+    slug: register-the-perishable-vendor-facts
+    type: chore
+    points: 2
+    needs: []
+    tags: [governance]
+    outcome: done
+    closed: "2026-09-14"
+    note: seven entries, a quarterly cadence, and a baseline whose dependents are the adapters

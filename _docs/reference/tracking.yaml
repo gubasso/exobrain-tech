@@ -3,17 +3,106 @@
 # See specs/SPEC-tracking.md for the shape, and run `sdd track status` to
 # read freshness offline or `sdd track check` to compare a pinned Git
 # revision to its upstream over the network.
-#
-# Example entry (delete this comment block and add real entries):
-#   - id: model-pricing
-#     path: reference/model-pricing.md
-#     last_checked: 2026-01-01
-#     cadence_days: 30
-#     why: provider prices change without notice
-#     revalidate:
-#       - re-fetch from the provider's official pricing page
-#       - update the page and advance last_checked
-#     dependents:
-#       - guides/cost-estimation.md
 schema_version: 1
-tracked: []
+tracked:
+  - id: agent-skills-specification
+    path: programming/agent-integration/03-skills.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The frontmatter contract, the optional fields, and the experimental
+      marking on allowed-tools come from the Agent Skills specification, which
+      versions without notice.
+    revalidate:
+      - re-read https://agentskills.io/specification
+      - correct the contract table, the required and optional fields, and any
+        changed experimental marking
+      - carry a changed baseline into every adapter that states an exception
+        to it
+      - advance last_checked
+    dependents:
+      - programming/agent-integration/12-prior-art.md
+      - tools/claude-code/skills.md
+      - tools/codex/skills.md
+      - tools/gemini-cli/skills.md
+      - tools/opencode/skills.md
+
+  - id: claude-code-skills
+    path: tools/claude-code/skills.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The discovery roots, the extra frontmatter fields, the listing cap, and
+      the token budgets are one vendor's behavior and change with its releases.
+    revalidate:
+      - re-read https://code.claude.com/docs/en/skills
+      - correct the roots, the fields, the caps, and the permission surface
+      - advance last_checked
+    dependents: []
+
+  - id: claude-code-memory-files
+    path: tools/claude-code/memory-file-loading.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The memory locations, the import depth, the rules directory, and the size
+      limits are one vendor's behavior and change with its releases.
+    revalidate:
+      - re-read https://code.claude.com/docs/en/memory
+      - correct the locations, the eager and lazy split, the import depth, and
+        the limits
+      - advance last_checked
+    dependents: []
+
+  - id: codex-skills
+    path: tools/codex/skills.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The scopes, the collision behavior, the invocation forms, and the
+      implicit-invocation setting are one vendor's behavior.
+    revalidate:
+      - re-read https://learn.chatgpt.com/docs/build-skills
+      - correct the scopes, the collision behavior, and the configuration keys
+      - advance last_checked
+    dependents: []
+
+  - id: codex-instruction-files
+    path: tools/codex/instruction-files.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The file names, the chain the launch builds, and the byte limit are one
+      vendor's behavior.
+    revalidate:
+      - re-read https://learn.chatgpt.com/docs/agent-configuration/agents-md
+      - correct the names, the chain, and the limit
+      - advance last_checked
+    dependents: []
+
+  - id: gemini-cli-skills
+    path: tools/gemini-cli/skills.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The tiers, the depth limit, the malformed-file behavior, and the consent
+      prompt are one vendor's behavior.
+    revalidate:
+      - re-read https://geminicli.com/docs/cli/skills/ and
+        https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/creating-skills.md
+      - correct the tiers, the depth limit, and the invocation surface
+      - advance last_checked
+    dependents: []
+
+  - id: opencode-skills
+    path: tools/opencode/skills.md
+    last_checked: 2026-09-14
+    cadence_days: 90
+    why: >-
+      The roots, the enforced name rule, and the permission patterns are one
+      vendor's behavior.
+    revalidate:
+      - re-read https://opencode.ai/docs/skills/
+      - correct the roots, the field set, and the permission patterns
+      - advance last_checked
+    dependents: []
