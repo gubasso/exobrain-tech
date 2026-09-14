@@ -722,7 +722,7 @@ LLM-era specific (the failure modes AI agents fall into most often):
 
 - [00 — Architecture](../00-architecture.md) — where `tests/`, `support/`, and `snapshots/` sit.
 - [02 — Error Messages](../02-error-messages.md) — exit-code matrix is unit-tested.
-- [05 — Designing for LLM Agents § Test-writing hazards](../05-designing-for-llm-agents.md#54-test-writing-hazards-for-ai-agents)
+- [agent-integration/05 — Evaluations § Tests an agent writes](../../agent-integration/05-evaluations.md)
   — agent-specific failure modes.
 - [07 — CLI Wrapper Design § 9 Testability](../07-cli-wrapper-design/process-and-posix.md#9-testability)
   — wrapper-specific seams (Spawner trait, golden argv).
