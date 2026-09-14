@@ -76,6 +76,18 @@ one agent runtime is that vendor's shelf under `tools/`, dated.
   the five detection heuristics are stated once, in `cli-design/09`.
 - Snapshot the three agent-facing surfaces: help output, machine-output schema, exit codes.
 
+### Documentation and discovery (06)
+
+- Two knowledge sets. Project artifacts are what the project's configuration selects into its own
+  tree. Tool references are what the installed version carries, and they are exposed, never landed.
+- Three steps: one always-loaded line in the instruction file, one described index carrying stable
+  ids and aliases, one reader that returns an exact topic. Nothing embeds the corpus eagerly.
+- Version matching is structural. The running executable serves the references it was built with,
+  and a trunk, an unrelated checkout, or a search is a different version with no label saying so.
+- A human index optimizes routing and a machine form declares a schema and stable ids. Neither is an
+  executable plan.
+- An id is stable. A renamed topic keeps its id and the old name becomes an alias.
+
 ### Skill security (15)
 
 - A skill from outside the project is code review, not a download.

@@ -45,3 +45,12 @@ stories:
     outcome: done
     closed: "2026-09-14"
     note: the whole standard for authoring and evaluating a skill, tool-agnostic and self-contained
+  - id: "008"
+    slug: narrow-the-toolchain-to-one-system
+    type: chore
+    points: 3
+    needs: []
+    tags: [governance]
+    outcome: done
+    closed: "2026-09-14"
+    note: one declared system, held by evaluating the flake rather than reading it
