@@ -21,9 +21,8 @@ lint:
 # (ADR-executable-artifacts-in-the-library).
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
-# expected to copy and run. Those five scripts are not gated yet:
-# `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md` is the story that
-# gates them, and it is what returns shellcheck and shfmt to the devShell.
+# expected to copy and run. Those five scripts are not gated yet. The change
+# that gates them is what returns shellcheck and shfmt to the devShell.
 test: test-gates test-one-system verify-instance
 
 # Hold the flake's evaluated output set to the one supported system
