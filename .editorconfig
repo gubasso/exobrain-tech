@@ -16,12 +16,20 @@ indent_size = 2
 [Makefile]
 indent_style = tab
 
-# Shell scripts commonly accompany docs vaults; 2-space matches the shfmt
-# default (shfmt -i 2). editorconfig-checker respects these; shfmt, if adopted,
-# reads the same block.
+# A bucket may ship a shell script a reader copies and runs. shfmt reads this
+# block when it is called with no formatting flags, so the style lives here
+# once and both gates read the same source. `binary_next_line` and
+# `switch_case_indent` are shfmt's own properties, and editorconfig-checker
+# ignores what it does not know.
+#
+# shfmt's `-s` is deliberately absent: it rewrites code rather than laying it
+# out, and it strips the quotes inside `[[ ]]` that a reader of a teaching
+# artifact copies for good reasons elsewhere.
 [*.{sh,bash,bats}]
 indent_style = space
 indent_size = 2
+binary_next_line = true
+switch_case_indent = true
 
 [*.md]
 trim_trailing_whitespace = false

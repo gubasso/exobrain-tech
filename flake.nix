@@ -60,7 +60,8 @@
           #
           # Every `language: system` hook resolves off the ambient PATH and
           # gets no environment of its own, so each one needs a named provider
-          # in this list. Currently: dprint, typos, committed.
+          # in this list. Currently: dprint, typos, committed, and the two
+          # shell tools below.
           pkgs.typos
           pkgs.committed
 
@@ -76,10 +77,12 @@
           # which `just test-one-system` runs.
           pkgs.jq
 
-          # There is no shellcheck or shfmt here. A devShell entry with no gate
-          # behind it is the assertion-without-a-gate this repository forbids,
-          # so the two tools return in the change that adds the hook selecting
-          # the shell scripts the buckets ship.
+          # The two tools behind `knowledge-base-boundary:a-shipped-script-is-gated`.
+          # Its hook is `language: system`, and `just test-gates` runs the gate
+          # against a deliberate violation outside pre-commit, so both tools
+          # need a provider here.
+          pkgs.shellcheck
+          pkgs.shfmt
         ];
         shellHook = ''
           echo "dev shell ready"

@@ -204,4 +204,58 @@ printf '# Template\n\n````markdown\n## Prerequisites\n\n- A checkout.\n\n## Step
   > "$g/template.md"
 accept "guide-recipe-shape" "$gate" "$g/template.md"
 
+# --- shipped-scripts --------------------------------------------------------
+#
+# The gate discovers its set from the index, so the control needs a tracked
+# tree with a bucket in it. The two halves fail for different reasons and are
+# exercised apart: a linter finding is a defect in what the script does, and a
+# formatting finding is a defect in how it reads. A suite that broke only one
+# would leave the other free to be inverted.
+#
+# The unformatted case is written with the wrong indent rather than the wrong
+# flags, because `.editorconfig` is what decides the indent and a gate reading
+# it from somewhere else would still pass this file.
+shipped=$root/.hooks/shipped-scripts.sh
+s="$work/shipped"
+rm -rf "$s"
+mkdir -p "$s/infra/scripts"
+cp "$root/.editorconfig" "$s/.editorconfig"
+git -C "$s" init -q
+cd "$s"
+
+# An empty set is not a failure. The library is allowed to ship no script.
+git add -A
+accept "shipped-scripts" "$shipped"
+
+printf '#!/usr/bin/env bash\nset -eu\n\nmain() {\n  echo "$1"\n}\n\nmain "$@"\n' \
+  > infra/scripts/ok.sh
+git add -A
+accept "shipped-scripts" "$shipped"
+
+# SC2086: an unquoted expansion, which splits on the first path with a space.
+printf '#!/usr/bin/env bash\nset -eu\n\ncat $1\n' > infra/scripts/unquoted.sh
+git add -A
+reject "shipped-scripts" "$shipped"
+git rm -q --cached infra/scripts/unquoted.sh
+rm infra/scripts/unquoted.sh
+
+# Four-space bodies, against the two the shared .editorconfig block declares.
+printf '#!/usr/bin/env bash\nset -eu\n\nmain() {\n    echo "$1"\n}\n\nmain "$@"\n' \
+  > infra/scripts/wide.sh
+git add -A
+reject "shipped-scripts" "$shipped"
+
+# --fix settles the formatting half and leaves the tree clean.
+"$shipped" --fix > /dev/null 2>&1 || fail "shipped-scripts --fix failed"
+accept "shipped-scripts" "$shipped"
+
+# A script outside the eight buckets is this repository's own tooling, not a
+# drop-in, and the gate leaves it alone. A pattern that lost its bucket anchor
+# would start judging `.hooks/` and pass this check by accident, so the file is
+# one the gate would refuse if it saw it.
+mkdir -p .hooks
+printf '#!/usr/bin/env bash\ncat $1\n' > .hooks/not-shipped.sh
+git add -A
+accept "shipped-scripts" "$shipped"
+
 echo "test-gates: every gate failed when it should"

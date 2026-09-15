@@ -33,6 +33,8 @@
 #   - ripsecrets       : secret scanner (fast).
 #   - lychee           : link checker (pre-push only; network).
 #   - no-bare-relative-links : forbid bare-filename relative links (explicit ./ or path).
+#   - shipped-scripts  : shellcheck + shfmt over the shell scripts the buckets
+#                        ship (SoT for the layout: .editorconfig).
 #   - committed        : Conventional Commits shape on commit-msg (SoT: committed.toml).
 #
 # First-run note:
@@ -269,6 +271,24 @@ repos:
         always_run: true
         pass_filenames: false
         entry: .hooks/canon-named-once.sh
+
+  # Instance policy: a bucket may ship a shell script a reader copies and runs,
+  # and `knowledge-base-boundary:a-shipped-script-is-gated` is what makes that
+  # script checked rather than asserted. shellcheck and shfmt both come from the
+  # devShell, which is why they are listed there.
+  #
+  # The gate discovers its own set from the index instead of taking the file
+  # list pre-commit passes. A `files:` pattern here would be a second copy of
+  # the bucket list, and the day a bucket is renamed the pattern matches nothing
+  # and the gate reports success over an unchecked tree.
+  - repo: local
+    hooks:
+      - id: shipped-scripts
+        name: the shell scripts the buckets ship are clean
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: .hooks/shipped-scripts.sh
 
   # --- Spelling (report-only) ---
   #
