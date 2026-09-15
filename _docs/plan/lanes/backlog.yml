@@ -1,9 +1,0 @@
-lane: backlog
-stories:
-  - id: "002"
-    slug: gate-the-bucket-shell-scripts
-    type: chore
-    points: 2
-    needs: []
-    tags: [governance]
-    note: the five bucket scripts have never had a gate

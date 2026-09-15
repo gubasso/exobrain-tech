@@ -36,4 +36,4 @@ repository runs, and it is unchanged by which tools those are.
 
 ## Status
 
-Accepted
+Superseded by [ADR-planning-lives-outside-the-repository](./ADR-planning-lives-outside-the-repository.md)

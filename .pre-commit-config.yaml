@@ -163,21 +163,12 @@ repos:
         # instance's; neither resolves against this tree.
         exclude: '^(_docs/decisions/|\.spec-driven-docs/)'
 
-      # The story heading shape, gated by MD043 through its own config, because
+      # The spec heading shape, gated by MD043 through its own config, because
       # the rule takes one `headings` array. The precondition is that
       # `.markdownlint-cli2.jsonc` never mentions MD043 at any value including
       # false: it is merged over this file and would silently disable the
-      # contract. There is no epic config: `_docs/plan/epics/` holds no file, and
-      # `check-hooks-apply` errors on a pattern that matches nothing.
-      - id: markdownlint-cli2
-        alias: md-story
-        name: markdownlint (story heading shape)
-        files: '^_docs/plan/stories/[^/]+\.md$'
-        args: ['--config', '.markdownlint/story.markdownlint-cli2.jsonc']
-
-      # The spec heading shape, on the same terms. `_docs/specs/` is where the
-      # rules this repository states live, so the file that says what binds is
-      # itself held to a shape.
+      # contract. `_docs/specs/` is where the rules this repository states live,
+      # so the file that says what binds is itself held to a shape.
       - id: markdownlint-cli2
         alias: md-spec
         name: markdownlint (spec heading shape)

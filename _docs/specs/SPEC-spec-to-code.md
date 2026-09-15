@@ -26,9 +26,10 @@
 ## Purpose
 
 Rules governing the seam between a spec and the work that implements it. Covers requirements written
-before their behavior exists, how an entry document in the plan zone — this project declares it at
-`tests/fixtures/` — cites the rules it enacts, and how coverage is derived. The shape of a requirement
-is covered by the specs specification; how a spec changes is covered by its lifecycle rules.
+before their behavior exists, how the entry document of a unit of work cites the rules it enacts, and
+how coverage is derived. An entry document states what one unit of work does, and this repository
+holds none: the work waiting on it is tracked outside the checkout. The shape of a requirement is
+covered by the specs specification; how a spec changes is covered by its lifecycle rules.
 
 ## Requirements
 
@@ -56,7 +57,8 @@ or `REMOVED` followed by the rule ID in inline code.
 - WHEN the shape gate runs
 - THEN the clause fails, because the ID token is not `` `<spec-slug>:<rule-slug>` ``
 
-Verify: `rg -n 'ADDED|MODIFIED|REMOVED' tests/fixtures | rg -v '(ADDED|MODIFIED|REMOVED) \x60[a-z0-9-]+:[a-z0-9-]+\x60' | grep . && exit 1 || exit 0`
+Verify: reviewer confirms every typed clause in the entry document carries a
+`` `<spec-slug>:<rule-slug>` `` ID
 
 ### `spec-to-code:an-entry-document-cites-rule-ids` — An entry document cites rule IDs
 
@@ -73,7 +75,7 @@ Verify: reviewer compares the spec diff against the entry document's typed claus
 
 ### `spec-to-code:unenacted-rules-are-the-backlog` — Unenacted rules are the backlog
 
-The author MUST derive the set of unenacted rules from the specs and the plan zone on every ask.
+The author MUST derive the set of unenacted rules from the specs on every ask.
 
 #### Scenario: Someone proposes a coverage file
 

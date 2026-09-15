@@ -30,7 +30,7 @@ gates:
   # gate would judge are decision records, whose lines cannot be rewritten at
   # all. The rule stays stated in SPEC-docs-format.md, because the gate message
   # cites it, and no path reaches the gate until the conversion is decided.
-  # Story 004 carries that decision and removes this entry.
+  # Deciding it removes this entry.
   prose-stays-unwrapped:
     exclude:
       - '**'

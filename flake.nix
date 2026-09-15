@@ -76,10 +76,10 @@
           # which `just test-one-system` runs.
           pkgs.jq
 
-          # There is no shellcheck or shfmt here. A devShell entry with no
-          # gate behind it is the assertion-without-a-gate the charter
-          # forbids, and the story that adds the hook and the tools together
-          # is `_docs/plan/stories/002-gate-the-bucket-shell-scripts.md`.
+          # There is no shellcheck or shfmt here. A devShell entry with no gate
+          # behind it is the assertion-without-a-gate this repository forbids,
+          # so the two tools return in the change that adds the hook selecting
+          # the shell scripts the buckets ship.
         ];
         shellHook = ''
           echo "dev shell ready"

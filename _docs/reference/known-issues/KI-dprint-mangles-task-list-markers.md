@@ -70,10 +70,10 @@ rewritten the same way, while replacing `<Implementation task.>` with plain pros
 
 ## Where it bites
 
-Any document pairing `- [ ]` with an angle placeholder. In this repository that is
-`_docs/plan/stories/*.md`, whose `Tasks` section is a GFM checklist: every pass moves the marker onto
-the item below it, contradicting the fixed heading shape the `MD043` hook gates. A filled story has
-no placeholders left, so the trigger needs both halves together.
+Any document pairing `- [ ]` with an angle placeholder: a template whose checklist items are still
+unfilled, and any copy of one that a reader has not completed. Every formatting pass moves the marker
+onto the item below it. A completed checklist has no placeholders left, so the trigger needs both
+halves together. No document in this repository carries the pair today.
 
 ## Workaround
 

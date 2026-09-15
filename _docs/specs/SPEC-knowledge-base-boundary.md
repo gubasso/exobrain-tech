@@ -11,7 +11,7 @@
   - [`knowledge-base-boundary:a-tool-input-is-pinned` — A tool input resolves to one pinned revision](#knowledge-base-boundarya-tool-input-is-pinned--a-tool-input-resolves-to-one-pinned-revision)
     - [Scenario: An input is added without a lock entry](#scenario-an-input-is-added-without-a-lock-entry)
   - [`knowledge-base-boundary:no-method-is-named` — The repository names no planning method](#knowledge-base-boundaryno-method-is-named--the-repository-names-no-planning-method)
-    - [Scenario: A docs-root directory serves an adjacent domain](#scenario-a-docs-root-directory-serves-an-adjacent-domain)
+    - [Scenario: The work waiting on this repository is tracked elsewhere](#scenario-the-work-waiting-on-this-repository-is-tracked-elsewhere)
   - [`knowledge-base-boundary:a-retired-name-does-not-return` — A retired name does not return](#knowledge-base-boundarya-retired-name-does-not-return--a-retired-name-does-not-return)
     - [Scenario: A removed dependency is reintroduced by a later change](#scenario-a-removed-dependency-is-reintroduced-by-a-later-change)
   - [`knowledge-base-boundary:private-material-stays-in-the-vault` — Private material stays in the vault](#knowledge-base-boundaryprivate-material-stays-in-the-vault--private-material-stays-in-the-vault)
@@ -85,12 +85,12 @@ Verify: `jq -e 'del(.nodes.root) | [.nodes[] | .locked.rev] | all(type == "strin
 Outside the decision log, this repository MUST NOT name a planning, project-management, or workflow
 method as a dependency, a tool, a schema source, or a link target.
 
-#### Scenario: A docs-root directory serves an adjacent domain
+#### Scenario: The work waiting on this repository is tracked elsewhere
 
-- GIVEN `_docs/plan/`, holding what this repository is building next
-- WHEN a method is adopted to shape it
-- THEN the directory stays and the method stays unnamed here, because naming it makes every consumer
-  of this repository inherit the choice
+- GIVEN a planning record kept outside this checkout
+- WHEN a change here cites what that record holds
+- THEN it states the work and never the method that shapes it, because naming the method makes every
+  consumer of this repository inherit the choice
 
 Verify: reviewer confirms the change names no method
 
