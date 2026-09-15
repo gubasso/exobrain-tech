@@ -21,9 +21,17 @@ lint:
 # (ADR-executable-artifacts-in-the-library).
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
-# expected to copy and run. Those five scripts are not gated yet. The change
-# that gates them is what returns shellcheck and shfmt to the devShell.
-test: test-gates test-one-system verify-instance
+# expected to copy and run. Every one of those is linted and formatted here.
+test: test-gates test-shipped-scripts test-one-system verify-instance
+
+# Lint and format-check every shell script the buckets ship
+# (`knowledge-base-boundary:a-shipped-script-is-gated`).
+#
+# The pre-commit hook runs the same script. This recipe is what puts the gate in
+# CI without a hook run, and what lets a reader check one bucket's drop-in after
+# editing it.
+test-shipped-scripts:
+    nix develop --command .hooks/shipped-scripts.sh
 
 # Hold the flake's evaluated output set to the one supported system
 # (ADR-linux-is-the-only-supported-project-target).
@@ -52,9 +60,11 @@ verify-instance:
 build:
     @echo "no build: exobrain-tech ships documents and drop-in artifacts, not binaries"
 
-# Format the markdown tree with dprint.
+# Format the markdown tree with dprint, and the shipped shell scripts with
+# shfmt. shfmt takes no layout flags: `.editorconfig` carries them.
 fmt:
     nix develop --command dprint fmt
+    nix develop --command .hooks/shipped-scripts.sh --fix
 
 # Format, then lint, then verify the shipped artifacts.
 check: fmt lint test

@@ -114,9 +114,9 @@ collect_edid_summaries() {
     fi
 
     printf '\n[EDID] %s\n' "$connector"
-    edid-decode "$edid_file" 2>/dev/null |
-      grep -E 'Display Product Name|Display Product Serial Number|Manufacturer|Model|Preferred Detailed Timing|Native detailed mode|Detailed mode|Maximum image size' ||
-      printf '[INFO] no compact EDID summary matched expected patterns\n'
+    edid-decode "$edid_file" 2>/dev/null \
+      | grep -E 'Display Product Name|Display Product Serial Number|Manufacturer|Model|Preferred Detailed Timing|Native detailed mode|Detailed mode|Maximum image size' \
+      || printf '[INFO] no compact EDID summary matched expected patterns\n'
   done
   shopt -u nullglob
 }

@@ -18,6 +18,8 @@
     - [Scenario: A guide needs a real host to be useful](#scenario-a-guide-needs-a-real-host-to-be-useful)
   - [`knowledge-base-boundary:a-knowledge-article-is-not-metadata` — Knowledge never lives in `_docs/`](#knowledge-base-boundarya-knowledge-article-is-not-metadata--knowledge-never-lives-in-_docs)
     - [Scenario: A document explains a tool this repository also uses](#scenario-a-document-explains-a-tool-this-repository-also-uses)
+  - [`knowledge-base-boundary:a-shipped-script-is-gated` — A shipped shell script is linted and formatted](#knowledge-base-boundarya-shipped-script-is-gated--a-shipped-shell-script-is-linted-and-formatted)
+    - [Scenario: A bucket gains a script nobody checks](#scenario-a-bucket-gains-a-script-nobody-checks)
 
 <!--TOC-->
 
@@ -132,3 +134,16 @@ A knowledge article MUST live in the bucket that owns its subject, never under `
 
 Verify: reviewer applies the placement test — is this about how the KB works, or is it knowledge the
 library serves
+
+### `knowledge-base-boundary:a-shipped-script-is-gated` — A shipped shell script is linted and formatted
+
+Every `.sh` file in a library bucket MUST pass the lint and format gates this checkout runs, and
+those gates MUST run outside pre-commit as well.
+
+#### Scenario: A bucket gains a script nobody checks
+
+- GIVEN a chapter that adds a drop-in a reader is told to copy and run
+- WHEN the script carries an unquoted expansion or a foreign indent
+- THEN the change fails, because a drop-in this repository never ran is asserted rather than proven
+
+Verify: `pre-commit run shipped-scripts --all-files`
