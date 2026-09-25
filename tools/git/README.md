@@ -325,7 +325,7 @@ git add -A #--all
 
 - <https://gist.github.com/polonskiy/7e5d308ca6412765927a96bd74601a5e>
 
-- <https://github.com/spwhitton/git-remote-gcrypt>
+- [git-remote-gcrypt on GitLab or GitHub, end to end](./workflows/encrypted-remote-with-git-remote-gcrypt.md)
 
 - <https://superuser.com/questions/1162907/setting-up-an-encrypted-git-repository>
 
