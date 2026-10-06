@@ -98,6 +98,7 @@ exclude = [
   "^https?://(www\\.)?clockwork\\.xyz",
   "^https?://(www\\.)?milvus\\.io",
   "^https?://(www\\.)?nano-editor\\.org",
+  "^https?://git-send-email\\.io",
   # Live pages that chronically exceed the pre-push timeout (slow origins).
   "^https?://(www\\.)?dynu\\.com",
   "^https?://no-color\\.org",

@@ -1,6 +1,6 @@
 ---
 digest-of: tools/git
-last-synced: 2026-07-10
+last-synced: 2026-09-25
 token-estimate: 300
 ---
 
@@ -25,7 +25,7 @@ diffs, and repo administration; subtrees cover workflow-specific runbooks.
 - **Administration**: GitHub, Gitolite, and GitLab repository management notes.
 - **Authentication**: `gh`/`glab` auth runbooks — check status, keyring token storage, and HTTPS git
   credential-helper setup.
-- **Workflows**: Rebase and origin-state runbooks for repeatable branch operations.
+- **Workflows**: Rebase and origin-state runbooks for repeatable branch operations, plus the `git-remote-gcrypt` recipe for a forge that stores only ciphertext.
 - **Comparison material**: Diffs and command examples complement the workflow guides.
 
 ## Maintenance Notes
