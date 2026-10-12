@@ -43,12 +43,17 @@ be wrong, so the trunk is a final reference and never a substitute for the versi
 
 Evidence varies. What the agent may do does not grow when the evidence shrinks.
 
-| What is available   | What it supports                                                         |
-| ------------------- | ------------------------------------------------------------------------ |
-| Receipt and history | Attributed destinations, their last written form, and how they got there |
-| Receipt alone       | Attribution and form, with no account of what the project did afterwards |
-| History alone       | Arrival and change over time, with no statement of what this tool owns   |
-| Neither             | The files, and nothing about their origin                                |
+| What is available   | Provenance | What it supports                                                         |
+| ------------------- | ---------- | ------------------------------------------------------------------------ |
+| Receipt and history | attributed | Attributed destinations, their last written form, and how they got there |
+| Receipt alone       | reduced    | Attribution and form, with no account of what the project did afterwards |
+| History alone       | reduced    | Arrival and change over time, with no statement of what this tool owns   |
+| Neither             | unknown    | The files, and nothing about their origin                                |
+
+The provenance column is the word a compare verb reports per destination, per
+[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md), so the agent reads
+the class rather than deriving it. "Receipt" means the receipt vouches for the bytes on disk now,
+not only that it names the path.
 
 Each row down is less certainty, not more permission. Unknown ownership is shown to the person
 rather than resolved by inference, and the refusal from
@@ -62,7 +67,8 @@ nobody does.
 ## What the agent does
 
 The mechanical steps belong to the tool. These are the ones that need judgment, in the order the
-lifecycle in [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)
+lifecycle in
+[09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)
 runs them.
 
 - Preserve the project's intent. A configuration the project tuned means something, and the reason
@@ -106,3 +112,5 @@ Judgment needs evidence, and evidence the agent cannot reach is evidence nobody 
   that decides which confidence class a destination falls into.
 - [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
   lifecycle these judgments run inside.
+- [20 — Migrating from an archive](./20-migrating-from-an-archive.md) — moving a whole predecessor,
+  a corpus or another tool's files, onto the new convention.

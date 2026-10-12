@@ -20,6 +20,13 @@ Four tiers, lowest priority first. The last one that carries a name is the one t
 Inside one tier the `.agents/skills/` form wins, which is the standard root other runtimes read, so
 a package placed there is reachable from more than this vendor.
 
+## The description and size
+
+The description "is how Gemini decides when to use the skill", so it carries the whole trigger
+surface here as it does in the baseline. Neither page states a size limit. Read 2026-10-08 at
+<https://geminicli.com/docs/cli/skills/> and <https://geminicli.com/docs/cli/creating-skills/>,
+through a summarizing fetch, so the quote is close but possibly not exact.
+
 ## The depth limit
 
 `SKILL.md` is discovered at the root of a skills directory or exactly one directory below it.

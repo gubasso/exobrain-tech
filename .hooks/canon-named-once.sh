@@ -12,9 +12,10 @@
 # the reason `no-named-method.sh` keeps its names in a file: a URL spelled here
 # would make the gate fail on its own definition.
 #
-# The projection is not a reference. The vendored payload is excluded whole --
-# it is canon-written provenance rather than prose this repository authors --
-# and the forms that name it from outside are filtered from the residue: the
+# The projection is not a reference. The vendored payload and the managed lint
+# configuration at the documentation root are excluded whole -- each is
+# canon-written provenance rather than prose this repository authors -- and the
+# forms that name it from outside are filtered from the residue: the
 # `.`-prefixed path, the `-verify` hook id, and the managed-block markers.
 # `_docs/decisions/` is exempt because a record states its own moment and is
 # never edited to describe the present.
@@ -34,7 +35,7 @@ status=0
 stray=$(git grep -In -F -e "$name" -- \
   ":(exclude)$home" ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
   ':(exclude)flake.nix' ':(exclude)flake.lock' \
-  ":(exclude).$name" |
+  ":(exclude).$name" ':(exclude)_docs/.markdownlint-cli2.jsonc' |
   sed -e "s/\.$name/PROJECTION/g" \
     -e "s/$name-verify/PROJECTION/g" \
     -e "s/urn:$name:/PROJECTION/g" \

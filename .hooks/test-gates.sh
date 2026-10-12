@@ -3,9 +3,8 @@
 #
 # A gate that has never been observed failing has not been observed at all, and
 # the failure modes worth catching are the quiet ones: a matcher whose exit code
-# is inverted names the clean files and passes every breach, an `MD043` array
-# that lost `match_case` accepts a heading in the wrong case, and a `grep -L`
-# over a key accepts that key with no value. All three report success.
+# is inverted names the clean files and passes every breach, and a `grep -L`
+# over a key accepts that key with no value. Both report success.
 #
 # Every check runs the gate that ships, never a copy of it. The corpus gates
 # read paths relative to the working directory and two of them run `git grep`,
@@ -66,28 +65,6 @@ newtree() {
   git -C "$t" add -A
   cd "$t"
 }
-
-# --- Heading shapes: md-adr and md-spec -------------------------------------
-mkdir -p "$work/shapes"
-cd "$work/shapes"
-adr() {
-  printf '# T\n\n## Context and Problem Statement\n\nW.\n\n## Considered Options\n\n- One.\n\n## Decision Outcome\n\nOne.\n\n## Consequences\n\n- Good.\n\n%s\n\nAccepted\n' "$1"
-}
-adr '## Status' > ADR-ok.md
-adr '## status' > ADR-case.md
-{
-  adr '## Status'
-  printf '\n## Sixth\n\nNo.\n'
-} > ADR-sixth.md
-printf '# T\n\n## Purpose\n\nW.\n\n## Requirements\n\n### A\n\nB.\n' > SPEC-ok.md
-printf '# T\n\n## purpose\n\nW.\n\n## Requirements\n\n### A\n\nB.\n' > SPEC-case.md
-
-md() { markdownlint-cli2 --config "$root/.spec-driven-docs/markdownlint/$1" "$2"; }
-accept "md-adr" md adr.markdownlint-cli2.jsonc ADR-ok.md
-reject "md-adr" md adr.markdownlint-cli2.jsonc ADR-case.md
-reject "md-adr" md adr.markdownlint-cli2.jsonc ADR-sixth.md
-accept "md-spec" md spec.markdownlint-cli2.jsonc SPEC-ok.md
-reject "md-spec" md spec.markdownlint-cli2.jsonc SPEC-case.md
 
 # --- no-named-method --------------------------------------------------------
 #

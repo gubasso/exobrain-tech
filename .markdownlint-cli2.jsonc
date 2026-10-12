@@ -22,8 +22,12 @@
 // Non-fixable rules are unaffected and still gate (report-only).
 {
   "fix": true,
+  // The relative-links rule fails a link whose target does not exist. The
+  // managed hook installs the package; loading and enabling it is this file's.
+  "customRules": ["markdownlint-rule-relative-links"],
   "config": {
     "default": true,
+    "relative-links": true,
 
     // Ordered-list numbering: 1.→2.→3. (one=1/1/1, ordered=1/2/3, zero=0/0/0).
     // The ONLY rule left fixable, so this is the only autofix that ever fires.
@@ -75,6 +79,15 @@
     "MD052": false, // reference labels — many notes use ad-hoc footnote refs
     "MD060": false // table column style — too strict for hand-edited tables
   },
+  // The vendored canon payload is written against the canon's own layout, so
+  // its links do not resolve in this tree.
+  "overrides": [
+    {
+      "filter": [".spec-driven-docs/**"],
+      "config": { "relative-links": false },
+      "combine": "merge"
+    }
+  ],
   "ignores": [
     "node_modules/",
     ".obsidian/",

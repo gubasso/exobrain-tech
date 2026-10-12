@@ -89,11 +89,12 @@ enumeration kept because the directory exists — a tree of the tree, a topic-to
 <!-- BEGIN spec-driven-docs docs -->
 ## Documentation
 
-- Load the affected specs before editing governed content: `_docs/specs/SPEC-<domain>.md`.
-- Treat decision records as immutable rationale and load them only when asked why.
-- Read the writing style before you author or edit prose: `sdd method writing-style`.
-- Write and edit step-by-step guides to the adopted guides spec, `_docs/specs/SPEC-guides.md`.
-- Name a document by a slug drawn from its subject, never by a number. Where its directory holds documents with no kind prefix, give that directory a `README.md` saying what it holds and what each document covers.
-- Run `sdd verify` before handoff.
-- Keep adopted specs, the tracking registry, and local integration instance-owned.
+- Load the affected specs before editing governed content: `_docs/specs/SPEC-<domain>.md`. <!-- markdownlint-disable-line MD013 -->
+- Treat decision records as immutable rationale and load them only when asked why. <!-- markdownlint-disable-line MD013 -->
+- Read the writing style before you author or edit prose: `sdd method writing-style`. <!-- markdownlint-disable-line MD013 -->
+- Write and edit step-by-step guides to the adopted guides spec, `_docs/specs/SPEC-guides.md`. <!-- markdownlint-disable-line MD013 -->
+- Name a document by a slug drawn from its subject, never by a number. Where its directory holds documents with no kind prefix, give that directory a `README.md` saying what it holds and what each document covers. <!-- markdownlint-disable-line MD013 -->
+- For a question about this method or about operating `sdd`, run `sdd docs` and read only the topic it names. <!-- markdownlint-disable-line MD013 -->
+- Run `sdd verify` before handoff. <!-- markdownlint-disable-line MD013 -->
+- Keep adopted specs, the tracking registry, and local integration instance-owned. <!-- markdownlint-disable-line MD013 -->
 <!-- END spec-driven-docs docs -->

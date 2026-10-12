@@ -22,6 +22,8 @@ tracked:
       - advance last_checked
     dependents:
       - programming/agent-integration/12-prior-art.md
+      - programming/agent-integration/21-skill-format-evidence.md
+      - programming/agent-integration/22-skill-format-research.md
       - tools/claude-code/skills.md
       - tools/codex/skills.md
       - tools/gemini-cli/skills.md
@@ -38,7 +40,8 @@ tracked:
       - re-read https://code.claude.com/docs/en/skills
       - correct the roots, the fields, the caps, and the permission surface
       - advance last_checked
-    dependents: []
+    dependents:
+      - programming/agent-integration/21-skill-format-evidence.md
 
   - id: claude-code-memory-files
     path: tools/claude-code/memory-file-loading.md
@@ -52,7 +55,8 @@ tracked:
       - correct the locations, the eager and lazy split, the import depth, and
         the limits
       - advance last_checked
-    dependents: []
+    dependents:
+      - programming/agent-integration/21-skill-format-evidence.md
 
   - id: codex-skills
     path: tools/codex/skills.md
@@ -65,7 +69,8 @@ tracked:
       - re-read https://learn.chatgpt.com/docs/build-skills
       - correct the scopes, the collision behavior, and the configuration keys
       - advance last_checked
-    dependents: []
+    dependents:
+      - programming/agent-integration/21-skill-format-evidence.md
 
   - id: codex-instruction-files
     path: tools/codex/instruction-files.md
@@ -78,7 +83,9 @@ tracked:
       - re-read https://learn.chatgpt.com/docs/agent-configuration/agents-md
       - correct the names, the chain, and the limit
       - advance last_checked
-    dependents: []
+    dependents:
+      - programming/agent-integration/21-skill-format-evidence.md
+      - programming/agent-integration/22-skill-format-research.md
 
   - id: gemini-cli-skills
     path: tools/gemini-cli/skills.md
@@ -91,8 +98,11 @@ tracked:
       - re-read https://geminicli.com/docs/cli/skills/ and
         https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/creating-skills.md
       - correct the tiers, the depth limit, and the invocation surface
+      - re-read https://geminicli.com/docs/cli/creating-skills/ and correct the
+        description and size statements
       - advance last_checked
-    dependents: []
+    dependents:
+      - programming/agent-integration/21-skill-format-evidence.md
 
   - id: opencode-skills
     path: tools/opencode/skills.md
@@ -104,5 +114,155 @@ tracked:
     revalidate:
       - re-read https://opencode.ai/docs/skills/
       - correct the roots, the field set, and the permission patterns
+      - advance last_checked
+    dependents: []
+
+  - id: agent-skills-authoring-guides
+    path: programming/agent-integration/21-skill-format-evidence.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      The catalog cost, the compaction advice, the best practices, and the
+      evaluation procedure come from the Agent Skills guide pages, which
+      change without a versioned release.
+    revalidate:
+      - re-read https://agentskills.io/client-implementation/adding-skills-support
+      - re-read https://agentskills.io/skill-creation/best-practices
+      - re-read https://agentskills.io/skill-creation/evaluating-skills
+      - re-read https://agentskills.io/skill-creation/optimizing-descriptions
+      - correct the quotes, the token figures, and the evaluation split
+      - advance last_checked
+    dependents: []
+
+  - id: claude-skill-authoring-guidance
+    path: programming/agent-integration/21-skill-format-evidence.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      The line caps, the table-of-contents thresholds, the description voice,
+      the name restrictions, and the word cap are one vendor's guidance, spread
+      over documentation pages, a skill on a moving branch, and a guide.
+    revalidate:
+      - re-read https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+      - re-read https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview
+      - re-read https://code.claude.com/docs/en/best-practices
+      - re-read https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md
+        and the line count of claude-api/SKILL.md beside it
+      - check https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf
+        for a newer edition
+      - correct the quotes and figures, and carry a changed figure into the
+        conflict table
+      - advance last_checked
+    dependents:
+      - programming/agent-integration/22-skill-format-research.md
+      - tools/claude-code/skills.md
+
+  - id: openai-skill-creator
+    path: programming/agent-integration/21-skill-format-evidence.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      The imperative-form rule, the one-owner rule, the excluded files, the
+      word cap, and the table-of-contents threshold live in a skill on a moving
+      branch.
+    revalidate:
+      - re-read https://github.com/openai/skills/blob/main/skills/.system/skill-creator/SKILL.md
+      - correct the quotes and figures, and carry a changed figure into the
+        conflict table
+      - advance last_checked
+    dependents:
+      - programming/agent-integration/22-skill-format-research.md
+      - tools/codex/skills.md
+
+  - id: skill-adopter-pages
+    path: programming/agent-integration/21-skill-format-evidence.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      The roots Cursor reads, the Copilot split between instructions and
+      skills, the VS Code load failure, and the AGENTS.md format statement are
+      vendor behavior that changes with releases.
+    revalidate:
+      - re-read https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
+      - re-read https://code.visualstudio.com/docs/copilot/customization/agent-skills
+      - re-read https://cursor.com/docs/skills
+      - re-read https://agents.md/
+      - correct the quotes and the root list
+      - advance last_checked
+    dependents: []
+
+  - id: model-context-windows-and-tokens
+    path: programming/agent-integration/22-skill-format-research.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      Context window sizes, long-prompt pricing tiers, and characters-per-token
+      rules of thumb change with every model and tokenizer release, and the
+      conservative bound rests on one of them.
+    revalidate:
+      - re-read https://platform.claude.com/docs/en/docs/about-claude/models/overview
+      - re-read https://platform.claude.com/docs/en/build-with-claude/context-windows
+      - re-read https://platform.claude.com/docs/en/about-claude/pricing
+      - re-read https://platform.claude.com/docs/en/build-with-claude/token-counting
+      - re-read https://developers.openai.com/api/docs/models
+      - re-read https://developers.openai.com/api/docs/pricing
+      - re-read https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview
+      - re-read https://ai.google.dev/gemini-api/docs/pricing
+      - re-read https://ai.google.dev/gemini-api/docs/long-context
+      - re-read https://ai.google.dev/gemini-api/docs/tokens
+      - correct the window sizes, the price tiers, and the token ratios, and
+        rework the characters-per-token bound if the ratio moved
+      - advance last_checked
+    dependents: []
+
+  - id: vendor-prompting-guides
+    path: programming/agent-integration/22-skill-format-research.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      The vendors' prompting guidance on lists, emphasis, literal reading, and
+      markup is rewritten for each model generation.
+    revalidate:
+      - re-read https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
+      - re-read https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5
+      - re-read https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide
+      - re-read https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide
+      - re-read https://developers.openai.com/api/docs/guides/latest-model
+      - re-read https://ai.google.dev/gemini-api/docs/prompting-strategies
+      - correct the prompt format table and any conflict row that cites it
+      - advance last_checked
+    dependents: []
+
+  - id: skill-installer-pages
+    path: programming/agent-integration/22-skill-format-research.md
+    last_checked: 2026-10-10
+    cadence_days: 90
+    why: >-
+      Where each installer writes a skill, whether it copies or links, and the
+      open link failures are tool behavior that changes with releases.
+    revalidate:
+      - re-read https://developer.atlassian.com/cloud/twg-cli/agents/skills/
+      - re-read https://cli.github.com/manual/gh_skill_install
+      - re-read https://github.com/vercel-labs/skills and issues 744, 1199, and 1025 there
+      - correct the destinations, the copy or link mode, and the issue states,
+        and recheck the three conclusions against them
+      - advance last_checked
+    dependents: []
+
+  - id: reference-implementations-map
+    path: programming/agent-integration/13-reference-implementations.md
+    last_checked: 2026-10-11
+    cadence_days: 90
+    why: >-
+      The concept map names each tool's commands, flags, receipt and status
+      schemas, and skill task files, which change with every release of
+      release-kit and sdd.
+    revalidate:
+      - read the changelog of release-kit and of sdd since last_checked
+      - run `rk --help` and `sdd --help`, and the help of each subcommand the
+        maps name, and correct the commands and flags
+      - run `rk method --list` and `sdd docs`, read each tool's setup skill,
+        and correct the schema versions, the classification values, and the
+        setup skill task files
       - advance last_checked
     dependents: []

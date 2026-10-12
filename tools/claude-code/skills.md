@@ -55,14 +55,42 @@ with the plugin's name. Name matching ignores case, spacing, and invisible chara
 
 Descriptions sit in context every turn; the body loads only when the skill invokes, and stays in
 context for the rest of the session. The body is not re-read on a later turn, so it carries standing
-instructions rather than one-time steps. After summarization each re-attached skill keeps its most
-recent 5,000 tokens, and all of them share 25,000.
+instructions rather than one-time steps.
+
+After compaction Claude Code re-attaches the most recent invocation of each skill and keeps the
+first 5,000 tokens of each, inside a combined budget of 25,000 tokens filled from the most recently
+invoked skill, so the most important instructions go near the top of `SKILL.md`. Read 2026-10-08 at
+<https://code.claude.com/docs/en/skills>.
 
 The listing truncates `description` plus `when_to_use` at 1,536 characters, which is wider than the
-specification's 1,024-character cap on `description` alone.
+specification's 1,024-character cap on `description` alone. The listing's own budget scales at 1% of
+the model's context window, read 2026-10-08 at the same page.
 
 Changes under `~/.claude/skills/`, `.claude/skills/`, and any `--add-dir` path apply inside the
 running session. A plugin's hooks, agents, and MCP configuration need `/reload-plugins`.
+
+## Authoring guidance
+
+The vendor's sizing and wording guidance, read 2026-10-08 at <https://code.claude.com/docs/en/skills>:
+
+- Keep `SKILL.md` under 500 lines and move detailed reference material to separate files.
+- "Once a skill loads, its content stays in context across turns, so every line is a recurring token
+  cost. State what to do rather than narrating how or why."
+- A rule that must hold every time moves into a hook, which runs on its event whether or not the
+  skill is followed. The skill's own `hooks` field keeps it with the package.
+
+The skill authoring best practices, read 2026-10-08 at
+<https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices>, add the
+following for Claude's skills in general.
+
+- The description is written in third person. `name` and `description` carry no XML tags, and
+  `name` carries neither "anthropic" nor "claude".
+- Every reference file links directly from `SKILL.md`, one level deep, because Claude "might use
+  commands like `head -100`" on a nested file. A reference file over 100 lines opens with a table of
+  contents.
+
+The portable sources behind both are in
+[agent-integration/21 — Skill format evidence](../../programming/agent-integration/21-skill-format-evidence.md).
 
 ## The permission model
 

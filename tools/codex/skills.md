@@ -41,12 +41,38 @@ and nothing more, so a package may sit at any depth under a discovery root.
 At session start Codex injects each discovered skill's name, description, and file path. The body is
 read from disk when the skill is selected.
 
+The skill list takes "at most 2% of the model's context window, or 8,000 characters when the context
+window is unknown". A description can therefore be shortened, so the vendor says to "Front-load the
+key use case and trigger words so a host can still match the skill if descriptions are shortened."
+Read 2026-10-08 at <https://learn.chatgpt.com/docs/build-skills>.
+
 A person selects a skill explicitly with `$<name>` in the CLI and the editor extension, or `@<name>`
 in ChatGPT. The model selects one implicitly when the request matches a description.
 `policy.allow_implicit_invocation: false` in `agents/openai.yaml` turns implicit selection off,
 which leaves the skill reachable by name alone.
 
 Codex detects a changed skill without a restart. A change to `~/.codex/config.toml` needs one.
+
+## Authoring guidance
+
+The skills guide, read 2026-10-08 at <https://learn.chatgpt.com/docs/build-skills>:
+
+- "Keep each skill focused on one job."
+- "Prefer instructions over scripts unless you need deterministic behavior or external tooling."
+- "Write imperative steps with explicit inputs and outputs."
+
+The vendor's skill-creator skill, read 2026-10-08 at
+<https://github.com/openai/skills/blob/main/skills/.system/skill-creator/SKILL.md>:
+
+- "Always use imperative/infinitive form."
+- "Information should live in either SKILL.md or references files, not both."
+- A package holds no README, install guide, quick reference, or changelog.
+- The body stays under 5,000 words, and a reference file over 100 lines opens with a table of
+  contents.
+
+The instruction-file chain has its own byte limit, stated in
+[instruction-files](./instruction-files.md). The portable sources beside these are in
+[agent-integration/21 — Skill format evidence](../../programming/agent-integration/21-skill-format-evidence.md).
 
 ## The permission model
 

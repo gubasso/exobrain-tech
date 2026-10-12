@@ -1,6 +1,7 @@
 # 11 — Router and Gates
 
-The lifecycle in [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)
+The lifecycle in
+[09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)
 has mechanical steps and judgment steps, and they want different owners. This chapter states the
 skill that drives the sequence, and the boundary between a check a program can make and a decision
 only a person or an agent can.
@@ -26,6 +27,13 @@ What the router does:
 What the router does not do: restate the projection, the ownership classes, the landing order, or
 the failure behavior. Those have chapters, and a skill that copies them has made a second copy that
 drifts. It links, the way [03 — Skills](./03-skills.md) requires of any skill's body.
+
+The router picks its tasks through a gate, and the gate proposes while the operator confirms. It
+reads the target's state from the tool's classification, never from the request, crosses it with the
+intent the request carries, and presents the state, the intent, and the ordered tasks before it
+waits. A redirect reads the gate again with the new intent, and before each task the router names it
+in one line and waits once more. [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) states
+the gate, its exits, and the sections around it.
 
 One skill rather than several also keeps the trigger surface legible. Three skills for staging,
 landing, and cleanup compete for one request, and the description that would disambiguate them is
@@ -79,5 +87,7 @@ overstates its reach is worse than no check, because the reach is what people re
   sequence the router drives.
 - [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
   judgment the router escalates.
+- [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) — the router's sections and its gate,
+  filled for a setup skill.
 - [cli-design/09 — Testing and quality](../cli-design/09-testing-and-quality/README.md) — what a
   project's own checks are made of.

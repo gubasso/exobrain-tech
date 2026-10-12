@@ -28,6 +28,37 @@ Owner: [01 — Instruction files](./01-instruction-files.md)
 
 Owner: [03 — Skills](./03-skills.md)
 
+## Skill format and size
+
+- [ ] The package holds `SKILL.md` and `references/` alone, and what skills share is copied in from
+      one source.
+- [ ] `SKILL.md` links every reference directly, each link with its condition, and no reference
+      links another.
+- [ ] The sections run pre-flight, general rules, gate, tasks, post-flight, after one opening
+      paragraph.
+- [ ] Each instruction is one imperative action with its exact command, and no word is in capitals
+      for emphasis.
+- [ ] Every size is counted in characters: a body within 12,000, a reference within 32,000, and a
+      reference over 8,000 opening with its sections.
+
+Owners: [16 — Skill format](./16-skill-format.md) and
+[17 — Skill size budget](./17-skill-size-budget.md)
+
+## Setup skill
+
+- [ ] The pre-flight stops on what no task can change, and observes the rest for the gate.
+- [ ] The gate reads the tool's classification, proposes the tasks, and waits for the operator.
+- [ ] The skill provisions its own tool, and the repository records how, a host install included.
+- [ ] Every deterministic step is a verb of the tool, and the skill reads its machine output.
+- [ ] A migration archives the predecessor first, snapshots what no history holds, and keeps a
+      registry.
+- [ ] The skill starts, integrates, and prunes no branch, and lands no rule that only shapes the
+      workflow.
+
+Owners: [18 — Setup skill skeleton](./18-setup-skill-skeleton.md),
+[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md), and
+[20 — Migrating from an archive](./20-migrating-from-an-archive.md)
+
 ## Safety
 
 - [ ] Fetched and reader-supplied content is handled as data, at the point the skill reads it.
@@ -64,7 +95,8 @@ Owner: [06 — Documentation and discovery](./06-documentation-and-discovery.md)
       nothing.
 - [ ] The candidate is computed from the executable's own sources, the resolved configuration, and
       the observed capabilities, and from nothing else.
-- [ ] Production reads no staged byte. Removing the stage first changes nothing it produces.
+- [ ] Production reads no staged byte. Deleting every staged artifact but the receipt changes
+      nothing a landing writes.
 - [ ] Every path and collision is validated before the first write.
 - [ ] An unattributed whole file is refused rather than overwritten.
 - [ ] A retired destination is reported and released, never deleted.

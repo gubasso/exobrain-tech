@@ -32,6 +32,17 @@ A runtime that follows a symbolic link while scanning serves the package from th
 directory, and the canonical directory is the only place an edit lands. Whether a given runtime
 follows links is a vendor fact, dated in that vendor's adapter.
 
+A tool that installs its own skills does the same job with copies. Every installer the research in
+[22 — Skill format research](./22-skill-format-research.md#installing-a-skill-package) read installs
+a skill as one whole directory, with its own `references/`, and none reads a supporting file from
+outside it. Those that serve several runtime roots either copy the directory into each root or link
+each root to one canonical copy, and the links fail in ways the copies do not: a root no link
+reaches cannot see the skill, an update that forgets the install mode turns copies back into links,
+and rebuilding a lost link means rerunning the install over the canonical store. An installer that
+embeds the packages copies them, and it copies what two skills share into each package from one
+authored source, so a fix still lands in one file. That last step is an inference from what the
+installers do, not a statement any of them makes.
+
 ## One name, one owner
 
 A skill's identity is its name, and an agent resolves a name across scopes. The same package

@@ -95,8 +95,8 @@ matches how often the agent needs it.
 | `scripts/`      | Only when executed                 | Nothing at load time |
 
 The specification's guidance follows the same shape: roughly 100 tokens of metadata for every
-installed skill, under 5,000 tokens of body once a skill activates, and resources on demand. Keep
-`SKILL.md` under 500 lines.
+installed skill, a small body once a skill activates, and resources on demand.
+[17 — Skill size budget](./17-skill-size-budget.md) states the caps, counted in characters.
 
 One test decides every paragraph of the body.
 
@@ -118,18 +118,11 @@ further reference, because each hop costs a read and hides which file owns the r
 ## The body
 
 The body is a table of contents with judgment in it, not a manual.
+[16 — Skill format](./16-skill-format.md) states its section order and the writing conventions.
 
-- Write in the third-person imperative. "Run the dry-run first", never "you should" or "I will".
-  An agent reads a conditional modal as optional and skips it.
 - Put the condition before the instruction it controls.
 - Point at the mechanism's own help output rather than copying flags. A copied flag list is wrong
   the first time a flag changes, and nothing tells you when.
-- State why a rule exists. A model follows a reason further than it follows an instruction in
-  capital letters, and a rule with no reason is one the agent discards when the case looks
-  different.
-- Number a multi-step workflow, with the exact command at each step, and spell out the branch where
-  one exists.
-- Keep one word for one meaning across the whole package.
 - Where a step produces a structured artifact, put a filled-in template under `assets/` and tell the
   agent to copy it. An agent matches a pattern more reliably than it follows a description of one.
 

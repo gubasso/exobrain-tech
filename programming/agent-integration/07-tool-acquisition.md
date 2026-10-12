@@ -129,8 +129,18 @@ The alternative, where the consumer reads a manual and wires the loop by hand, i
 capability nobody offers reaches only the operator who already knew it existed, which is usually the
 tool's own author.
 
-Where no manager is wired, there is no pin to keep fresh and the tool says nothing. The obligation is
+Where no manager is wired, there is no pin to keep fresh and the tool says nothing. The obligation
+is
 to offer the loop where one is possible, never to press it on a project that pins nothing.
+
+A tool that ships a setup skill also provisions itself. Where the host lacks the tool, runs an older
+version than the repository records, or the repository records no way to obtain it, the skill asks
+how the project obtains the tool and how the environment loads it, proposes the manager the
+repository already carries, and runs each install as a step the operator approves. Every answer
+lands in a file the contributors share. A host install leaves no manager file, so the tool records
+it as a decision in its own configuration, with the lowest version a host may run, and its status
+reads that decision as a state of its own rather than as an unwired target.
+[18 — Setup skill skeleton](./18-setup-skill-skeleton.md) states the task.
 
 ## Serving against editing
 
@@ -167,11 +177,6 @@ What a tool may write into a project's own directories when it does write is
 agent owes an operator when moving between two of them needs judgment, is
 [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md).
 
-The same two axes serve a third-party dependency a project takes, rather than the tool itself, with
-one difference. There the tool that served the fragment is not the tool that moves the pin, so it
-adds no mover and the manager that took the pin keeps its own freshness verb. The obligation above
-falls on whoever published that dependency.
-
 ## Sources
 
 Read on 2026-09-14.
@@ -180,7 +185,8 @@ Read on 2026-09-14.
   <https://nix.dev/manual/nix/latest/command-ref/new-cli/nix3-flake>
 - The mise cargo backend, its key form, and its fallback to a source build:
   <https://mise.jdx.dev/dev-tools/backends/cargo.html>
-- The mise ubi backend, its key form, and the `exe` option for a binary the repository does not name:
+- The mise ubi backend, its key form, and the `exe` option for a binary the repository does not
+  name:
   <https://mise.jdx.dev/dev-tools/backends/ubi.html>
 - The asdf `.tool-versions` format and its per-tool plugin requirement:
   <https://asdf-vm.com/manage/configuration.html>

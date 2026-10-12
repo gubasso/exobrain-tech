@@ -6,23 +6,30 @@ input, which is the design mistake the whole pattern exists to avoid.
 
 ## The order
 
-Eight steps, and the order is the content.
+Five steps run inside each task that lands files, and the order is the content.
 
-1. Gather project evidence: the working tree, the receipt, and the history around the destinations.
-2. Render the candidate to a stage. Nothing in the project changes.
-3. Investigate. Compare the stage with the working tree, read the omissions, the conflicts, and the
-   version-matched guidance.
-4. Prepare the project. Resolve what the comparison found, on the project's own terms.
-5. Render the candidate again, into production. This is a fresh render, not a copy.
-6. Verify with the project's own checks.
-7. Compare against the stage, which is still there.
-8. Clean the stage, under explicit authorization.
+1. Stage. Render the candidate to a stage. Nothing in the project changes.
+2. Compare. Read the stage against the working tree, one destination at a time, with its state, its
+   ownership, and its provenance, then the omissions, the collisions, and the version-matched
+   guidance.
+3. Prepare. Resolve what the comparison found, on the project's own terms, before anything lands.
+4. Land. Render the candidate again, into production. This is a fresh render, not a copy.
+5. Prove. Compare again: every destination the tool owns reads equal to the stage.
 
-## Production never reads the stage
+Two more steps run once per run, in the setup skill's post-flight after its last task: verify with
+the tool's own judge and the project's checks, then clean the stage under explicit authorization.
+[18 — Setup skill skeleton](./18-setup-skill-skeleton.md) states that split, and
+[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md) the compare verb
+both comparisons read.
 
-This is the invariant everything else rests on. Production accepts no stage as an input. It reads no
-staged byte, no staged decision, and no staged record. Remove the stage between steps 4 and 5 and
-step 5 produces exactly what it would have produced anyway.
+## Production never reads a staged byte
+
+This is the invariant everything else rests on. Production copies nothing the stage rendered: no
+staged byte, no staged plan, and no staged record of what the target held. What it may take from the
+stage is the operator's choices, which the stage receipt records once so nobody repeats them as
+flags. The landing refuses a receipt another release wrote or one for another target, then renders
+every byte again from those choices. Delete every staged artifact and keep only the receipt, and
+the landing produces exactly the same bytes.
 
 Staging and production share a projection, not a result. Inside an implementation, one pure function
 computes the candidate from the three inputs, and both steps call it. What they do not share is
@@ -30,9 +37,9 @@ serialized state passed from the first to the second.
 
 The reason is what the alternative costs. A production step that consumes staged bytes has to answer
 a new question every time: is this stage still valid. The project may have moved, the configuration
-may have changed, the tool may have been upgraded. Answering it means fingerprints, validity windows,
-and revalidation rules, and an implementation that gets any of them slightly wrong writes stale
-content with full confidence. Rendering again asks none of those questions, and it costs one
+may have changed, the tool may have been upgraded. Answering it means fingerprints, validity
+windows, and revalidation rules, and an implementation that gets any of them slightly wrong writes
+stale content with full confidence. Rendering again asks none of those questions, and it costs one
 projection.
 
 The second reason is evidential. An agent comparing a stage against a production run learns what
@@ -54,8 +61,8 @@ Project documentation the projection selected is an artifact and sits in the tre
 reference corpus is reference material and stays reference material: the stage exposes it so an
 agent can read it, and nothing lands it.
 
-The stage persists through step 7. It is evidence during verification, which is exactly when a
-person most wants to know what was supposed to happen.
+The stage persists through the prove step and the post-flight checks. It is evidence during
+verification, which is exactly when a person most wants to know what was supposed to happen.
 
 ## Landing by ownership
 
@@ -120,8 +127,8 @@ It creates a stale-input problem, which creates a validity protocol, which creat
 revalidation and a compatibility floor between the version that staged and the version that applies.
 None of that exists in a design that renders twice.
 
-And it removes the evidence that made staging worth doing. The comparison in step 7 is between what
-was predicted and what happened. Copy the prediction into place and there is nothing left to
+And it removes the evidence that made staging worth doing. The prove step compares what was
+predicted against what happened. Copy the prediction into place and there is nothing left to
 compare.
 
 ## Portable properties, platform mechanisms
