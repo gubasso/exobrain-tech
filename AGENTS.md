@@ -71,7 +71,7 @@ one squash-merged pull request, never a direct push (ADR-master-is-the-trunk).
 
 A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the
 chapter that explains it and carries three obligations in the same change
-(ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell.
+(ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. The repository's own tools, hooks, and CI follow `project-platform:the-devshell-supplies-every-project-tool`, `project-platform:hooks-run-every-ci-check`, and `project-platform:hooks-exclude-generated-files`.
 
 ## No document narrates its own history
 

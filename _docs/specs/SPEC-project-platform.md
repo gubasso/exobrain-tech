@@ -10,14 +10,21 @@
     - [Scenario: A system is advertised with no runner behind it](#scenario-a-system-is-advertised-with-no-runner-behind-it)
   - [`project-platform:library-topics-stay-platform-neutral` — Library topics stay open](#project-platformlibrary-topics-stay-platform-neutral--library-topics-stay-open)
     - [Scenario: A portable chapter describes an access-control mode](#scenario-a-portable-chapter-describes-an-access-control-mode)
+  - [`project-platform:the-devshell-supplies-every-project-tool` — The devshell supplies every project tool](#project-platformthe-devshell-supplies-every-project-tool--the-devshell-supplies-every-project-tool)
+    - [Scenario: A hook builds its environment on a machine with no curl](#scenario-a-hook-builds-its-environment-on-a-machine-with-no-curl)
+  - [`project-platform:hooks-run-every-ci-check` — The git hooks run every check of CI](#project-platformhooks-run-every-ci-check--the-git-hooks-run-every-check-of-ci)
+    - [Scenario: A check is added to CI only](#scenario-a-check-is-added-to-ci-only)
+  - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
+    - [Scenario: sdd rewrites its manifest](#scenario-sdd-rewrites-its-manifest)
 
 <!--TOC-->
 
 ## Purpose
 
-Rules governing which systems this checkout's toolchain supports, and the boundary between that
-choice and the knowledge the library publishes. The support cut binds development and verification
-here. It does not narrow what a chapter may be about.
+Rules governing which systems this checkout's toolchain supports, where its tools come from, what its
+git hooks and CI run, and the boundary between those choices and the knowledge the library
+publishes. They bind development and verification here. They do not narrow what a chapter may be
+about.
 
 ## Requirements
 
@@ -58,3 +65,52 @@ platform-specific claim to the implementation that proves it.
 - THEN the chapter states the portable property and attributes the mode to that implementation
 
 Verify: reviewer confirms the chapter states no operating system as a universal requirement
+
+### `project-platform:the-devshell-supplies-every-project-tool` — The devshell supplies every project tool
+
+The project MUST supply from `flake.nix` every tool that a recipe, a `language: system` hook, or a
+`language: script` hook calls, and every tool that pre-commit's installers need to build a hook
+environment from a clean machine. The host supplies only `git`, `bash`, `awk`, `sed`, `grep`, the
+coreutils, `nix`, and `direnv`. The chapter that states the general rule is
+`programming/project-bootstrap/03-local-dev-environment.md`, "Who supplies each tool".
+
+#### Scenario: A hook builds its environment on a machine with no curl
+
+- GIVEN an empty pre-commit cache and a `PATH` that holds only the host tools
+- WHEN pre-commit builds the rust environment of the secret scanner
+- THEN `rustup-init` finds `curl` in the devshell and the build succeeds
+
+Verify: `env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$(mktemp -d)" nix develop --command pre-commit install-hooks`
+
+### `project-platform:hooks-run-every-ci-check` — The git hooks run every check of CI
+
+The project MUST run every check of CI in its commit stage or its push stage, and CI MUST repeat
+those two stages in the devshell and run nothing else. The push stage MUST NOT rerun a commit-stage
+hook. The project lists no CI-only check, no report-only job, and no scheduled job. The chapters that
+state the general rule are `programming/project-bootstrap/04-quality-gates.md`, "Git hooks", and
+`programming/project-bootstrap/05-ci.md`.
+
+#### Scenario: A check is added to CI only
+
+- GIVEN a new CI step that calls a recipe no hook runs
+- WHEN a contributor pushes a change that the step rejects
+- THEN the push passed its hooks and CI failed, so the check moves into a hook stage instead
+
+Verify: `! grep -n 'just ' .github/workflows/ci.yml && just lint`
+
+### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
+
+The project MUST exclude every file a tool generates from every hook that rewrites or judges it, in
+the tool's own configuration where the tool has one, and MUST keep it under the hooks that only read
+it. The generated files are `flake.lock` (nix), `.spec-driven-docs/manifest.json`, and
+`_docs/.markdownlint-cli2.jsonc` (sdd). The chapter that states the general rule is
+`programming/project-bootstrap/04-quality-gates.md`, "Generated files".
+
+#### Scenario: sdd rewrites its manifest
+
+- GIVEN a version upgrade that rewrites `.spec-driven-docs/manifest.json` in sdd's own layout
+- WHEN the commit stage runs
+- THEN no formatter, fixer, spell check, or editorconfig check changes or rejects the file, and the
+  JSON parser and the secret scan still read it
+
+Verify: `nix develop --command bash -c '! { dprint output-file-paths; typos --files; editorconfig-checker -dry-run; } | grep -E "(^|/)(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$"'`

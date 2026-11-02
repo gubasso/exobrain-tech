@@ -58,6 +58,8 @@ the tool's own configuration first, because it also governs a run outside pre-co
   `--force-exclude` in its `args`, so that `extend-exclude` applies to the files pre-commit passes.
 - taplo and editorconfig-checker skip `Cargo.lock` on their own, and editorconfig-checker also skips
   `*.snap`.
+- dprint fails with "No files found" when a commit stages only excluded files, such as a lock file
+  after an update. Run its hook as `dprint fmt --allow-no-files`.
 - One comment beside each exclusion names the generator, so the next reader knows why it is there.
 - Ask the tools, not the patterns, whether an exclusion holds: `dprint output-file-paths`,
   `typos --files`, and `editorconfig-checker -dry-run` list what each tool selects.
