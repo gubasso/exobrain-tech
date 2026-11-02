@@ -35,9 +35,9 @@ in CI.
 
 When pre-commit cannot build the environment of a hook from a clean environment, the devshell
 supplies the missing dependency, and pre-commit still manages the packages of the hook. A project
-with `node` hooks puts `nodejs` in its devshell, because pre-commit's node installer cannot fetch
-node from a clean environment. A `rust` hook needs `curl` from the devshell, because `rustup-init`
-downloads the toolchain with it.
+with `node` hooks puts `nodejs` in its devshell, because the generic node build that pre-commit
+downloads does not run on a host without the standard glibc loader, such as a Nix host. A `rust`
+hook needs `curl` from the devshell, because `rustup-init` downloads the toolchain with it.
 
 A Nix flake is the example here, not the rule. The Nix form, with the package list, is in
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md#git-hooks-pre-commit).

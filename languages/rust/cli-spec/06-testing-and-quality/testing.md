@@ -93,8 +93,7 @@ fn widget_list_renders_table() {
 ```
 
 For stdout snapshots from integration tests, use `insta::assert_snapshot!` with the captured stdout.
-Snapshots live in `tests/snapshots/`. insta writes them, so the hooks that rewrite or judge exclude
-them ([generated files](../../../../programming/project-bootstrap/04-quality-gates.md#generated-files)).
+Snapshots live in `tests/snapshots/`, which insta writes, so [the hooks that rewrite or judge exclude them](../../../../programming/project-bootstrap/04-quality-gates.md#generated-files).
 
 **Review snapshot diffs as carefully as code diffs** — they're behavior.
 

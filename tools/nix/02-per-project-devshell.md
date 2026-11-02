@@ -206,25 +206,17 @@ see which library is missing and add that package (e.g. `pkgs.libz`, `pkgs.opens
 
 ## Git hooks (pre-commit)
 
-`pre-commit` is **per-project**, not a global tool: declare it in the project's devShell, together
-with every tool a `language: system` or `language: script` hook calls from `PATH` (`dprint`,
-`taplo`, `typos`, `ruff`, `curl`, …) and every tool a task-runner recipe calls, so hooks run with the
-same pinned toolchain as the shell and CI. The host supplies only `git`, `wt`, `bash`, `awk`, `sed`,
-`grep`, the coreutils, `nix`, `direnv`, and the tools that deploy the host itself; the rule is in
-[project-bootstrap/03 — Who supplies each tool](../../programming/project-bootstrap/03-local-dev-environment.md#who-supplies-each-tool).
-
-pre-commit builds the environment of a `language: python|golang|node|rust|…` hook and manages its
-packages, but some installers need a tool from the devShell to do it. A project with `node` hooks
-puts `pkgs.nodejs` in the devShell, because pre-commit's node installer cannot fetch node from a
-clean environment. A project with a `rust` hook puts `pkgs.curl` there, because `rustup-init`
-downloads the toolchain with it.
+`pre-commit` is **per-project**, not a global tool: declare it in the devShell with every tool a
+`language: system` or `language: script` hook or a recipe calls from `PATH`. A project with `node`
+hooks adds `pkgs.nodejs`, because the generic node that pre-commit downloads does not run on a host
+without the standard glibc loader, as on Nix. The host supplies only `git`, `wt`, `bash`, `awk`,
+`sed`, `grep`, the coreutils, `nix`, `direnv`, and the tools that deploy the host itself ([project-bootstrap/03 — Who supplies each tool](../../programming/project-bootstrap/03-local-dev-environment.md#who-supplies-each-tool)).
 
 ```nix
 devShells.default = pkgs.mkShell {
   packages = [
     pkgs.pre-commit
     pkgs.dprint # a `language: system` hook tool → must be on PATH
-    pkgs.nodejs # pre-commit builds `node` hook environments on it
   ];
 };
 ```

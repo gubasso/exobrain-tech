@@ -39,7 +39,7 @@ with concrete tooling.
   OpenSSF Scorecard); 07 automation with cog (the contract and domain→helper map).
 - Tool split. The devshell holds the toolchain, `pre-commit`, the task runner, and every tool a
   recipe or a `system` or `script` hook calls; pre-commit manages the environments it builds, with
-  the devshell supplying what it cannot fetch (e.g. `nodejs`); the host supplies only `git`, `wt`,
+  the devshell supplying what its installers need (e.g. `nodejs`); the host supplies only `git`, `wt`,
   `bash`, `awk`, `sed`, `grep`, the coreutils, `nix`, `direnv`, and the host deploy tools.
 - CI parity. The commit stage runs the fast checks and the push stage the costly ones; together
   they run every CI check, and the push stage does not rerun the commit stage. CI repeats both

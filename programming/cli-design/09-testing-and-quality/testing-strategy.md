@@ -666,7 +666,7 @@ immediately.
 - Fail loudly on warnings (`-Dwarnings` / `--strict`); don't paper over with global allows.
 - **Tier-to-hook mapping**:
   - **pre-commit**: unit tests only (parallel, sub-second budget).
-  - **pre-push**: unit + integration (still parallel, single-digit-seconds budget).
+  - **pre-push**: integration tests, not the unit tests again (parallel, single-digit-seconds budget).
   - pre-push also: E2E and the coverage gate. CI repeats both stages; a CI-only E2E is a listed exception.
   - Scheduled CI: mutation testing on critical modules, outside the push rule and listed.
 

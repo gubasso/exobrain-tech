@@ -144,4 +144,6 @@ exclude = [
   "^https?://docs\\.getquicker\\.cn/chrome/developer\\.chrome\\.com/developers/how-tos/run-chromium-with-flags\\.html",
   # The whole site answers 402 Payment Required: its hosting lapsed.
   "^https?://(www\\.)?joyofcode\\.xyz",
+  # A live page that answers after about 21 s, past the timeout above.
+  "^http://opensimulator\\.org/wiki/NAT_Loopback_Routers$",
 ]

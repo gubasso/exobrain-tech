@@ -32,8 +32,7 @@ features in `Cargo.toml`.**
 - Do **not** type version strings or feature lists into `Cargo.toml` by hand. Hand-edits drift from
   the resolver, skip the lockfile update, and pin stale versions. Agents and contributors change
   dependencies only through these commands.
-- Commit `Cargo.lock` for binaries (not for libraries); `cargo add`/`cargo update` keep it in sync,
-  and the hooks that rewrite or judge exclude it ([generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)).
+- Commit `Cargo.lock` for binaries (not for libraries); `cargo add`/`cargo update` keep it in sync, and [the hooks that rewrite or judge exclude it](../../../programming/project-bootstrap/04-quality-gates.md#generated-files).
 
 The [pinning policy](#pinning-policy) below still governs the resulting entries: majors in
 `Cargo.toml`, exact versions in `Cargo.lock`.
