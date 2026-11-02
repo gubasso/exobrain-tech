@@ -146,11 +146,10 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.x' }
-      - run: pip install -e . mutmut
-      - run: mutmut run --paths-to-mutate=src/myapp || true
-      - run: mutmut results
+      - uses: DeterminateSystems/nix-installer-action@main
+      # mutmut comes from the devshell, like every other project tool.
+      - run: nix develop --command mutmut run --paths-to-mutate=src/myapp || true
+      - run: nix develop --command mutmut results
 ```
 
 Adapt the `mutmut` lines per language. The `|| true` is intentional: surviving mutants are reported,
@@ -207,8 +206,8 @@ insta      = { version = "1", features = ["yaml"] }
 proptest   = "1"
 wiremock   = "0.6"
 
-# Binary tools (install once per machine, not per project):
-# cargo install cargo-nextest cargo-mutants cargo-llvm-cov cargo-insta
+# Binary tools come from the project devshell, not Cargo.toml:
+# pkgs.cargo-nextest pkgs.cargo-mutants pkgs.cargo-llvm-cov pkgs.cargo-insta
 ```
 
 ### TypeScript / JS — `package.json` `devDependencies`

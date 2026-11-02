@@ -15,12 +15,26 @@ A linter catches likely bugs and anti-patterns the formatter does not. Configure
 just warn, on the lints you care about, and run it in CI. The language binding picks the tool (e.g.
 `clippy` for Rust) and the deny set.
 
-## Pre-commit hooks
+## Git hooks
 
-Pre-commit hooks run the formatter, linter, and cheap checks locally before a commit is created, so
-failures are caught in seconds rather than in CI minutes later. Keep the hook set fast — expensive
-checks belong in CI. Use a framework (e.g. [pre-commit](https://pre-commit.com/)) so hooks are
-declarative and shared.
+Git hooks run the checks locally, so a failure surfaces before it reaches CI. Use a framework (e.g.
+[pre-commit](https://pre-commit.com/)) so hooks are declarative and shared. Two stages split the
+work:
+
+- The commit stage runs the fast checks: the formatter, the linter, and the cheap file checks.
+- The push stage runs the costly checks: the integration tests, the builds, and the networked
+  checks, such as a link check or a vulnerability audit.
+
+The two stages together run every check that CI runs, so a push that passed its hooks passes CI.
+The push stage does not rerun the commit stage. Install both hook types, for example
+`default_install_hook_types: [pre-commit, commit-msg, pre-push]`.
+
+With pre-commit, `default_stages` covers only a hook that declares no `stages:` of its own. The
+`stages:` of a remote hook's manifest wins over it: the hooks of `pre-commit-hooks` declare
+`[pre-commit, pre-push, manual]`, so they run at push too unless the configuration gives each one an
+explicit `stages:`. Read the pinned manifest of each remote repository, and set `stages:` where it
+names a stage the hook does not belong to. A project that gates its integration on the manual stage
+keeps `manual` in both lists.
 
 ## Task runner
 

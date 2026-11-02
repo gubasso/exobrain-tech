@@ -139,9 +139,7 @@ are holes in your tests.
 
 ### Installation
 
-```bash
-cargo install cargo-mutants
-```
+Add `pkgs.cargo-mutants` to the project devshell.
 
 ### Usage
 
@@ -188,8 +186,8 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - run: cargo install cargo-mutants cargo-nextest
-      - run: cargo mutants --test-tool nextest || true
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix develop --command cargo mutants --test-tool nextest || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -437,11 +435,11 @@ wiremock    = "0.6"        # HTTP fakes (if CLI talks to APIs)
 rexpect     = "0.5"        # interactive CLI testing (if interactive prompts exist)
 ```
 
-**CLI tools** (install separately, not in `Cargo.toml`):
+**CLI tools** come from the project devshell, not `Cargo.toml`:
 
-```bash
-cargo install cargo-mutants   # mutation testing
-cargo install cargo-insta     # snapshot review workflow
+```nix
+pkgs.cargo-mutants # mutation testing
+pkgs.cargo-insta   # snapshot review workflow
 ```
 
 ## Naming conventions

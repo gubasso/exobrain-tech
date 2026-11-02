@@ -15,6 +15,33 @@ starting templates are owned by
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md) — follow it for
 the template; the language binding names the toolchain that goes inside.
 
+## Who supplies each tool
+
+Three owners supply the tools of a project, and each tool has exactly one:
+
+- The devshell holds the major tools: the language toolchain, `pre-commit`, the task runner, and
+  every tool that a task-runner recipe, a `language: system` hook, or a `language: script` hook
+  calls from `PATH`.
+- pre-commit manages the tools of a hook whose language gets an environment that pre-commit builds,
+  such as `python`, `golang`, `node`, or `rust`.
+- The host supplies only the ubiquitous tools: `git`, `wt`, `bash`, `awk`, `sed`, `grep`, and the
+  coreutils. `nix` and `direnv` are host tools too, because they enter the devshell, and so are the
+  tools that deploy the host itself, such as `nixos-rebuild` and `home-manager`.
+
+A hook or recipe that calls a host tool from `PATH` follows the rule. A project tool that is
+missing goes into the devshell, never onto the host. A hook added without its provider in the
+devshell passes only on a machine that happens to carry the tool, and fails on a clean machine and
+in CI.
+
+When pre-commit cannot build the environment of a hook from a clean environment, the devshell
+supplies the missing dependency, and pre-commit still manages the packages of the hook. A project
+with `node` hooks puts `nodejs` in its devshell, because pre-commit's node installer cannot fetch
+node from a clean environment. A `rust` hook needs `curl` from the devshell, because `rustup-init`
+downloads the toolchain with it.
+
+A Nix flake is the example here, not the rule. The Nix form, with the package list, is in
+[`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md#git-hooks-pre-commit).
+
 ## `.editorconfig`
 
 `.editorconfig` sets whitespace, charset, and final-newline rules that every editor honors, so

@@ -119,7 +119,7 @@ Use `cargo nextest` via `just test`. It parallelizes correctly, fails fast, and 
 summary. `cargo test` is fine but slower and noisier.
 
 ```sh
-cargo install cargo-nextest --locked
+# cargo-nextest comes from the devshell (pkgs.cargo-nextest)
 cargo nextest run                          # ad-hoc local run; uses [profile.default]
 cargo nextest run --profile pre-commit     # unit tests, fail-fast (pre-commit hook)
 cargo nextest run --profile pre-push       # integration tests (pre-push hook)

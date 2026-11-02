@@ -50,8 +50,8 @@ These are starting points; calibrate to your codebase:
 | Function length       | <= 60 LOC | 61–100 | > 100         |
 | NARGS                 | <= 5      | 6–7    | > 7           |
 
-**Enforcement pattern:** run on modified files in pre-push; run on all files nightly. Fail CI only
-on red thresholds. Yellow thresholds produce warnings in the PR comment.
+**Enforcement pattern:** run on modified files in pre-push, and fail the hook on the red thresholds
+that fail CI. A scheduled job runs all files. Yellow thresholds produce warnings in the PR comment.
 
 ### Per-language tools
 
@@ -337,8 +337,8 @@ loops, unnecessary allocations, and redundant clones that look correct but perfo
 commits, detects statistical regressions, and integrates with GitHub via PR comments. It supports
 adapters for all major benchmark frameworks.
 
-**Tier placement:** nightly CI. Benchmarks are too slow for pre-commit/pre-push. Statistical
-regression detection needs a history of measurements, so run consistently.
+**Tier placement:** a scheduled CI job, outside the push rule and listed with the CI jobs.
+Statistical regression detection needs a history of measurements taken on one machine.
 
 ## Pre-commit / CI integration
 
@@ -420,8 +420,8 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - run: cargo install cargo-mutants
-      - run: cargo mutants --test-tool nextest
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix develop --command cargo mutants --test-tool nextest
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -432,10 +432,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cargo install rust-code-analysis-cli
+      - uses: DeterminateSystems/nix-installer-action@main
       - run: |
-          rust-code-analysis-cli --metrics -O json -p src/ > complexity.json
-          jq -e '[.[] | select(.metrics.cognitive.average > 25)] | length == 0' \
+          nix develop --command rust-code-analysis-cli --metrics -O json -p src/ > complexity.json
+          nix develop --command jq -e '[.[] | select(.metrics.cognitive.average > 25)] | length == 0' \
             complexity.json
       - uses: actions/upload-artifact@v4
         if: always()

@@ -21,7 +21,8 @@ leak.
 Track and vet dependencies:
 
 - Enable automated dependency-update PRs so you learn about advisories promptly.
-- Run a vulnerability audit in CI that fails on known-vulnerable dependencies.
+- Run a vulnerability audit that fails on known-vulnerable dependencies at pre-push, and in CI as
+  a repeat of the push stage (chapter [05](./05-ci.md)).
 - Review new dependencies before adding them — every dependency is attack surface.
 
 ## OpenSSF Scorecard

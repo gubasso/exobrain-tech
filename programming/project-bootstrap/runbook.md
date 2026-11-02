@@ -33,16 +33,18 @@ Everyday work after setup is not here; this is the one-time scaffold.
    `bootstrap-governance`.
 
 4. **Set up the local dev environment:** a Nix devShell + `.envrc` (direnv) for a reproducible
-   toolchain, and an `.editorconfig` for cross-editor consistency. →
+   toolchain, and an `.editorconfig` for cross-editor consistency. The devshell holds every project
+   tool, and the host supplies only the ubiquitous tools. →
    [03 — Local dev environment](./03-local-dev-environment.md). _Automate:_ `bootstrap-nix`,
    `bootstrap-editorconfig`.
 
-5. **Wire the quality gates:** a formatter, a linter, pre-commit hooks, and a task runner (a single
-   entry point for common recipes). → [04 — Quality gates](./04-quality-gates.md). _Automate:_
+5. **Wire the quality gates:** a formatter, a linter, git hooks, and a task runner (a single entry
+   point for common recipes). The commit stage runs the fast checks, the push stage runs the costly
+   ones, and together they run every check of CI. → [04 — Quality gates](./04-quality-gates.md). _Automate:_
    `bootstrap-precommit`, `bootstrap-taskrunner`.
 
-6. **Stand up CI:** a first CI workflow that builds, tests, and runs the gates on every push and
-   pull request. → [05 — CI](./05-ci.md). _Automate:_ `bootstrap-ci`.
+6. **Stand up CI:** a first CI workflow that repeats both hook stages in the devshell on every push
+   and pull request, and a list of the checks that only CI can run. → [05 — CI](./05-ci.md). _Automate:_ `bootstrap-ci`.
 
 7. **Establish the security baseline:** secrets hygiene, dependency review/audit, and the OpenSSF
    Scorecard checklist. → [06 — Security baseline](./06-security-baseline.md).

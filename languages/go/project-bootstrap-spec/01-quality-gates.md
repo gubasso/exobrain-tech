@@ -48,7 +48,7 @@ Run it in CI so a vulnerable dependency cannot merge.
 
 ## Pre-commit wiring
 
-Wire `gofmt`/`goimports`, `go vet`, and `golangci-lint` into the pre-commit hooks from the general
-[04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) so failures surface
-locally in seconds. Keep the heavier `go test -race` and `govulncheck` in CI (and a task-runner
-recipe) rather than on every commit.
+Wire `gofmt`/`goimports`, `go vet`, and `golangci-lint` into the commit stage of the git hooks from
+the general [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md#git-hooks)
+so failures surface locally in seconds. Run the heavier `go test -race` and `govulncheck` at
+pre-push, and let CI repeat both stages.

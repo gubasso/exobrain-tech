@@ -1,6 +1,6 @@
 ---
 digest-of: languages/go/project-bootstrap-spec
-last-synced: 2026-07-10
+last-synced: 2026-11-02
 token-estimate: 800
 ---
 
@@ -32,8 +32,8 @@ service). Do the general steps first, then this overlay.
 - **Quality gates:** `gofmt` (canonical, non-configurable) / `goimports` (superset, fixes imports)
   for format; `go vet` (ships with toolchain) + `golangci-lint` (meta-linter, `.golangci.yml`) for
   lint; `go test -race ./...` for tests; `govulncheck ./...` (official, reachability-aware,
-  low-noise security baseline). Wire `gofmt`/`goimports`, `go vet`, `golangci-lint` into pre-commit;
-  keep the heavier `go test -race` and `govulncheck` in CI (and a task-runner recipe).
+  low-noise security baseline). Wire `gofmt`/`goimports`, `go vet`, `golangci-lint` into the commit
+  stage; run the heavier `go test -race` and `govulncheck` at pre-push, and CI repeats both stages.
 - **CLI kind:** entrypoint at `cmd/<name>/main.go`, `main` thin, logic in `internal/`; arg parsing
   via stdlib `flag` (single command) or `cobra` (subcommand tree, help/completion); return errors up
   to `main` and map to exit codes in one place (not `os.Exit` deep in the tree); config precedence

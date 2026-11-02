@@ -12,18 +12,21 @@
 
 ## Tool stack
 
-| Concern                       | Tool                     | Tier          | Install                                |
-| ----------------------------- | ------------------------ | ------------- | -------------------------------------- |
-| Complexity metrics            | `rust-code-analysis-cli` | Pre-push / CI | `cargo install rust-code-analysis-cli` |
-| Clippy restriction lints      | `clippy` (built-in)      | Pre-commit    | Bundled with rustup.                   |
-| Clippy complexity thresholds  | `clippy.toml`            | Pre-commit    | Config file only.                      |
-| Unused dependencies           | `cargo-machete`          | Pre-commit    | `cargo install cargo-machete`          |
-| Unused dependencies (precise) | `cargo-udeps`            | Nightly CI    | `cargo install cargo-udeps` (+nightly) |
-| Security / license audit      | `cargo-deny`             | Pre-push      | `cargo install cargo-deny`             |
-| CVE scanning                  | `cargo-audit`            | Pre-push      | `cargo install cargo-audit`            |
-| Binary size analysis          | `cargo-bloat`            | CI            | `cargo install cargo-bloat`            |
-| LOC metrics                   | `tokei`                  | CI            | `cargo install tokei`                  |
-| Continuous benchmarking       | Bencher + `criterion`    | Nightly CI    | `cargo install cargo-criterion`        |
+| Concern                       | Tool                     | Tier         | Devshell package              |
+| ----------------------------- | ------------------------ | ------------ | ----------------------------- |
+| Complexity metrics            | `rust-code-analysis-cli` | Pre-push     | `pkgs.rust-code-analysis`     |
+| Clippy restriction lints      | `clippy` (built-in)      | Pre-commit   | The pinned Rust toolchain.    |
+| Clippy complexity thresholds  | `clippy.toml`            | Pre-commit   | Config file only.             |
+| Unused dependencies           | `cargo-machete`          | Pre-commit   | `pkgs.cargo-machete`          |
+| Unused dependencies (precise) | `cargo-udeps`            | Scheduled CI | `pkgs.cargo-udeps` (+nightly) |
+| Security / license audit      | `cargo-deny`             | Pre-push     | `pkgs.cargo-deny`             |
+| CVE scanning                  | `cargo-audit`            | Pre-push     | `pkgs.cargo-audit`            |
+| Binary size analysis          | `cargo-bloat`            | Pre-push     | `pkgs.cargo-bloat`            |
+| LOC metrics                   | `tokei`                  | Pre-push     | `pkgs.tokei`                  |
+| Continuous benchmarking       | Bencher + `criterion`    | Scheduled CI | `pkgs.cargo-criterion`        |
+
+Every tool comes from the devshell, and CI repeats the hook stages in it. A scheduled CI job is
+outside the push rule and is listed, as [05 — CI](../../../../programming/project-bootstrap/05-ci.md#ci-only-checks) says.
 
 ## Complexity metrics with `rust-code-analysis`
 
@@ -42,9 +45,7 @@ comprehensive complexity analysis tool for Rust. It computes per-function metric
 
 ### Installation
 
-```bash
-cargo install rust-code-analysis-cli
-```
+Add `pkgs.rust-code-analysis` to the devshell.
 
 ### Usage
 
@@ -167,8 +168,7 @@ Use both: clippy for fast gating, `rust-code-analysis` for deeper analysis and t
 dependency isn't mentioned, it's likely unused.
 
 ```bash
-cargo install cargo-machete
-cargo machete
+cargo machete   # pkgs.cargo-machete in the devshell
 ```
 
 **False positives:** crates used only via macros (e.g., `tracing` used via `#[instrument]`) may not
@@ -188,11 +188,10 @@ ignored = ["tracing"]
 dependencies. More precise than machete but requires nightly.
 
 ```bash
-cargo +nightly install cargo-udeps
-cargo +nightly udeps --all-targets
+cargo +nightly udeps --all-targets   # pkgs.cargo-udeps in the devshell
 ```
 
-**Tier:** nightly CI (requires nightly, slower).
+**Tier:** scheduled CI (requires nightly), outside the push rule and listed.
 
 ### Comparison
 
@@ -475,7 +474,7 @@ bloat:
 metrics:
     tokei . --output json | jq '.Rust'
 
-# --- Nightly ---
+# --- Scheduled CI ---
 
 mutate:
     cargo mutants --test-tool nextest
@@ -490,23 +489,24 @@ check: lint lint-complexity lint-boundaries test audit
 
 ### Tier assignment summary
 
-| Tool                            | Pre-commit | Pre-push | CI (PR) | Nightly |
-| ------------------------------- | ---------- | -------- | ------- | ------- |
-| `cargo fmt --check`             | x          |          |         |         |
-| `clippy` (strict + restriction) | x          |          |         |         |
-| `cargo-machete`                 | x          |          |         |         |
-| `lint-boundaries`               | x          |          |         |         |
-| `cargo nextest` (unit)          | x          |          |         |         |
-| `cargo nextest` (integration)   |            | x        |         |         |
-| `cargo-deny`                    |            | x        |         |         |
-| `rust-code-analysis`            |            | x        | x       |         |
-| `cargo nextest` (all)           |            |          | x       |         |
-| `cargo-bloat`                   |            |          | x       |         |
-| `proptest` (extended)           |            |          |         | x       |
-| `cargo-mutants`                 |            |          |         | x       |
-| `cargo-udeps` (+nightly)        |            |          |         | x       |
-| `criterion` (benchmarks)        |            |          |         | x       |
-| `tokei` (metrics)               |            |          | x       |         |
+| Tool                            | Pre-commit | Pre-push | Scheduled CI |
+| ------------------------------- | ---------- | -------- | ------------ |
+| `cargo fmt --check`             | x          |          |              |
+| `clippy` (strict + restriction) | x          |          |              |
+| `cargo-machete`                 | x          |          |              |
+| `lint-boundaries`               | x          |          |              |
+| `cargo nextest` (unit)          | x          |          |              |
+| `cargo nextest` (integration)   |            | x        |              |
+| `cargo-deny`                    |            | x        |              |
+| `rust-code-analysis`            |            | x        |              |
+| `cargo-bloat`                   |            | x        |              |
+| `tokei` (metrics)               |            | x        |              |
+| `proptest` (extended)           |            |          | x            |
+| `cargo-mutants`                 |            |          | x            |
+| `cargo-udeps` (+nightly)        |            |          | x            |
+| `criterion` (benchmarks)        |            |          | x            |
+
+CI on a push or pull request repeats the pre-commit and pre-push columns.
 
 ## See also
 
