@@ -59,7 +59,8 @@ meanings that have to survive.
 A generated file has no content the project is expected to edit. A seeded file is a starting point
 the project takes over the moment it exists, which covers configuration a project tunes and state a
 project accumulates. A marked region is the tool's content living inside a file the project owns,
-and the markers say where the region begins and ends.
+and the markers say where the region begins and ends. The project's side of the generated class,
+which hooks exclude it, is in [project-bootstrap/04 — Generated files](../project-bootstrap/04-quality-gates.md#generated-files).
 
 ## Provenance lives in the receipt
 

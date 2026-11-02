@@ -42,8 +42,8 @@ three files to a repo.
    ```
 
 7. **Drop non-Nix provisioning**: delete any `mise.toml` / `.tool-versions`, drop `mise install` /
-   `rustup` steps from project scripts or CI, and point CI at the flake
-   (`nix develop --command <task>`) or install the toolchain the flake pins.
+   `rustup` steps from project scripts or CI, and run CI through the flake
+   (`nix develop --command <task>`).
 
 8. **Verify**: open a fresh shell, `cd` in, confirm the runtime resolves into the Nix store
    (`which python` / `cargo --version` matches the pin) with no manual activation.

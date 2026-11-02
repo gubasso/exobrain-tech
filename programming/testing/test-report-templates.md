@@ -339,7 +339,7 @@ Then: `pip install -e '.[test]'` (or `uv pip install -e '.[test]'`).
 ### 2. Add `mutmut` for mutation testing
 
 ```bash
-pip install --user mutmut       # binary installed once per machine
+mutmut --version   # mutmut comes from the project devshell (pkgs.mutmut)
 ```
 
 Add a Makefile target for repeatability:

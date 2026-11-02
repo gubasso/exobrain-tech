@@ -54,7 +54,7 @@ Shipping prebuilt/cross-compiled binaries and publishing/tagging are later-phase
   public API. Consumers add it with `zig fetch --save` (records a hash) and import via
   `dependency(...).module("<name>")`.
 - **Automation:** no dedicated `bootstrap-zig` cog skill yet — run `zig init` manually. Cross-domain
-  skills apply: `bootstrap-nix`, `bootstrap-precommit`, `bootstrap-taskrunner`, `bootstrap-ci`
+  skills apply: `bootstrap-nix`, `bootstrap-lint`, `bootstrap-taskrunner`, `bootstrap-ci`
   (general `07-automation-with-cog.md`).
 
 ## Maintenance Notes

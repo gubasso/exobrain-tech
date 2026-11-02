@@ -10,15 +10,26 @@
 #   - Stable canonical markdown (small diffs, predictable LLM tokens).
 #   - Per-stage budget:
 #       pre-commit  : fast, local, deterministic.
-#       pre-push    : slower, network-aware (link check).
+#       pre-push    : slower, network-aware (link check, flake evaluation).
 #       commit-msg  : Conventional Commits shape.
+#     The two stages together run every check of CI, and CI runs nothing else
+#     (`project-platform:hooks-run-every-ci-check`). The push stage does not
+#     rerun the commit stage.
+#   - Generated files follow their generator. Every hook that rewrites or
+#     judges excludes them, in the tool's own configuration where it has one,
+#     and the reading hooks keep them (`project-platform:hooks-exclude-generated-files`):
+#       flake.lock                        nix
+#       .spec-driven-docs/manifest.json   sdd
+#       _docs/.markdownlint-cli2.jsonc    sdd
 #
-# Tool provisioning:
-#   Hooks marked `language: system` (dprint, typos, committed) get no
+# Tool provisioning (`project-platform:the-devshell-supplies-every-project-tool`):
+#   Hooks marked `language: system` (dprint, typos, committed, lychee) get no
 #   environment of their own and resolve off the ambient PATH. flake.nix is the
 #   single provider — enter the shell (`direnv allow`, or `nix develop
 #   --command ...` when non-interactive) before running them. Adding another
 #   such hook means adding its package to the devShell in the same change.
+#   The devShell also supplies what pre-commit's own installers need from a
+#   clean machine: nodejs for the node hooks, curl for the rust hook.
 #
 # Tooling stack (and what each owns):
 #   - pre-commit-hooks : whitespace, line endings, basic safety.
@@ -45,23 +56,37 @@
 #   before turning hooks loose on normal work.
 
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
+# A hook with no `stages:` runs at commit only. A remote hook whose manifest
+# declares its own `stages:` ignores this line, so each such hook below carries
+# an explicit `stages: [pre-commit]` (pre-commit-hooks v6.0.0 and typos declare
+# pre-push too).
+default_stages: [pre-commit]
 
 repos:
   # --- Housekeeping (auto-fix where possible) ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
+      # The three fixers rewrite, so they skip the generated files listed in
+      # the header. They have no configuration of their own.
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]   # keep two-space hard breaks
+        stages: [pre-commit]
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
       - id: end-of-file-fixer
+        stages: [pre-commit]
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
       - id: mixed-line-ending
         args: [--fix=lf]
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
       - id: check-added-large-files
         args: ['--maxkb=16384']
+        stages: [pre-commit]
       - id: check-case-conflict
       - id: check-merge-conflict
         args: ['--assume-in-merge']
       - id: destroyed-symlinks
+        stages: [pre-commit]
       - id: check-yaml
       - id: check-toml
       - id: detect-private-key
@@ -81,19 +106,17 @@ repos:
 
   # --- EditorConfig ---
   #
-  # Honors the shared .editorconfig baseline. Two tailored args:
-  #   -disable-insert-final-newline : end-of-file-fixer (and dprint) already
-  #       own final-newline normalization; running both double-reports.
-  #   *.md exclusion : markdown formatting is owned by dprint + markdownlint,
-  #       and .editorconfig deliberately relaxes trailing-whitespace / line
-  #       length for *.md, so ec must not police markdown.
+  # Honors the shared .editorconfig baseline over every authored file,
+  # markdown included: .editorconfig relaxes trailing whitespace and line
+  # length for *.md, so ec checks only what dprint leaves to it. This hook is
+  # the one editorconfig check; `just lint` runs it through pre-commit rather
+  # than a second time beside it. `.editorconfig-checker.json` excludes the
+  # generated files, so a run outside pre-commit skips them too.
   - repo: https://github.com/editorconfig-checker/editorconfig-checker
     rev: v3.7.0
     hooks:
       - id: editorconfig-checker
         alias: ec
-        args: [-disable-insert-final-newline]
-        exclude: '\.md$'
 
   # --- Formatter: dprint (canonical Markdown + JSON/JSONC) ---
   #
@@ -110,15 +133,16 @@ repos:
   # the SoT decision are documented in this project's markdown formatting
   # toolchain notes.
   #
-  # External dependency: dprint must be on PATH (e.g., `cargo install dprint`
-  # or your package manager). Pinned through dprint.json, not pre-commit.
-  # git push may strip PATH, so this hook is pre-commit only — the format
-  # has already been applied by commit time, no need to re-run on push.
+  # dprint comes from the devShell. Its plugins are pinned through dprint.json,
+  # which also excludes the generated JSON files. --allow-no-files keeps a
+  # commit that touches only those files from failing on "No files found".
+  # The format has already been applied by commit time, so the hook does not
+  # run again on push.
   - repo: local
     hooks:
       - id: dprint
         name: dprint fmt
-        entry: dprint fmt
+        entry: dprint fmt --allow-no-files
         language: system
         types_or: [markdown, json]
         files: '\.(md|json|jsonc)$'
@@ -269,9 +293,14 @@ repos:
       # are [--write-changes, --force-exclude], so a bare `- id: typos` autofixes
       # and contradicts the policy above. --force-exclude is restated so
       # `exclude:` keeps applying to explicitly-passed filenames.
+      #
+      # The manifest declares pre-push too; the spell check is a commit-stage
+      # check. `_typos.toml` excludes the generated files, and --force-exclude
+      # applies that list to the files pre-commit passes.
       - id: typos
         language: system
         args: [--force-exclude]
+        stages: [pre-commit]
 
   # --- Secrets (fast, local) ---
   - repo: https://github.com/sirwart/ripsecrets
@@ -284,22 +313,33 @@ repos:
   # Runs only on `git push` so commits stay snappy. The cache file
   # `.lycheecache` should be gitignored. All tunables (concurrency, retries,
   # accept/exclude rules) live in the sibling `lychee.toml` at the repo root.
+  #
+  # `lychee-system` runs the lychee of the devShell, so the hook downloads
+  # nothing and needs no version argument.
   - repo: https://github.com/lycheeverse/lychee
     rev: lychee-v0.24.2
     hooks:
-      - id: lychee
+      - id: lychee-system
         stages: [pre-push]
         # Knowledge base is markdown — don't crawl template/config files.
         types: [markdown]
-        # Args intentionally minimal so lychee.toml owns the behavior. The
-        # version is passed rather than discovered: the hook's shim reads it by
-        # running git describe inside its own checkout, and git exports an
-        # absolute GIT_DIR to a pre-push hook run from a linked worktree, which
-        # redirects that describe at this repository, where no lychee-v* tag
-        # exists. Keep it equal to the rev above.
-        args:
-          - LYCHEE_VERSION=0.24.2
-          - --no-progress
+        # Args intentionally minimal so lychee.toml owns the behavior.
+        args: [--no-progress]
+
+  # --- One supported system (pre-push; evaluates the flake) ---
+  #
+  # The check behind `just test-one-system`
+  # (ADR-linux-is-the-only-supported-project-target). It evaluates the flake,
+  # so it runs on push, and only when a file it reads changes.
+  - repo: local
+    hooks:
+      - id: one-system
+        name: the flake exposes the one supported system
+        entry: .hooks/check-one-system.sh
+        language: system
+        files: '^(flake\.(nix|lock)|\.hooks/(check-one-system\.sh|one-system\.nix))$'
+        pass_filenames: false
+        stages: [pre-push]
 
   # --- Commit message: Conventional Commits (single SoT -> committed.toml) ---
   #

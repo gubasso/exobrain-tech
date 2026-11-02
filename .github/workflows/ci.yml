@@ -1,8 +1,8 @@
-# CI workflow — markdown knowledge-base checks.
-# Jobs reuse the project's Nix devshell so CI runs the same toolchain as local
-# development: `nix develop --command <task>` calls the justfile recipes wired
-# to the flake's markdown tooling (dprint, editorconfig-checker, pre-commit).
-# This is a Diátaxis markdown KB with no Rust — there is no build/test/nextest.
+# CI workflow — repeats the two hook stages in the project's Nix devshell.
+# The commit stage and the push stage together run every check of this
+# repository, so CI holds no check of its own and installs no tool outside
+# the devshell (project-platform:hooks-run-every-ci-check). This repository
+# names no CI-only check, report-only job, or scheduled job.
 name: ci
 
 on:
@@ -11,7 +11,7 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  pre-commit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -19,10 +19,10 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - name: Cache Nix store
         uses: DeterminateSystems/flakehub-cache-action@main
-      - name: Lint
-        run: nix develop --command just lint
+      - name: Commit stage
+        run: nix develop --command pre-commit run --all-files --show-diff-on-failure
 
-  check:
+  pre-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -30,5 +30,5 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - name: Cache Nix store
         uses: DeterminateSystems/flakehub-cache-action@main
-      - name: Format and check
-        run: nix develop --command just check
+      - name: Push stage
+        run: nix develop --command pre-commit run --all-files --hook-stage pre-push --show-diff-on-failure

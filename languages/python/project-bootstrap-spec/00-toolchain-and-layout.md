@@ -7,7 +7,8 @@ virtualenv and Nix devShell fit.
 ## Project & dependency manager
 
 `uv` is the modern default — a single fast tool that manages the interpreter, the virtualenv, the
-lockfile (`uv.lock`), and dependencies. Scaffold with:
+lockfile (`uv.lock`, generated: the hooks that rewrite or judge exclude it, see
+[generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)), and dependencies. Scaffold with:
 
 - Application: `uv init <name>`.
 - Distributable package: `uv init --package <name>` (adds a build backend and `src/` layout).

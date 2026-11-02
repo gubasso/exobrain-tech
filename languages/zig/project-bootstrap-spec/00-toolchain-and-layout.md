@@ -67,6 +67,6 @@ convention. Bootstrap owns getting a project that `zig build` succeeds on.
 ## Automation
 
 Zig has no dedicated `bootstrap-zig` cog skill yet — run `zig init` manually. The cross-domain
-skills still apply (`bootstrap-nix`, `bootstrap-precommit`, `bootstrap-taskrunner`, `bootstrap-ci`);
+skills still apply (`bootstrap-nix`, `bootstrap-lint`, `bootstrap-taskrunner`, `bootstrap-ci`);
 see
 [general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

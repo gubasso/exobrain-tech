@@ -93,7 +93,7 @@ fn widget_list_renders_table() {
 ```
 
 For stdout snapshots from integration tests, use `insta::assert_snapshot!` with the captured stdout.
-Snapshots live in `tests/snapshots/`.
+Snapshots live in `tests/snapshots/`, which insta writes, so [the hooks that rewrite or judge exclude them](../../../../programming/project-bootstrap/04-quality-gates.md#generated-files).
 
 **Review snapshot diffs as carefully as code diffs** — they're behavior.
 
@@ -119,7 +119,7 @@ Use `cargo nextest` via `just test`. It parallelizes correctly, fails fast, and 
 summary. `cargo test` is fine but slower and noisier.
 
 ```sh
-cargo install cargo-nextest --locked
+# cargo-nextest comes from the devshell (pkgs.cargo-nextest)
 cargo nextest run                          # ad-hoc local run; uses [profile.default]
 cargo nextest run --profile pre-commit     # unit tests, fail-fast (pre-commit hook)
 cargo nextest run --profile pre-push       # integration tests (pre-push hook)

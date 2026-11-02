@@ -27,8 +27,8 @@ overlay that slots into it.
 
 3. **Configure quality gates.** Add `.clang-format` and `.clang-tidy`, a cppcheck invocation, an
    ASan/UBSan build variant for tests/CI, and a unit-test framework (Unity, CMocka, or Criterion). →
-   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-editorconfig` (formatter
-   alignment), `bootstrap-precommit` (hook wiring), `bootstrap-taskrunner` (build/test/format
+   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint` (formatter
+   alignment and hook wiring), `bootstrap-taskrunner` (build/test/format
    recipes).
 
 4. **Pick the implementation kind.** For a CLI, follow [`cli-project.md`](./cli-project.md); for a

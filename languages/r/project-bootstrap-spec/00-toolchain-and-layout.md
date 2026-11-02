@@ -35,7 +35,8 @@ An analysis project has no `DESCRIPTION`; its dependency contract is `renv.lock`
 - `renv::restore()` rebuilds the library from `renv.lock` on another machine or in CI.
 
 Commit `renv.lock`, `.Rprofile`, and `renv/activate.R`; ignore the project library
-(`renv/library/`). This is what closes the "works on my machine" gap for packages.
+(`renv/library/`). renv writes `renv.lock` and `renv/activate.R`, so the hooks that rewrite or judge
+exclude them ([generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)). This is what closes the "works on my machine" gap for packages.
 
 ## R version pinning + Nix
 

@@ -206,11 +206,11 @@ see which library is missing and add that package (e.g. `pkgs.libz`, `pkgs.opens
 
 ## Git hooks (pre-commit)
 
-`pre-commit` is **per-project**, not a global tool: declare it — and any `language: system` hook
-tools it shells out to (`dprint`, `taplo`, `typos`, `ruff`, …) — in the project's devShell, so hooks
-run with the same pinned toolchain as the shell and CI. pre-commit self-manages
-`language: python|node|rust|…` hook environments, so only `system` hooks need their tool on the
-devShell PATH.
+`pre-commit` is **per-project**, not a global tool: declare it in the devShell with every tool a
+`language: system` or `language: script` hook or a recipe calls from `PATH`. A project with `node`
+hooks adds `pkgs.nodejs`, because the generic node that pre-commit downloads does not run on a host
+without the standard glibc loader, as on Nix. The host supplies only `git`, `wt`, `bash`, `awk`,
+`sed`, `grep`, the coreutils, `nix`, `direnv`, and the tools that deploy the host itself ([project-bootstrap/03 — Who supplies each tool](../../programming/project-bootstrap/03-local-dev-environment.md#who-supplies-each-tool)).
 
 ```nix
 devShells.default = pkgs.mkShell {

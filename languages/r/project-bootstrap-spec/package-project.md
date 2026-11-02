@@ -22,7 +22,8 @@ links.
 
 3. **Document with `roxygen2` → `man/`.** Write `#'` roxygen blocks above each exported function;
    run `devtools::document()` (or `roxygen2::roxygenise()`) to generate `man/*.Rd` and the
-   `NAMESPACE`. Never hand-edit `man/` or `NAMESPACE` — they are generated.
+   `NAMESPACE`. Never hand-edit `man/` or `NAMESPACE` — they are generated, and the hooks that
+   rewrite or judge exclude them ([generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)).
 
 4. **Wire the test suite.** `usethis::use_testthat()` scaffolds `tests/testthat/`; add tests
    alongside each `R/` file. → [01 — Quality gates](./01-quality-gates.md).

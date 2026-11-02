@@ -1,7 +1,7 @@
 ---
 digest-of: programming/project-bootstrap
-last-synced: 2026-07-10
-token-estimate: 700
+last-synced: 2026-11-02
+token-estimate: 900
 ---
 
 # AGENTS
@@ -33,10 +33,22 @@ with concrete tooling.
 - **Chapter topics 00–07.** 00 bootstrap model (once-per-project phase, three-layer model); 01
   repository foundation (`.gitignore`, SPDX `LICENSE`, `README` skeleton); 02 governance & docs
   (`CLAUDE.md`, `AGENTS.md` convention, MADR-minimal ADR scaffold, README-as-index); 03 local dev
-  environment (Nix devShell + `.envrc`, `.editorconfig`); 04 quality gates (formatter, linter,
-  pre-commit, task runner); 05 CI (first CI workflow: build, test, format-check, lint); 06 security
-  baseline (secrets hygiene, dependency audit, OpenSSF Scorecard); 07 automation with cog (the
-  contract and domain→helper map).
+  environment (Nix devShell + `.envrc`, who supplies each tool, `.editorconfig`); 04 quality gates
+  (formatter, linter, git hooks in two stages, generated files, task runner); 05 CI (the two hook stages repeated in
+  the devshell, the CI-only list); 06 security baseline (secrets hygiene, dependency audit,
+  OpenSSF Scorecard); 07 automation with cog (the contract and domain→helper map).
+- Tool split. The devshell holds the toolchain, `pre-commit`, the task runner, and every tool a
+  recipe or a `system` or `script` hook calls; pre-commit manages the environments it builds, with
+  the devshell supplying what its installers need (e.g. `nodejs`); the host supplies only `git`, `wt`,
+  `bash`, `awk`, `sed`, `grep`, the coreutils, `nix`, `direnv`, and the host deploy tools.
+- CI parity. The commit stage runs the fast checks and the push stage the costly ones; together
+  they run every CI check, and the push stage does not rerun the commit stage. CI repeats both
+  stages in the devshell. A CI-only check needs a reason a long runtime is not, and is listed with
+  the report-only and scheduled jobs.
+- Generated files. A generator runs natively and is configured only as its tool documents; every
+  hook that rewrites or judges a generated file (lock file, release changelog) excludes it in the
+  tool's own configuration, and the reading hooks (parser, secret scan, link check) keep it. A file
+  a person edits after generation, or a marked region, belongs to the project.
 
 ## Maintenance Notes
 

@@ -60,8 +60,8 @@
           #
           # Every `language: system` hook resolves off the ambient PATH and
           # gets no environment of its own, so each one needs a named provider
-          # in this list. Currently: dprint, typos, committed, and the two
-          # shell tools below.
+          # in this list. Currently: dprint, typos, committed, lychee, and the
+          # two shell tools below.
           pkgs.typos
           pkgs.committed
 
@@ -74,8 +74,17 @@
           pkgs.markdownlint-cli2
 
           # jq reads the evaluated system set in .hooks/check-one-system.sh,
-          # which `just test-one-system` runs.
+          # which the one-system pre-push hook and `just test-one-system` run.
           pkgs.jq
+
+          # The link checker behind the `lychee-system` pre-push hook.
+          pkgs.lychee
+
+          # rustup-init, which pre-commit runs to build the environment of the
+          # rust hook (ripsecrets), downloads the toolchain with curl. A clean
+          # machine has no curl of its own to lend it
+          # (project-platform:the-devshell-supplies-every-project-tool).
+          pkgs.curl
 
           # The two tools behind `knowledge-base-boundary:a-shipped-script-is-gated`.
           # Its hook is `language: system`, and `just test-gates` runs the gate

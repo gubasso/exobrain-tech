@@ -30,7 +30,7 @@ overlay that slots into it.
 
 3. **Configure quality gates.** Wire `zig fmt` and `zig build test` — Zig's formatter and test
    runner are built into the compiler, so there is little to install. →
-   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-precommit`,
+   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint`,
    `bootstrap-taskrunner`.
 
 4. **Pick the implementation kind.** For a CLI executable, follow

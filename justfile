@@ -12,10 +12,11 @@
 default:
     @just --list
 
-# Lint markdown: editorconfig conformance plus the full pre-commit hook set.
+# Lint: both hook stages over every file, which is exactly what CI runs
+# (project-platform:hooks-run-every-ci-check).
 lint:
-    nix develop --command editorconfig-checker
     nix develop --command pre-commit run --all-files
+    nix develop --command pre-commit run --all-files --hook-stage pre-push
 
 # Verify what this repository ships
 # (ADR-executable-artifacts-in-the-library).

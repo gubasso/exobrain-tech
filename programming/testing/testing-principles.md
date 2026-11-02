@@ -49,7 +49,7 @@ honeycomb. The principles below are shape-neutral.
   between components; uses fakes/stubs at external boundaries.
 - **Snapshot** — long structured output. Lives inside unit and integration.
 - **Compile-fail / typestate** — only when a typestate API exists.
-- **E2E** — whole product against real systems. CI only, never in pre-commit/pre-push.
+- **E2E** — whole product against real systems. pre-push where the host can run it; CI-only only as a listed exception.
 
 ## Test-structure vocabulary
 

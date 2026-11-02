@@ -137,4 +137,13 @@ exclude = [
   # to live alternatives, so the citation stays and only the path is excluded.
   "^https?://ubiq\\.co/database-blog/create-pivot-table-postgresql",
   "^https?://(www\\.)?techtarget\\.com/searchapparchitecture/tip/Docs-as-Code-explained",
+  "^https?://aws\\.amazon\\.com/security/security-bulletins/rss/2026-003-aws/",
+  "^https?://osinside\\.github\\.io/kiwi/building_images/build_kis\\.html",
+  "^https?://cfsamsonbooks\\.gitbook\\.io/explaining-atomics-in-rust/epoll-kqueue-iocp-explained",
+  "^https?://techwiki\\.co\\.uk/RClone_-_Filtering",
+  "^https?://docs\\.getquicker\\.cn/chrome/developer\\.chrome\\.com/developers/how-tos/run-chromium-with-flags\\.html",
+  # The whole site answers 402 Payment Required: its hosting lapsed.
+  "^https?://(www\\.)?joyofcode\\.xyz",
+  # A live page that answers after about 21 s, past the timeout above.
+  "^http://opensimulator\\.org/wiki/NAT_Loopback_Routers$",
 ]

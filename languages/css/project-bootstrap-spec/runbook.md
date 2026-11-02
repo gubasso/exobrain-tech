@@ -30,7 +30,7 @@ overlay that slots into it.
 
 4. **Configure quality gates.** `stylelint` (with `stylelint-config-standard`), `prettier`, and an
    optional visual-regression approach. → [01 — Quality gates](./01-quality-gates.md). _Automate:_
-   `bootstrap-precommit`, `bootstrap-taskrunner`.
+   `bootstrap-lint`, `bootstrap-taskrunner`.
 
 5. **Pick the implementation kind.** For a reusable design system, follow
    [`stylesheet-library.md`](./stylesheet-library.md); other kinds are followups.

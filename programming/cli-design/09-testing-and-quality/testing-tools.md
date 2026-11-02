@@ -89,7 +89,7 @@ for it.
 | C/C++       | [`Mull`](https://mull.readthedocs.io/)                                                         | Clang plugin.                                                  |
 | Bash        | n/a                                                                                            |                                                                |
 
-**Rule:** run mutation testing nightly in CI, not on every PR. Cap mutants per module so a run
+**Rule:** run mutation testing as a scheduled CI job, which no push starts. Cap mutants so a run
 finishes in minutes. Track score per critical module; a drop is a regression in test quality even if
 all tests pass. See [09 § Mutation testing](./testing-strategy.md#mutation-testing-as-quality-gate).
 
@@ -142,14 +142,13 @@ Pair it with mutation testing for real signal.
 ## Pre-commit / CI tiering
 
 The principle from [09 § CI essentials](./testing-strategy.md#ci-essentials): each tier has a time
-budget; assign each test type to the tier whose budget it fits.
+budget; assign each test type to the tier whose budget it fits. CI repeats both hook stages.
 
 | Tier       | Time budget      | Tests run                                |
 | ---------- | ---------------- | ---------------------------------------- |
 | pre-commit | < 1 s total      | Lint, format-check, unit tests only      |
-| pre-push   | < 10 s total     | Lint, format, unit + integration         |
-| CI (PR)    | minutes          | Everything above + E2E + coverage gate   |
-| CI nightly | hours acceptable | Mutation testing + slower property tests |
+| pre-push   | minutes          | Integration + E2E + coverage gate        |
+| scheduled  | hours acceptable | Mutation testing + slower property tests |
 
 ### Tuning test-runner output for CI + AI agents
 
@@ -321,7 +320,7 @@ mutate:      cargo mutants --in-place --no-shuffle
 
 ### GitHub Actions — nightly mutation testing
 
-Mutation runs are slow; put them on a schedule, not on every PR.
+A scheduled job, outside the push rule; the project lists it with its CI jobs.
 
 ```yaml
 # .github/workflows/mutation.yml
@@ -336,11 +335,10 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.x' }
-      - run: pip install -e . mutmut
-      - run: mutmut run --paths-to-mutate=src/myapp || true
-      - run: mutmut results
+      - uses: DeterminateSystems/nix-installer-action@main
+      # mutmut comes from the devshell, like every other project tool.
+      - run: nix develop --command mutmut run --paths-to-mutate=src/myapp || true
+      - run: nix develop --command mutmut results
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4

@@ -30,7 +30,7 @@ overlay that slots into it.
    [01 — Quality gates](./01-quality-gates.md).
 
 4. **Wire pre-commit.** Add the ruff/mypy/pytest hooks so failures surface locally. →
-   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-precommit`.
+   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint`.
 
 5. **Pick the implementation kind.** For a CLI, follow [`cli-project.md`](./cli-project.md); for a
    distributable package, follow [`library-project.md`](./library-project.md).

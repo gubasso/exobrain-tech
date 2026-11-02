@@ -27,7 +27,7 @@ overlay that slots into it.
 
 3. **Configure quality gates.** `shfmt` for formatting, `shellcheck` for linting, and `bats-core`
    for tests; wire all three into pre-commit and the task runner. →
-   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-precommit`,
+   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint`,
    `bootstrap-taskrunner`.
 
 4. **Pick the implementation kind.** For a CLI tool, follow [`cli-project.md`](./cli-project.md);

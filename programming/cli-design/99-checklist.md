@@ -163,7 +163,7 @@ The skill, its distribution, and the evals over it are checked in
       `go test -parallel`).
 - [ ] Unit tests run in pre-commit (parallel, fast).
 - [ ] Integration tests run in pre-push (parallel, single-digit seconds total).
-- [ ] E2E tests run in CI only — never in local hooks.
+- [ ] E2E tests run at pre-push, or in CI only as a listed exception that needs what only CI has.
 - [ ] Coverage is judged by risk and impact, not by chasing a line-count number.
 - [ ] Property-based tests cover parsers, codecs, and state machines (`proptest` / `hypothesis` /
       `fast-check`).

@@ -27,7 +27,7 @@ overlay that slots into it.
 
 3. **Configure quality gates.** `.stylua.toml` (format), `.luacheckrc` (lint), and a `spec/` tree
    for `busted` tests; wire them into pre-commit. → [01 — Quality gates](./01-quality-gates.md).
-   _Automate:_ `bootstrap-precommit`, `bootstrap-taskrunner`.
+   _Automate:_ `bootstrap-lint`, `bootstrap-taskrunner`.
 
 4. **Pick the implementation kind.** For a LuaRocks module, follow
    [`rock-library.md`](./rock-library.md); other kinds are followups.

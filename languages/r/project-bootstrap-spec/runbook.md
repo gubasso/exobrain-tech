@@ -32,7 +32,7 @@ overlay that slots into it.
 
 4. **Configure quality gates.** styler/air (format), lintr (lint), testthat (tests), and — for
    packages — `R CMD check`, wired into pre-commit. → [01 — Quality gates](./01-quality-gates.md).
-   _Automate:_ `bootstrap-precommit`, `bootstrap-taskrunner`.
+   _Automate:_ `bootstrap-lint`, `bootstrap-taskrunner`.
 
 5. **Pick the implementation kind.** For a package, follow
    [`package-project.md`](./package-project.md); for a reproducible analysis, follow

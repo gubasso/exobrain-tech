@@ -92,7 +92,7 @@ integration tests. See [E2E tests](#e2e-tests).
 | ------------ | ------------------------------------------------------------------------ | ------------------------------------------------------------------ | -------------- | ---------- |
 | Unit         | One function/module in isolation                                         | None (or fully faked)                                              | ms             | pre-commit |
 | Integration  | Two-or-more components together, OR your code's seam to one external dep | Stubs/fakes of the boundary, or a real contained dep               | tens of ms – s | pre-push   |
-| E2E (system) | The whole product through its public CLI entry point, against real state | The actual real things (live binary, real network, real container) | s – min        | CI only    |
+| E2E (system) | The whole product through its public CLI entry point, against real state | The actual real things (live binary, real network, real container) | s – min        | pre-push   |
 
 **The framing that trips people up: integration ≠ "touches real things." Integration = "tests the
 interaction between things."**
@@ -426,9 +426,9 @@ systems: real subprocess execution, real network, real container runtime, real f
 
 **Where they run:**
 
-- CI only. Never in pre-commit or pre-push: too slow, too dependent on host state, too flaky to gate
-  local commits.
-- A separate CI job from unit + integration, ideally per-OS.
+- pre-push, where the host can run them, and CI repeats the push stage. Slow or flaky is no reason
+  to skip a hook: fix the flake. Only an E2E test that needs what only CI has (a secret, a second OS)
+  runs in CI only, as a listed [CI-only check](../../project-bootstrap/05-ci.md#ci-only-checks).
 
 **Worked example — a CLI that launches a container:**
 
@@ -519,7 +519,7 @@ testing.
 
 - On critical modules (parsers, exit-code logic, security-sensitive code, state machines).
 - After a big test refactor — confirms the new tests catch what the old ones did.
-- Nightly in CI on the slow path. Not on every PR (mutation runs are slow).
+- As a scheduled CI job, which no push starts: outside the push rule, and listed with the CI jobs.
 
 **When not to:**
 
@@ -666,9 +666,9 @@ immediately.
 - Fail loudly on warnings (`-Dwarnings` / `--strict`); don't paper over with global allows.
 - **Tier-to-hook mapping**:
   - **pre-commit**: unit tests only (parallel, sub-second budget).
-  - **pre-push**: unit + integration (still parallel, single-digit-seconds budget).
-  - **CI**: everything — unit, integration, E2E, lint, format-check, coverage gate.
-  - **CI nightly**: mutation testing on critical modules.
+  - **pre-push**: integration tests, not the unit tests again (parallel, single-digit-seconds budget).
+  - pre-push also: E2E and the coverage gate. CI repeats both stages; a CI-only E2E is a listed exception.
+  - Scheduled CI: mutation testing on critical modules, outside the push rule and listed.
 
 Ready-to-paste config snippets (pre-commit, GitHub Actions, Makefile / justfile targets) live in
 [08a — Pre-commit / CI tiering](./testing-tools.md#pre-commit--ci-tiering).

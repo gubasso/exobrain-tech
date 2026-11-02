@@ -3,6 +3,16 @@
 # spellings). Real typos in source should be fixed in dedicated commits,
 # not silenced here.
 
+# Generated files follow their generator, so the spell check skips them
+# (project-platform:hooks-exclude-generated-files): flake.lock is nix's,
+# the manifest and the docs markdownlint configuration are sdd's.
+[files]
+extend-exclude = [
+  "flake.lock",
+  ".spec-driven-docs/manifest.json",
+  "_docs/.markdownlint-cli2.jsonc",
+]
+
 [default.extend-words]
 gere = "gere"   # Portuguese verb form ("gere o arquivo"), not a typo of "here"
 mis = "mis"     # valid "mis-" prefix in compounds (mis-spelled, mis-organized)
