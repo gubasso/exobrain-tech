@@ -9,7 +9,8 @@ Nix devShell hosts it all.
 Use **npm** as the mainstream default — it ships with Node and needs no extra install. Prefer
 **pnpm** when disk-efficient, strict dependency resolution or a monorepo matters. Whichever you
 pick, commit its lockfile (`package-lock.json` or `pnpm-lock.yaml`) so installs are reproducible,
-and do not mix the two in one repo.
+and do not mix the two in one repo. The hooks that rewrite or judge exclude the lockfile
+([generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)).
 
 ## Initialize `package.json`
 

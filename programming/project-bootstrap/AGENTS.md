@@ -1,7 +1,7 @@
 ---
 digest-of: programming/project-bootstrap
 last-synced: 2026-11-02
-token-estimate: 800
+token-estimate: 900
 ---
 
 # AGENTS
@@ -34,7 +34,7 @@ with concrete tooling.
   repository foundation (`.gitignore`, SPDX `LICENSE`, `README` skeleton); 02 governance & docs
   (`CLAUDE.md`, `AGENTS.md` convention, MADR-minimal ADR scaffold, README-as-index); 03 local dev
   environment (Nix devShell + `.envrc`, who supplies each tool, `.editorconfig`); 04 quality gates
-  (formatter, linter, git hooks in two stages, task runner); 05 CI (the two hook stages repeated in
+  (formatter, linter, git hooks in two stages, generated files, task runner); 05 CI (the two hook stages repeated in
   the devshell, the CI-only list); 06 security baseline (secrets hygiene, dependency audit,
   OpenSSF Scorecard); 07 automation with cog (the contract and domain→helper map).
 - Tool split. The devshell holds the toolchain, `pre-commit`, the task runner, and every tool a
@@ -45,6 +45,10 @@ with concrete tooling.
   they run every CI check, and the push stage does not rerun the commit stage. CI repeats both
   stages in the devshell. A CI-only check needs a reason a long runtime is not, and is listed with
   the report-only and scheduled jobs.
+- Generated files. A generator runs natively and is configured only as its tool documents; every
+  hook that rewrites or judges a generated file (lock file, release changelog) excludes it in the
+  tool's own configuration, and the reading hooks (parser, secret scan, link check) keep it. A file
+  a person edits after generation, or a marked region, belongs to the project.
 
 ## Maintenance Notes
 

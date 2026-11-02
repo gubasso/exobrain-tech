@@ -7,10 +7,13 @@ The JavaScript/Node concretion of the general
 ## Formatter — prettier
 
 [prettier](https://prettier.io/) is the non-negotiable formatter. Add it as a dev dependency, keep a
-minimal `.prettierrc` only if you deviate from defaults, and enforce in CI:
+minimal `.prettierrc` only if you deviate from defaults, and run it from the git hooks, which CI
+repeats. List every generated file in `.prettierignore` (the lockfile, a generated changelog), so
+the check never judges a file its generator owns
+([04 — Generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)):
 
 ```bash
-npx prettier --check .
+npx prettier --check --ignore-path .gitignore --ignore-path .prettierignore .
 ```
 
 ## Linter — eslint

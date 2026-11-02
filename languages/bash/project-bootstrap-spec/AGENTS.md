@@ -48,7 +48,7 @@ scope.
   first non-flag arg via `case`, each with its own `getopts`) → `usage()` on
   `-h`/no-args/parse-errors (to stderr, non-zero) → config precedence (file + env + flag) using XDG
   paths.
-- **Automation:** `bootstrap-nix` provisions the devShell; `bootstrap-precommit` and
+- **Automation:** `bootstrap-nix` provisions the devShell; `bootstrap-lint` and
   `bootstrap-taskrunner` wire the gates; `bootstrap-ci` covers CI. The runbook steps are the SoT;
   see general `07-automation-with-cog.md`.
 

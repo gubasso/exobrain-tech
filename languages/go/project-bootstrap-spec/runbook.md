@@ -30,7 +30,7 @@ overlay that slots into it.
 
 4. **Configure quality gates.** `gofmt`/`goimports` for format, `go vet` + `golangci-lint` for lint,
    `go test -race` for tests, and `govulncheck` for the security baseline; wire them into
-   pre-commit. → [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-precommit`,
+   pre-commit. → [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint`,
    `bootstrap-taskrunner`.
 
 5. **Pick the implementation kind.** For a CLI, follow [`cli-project.md`](./cli-project.md); for an

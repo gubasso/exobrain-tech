@@ -46,7 +46,7 @@ install/distribution, and versioning are out of scope — they are later-phase w
   (`pkg-config` `.pc` and/or CMake package config); plan `soname`/version early, keep header changes
   additive within a major version.
 - **Automation:** deterministic scaffolding delegates to cog helpers — `bootstrap-nix` (devShell +
-  `.envrc`), `bootstrap-editorconfig` (formatter alignment), `bootstrap-precommit` (hook wiring),
+  `.envrc`), `bootstrap-lint` (formatter alignment and hook wiring),
   `bootstrap-taskrunner` (build/test/format recipes), `bootstrap-ci` (first CI workflow). The
   SoT-vs-cog contract lives in general `07-automation-with-cog.md` — the runbook owns the _what_,
   cog the _how_.

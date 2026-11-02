@@ -87,6 +87,13 @@ the `.jsonc` (observed: a `.markdownlint.yaml` with `MD029: false` defeated the 
 
 Ref: <https://github.com/DavidAnson/markdownlint-cli2#configuration>
 
+## Generated Markdown
+
+dprint rewrites and markdownlint with `"fix": true` rewrites too, so both exclude every Markdown
+file a tool generates, such as a `CHANGELOG.md` that release-plz or git-cliff writes: list it in the
+`excludes` of the dprint configuration and in the `ignores` of `.markdownlint-cli2.jsonc`. The rule
+is in [project-bootstrap/04 — Generated files](../project-bootstrap/04-quality-gates.md#generated-files).
+
 ## References
 
 - markdownlint rules: <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md>

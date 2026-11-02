@@ -36,12 +36,12 @@ Everyday work after setup is not here; this is the one-time scaffold.
    toolchain, and an `.editorconfig` for cross-editor consistency. The devshell holds every project
    tool, and the host supplies only the ubiquitous tools. →
    [03 — Local dev environment](./03-local-dev-environment.md). _Automate:_ `bootstrap-nix`,
-   `bootstrap-editorconfig`.
+   `bootstrap-lint`.
 
 5. **Wire the quality gates:** a formatter, a linter, git hooks, and a task runner (a single entry
    point for common recipes). The commit stage runs the fast checks, the push stage runs the costly
    ones, and together they run every check of CI. → [04 — Quality gates](./04-quality-gates.md). _Automate:_
-   `bootstrap-precommit`, `bootstrap-taskrunner`.
+   `bootstrap-lint`, `bootstrap-taskrunner`.
 
 6. **Stand up CI:** a first CI workflow that repeats both hook stages in the devshell on every push
    and pull request, and a list of the checks that only CI can run. → [05 — CI](./05-ci.md). _Automate:_ `bootstrap-ci`.

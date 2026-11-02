@@ -6,7 +6,9 @@ and metadata.
 
 ## `.gitignore`
 
-Ignore everything that is generated, secret, or environment-specific so it never enters history:
+Ignore build output, caches, secrets, and environment-specific files so they never enter history.
+A generated file that the project keeps, such as a lock file or a changelog, is committed, and the
+hooks exclude it ([04 — Generated files](./04-quality-gates.md#generated-files)). Ignore:
 
 - **OS / editor cruft** — `.DS_Store`, `Thumbs.db`, swap files, editor-local directories.
 - **Secrets / environment** — `.env`, credential files, anything holding a token or key.

@@ -54,7 +54,7 @@ Run it in CI so a vulnerable dependency cannot merge.
 
 Wire `ruff format --check`, `ruff check`, `mypy`/`pyright`, and `pytest` into the pre-commit hooks
 from the general [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) so
-failures surface locally in seconds. `bootstrap-precommit` automates the hook config.
+failures surface locally in seconds. `bootstrap-lint` automates the hook config.
 
 ## Publish-readiness (later phase)
 

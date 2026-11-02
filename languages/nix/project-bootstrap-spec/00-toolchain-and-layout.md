@@ -34,7 +34,7 @@ Always add `inputs.<x>.inputs.nixpkgs.follows = "nixpkgs"` to every input that c
 - Pin `inputs.nixpkgs.url` to a branch: `github:NixOS/nixpkgs/nixos-unstable` for a dev/tooling
   flake, or a release branch (`nixos-24.11`) when the flake targets machines.
 - Run `nix flake lock` to generate `flake.lock`, and **commit it** — the lockfile is what makes
-  builds reproducible. `nix flake update` bumps everything; `nix flake lock --update-input nixpkgs`
+  builds reproducible. The hooks that rewrite or judge exclude it ([generated files](../../../programming/project-bootstrap/04-quality-gates.md#generated-files)). `nix flake update` bumps everything; `nix flake lock --update-input nixpkgs`
   bumps one.
 - Remember: flakes only see **git-tracked** files, so `git add` new sources before they appear in a
   `src = ./.;` build (see the gotchas in
