@@ -40,4 +40,4 @@ Enforced by `knowledge-base-boundary:no-knowledge-is-external` and
 
 ## Status
 
-Accepted
+Superseded by [ADR-operate-the-documentation-canon-from-a-local-projection](./ADR-operate-the-documentation-canon-from-a-local-projection.md).
