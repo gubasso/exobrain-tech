@@ -30,5 +30,9 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - name: Cache Nix store
         uses: DeterminateSystems/flakehub-cache-action@main
+      # lychee-system is local-only: an external site answers a CI runner
+      # with a block or a timeout that it does not give a developer host.
       - name: Push stage
         run: nix develop --command pre-commit run --all-files --hook-stage pre-push --show-diff-on-failure
+        env:
+          SKIP: lychee-system

@@ -86,7 +86,9 @@ Verify: `env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirn
 
 The project MUST run every check of CI in its commit stage or its push stage, and CI MUST repeat
 those two stages in the devshell and run nothing else. The push stage MUST NOT rerun a commit-stage
-hook. The project lists no CI-only check, no report-only job, and no scheduled job. The chapters that
+hook. The project lists no CI-only check, no report-only job, and no scheduled job. The hooks can run
+more than CI: CI skips `lychee-system`, which checks external links, because an external site answers
+a CI runner with a block or a timeout that it does not give a developer host. The chapters that
 state the general rule are `programming/project-bootstrap/04-quality-gates.md`, "Git hooks", and
 `programming/project-bootstrap/05-ci.md`.
 
