@@ -64,8 +64,8 @@ one squash-merged pull request, never a direct push (ADR-master-is-the-trunk).
   (ADR-emphasis-is-authoring-guidance-not-a-gate).
 - Every size budget in `_docs/specs/SPEC-docs-format.md` is gated. Over budget, a document splits.
 - A guide is a recipe, not an essay: prerequisites, then ordered steps, each one imperative action
-  with its command and its check. `_docs/specs/SPEC-guides.md` owns the rules and
-  `SPEC-guides/TEMPLATE-guide.md` beside it is the skeleton (ADR-a-guide-is-a-recipe).
+  with its command and its check. `_docs/specs/SPEC-kb-authoring.md` owns this library's guide
+  rules, and `SPEC-kb-authoring/TEMPLATE-guide.md` beside it is the skeleton.
 
 ## Executable artifacts and tools
 

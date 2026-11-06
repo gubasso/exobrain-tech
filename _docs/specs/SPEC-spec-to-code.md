@@ -5,15 +5,10 @@
 - [Purpose](#purpose)
 - [Requirements](#requirements)
   - [`spec-to-code:a-spec-may-lead-its-code` — A spec may lead its code](#spec-to-codea-spec-may-lead-its-code--a-spec-may-lead-its-code)
-    - [Scenario: A domain is specified before it is built](#scenario-a-domain-is-specified-before-it-is-built)
   - [`spec-to-code:a-comment-cites-the-rule` — A comment cites the rule it satisfies](#spec-to-codea-comment-cites-the-rule--a-comment-cites-the-rule-it-satisfies)
-    - [Scenario: A comment cites a rule that no spec defines](#scenario-a-comment-cites-a-rule-that-no-spec-defines)
   - [`spec-to-code:a-gate-message-cites-the-rule` — A gate message cites the rule it enforces](#spec-to-codea-gate-message-cites-the-rule--a-gate-message-cites-the-rule-it-enforces)
-    - [Scenario: A rule is renamed and its gate is not](#scenario-a-rule-is-renamed-and-its-gate-is-not)
   - [`spec-to-code:a-comment-names-no-record` — A comment names no decision record](#spec-to-codea-comment-names-no-record--a-comment-names-no-decision-record)
-    - [Scenario: A branch exists because of a recorded decision](#scenario-a-branch-exists-because-of-a-recorded-decision)
   - [`spec-to-code:a-suppression-names-its-case` — A suppression names its known-issue case](#spec-to-codea-suppression-names-its-case--a-suppression-names-its-known-issue-case)
-    - [Scenario: A record is deleted while a suppression still cites it](#scenario-a-record-is-deleted-while-a-suppression-still-cites-it)
 
 <!--TOC-->
 

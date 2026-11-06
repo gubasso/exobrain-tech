@@ -1,7 +1,7 @@
 # Template — Guide
 
 Copy the block below to the bucket that owns the task. The shape is fixed and gated by
-`guide-recipe-shape`; [SPEC-guides](../SPEC-guides.md) owns the rules this template seeds.
+`guide-recipe-shape`; [SPEC-kb-authoring](../SPEC-kb-authoring.md) owns the rules this template seeds.
 
 ````markdown
 # <Task, as the reader would ask for it>

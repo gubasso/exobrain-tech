@@ -14,8 +14,9 @@ is updated rather than dated.
 
 ## Key Points
 
-- Every workflow here is a guide under `_docs/specs/SPEC-guides.md`: prerequisites, ordered steps,
-  one imperative action each, a verifying last step.
+- Every workflow here is a guide under `_docs/specs/SPEC-guides.md` and
+  `_docs/specs/SPEC-kb-authoring.md`: prerequisites, ordered steps, one imperative action each, a
+  verifying last step.
 - A guide opens with a `## The whole run` fence carrying the entire command sequence, so a reader
   who already knows the material never reads past it.
 - Every command is followed by its output in a `text` fence, simulated from the one worked example
