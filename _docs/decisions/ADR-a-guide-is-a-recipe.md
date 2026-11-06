@@ -39,4 +39,4 @@ Enforced by `guides:a-guide-is-an-ordered-recipe` and `guides:a-subtask-nests-un
 
 ## Status
 
-Implemented by [SPEC-guides](../specs/SPEC-guides.md) and `.hooks/guide-recipe-shape.sh`.
+Superseded by [ADR-guide-rules-live-in-a-project-spec](./ADR-guide-rules-live-in-a-project-spec.md).

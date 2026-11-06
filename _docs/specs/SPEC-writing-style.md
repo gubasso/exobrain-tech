@@ -5,15 +5,10 @@
 - [Purpose](#purpose)
 - [Requirements](#requirements)
   - [`writing-style:an-existing-document-converts-when-edited` — An existing document converts when edited](#writing-stylean-existing-document-converts-when-edited--an-existing-document-converts-when-edited)
-    - [Scenario: A project adopts the style with an existing corpus](#scenario-a-project-adopts-the-style-with-an-existing-corpus)
   - [`writing-style:the-documentation-block-routes-to-the-style` — The documentation block routes to the style](#writing-stylethe-documentation-block-routes-to-the-style--the-documentation-block-routes-to-the-style)
-    - [Scenario: An agent prepares to author prose](#scenario-an-agent-prepares-to-author-prose)
   - [`writing-style:no-delivered-gate-judges-prose` — No delivered gate judges prose](#writing-styleno-delivered-gate-judges-prose--no-delivered-gate-judges-prose)
-    - [Scenario: An instance contains prose written under another convention](#scenario-an-instance-contains-prose-written-under-another-convention)
   - [`writing-style:sources-name-the-revision-read` — Sources name the revision read](#writing-stylesources-name-the-revision-read--sources-name-the-revision-read)
-    - [Scenario: An upstream source changes after the style is authored](#scenario-an-upstream-source-changes-after-the-style-is-authored)
   - [`writing-style:the-style-lives-in-one-document` — The style lives in one document](#writing-stylethe-style-lives-in-one-document--the-style-lives-in-one-document)
-    - [Scenario: A template needs to tell an author how to write prose](#scenario-a-template-needs-to-tell-an-author-how-to-write-prose)
 - [Unenforced](#unenforced)
 
 <!--TOC-->

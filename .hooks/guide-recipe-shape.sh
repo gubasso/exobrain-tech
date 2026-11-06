@@ -6,7 +6,7 @@
 # recipe that assumes state it never names, and a subtask promoted to a
 # sibling of the step it belongs to. What the command cannot decide -- whether
 # a step's precondition is actually met, whether the prose earns its place --
-# is held at review, and `SPEC-guides.md` says so.
+# is held at review, and `SPEC-kb-authoring.md` says so.
 #
 # A heading is read only outside a fence. A template ships the shape it seeds
 # inside a fenced block, and a scanner blind to fences would fail the template
@@ -61,7 +61,7 @@ for file in "$@"; do
     }
 
     function report(msg) {
-      if (!bad) print "FAIL guides:a-guide-is-an-ordered-recipe"
+      if (!bad) print "FAIL kb-authoring:a-guide-is-an-ordered-recipe"
       bad = 1
       print "  " file ": " msg
     }

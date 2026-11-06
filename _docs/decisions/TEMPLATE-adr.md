@@ -1,7 +1,6 @@
-Copy the block below to `_docs/decisions/ADR-<slug>.md`. The slug is the identifier: it carries no
-counter, no digit, and never changes once merged. A filled body stays at or below 350 words; a body
-that will not fit is usually two decisions.
-[SPEC-decision-records](../specs/SPEC-decision-records.md) owns the rules this template seeds.
+# Template — Decision record
+
+Copy the block below to `_docs/decisions/ADR-<slug>.md`. A project that keeps its own copy names it `TEMPLATE-adr.md`. The prefix distinguishes the seed from the records it seeds, so no template reads as a decision the project made. A filled body is at or below 350 words.
 
 ```markdown
 # <Short title naming the choice, not the task>
@@ -12,13 +11,15 @@ that will not fit is usually two decisions.
 
 ## Considered Options
 
-- <option 1> — chosen.
-- <option 2> — rejected: <one sentence: why it lost>.
-- <option 3> — deferred: revisit if <condition that would reopen it>.
+- `<option 1>` — chosen.
+- `<option 2>` — rejected: <one sentence: why it lost>.
+- `<option 3>` — deferred: revisit if <condition that would reopen it>.
 
 ## Decision Outcome
 
-Chosen option: <option 1> — <one sentence: why>.
+Chosen option: `<option 1>` — <one sentence: why>.
+
+<If this decision binds behavior, name the requirement that enforces it: Enforced by `<domain-slug>:<rule-slug>`.>
 
 ## Consequences
 
@@ -32,3 +33,10 @@ Chosen option: <option 1> — <one sentence: why>.
 <If Implemented: link what enacts it. If Superseded: link the successor. If Deprecated: say why it
 stopped applying.>
 ```
+
+Checks before committing:
+
+- The filename carries no digit and will never be renamed.
+- The title names the choice, not the implementation task.
+- Every considered option carries a disposition, and every deferral names its reopening condition.
+- An enforceable consequence is stated as a requirement in a spec, cited above.

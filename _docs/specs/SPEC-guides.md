@@ -4,151 +4,131 @@
 
 - [Purpose](#purpose)
 - [Requirements](#requirements)
-  - [`guides:a-guide-is-an-ordered-recipe` — A guide is an ordered recipe](#guidesa-guide-is-an-ordered-recipe--a-guide-is-an-ordered-recipe)
-    - [Scenario: A procedure is written as an essay](#scenario-a-procedure-is-written-as-an-essay)
-  - [`guides:a-step-is-one-action` — A step is one action](#guidesa-step-is-one-action--a-step-is-one-action)
-    - [Scenario: A step carries three actions](#scenario-a-step-carries-three-actions)
-  - [`guides:a-step-leaves-no-gap` — A step leaves no gap](#guidesa-step-leaves-no-gap--a-step-leaves-no-gap)
-    - [Scenario: A step runs a command the guide never installs](#scenario-a-step-runs-a-command-the-guide-never-installs)
-  - [`guides:a-subtask-nests-under-its-step` — A subtask nests under its step](#guidesa-subtask-nests-under-its-step--a-subtask-nests-under-its-step)
-    - [Scenario: A step's parts are promoted to steps](#scenario-a-steps-parts-are-promoted-to-steps)
-  - [`guides:a-step-shows-its-output` — A step shows its output](#guidesa-step-shows-its-output--a-step-shows-its-output)
-    - [Scenario: A step describes its result in a sentence](#scenario-a-step-describes-its-result-in-a-sentence)
-  - [`guides:a-guide-ends-in-a-verification` — A guide ends in a verification](#guidesa-guide-ends-in-a-verification--a-guide-ends-in-a-verification)
-    - [Scenario: A guide stops at the last edit](#scenario-a-guide-stops-at-the-last-edit)
-  - [`guides:explanation-moves-to-a-companion` — Explanation moves to a companion document](#guidesexplanation-moves-to-a-companion--explanation-moves-to-a-companion-document)
-    - [Scenario: A step grows a rationale paragraph](#scenario-a-step-grows-a-rationale-paragraph)
-  - [`guides:a-companion-walks-a-scenario` — A companion document walks a scenario](#guidesa-companion-walks-a-scenario--a-companion-document-walks-a-scenario)
-    - [Scenario: A companion becomes an essay](#scenario-a-companion-becomes-an-essay)
-- [Unenforced rules](#unenforced-rules)
-- [Seed](#seed)
+  - [`guides:every-step-carries-its-check` — Every step carries its check](#guidesevery-step-carries-its-check--every-step-carries-its-check)
+  - [`guides:a-manual-step-enumerates-its-interaction` — A manual step enumerates its interaction](#guidesa-manual-step-enumerates-its-interaction--a-manual-step-enumerates-its-interaction)
+  - [`guides:a-step-follows-its-producers` — A step follows its producers](#guidesa-step-follows-its-producers--a-step-follows-its-producers)
+  - [`guides:preconditions-open-and-verification-closes` — Preconditions open and verification closes](#guidespreconditions-open-and-verification-closes--preconditions-open-and-verification-closes)
+  - [`guides:a-step-is-one-imperative-action` — A step is one imperative action](#guidesa-step-is-one-imperative-action--a-step-is-one-imperative-action)
+  - [`guides:a-divergent-result-names-its-destination` — A divergent result names its destination](#guidesa-divergent-result-names-its-destination--a-divergent-result-names-its-destination)
+  - [`guides:an-external-fact-is-verified-upstream` — An external fact is verified upstream](#guidesan-external-fact-is-verified-upstream--an-external-fact-is-verified-upstream)
+  - [`guides:citations-live-in-the-reference-zone` — Citations live in the reference zone](#guidescitations-live-in-the-reference-zone--citations-live-in-the-reference-zone)
+- [Unenforced](#unenforced)
 
 <!--TOC-->
 
 ## Purpose
 
-Rules governing a guide — the document that carries a reader from a starting state to a finished
-result. Covers the recipe shape, what a step is, where explanation goes, and the shape of the
-companion document that receives it. The markdown a guide is written in and the size it fits inside
-belong to `SPEC-docs-format.md`; where a guide is placed belongs to `SPEC-knowledge-base-boundary.md`.
+Rules governing step-by-step guides: the documents a reader executes rather than reads. Covers the step, its check, its ordering, and the upstream sources behind the facts a guide states. The markdown a guide is written in belongs to `SPEC-docs-format.md`. Where a guide is placed and named belongs to `SPEC-docs-foundations.md`.
 
 ## Requirements
 
-### `guides:a-guide-is-an-ordered-recipe` — A guide is an ordered recipe
+### `guides:every-step-carries-its-check` — Every step carries its check
 
-The author MUST write a guide as a `## Prerequisites` section followed by a `## Steps` section whose
-body is one ordered list.
+The author MUST give every step's outcome a check stating what a correct result looks like, at the step where that outcome becomes observable.
 
-#### Scenario: A procedure is written as an essay
+#### Scenario: A command prints something the reader cannot judge
 
-- GIVEN a document explaining how to bootstrap a project across six paragraphs
-- WHEN a reader has to read the prose to find the command to run
-- THEN the gate rejects it, and the paragraphs become numbered steps
+- GIVEN a step whose command prints a JSON document
+- WHEN the guide says nothing about what success prints
+- THEN the reader cannot tell success from failure, and the step gains a check line naming the expected output
 
-Verify: `pre-commit run guide-recipe-shape --all-files`
+Verify: reviewer confirms each step carries a check stating what a correct result looks like
 
-### `guides:a-step-is-one-action` — A step is one action
+### `guides:a-manual-step-enumerates-its-interaction` — A manual step enumerates its interaction
 
-The author MUST make each step one imperative action, with the command it names in a fence.
+Where a step uses an interface rather than a shell, the author MUST enumerate as its sub-items every field, control, and value the reader sets.
 
-#### Scenario: A step carries three actions
+#### Scenario: A form carries more choices than the guide names
 
-- GIVEN a step reading "install the toolchain, wire the hooks, and run the suite"
-- WHEN a reader is interrupted after the second
-- THEN nothing records where they stopped, and the step is three steps
+- GIVEN a step that says to create an access token with the right scopes
+- WHEN the form offers five scope checkboxes, an expiry, and a name pattern
+- THEN the reader guesses at what the author meant, and the step lists each field with its value instead
 
-Verify: reviewer confirms each step names one action and puts its command in a fence
+Verify: reviewer confirms each interface step lists every field, control, and value the reader sets
 
-### `guides:a-step-leaves-no-gap` — A step leaves no gap
+### `guides:a-step-follows-its-producers` — A step follows its producers
 
-Where a step assumes a state, that state MUST be produced by an earlier step or named in the
-prerequisites.
+Where a step consumes a value, a file, or a state, the author MUST have an earlier step or a stated precondition produce it.
 
-#### Scenario: A step runs a command the guide never installs
+#### Scenario: A value appears before the step that mints it
 
-- GIVEN step four running `just test`
-- WHEN no earlier step installs the task runner and no prerequisite names it
-- THEN the reader stops at a missing command, and the installing step is added before it
+- GIVEN a step that pastes a credential into a command
+- WHEN no earlier step and no precondition minted that credential
+- THEN the reader stops mid-procedure to hunt for it, and the producing step moves ahead of the consumer
 
-Verify: reviewer confirms every state a step assumes is produced earlier or listed as a prerequisite
+Verify: reviewer traces each value a step consumes to an earlier step or a stated precondition
 
-### `guides:a-subtask-nests-under-its-step` — A subtask nests under its step
+### `guides:preconditions-open-and-verification-closes` — Preconditions open and verification closes
 
-Where a step decomposes into parts, the author MUST write those parts as list items indented under
-the step.
+The author MUST open a guide with the preconditions its steps assume and close it with a verification stating what a correct result looks like.
 
-#### Scenario: A step's parts are promoted to steps
+#### Scenario: A guide assumes a tool the reader lacks
 
-- GIVEN a step that configures three hooks
-- WHEN each hook becomes a numbered step of its own
-- THEN the list stops reading as the sequence of the job, and the gate rejects the flat bullets
+- GIVEN a guide whose third step runs a tool the reader never installed
+- WHEN the failure surfaces three steps in
+- THEN the requirement was a precondition, checkable before step one, and the guide states it there
 
-Verify: `pre-commit run guide-recipe-shape --all-files`
+Verify: reviewer confirms the guide opens with checkable preconditions and closes with a verification
 
-### `guides:a-step-shows-its-output` — A step shows its output
+### `guides:a-step-is-one-imperative-action` — A step is one imperative action
 
-The author MUST follow a step's command with the output the reader should see, and MUST NOT spend
-prose describing what that output already carries.
+The author MUST write every step as one action in the imperative, numbered in the order the reader performs it.
 
-#### Scenario: A step describes its result in a sentence
+#### Scenario: A step bundles two actions
 
-- GIVEN a step whose command prints the position the working copy moved to
-- WHEN the step describes that position in prose instead of showing it
-- THEN the reader cannot tell whether their own run matched, and the transcript replaces the sentence
+- GIVEN a step that creates a token and stores it in the keyring
+- WHEN the first half succeeds and the second fails
+- THEN the reader cannot say which step failed, and the bundle becomes two steps
 
-Verify: reviewer confirms each step's command is followed by its output rather than a description of it
+Verify: reviewer confirms each step is one imperative action
 
-### `guides:a-guide-ends-in-a-verification` — A guide ends in a verification
+### `guides:a-divergent-result-names-its-destination` — A divergent result names its destination
 
-The author MUST make the last step a check the reader runs to confirm the result.
+Where a rerun or known failure produces a result other than the check, the author MUST state the condition and where the reader goes next.
 
-#### Scenario: A guide stops at the last edit
+#### Scenario: A rerun prints something the check does not name
 
-- GIVEN a guide whose final step writes a config file
-- WHEN the reader has no command that says whether it worked
-- THEN the guide promises completion it cannot show, and a verifying step closes it
+- GIVEN a rerunnable step whose second run reports the resource already exists
+- WHEN the guide names only the first run's output
+- THEN the reader reads success as failure, and the step gains a line stating the condition and its destination
 
-Verify: reviewer confirms the final step is a command or observation confirming the result
+Verify: reviewer confirms each known divergence states its condition and its destination
 
-### `guides:explanation-moves-to-a-companion` — Explanation moves to a companion document
+### `guides:an-external-fact-is-verified-upstream` — An external fact is verified upstream
 
-Where a step needs justification beyond a decision, a hazard, or a non-obvious ordering constraint,
-the author MUST move it into a linked companion document and MUST NOT expand the step into prose.
+Where a guide states a fact an upstream owns (an interface field, a tool's behavior, a default), the author MUST verify it against the official upstream source before stating it.
 
-#### Scenario: A step grows a rationale paragraph
+#### Scenario: A form is described from memory
 
-- GIVEN a step whose command needs the trade-off behind it explained
-- WHEN the paragraph is written into the step
-- THEN the recipe slows for every reader who already knows, and the paragraph belongs behind a link
+- GIVEN a step enumerating a third-party form
+- WHEN the fields are written from recall rather than from the upstream source
+- THEN the guide asserts fields the form no longer has, and the enumeration is rewritten from the source
 
-Verify: reviewer confirms no step carries prose beyond a decision, a hazard, or an ordering constraint
+Verify: reviewer confirms each upstream-owned fact was checked against the official source
 
-### `guides:a-companion-walks-a-scenario` — A companion document walks a scenario
+### `guides:citations-live-in-the-reference-zone` — Citations live in the reference zone
 
-The author MUST give every document a guide offloads explanation to at least one worked scenario:
-a concrete starting state, the commands run, and the outcome.
+Where a fact rests on an upstream source, the author MUST record a dated citation in the reference zone that the guide links. This keeps the guide itself lean.
 
-#### Scenario: A companion becomes an essay
+#### Scenario: Sources pile up inside the guide
 
-- GIVEN a document explaining why a lock file is committed
-- WHEN it argues the position for two pages and shows no run
-- THEN it is as unusable as the guide it was extracted from, and a worked scenario replaces the argument
+- GIVEN a guide whose steps each quote the documentation behind them
+- WHEN the reader is executing rather than auditing
+- THEN the citations crowd out the procedure, and they move to a dated reference entry the guide links once
 
-Verify: reviewer confirms each companion document carries a concrete scenario with commands and outcome
+Verify: reviewer confirms each upstream fact has a dated citation in the reference zone
 
-## Unenforced rules
+## Unenforced
 
-No command decides these; review does. Each is asked of every guide in the change.
+No command decides these rules, or a command decides only part of each. A reviewer confirms the rest.
 
-| Rule                                      | Asked at review                                                                             |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `guides:a-step-is-one-action`             | Does any step name a second action?                                                         |
-| `guides:a-step-leaves-no-gap`             | Does any step assume state nothing earlier produced?                                        |
-| `guides:a-step-shows-its-output`          | Does any step describe an output it could have shown?                                       |
-| `guides:a-guide-ends-in-a-verification`   | Does the reader learn whether it worked?                                                    |
-| `guides:explanation-moves-to-a-companion` | Is any prose there for a reason other than a decision, a hazard, or an ordering constraint? |
-| `guides:a-companion-walks-a-scenario`     | Does the companion show a run, or only argue?                                               |
-
-## Seed
-
-`SPEC-guides/TEMPLATE-guide.md` carries the skeleton a new guide is copied from.
+| Rule                                                | Reviewer confirms                                                                          |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `guides:every-step-carries-its-check`               | Each step carries a check that states what a correct result looks like                     |
+| `guides:a-manual-step-enumerates-its-interaction`   | Each interface step lists every field, control, and value the reader sets                  |
+| `guides:a-step-follows-its-producers`               | Each value a step consumes comes from an earlier step or a stated precondition             |
+| `guides:preconditions-open-and-verification-closes` | The guide opens with checkable preconditions and closes with a verification                |
+| `guides:a-step-is-one-imperative-action`            | Each step is one imperative action, and an outcome the tool does not print is its own step |
+| `guides:a-divergent-result-names-its-destination`   | Each known divergence states its condition and where the reader goes next                  |
+| `guides:an-external-fact-is-verified-upstream`      | Each upstream-owned fact was checked against the official source                           |
+| `guides:citations-live-in-the-reference-zone`       | Each upstream fact has a dated citation in the reference zone                              |
