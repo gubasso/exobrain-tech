@@ -69,7 +69,8 @@ Verify: reviewer confirms the chapter states no operating system as a universal 
 ### `project-platform:the-most-specific-native-owner-holds-each-dependency` — The most specific native owner holds each dependency
 
 The project MUST give each dependency exactly one owner, the most specific file that declares it
-natively. `.pre-commit-config.yaml` pins each hook tool for which pre-commit builds an environment.
+natively. `.pre-commit-config.yaml` pins each hook tool for which pre-commit builds an environment,
+and it owns a tool that only a hook uses, even when the tool reads the files of this repository.
 `flake.nix` holds the toolchain, `pre-commit`, the task runner, the project tools such as `sdd`, each
 tool that no hook language can build, and each runtime that pre-commit needs to build a hook
 environment from a clean machine, such as `curl` for `rustup-init`. `flake.nix` holds no language

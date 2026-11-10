@@ -23,12 +23,16 @@ is the most specific file that can declare it natively. The owners run from the 
 most general:
 
 1. The manifest of the stack holds what the code of the project uses. A Python project declares its
-   packages, and the dev tools that run in its environment, such as pytest and pyright, in
+   packages, and the dev tools that the project itself runs, such as pytest for its test suite, in
    `pyproject.toml`, and `uv.lock` locks them. A single Python script declares its packages in a
    PEP 723 block. A Rust crate uses `Cargo.toml`, a Node project uses `package.json` and its lock
    file, and a Go module uses `go.mod`.
 2. The hook configuration holds what a hook uses. `.pre-commit-config.yaml` pins each hook tool for
-   which pre-commit can build an environment, with `rev` and `additional_dependencies`.
+   which pre-commit can build an environment, with `rev` and `additional_dependencies`. A tool that
+   only a hook uses belongs here, even when it reads the code of the project, such as mypy,
+   pyright, or ruff: pre-commit is a guardrail from outside the project, so it owns what it brings.
+   A manifest holds such a tool only when the project itself uses it too, or when the hook comment
+   states a reason specific to the repository.
 3. The devshell holds the major tools: the language toolchains and their managers, such as python
    with uv, cargo, and nodejs, then `pre-commit`, the task runner, and the project tools. It also
    holds each tool that no owner above can declare, such as statix, bats with its libraries, or a

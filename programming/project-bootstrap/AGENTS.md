@@ -42,6 +42,7 @@ with concrete tooling.
   `Cargo.toml`, `package.json`), then `.pre-commit-config.yaml` for each hook tool that pre-commit
   can build, then the devshell for the toolchains, `pre-commit`, the task runner, and what no owner
   above can declare, then the host for the base tools, the ELF loader, and the credentialed tools.
+  pre-commit owns a tool that only a hook uses, a linter or a type checker included.
   A flake holds no language library. Python uses uv. A hook that keeps `language: system` carries
   an `# owner:` comment with one of five classes.
 - CI parity. The commit stage runs the fast checks and the push stage the costly ones; together

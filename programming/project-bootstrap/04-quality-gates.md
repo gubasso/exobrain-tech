@@ -48,8 +48,10 @@ the file that declares the tool, as
 
 - `no-hook-language`: upstream publishes no hook in a language for which pre-commit builds an
   environment, such as statix, lychee, or a script of the project.
-- `project-environment`: the tool must run in the environment of the project, such as pyright,
-  pytest, `cargo clippy`, or tsc.
+- `project-environment`: the hook runs the project itself or its toolchain, so pre-commit cannot
+  own the tool: the test suite (pytest, `cargo test`), a part of the toolchain (`cargo clippy`,
+  `cargo fmt`, tsc), or a script that imports the code of the project. A type checker or a linter
+  takes this class only with a reason in the comment that is specific to the repository.
 - `recorded-failure`: the managed hook fails on a clean machine of a supported host, even with the
   devshell fallback for hook setup. The comment names the error and the date.
 - `outside-caller`: a caller outside pre-commit needs the same tool and cannot reach it through
@@ -90,6 +92,11 @@ the file that declares the tool, as
       pass_filenames: false
       stages: [pre-push]
 ```
+
+A type checker or a linter that only a hook runs takes its upstream hook, even though it reads the
+code of the project: ruff from `astral-sh/ruff-pre-commit`, mypy from `pre-commit/mirrors-mypy` with
+the typed libraries in `additional_dependencies`, and pyright from `RobertCraigie/pyright-python`,
+which reads the venv that its own `pyrightconfig.json` names.
 
 A hook inside a block that a tool renders, such as a release tool or a docs tool, carries no
 comment, because that tool owns the block.

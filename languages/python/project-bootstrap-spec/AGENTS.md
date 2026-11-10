@@ -32,8 +32,9 @@ library). Publishing is out of scope.
 - **Interpreter pin:** `.python-version` (single line) pins one interpreter; `uv` reads it to manage
   `.venv` (`uv run <cmd>`). A Nix devShell provisions the interpreter + `uv` so local and CI share
   one toolchain (`nix/02-per-project-devshell`).
-- **Quality gates (all in `pyproject.toml`):** `ruff` (format + lint, supersedes black + flake8 +
-  isort), `mypy`/`pyright` (typecheck, strict for new code), `pytest` (tests under `tests/`),
+- **Quality gates (configured in `pyproject.toml`):** `ruff` (format + lint, supersedes black +
+  flake8 + isort) and `mypy`/`pyright` (typecheck, strict for new code) as upstream hooks pinned in
+  `.pre-commit-config.yaml`, `pytest` (tests under `tests/`) as a dev dependency,
   `pip-audit` (security baseline, PyPI Advisory DB / OSV). Wire all into pre-commit so failures
   surface locally.
 - **CLI kind:** console-script entry under `[project.scripts]`; arg-parsing via `argparse` (stdlib)

@@ -22,7 +22,8 @@ its kind natively, so the manifest of a project travels with its code. The opera
 2026-11-09.
 
 - The owners run from the manifest of the stack, through `.pre-commit-config.yaml` and the
-  devshell, to the host.
+  devshell, to the host. pre-commit owns a tool that only a hook uses, such as a linter or a type
+  checker, even when it reads the code of the project (operator, 2026-11-10).
 - A hook that keeps `language: system`, `script`, or `unsupported` carries an `# owner:` comment
   with one of five classes: `no-hook-language`, `project-environment`, `recorded-failure`,
   `outside-caller`, or `base-tool`.
