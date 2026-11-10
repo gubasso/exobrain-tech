@@ -103,7 +103,8 @@ Verify: `[ ! -e .github/workflows ] && just lint`
 
 The project MUST exclude every file a tool generates from every hook that rewrites or judges it, in
 the tool's own configuration where the tool has one, and MUST keep it under the hooks that only read
-it. The generated files are `flake.lock` (nix), `.spec-driven-docs/manifest.json`, and
+it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json` (rk),
+`.spec-driven-docs/manifest.json`, and
 `_docs/.markdownlint-cli2.jsonc` (sdd). The chapter that states the general rule is
 `programming/project-bootstrap/04-quality-gates.md`, "Generated files".
 
@@ -114,4 +115,4 @@ it. The generated files are `flake.lock` (nix), `.spec-driven-docs/manifest.json
 - THEN no formatter, fixer, spell check, or editorconfig check changes or rejects the file, and the
   JSON parser and the secret scan still read it
 
-Verify: `nix develop --command bash -c '! { dprint output-file-paths; typos --files; editorconfig-checker -dry-run; } | grep -E "(^|/)(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$"'`
+Verify: `nix develop --command bash -c '! { dprint output-file-paths; typos --files; editorconfig-checker -dry-run; } | grep -E "(^|/)(flake\.lock|\.release-kit/manifest\.json|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$"'`

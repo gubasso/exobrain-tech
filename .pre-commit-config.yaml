@@ -20,6 +20,7 @@
 #     and the reading hooks keep them (`project-platform:hooks-exclude-generated-files`):
 #       flake.lock                        nix
 #       .spec-driven-docs/manifest.json   sdd
+#       .release-kit/manifest.json        rk
 #       _docs/.markdownlint-cli2.jsonc    sdd
 #     The specs, templates, and schema sdd ships stay byte-equal to the copy
 #     `sdd spec` and the landing print, so the formatters skip them too: md-toc
@@ -102,13 +103,13 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]   # keep two-space hard breaks
         stages: [pre-commit]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
       - id: end-of-file-fixer
         stages: [pre-commit]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
       - id: mixed-line-ending
         args: [--fix=lf]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
       - id: check-added-large-files
         args: ['--maxkb=16384']
         stages: [pre-commit]

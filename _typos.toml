@@ -5,11 +5,13 @@
 
 # Generated files follow their generator, so the spell check skips them
 # (project-platform:hooks-exclude-generated-files): flake.lock is nix's,
-# the manifest and the docs markdownlint configuration are sdd's.
+# .release-kit/manifest.json is rk's, and the sdd manifest and the docs
+# markdownlint configuration are sdd's.
 [files]
 extend-exclude = [
   "flake.lock",
   ".spec-driven-docs/manifest.json",
+  ".release-kit/manifest.json",
   "_docs/.markdownlint-cli2.jsonc",
 ]
 

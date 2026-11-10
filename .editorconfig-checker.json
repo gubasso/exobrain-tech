@@ -2,6 +2,7 @@
   "Exclude": [
     "^flake\\.lock$",
     "^\\.spec-driven-docs/manifest\\.json$",
+    "^\\.release-kit/manifest\\.json$",
     "^_docs/\\.markdownlint-cli2\\.jsonc$"
   ]
 }
