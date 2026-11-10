@@ -86,7 +86,7 @@ and the standard ELF loader. The chapter that states the general rule is
   included
 - THEN each managed hook builds from its pinned `rev`, and `rustup-init` finds `curl` in the devshell
 
-Verify: `d="$(mktemp -d)"; flock -w 3600 "$HOME/.cache/heavy-check.lock" env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$d" nix develop --command pre-commit install-hooks; rc=$?; chmod -R u+w "$d"; rm -rf "$d"; [ "$rc" -eq 0 ]`
+Verify: `d="$(mktemp -d)"; env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$d" nix develop --command pre-commit install-hooks; rc=$?; chmod -R u+w "$d"; rm -rf "$d"; [ "$rc" -eq 0 ]`
 
 The verification rebuilds every hook environment, so it runs once for each change of `flake.nix` or
 `.pre-commit-config.yaml`, never on every check.
