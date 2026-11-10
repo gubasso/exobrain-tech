@@ -5,11 +5,16 @@
 # beside the output families, and some nest the tree another level. The
 # attribute names below are the fact the check is about, and they do not move.
 #
-# Takes an absolute path to the flake, because builtins.getFlake refuses a
+# Takes an absolute path to the flake, because a git+file reference refuses a
 # relative one. `.hooks/check-one-system.sh` resolves it.
+#
+# The path is read as a `git+file` reference. A bare path makes getFlake fetch
+# the folder as a `path:` flake, which copies every file into the store, the
+# ignored ones included. The `git+file` form copies the tracked tree, as
+# `nix flake check` does.
 reference:
 let
-  flake = builtins.getFlake (toString reference);
+  flake = builtins.getFlake ("git+file://" + toString reference);
   families = [
     "packages"
     "devShells"
