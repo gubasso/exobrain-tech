@@ -59,6 +59,13 @@
 #   before turning hooks loose on normal work.
 
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
+# The node hooks run on the devShell nodejs. Without this line pre-commit
+# picks `system` only when it finds node and npm on PATH, and a clean-machine
+# install on 2026-11-10 picked `default` in two of three runs: nodeenv then
+# fetched an alpha node index entry and failed with "invalid literal for
+# int() with base 10: '0-alpha'".
+default_language_version:
+  node: system
 # A hook with no `stages:` runs at commit only. A remote hook whose manifest
 # declares its own `stages:` ignores this line, so each such hook below carries
 # an explicit `stages: [pre-commit]` (pre-commit-hooks v6.0.0 and typos declare
