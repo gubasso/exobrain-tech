@@ -124,4 +124,4 @@ it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json` (rk
 - THEN no formatter, fixer, spell check, or editorconfig check changes or rejects the file, and the
   JSON parser and the secret scan still read it
 
-Verify: `nix develop --command bash -c '! { dprint output-file-paths; typos --files; editorconfig-checker -dry-run; } | grep -E "(^|/)(flake\.lock|\.release-kit/manifest\.json|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$"'`
+Verify: `nix develop --command bash -c 'p="$(dprint output-file-paths)" || exit 1; printf "%s\n" "$p" | grep -qE "/(flake\.lock|\.release-kit/manifest\.json|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$" && exit 1; for f in flake.lock .release-kit/manifest.json .spec-driven-docs/manifest.json _docs/.markdownlint-cli2.jsonc; do grep -qF "\"$f\"" _typos.toml && grep -qF "\"^${f//./\\\\.}\$\"" .editorconfig-checker.json || exit 1; done'`

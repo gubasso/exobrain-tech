@@ -62,6 +62,10 @@
           # library never enters this shell
           # (project-platform:the-most-specific-native-owner-holds-each-dependency).
 
+          # rg runs the Verify commands of the specs that sdd ships, such as
+          # SPEC-docs-specs.md and SPEC-spec-to-code.md, which call it from PATH.
+          pkgs.ripgrep
+
           # jq reads the evaluated system set in .hooks/check-one-system.sh,
           # which the one-system pre-push hook and `just test-one-system` run.
           pkgs.jq
