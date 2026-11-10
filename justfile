@@ -1,6 +1,6 @@
 # Justfile — task runner for the exobrain-tech knowledge base.
-# Every recipe runs inside the pinned Nix devShell (see flake.nix) so the
-# toolchain matches CI and local runs.
+# Every recipe runs inside the pinned Nix devShell (see flake.nix) so every
+# host runs one toolchain.
 #
 # This is mostly a markdown KB, but not only: a bucket may ship an executable
 # artifact a reader is expected to copy and run, and
@@ -12,8 +12,8 @@
 default:
     @just --list
 
-# Lint: both hook stages over every file, which is exactly what CI runs
-# (project-platform:hooks-run-every-ci-check).
+# Lint: both hook stages over every file, the whole gate of this repository
+# (project-platform:the-hooks-are-the-only-gate).
 lint:
     nix develop --command pre-commit run --all-files
     nix develop --command pre-commit run --all-files --hook-stage pre-push
@@ -28,9 +28,8 @@ test: test-gates test-shipped-scripts test-one-system verify-instance
 # Lint and format-check every shell script the buckets ship
 # (`knowledge-base-boundary:a-shipped-script-is-gated`).
 #
-# The pre-commit hook runs the same script. This recipe is what puts the gate in
-# CI without a hook run, and what lets a reader check one bucket's drop-in after
-# editing it.
+# The pre-commit hook runs the same script. This recipe lets a reader check one
+# bucket's drop-in after editing it, without a hook run.
 test-shipped-scripts:
     nix develop --command .hooks/shipped-scripts.sh
 

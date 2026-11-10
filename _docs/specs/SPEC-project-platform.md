@@ -7,13 +7,13 @@
   - [`project-platform:one-supported-system` — The flake exposes one system](#project-platformone-supported-system--the-flake-exposes-one-system)
     - [Scenario: A second system is added inside a nested attribute set](#scenario-a-second-system-is-added-inside-a-nested-attribute-set)
   - [`project-platform:every-system-has-a-native-check` — Every supported system has a native required check](#project-platformevery-system-has-a-native-check--every-supported-system-has-a-native-required-check)
-    - [Scenario: A system is advertised with no runner behind it](#scenario-a-system-is-advertised-with-no-runner-behind-it)
+    - [Scenario: A system is advertised with no host behind it](#scenario-a-system-is-advertised-with-no-host-behind-it)
   - [`project-platform:library-topics-stay-platform-neutral` — Library topics stay open](#project-platformlibrary-topics-stay-platform-neutral--library-topics-stay-open)
     - [Scenario: A portable chapter describes an access-control mode](#scenario-a-portable-chapter-describes-an-access-control-mode)
   - [`project-platform:the-devshell-supplies-every-project-tool` — The devshell supplies every project tool](#project-platformthe-devshell-supplies-every-project-tool--the-devshell-supplies-every-project-tool)
     - [Scenario: A hook builds its environment on a machine with no curl](#scenario-a-hook-builds-its-environment-on-a-machine-with-no-curl)
-  - [`project-platform:hooks-run-every-ci-check` — The git hooks run every check of CI](#project-platformhooks-run-every-ci-check--the-git-hooks-run-every-check-of-ci)
-    - [Scenario: A check is added to CI only](#scenario-a-check-is-added-to-ci-only)
+  - [`project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate](#project-platformthe-hooks-are-the-only-gate--the-git-hooks-are-the-only-gate)
+    - [Scenario: A check is added outside the hooks](#scenario-a-check-is-added-outside-the-hooks)
   - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
     - [Scenario: sdd rewrites its manifest](#scenario-sdd-rewrites-its-manifest)
 
@@ -22,7 +22,7 @@
 ## Purpose
 
 Rules governing which systems this checkout's toolchain supports, where its tools come from, what its
-git hooks and CI run, and the boundary between those choices and the knowledge the library
+git hooks run, and the boundary between those choices and the knowledge the library
 publishes. They bind development and verification here. They do not narrow what a chapter may be
 about.
 
@@ -42,16 +42,16 @@ Verify: `just test-one-system`
 
 ### `project-platform:every-system-has-a-native-check` — Every supported system has a native required check
 
-The project MUST run a required check natively on each system it advertises, and MUST NOT advertise
-a system no check exercises.
+The project MUST run its required check, the commit and push hook stages, natively on each system it
+advertises, and MUST NOT advertise a system no check exercises.
 
-#### Scenario: A system is advertised with no runner behind it
+#### Scenario: A system is advertised with no host behind it
 
 - GIVEN a proposal to expose a second system from the flake
-- WHEN no required workflow job runs on that system
+- WHEN no host of that system runs the hook stages
 - THEN the support claim is refused, because an untested claim is a promise the project does not keep
 
-Verify: `grep -q 'runs-on: ubuntu-latest' .github/workflows/ci.yml`
+Verify: `[ "$(uname -s)-$(uname -m)" = Linux-x86_64 ] && just lint`
 
 ### `project-platform:library-topics-stay-platform-neutral` — Library topics stay open
 
@@ -82,23 +82,22 @@ coreutils, `nix`, and `direnv`. The chapter that states the general rule is
 
 Verify: `env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$(mktemp -d)" nix develop --command pre-commit install-hooks`
 
-### `project-platform:hooks-run-every-ci-check` — The git hooks run every check of CI
+### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 
-The project MUST run every check of CI in its commit stage or its push stage, and CI MUST repeat
-those two stages in the devshell and run nothing else. The push stage MUST NOT rerun a commit-stage
-hook. The project lists no CI-only check, no report-only job, and no scheduled job. The hooks can run
-more than CI: CI skips `lychee-system`, which checks external links, because an external site answers
-a CI runner with a block or a timeout that it does not give a developer host. The chapters that
-state the general rule are `programming/project-bootstrap/04-quality-gates.md`, "Git hooks", and
-`programming/project-bootstrap/05-ci.md`.
+The project MUST run every check in its commit stage or its push stage, each check in exactly one of
+them, and MUST run no CI. A fast check on the staged files runs at commit, and a costly check, such
+as a flake evaluation or the link check, runs at push. The push stage MUST NOT rerun a commit-stage
+hook. A branch reaches the trunk through `rk integrate` and a push from a checkout that ran both
+stages, so a change that passed its hooks is the change that lands. The chapter that states the
+general rule is `programming/project-bootstrap/04-quality-gates.md`, "Git hooks".
 
-#### Scenario: A check is added to CI only
+#### Scenario: A check is added outside the hooks
 
-- GIVEN a new CI step that calls a recipe no hook runs
-- WHEN a contributor pushes a change that the step rejects
-- THEN the push passed its hooks and CI failed, so the check moves into a hook stage instead
+- GIVEN a new check that a recipe runs and no hook stage runs
+- WHEN a contributor pushes a change that the check rejects
+- THEN nothing stopped the push, so the check moves into the commit or the push stage
 
-Verify: `! grep -n 'just ' .github/workflows/ci.yml && just lint`
+Verify: `[ ! -e .github/workflows ] && just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 

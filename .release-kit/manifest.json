@@ -1,0 +1,47 @@
+{
+  "schema_version": 12,
+  "rk_version": "0.9.7",
+  "origin": "init",
+  "landed_at": "2026-11-10T03:24:48Z",
+  "profile": {
+    "technologies": [],
+    "forge": "github",
+    "release": {
+      "mode": "none"
+    }
+  },
+  "git": {
+    "trunk": "master",
+    "checkout_mode": "linked-worktree",
+    "integration": "local",
+    "merge_form": "rebase"
+  },
+  "capabilities": {
+    "nix_packaging": false,
+    "reporting_policy": false,
+    "scorecard": false,
+    "workflow_guards": false
+  },
+  "parameters": {
+    "repo": "gubasso/exobrain-tech",
+    "security_contact": "",
+    "security_response": "best-effort",
+    "required_check": "",
+    "required_workflow": ""
+  },
+  "files": [
+    {
+      "destination": ".pre-commit-config.yaml",
+      "kind": "rendered",
+      "sha256": "151460bda31526427d23530b0d082ebc58100ac8a829f0df3aab9ad086413d3a",
+      "placement": "region"
+    },
+    {
+      "destination": "AGENTS.md",
+      "kind": "rendered",
+      "sha256": "d4395f03e9d00161dbd264131d157352d7e42bf4a81a866aad2b42c1bb021a14",
+      "placement": "region"
+    }
+  ],
+  "pins": {}
+}

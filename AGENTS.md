@@ -1,7 +1,6 @@
 # AGENTS
 
-Single source of truth for how `exobrain-tech` works. `README.md` indexes the content; this file
-holds the rules, as a digest of rules and pointers.
+Single source of truth for how `exobrain-tech` works. `README.md` indexes the content; this file holds the rules, as a digest of rules and pointers.
 
 ## Glossary
 
@@ -12,44 +11,23 @@ holds the rules, as a digest of rules and pointers.
 
 ## What the product is
 
-Non-negotiable: the product is the library — the knowledge itself. It lives in the eight top-level
-buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platforms/`, `workflows/`,
-`data/`), and may use whatever structure serves the knowledge within a bucket.
+Non-negotiable: the product is the library — the knowledge itself. It lives in the eight top-level buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platforms/`, `workflows/`, `data/`), and may use whatever structure serves the knowledge within a bucket.
 
-`_docs/` is not the product. `specs/` states what binds; the Diátaxis zones (`decisions/`, `guides/`,
-`reference/`, `explanation/`) hold the rest. Never place a knowledge article there. Placement test:
-"Is this about how the KB works?" → `_docs/`; "Is this knowledge the library serves?" → the owning
-bucket (ADR-docs-vs-library-boundary).
+`_docs/` is not the product. `specs/` states what binds; the Diátaxis zones (`decisions/`, `guides/`, `reference/`, `explanation/`) hold the rest. Never place a knowledge article there. Placement test: "Is this about how the KB works?" → `_docs/`; "Is this knowledge the library serves?" → the owning bucket (ADR-docs-vs-library-boundary).
 
-Two boundaries bind what lives here. Private equipment identity, security posture, recovery material,
-credentials, and personal workflows belong in `exobrain-tech-vault`. And this repository names no
-planning, project-management, or workflow method (ADR-the-repository-names-no-planning-method).
+Two boundaries bind what lives here. Private equipment identity, security posture, recovery material, credentials, and personal workflows belong in `exobrain-tech-vault`. And this repository names no planning, project-management, or workflow method (ADR-the-repository-names-no-planning-method).
 
 ## Documentation canon
 
-Non-negotiable: understanding, linting, formatting, testing, and building this checkout read only
-local files and the tools `flake.nix` pins, on the one system it declares
-(ADR-linux-is-the-only-supported-project-target). `_docs/specs/` and `_docs/decisions/` are instance-owned;
-`.spec-driven-docs/` is the managed projection, and `sdd verify` checks it offline. The upstream
-[documentation canon](https://github.com/gubasso/spec-driven-docs) owns the method and serves the
-delivered gates as a lock-pinned tool, never as a source this repository reads. This link is the only
-place that names it; `.spec-driven-docs/manifest.json` records the version
-(ADR-the-upstream-canon-is-named-once).
+Non-negotiable: understanding, linting, formatting, testing, and building this checkout read only local files and the tools `flake.nix` pins, on the one system it declares (ADR-linux-is-the-only-supported-project-target). `_docs/specs/` and `_docs/decisions/` are instance-owned; `.spec-driven-docs/` is the managed projection, and `sdd verify` checks it offline. The upstream [documentation canon](https://github.com/gubasso/spec-driven-docs) owns the method and serves the delivered gates as a lock-pinned tool, never as a source this repository reads. This link is the only place that names it; `.spec-driven-docs/manifest.json` records the version (ADR-the-upstream-canon-is-named-once).
 
-Load the specs of every domain you touch before acting. Each rule has a stable ID that commits,
-reviews, and gate failures cite; change its owning spec with the behavior. Record a significant
-hard-to-reverse choice as one slug-named ADR from the local template. Accepted records stay
-immutable, and a record is loaded only when the rationale is needed.
+Load the specs of every domain you touch before acting. Each rule has a stable ID that commits, reviews, and gate failures cite; change its owning spec with the behavior. Record a significant hard-to-reverse choice as one slug-named ADR from the local template. Accepted records stay immutable, and a record is loaded only when the rationale is needed.
 
 ## Working under these rules
 
-Non-negotiable: a stated rule is applied, not re-raised. Where this file, the method, or a source it
-cites answers something, that is the answer. Report only what is still open; a closed item hides the
-live ones. Retrofitting a rule onto older files is ordinary pre-commit work
-(ADR-a-stated-rule-is-applied-not-re-raised).
+Non-negotiable: a stated rule is applied, not re-raised. Where this file, the method, or a source it cites answers something, that is the answer. Report only what is still open; a closed item hides the live ones. Retrofitting a rule onto older files is ordinary pre-commit work (ADR-a-stated-rule-is-applied-not-re-raised).
 
-`master` is the trunk: the only permanent branch. Work reaches it through a short-lived branch and
-one squash-merged pull request, never a direct push (ADR-master-is-the-trunk).
+`master` is the trunk: the only permanent branch. Work reaches it through a short-lived branch in its own linked worktree, which `rk integrate` rebases onto the trunk locally, and then the trunk is pushed. No pull request and no CI run: the commit and push hooks are the whole gate (ADR-the-trunk-integrates-locally-and-the-hooks-are-the-gate).
 
 ## Authoring
 
@@ -69,22 +47,15 @@ one squash-merged pull request, never a direct push (ADR-master-is-the-trunk).
 
 ## Executable artifacts and tools
 
-A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the
-chapter that explains it and carries three obligations in the same change
-(ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. The repository's own tools, hooks, and CI follow `project-platform:the-devshell-supplies-every-project-tool`, `project-platform:hooks-run-every-ci-check`, and `project-platform:hooks-exclude-generated-files`.
+A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the chapter that explains it and carries three obligations in the same change (ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. The repository's own tools and hooks follow `project-platform:the-devshell-supplies-every-project-tool`, `project-platform:the-hooks-are-the-only-gate`, and `project-platform:hooks-exclude-generated-files`.
 
 ## No document narrates its own history
 
-Non-negotiable: a file states what is true now, never how it got that way — no `formerly`, no
-`used to`, no `this replaces`, no patch-series marker, no note explaining an absence. Delete the
-clause; if nothing a reader can act on disappeared, it was archaeology. A decision record is the one
-exemption, because holding history is its entire job.
+Non-negotiable: a file states what is true now, never how it got that way — no `formerly`, no `used to`, no `this replaces`, no patch-series marker, no note explaining an absence. Delete the clause; if nothing a reader can act on disappeared, it was archaeology. A decision record is the one exemption, because holding history is its entire job.
 
 ## Filesystem state
 
-Non-negotiable: the filesystem owns its own state, and no document indexes it. Forbidden is the
-enumeration kept because the directory exists — a tree of the tree, a topic-to-filename table, a
-`source-files` list. A list whose entries carry their own payload stays (ADR-filesystem-owns-disk-state).
+Non-negotiable: the filesystem owns its own state, and no document indexes it. Forbidden is the enumeration kept because the directory exists — a tree of the tree, a topic-to-filename table, a `source-files` list. A list whose entries carry their own payload stays (ADR-filesystem-owns-disk-state).
 
 <!-- BEGIN spec-driven-docs docs -->
 ## Documentation
@@ -98,3 +69,14 @@ enumeration kept because the directory exists — a tree of the tree, a topic-to
 - Run `sdd verify` before handoff. <!-- markdownlint-disable-line MD013 -->
 - Keep adopted specs, the tracking registry, and local integration instance-owned. <!-- markdownlint-disable-line MD013 -->
 <!-- END spec-driven-docs docs -->
+
+<!-- BEGIN release-kit -->
+
+## Workflow
+
+- This repository runs the release-kit workflow. `rk method invariants` states what must stay true.
+- Every commit that reaches the trunk MUST be a Conventional Commit.
+- Run `rk status` before changing any file `.release-kit/manifest.json` names. Before reading a gap in `rk setup check` as a setup defect, run `rk setup status`. A credential this runtime cannot reach leaves a step unknown, which is an observation boundary and not drift. Never ask the operator to mount, expose, recreate, or rotate a secret only so an agent check can pass.
+- The full method is `rk method --list`.
+
+<!-- END release-kit -->

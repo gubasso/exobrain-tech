@@ -12,10 +12,23 @@
       url = "github:gubasso/spec-driven-docs/v0.15.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # The release-kit convention's own binary, `rk`. The workflow hooks of the
+    # release-kit block call it by name, and `rk integrate` lands a branch on
+    # the trunk. The same tool-input reading as spec-driven-docs applies, and
+    # `rk self-depend sync` in .envrc moves the tag and the lock together.
+    release-kit = {
+      url = "github:gubasso/release-kit/v0.9.7";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs, spec-driven-docs }:
+    {
+      self,
+      nixpkgs,
+      spec-driven-docs,
+      release-kit,
+    }:
     let
       # One system, declared here rather than mapped over a default set. This
       # checkout's only required check runs natively on x86_64 Linux, and a
@@ -32,6 +45,7 @@
           # gate the pre-commit block wires and the offline instance check,
           # so the projection holds configuration and no scripts.
           spec-driven-docs.packages.${system}.default
+          release-kit.packages.${system}.default
 
           pkgs.just                    # task runner
           pkgs.pre-commit              # per-project git hooks

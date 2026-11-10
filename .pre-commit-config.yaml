@@ -12,9 +12,9 @@
 #       pre-commit  : fast, local, deterministic.
 #       pre-push    : slower, network-aware (link check, flake evaluation).
 #       commit-msg  : Conventional Commits shape.
-#     The two stages together run every check of CI, and CI runs nothing else
-#     (`project-platform:hooks-run-every-ci-check`). The push stage does not
-#     rerun the commit stage.
+#     The two stages together run every check, each check in one stage, and
+#     no CI runs (`project-platform:the-hooks-are-the-only-gate`). The push
+#     stage does not rerun the commit stage.
 #   - Generated files follow their generator. Every hook that rewrites or
 #     judges excludes them, in the tool's own configuration where it has one,
 #     and the reading hooks keep them (`project-platform:hooks-exclude-generated-files`):
@@ -66,6 +66,26 @@ default_install_hook_types: [pre-commit, commit-msg, pre-push]
 default_stages: [pre-commit]
 
 repos:
+# BEGIN release-kit
+# The release convention's hooks. Install every stage they run at:
+# pre-commit install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
+# A CI sweep needs no SKIP here: no hook in this block refuses a trunk
+# checkout. Set one where this project classifies a check of its own
+# local-only, naming that hook's id.
+# rk integrate runs this project's pre-integrate suite as
+# `pre-commit run --hook-stage manual --all-files`. Assign to the manual
+# stage every check that must pass before work reaches the trunk, and have
+# continuous integration invoke the same stages: a check that runs on one
+# side of the boundary alone guards one side alone.
+  - repo: local
+    hooks:
+      - id: rk-status-check
+        name: rk status check
+        language: system
+        pass_filenames: false
+        entry: rk status --check --target .
+        files: '^(\.github/workflows/|\.gitlab-ci\.yml$|\.gitlab/ci/|AGENTS\.md$|\.release-kit/|\.pre-commit-config\.yaml$)'
+# END release-kit
   # --- Housekeeping (auto-fix where possible) ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

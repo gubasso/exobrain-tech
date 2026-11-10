@@ -40,4 +40,4 @@ and jj buckets carry the commands and are written against it.
 
 ## Status
 
-Accepted
+Superseded by [ADR-the-trunk-integrates-locally-and-the-hooks-are-the-gate](./ADR-the-trunk-integrates-locally-and-the-hooks-are-the-gate.md) — the trunk takes local rebase integrations, and no CI runs.
