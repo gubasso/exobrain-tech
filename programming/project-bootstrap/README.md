@@ -57,7 +57,7 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 | 0 | [Bootstrap model](./00-bootstrap-model.md)             | What "bootstrap" is: the once-per-project phase, the three-layer ownership model.    |
 | 1 | [Repository foundation](./01-repository-foundation.md) | `.gitignore`, `LICENSE` (SPDX), `README` skeleton — the root files every repo needs. |
 | 2 | [Governance & docs](./02-governance-and-docs.md)       | `CLAUDE.md`, the `AGENTS.md` convention, ADR scaffold, README-as-index.              |
-| 3 | [Local dev environment](./03-local-dev-environment.md) | Nix devShell + `.envrc`, `.editorconfig` — reproducible, cross-editor baseline.      |
+| 3 | [Local dev environment](./03-local-dev-environment.md) | Nix devShell + `.envrc`, one owner per dependency, `.editorconfig`.                  |
 | 4 | [Quality gates](./04-quality-gates.md)                 | Formatter, linter, pre-commit, task runner — fail fast, one command.                 |
 | 5 | [CI](./05-ci.md)                                       | First CI workflow: build, test, format-check, lint on every push.                    |
 | 6 | [Security baseline](./06-security-baseline.md)         | Secrets hygiene, dependency audit, OpenSSF Scorecard.                                |

@@ -66,13 +66,17 @@ Project-config-file lookup precedence (per language) for "is this declared somew
 ## Pre-commit / CI tier suggestions
 
 For projects without a `.pre-commit-config.yaml`, REFACTOR_PLAN.md's Suggestions section can include
-a copy-paste hook tailored to the detected language:
+a copy-paste hook tailored to the detected language. A test runner keeps `language: system` because
+it runs in the environment of the project, and the comment above its `- id:` line names its owner
+and class, as
+[04 — Quality gates](../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
 
 ### Python
 
 ```yaml
 - repo: local
   hooks:
+    # owner: pyproject.toml (project-environment) pytest imports the package and its dependencies
     - id: pytest-unit
       name: pytest (unit)
       entry: pytest
@@ -88,6 +92,7 @@ a copy-paste hook tailored to the detected language:
 ```yaml
 - repo: local
   hooks:
+    # owner: devshell (project-environment) cargo builds the crate with the pinned toolchain
     - id: cargo-nextest-unit
       name: cargo nextest (lib only)
       entry: cargo
@@ -103,6 +108,7 @@ a copy-paste hook tailored to the detected language:
 ```yaml
 - repo: local
   hooks:
+    # owner: package.json (project-environment) vitest runs in the node_modules of the project
     - id: vitest-unit
       name: vitest run (unit)
       entry: pnpm
@@ -118,6 +124,7 @@ a copy-paste hook tailored to the detected language:
 ```yaml
 - repo: local
   hooks:
+    # owner: devshell (project-environment) bats tests the project scripts in the devshell
     - id: bats-unit
       name: bats (unit)
       entry: bats
@@ -147,7 +154,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
-      # mutmut comes from the devshell, like every other project tool.
+      # mutmut comes from the devshell.
       - run: nix develop --command mutmut run --paths-to-mutate=src/myapp || true
       - run: nix develop --command mutmut results
 ```

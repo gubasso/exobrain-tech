@@ -36,6 +36,64 @@ explicit `stages:`. Read the pinned manifest of each remote repository, and set 
 names a stage the hook does not belong to. A project that gates its integration on the manual stage
 keeps `manual` in both lists.
 
+### Who builds a hook environment
+
+A hook takes the environment that pre-commit builds by default: pin its upstream repository with
+`rev`, and the hook declares its own language. A hook with `language: system`, `script`, or
+`unsupported`, or an upstream `-system` id, is an exception. A comment directly above it names its
+owner, its class, and its reason, in the form `# owner: <owner> (<class>) <reason>`. The owner is
+the file that declares the tool, as
+[03 — Who owns each dependency](./03-local-dev-environment.md#who-owns-each-dependency) says:
+`pyproject.toml`, `package.json`, `devshell`, or `host`. The five classes:
+
+- `no-hook-language`: upstream publishes no hook in a language for which pre-commit builds an
+  environment, such as statix, lychee, or a script of the project.
+- `project-environment`: the tool must run in the environment of the project, such as pyright,
+  pytest, `cargo clippy`, or tsc.
+- `recorded-failure`: the managed hook fails on a clean machine of a supported host, even with the
+  devshell fallback for hook setup. The comment names the error and the date.
+- `outside-caller`: a caller outside pre-commit needs the same tool and cannot reach it through
+  `pre-commit run`, such as a language server, or `nix fmt` for nixfmt.
+- `base-tool`: the hook calls only the base tools of the host. The owner is `host`.
+
+```yaml
+- repo: local
+  hooks:
+    # owner: devshell (no-hook-language) statix has no hook in a language that pre-commit builds.
+    - id: statix
+      name: statix
+      entry: statix check
+      language: system
+      pass_filenames: false
+    # owner: pyproject.toml (project-environment) pytest runs in the uv environment of the project.
+    - id: pytest
+      name: pytest
+      entry: uv run pytest
+      language: system
+      pass_filenames: false
+    # owner: devshell (recorded-failure) the managed hook fails with "<error>" on a clean host, YYYY-MM-DD.
+    - id: example-tool
+      name: example-tool
+      entry: example-tool
+      language: system
+    # owner: devshell (outside-caller) nix fmt runs the nixpkgs nixfmt, so the hook runs the same one.
+    - id: nixfmt
+      name: nixfmt
+      entry: nixfmt
+      language: system
+      types: [nix]
+    # owner: host (base-tool) the guard calls only git and the shell.
+    - id: no-merge-commit
+      name: no merge commit
+      entry: sh -c 'test -z "$(git rev-list --merges @{u}..HEAD)"'
+      language: system
+      pass_filenames: false
+      stages: [pre-push]
+```
+
+A hook inside a block that a tool renders, such as a release tool or a docs tool, carries no
+comment, because that tool owns the block.
+
 ### Generated files
 
 A file that a tool generates follows that tool's native conventions. The project runs the generator

@@ -33,8 +33,9 @@ Everyday work after setup is not here; this is the one-time scaffold.
    `bootstrap-governance`.
 
 4. **Set up the local dev environment:** a Nix devShell + `.envrc` (direnv) for a reproducible
-   toolchain, and an `.editorconfig` for cross-editor consistency. The devshell holds every project
-   tool, and the host supplies only the ubiquitous tools. →
+   toolchain, and an `.editorconfig` for cross-editor consistency. Each dependency has one owner, the
+   most specific file that declares it natively, and the host supplies only what the project does
+   not own. →
    [03 — Local dev environment](./03-local-dev-environment.md). _Automate:_ `bootstrap-nix`,
    `bootstrap-lint`.
 

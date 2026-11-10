@@ -4,10 +4,11 @@
 
 ## Installation and Setup
 
-1. asdf python local env
-2. poetry add dvc
-3. run with: `poetry run dvc`
-   - `alias dvc='poetry run dvc'`
+1. the devShell of the project provides python and uv, see
+   [nix: layering a language venv](./nix/02-per-project-devshell.md#layering-a-language-venv-python--uv)
+2. uv add dvc
+3. run with: `uv run dvc`
+   - `alias dvc='uv run dvc'`
 
 ### Setup remote
 

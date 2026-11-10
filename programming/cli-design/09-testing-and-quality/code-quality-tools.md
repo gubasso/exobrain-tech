@@ -363,7 +363,7 @@ lint-all: lint lint-complexity lint-boundaries
 # --- Dependency hygiene ---
 
 machete:
-    cargo machete
+    pre-commit run cargo-machete --all-files
 
 deny:
     cargo deny check
@@ -388,15 +388,14 @@ bench:
 
 ```yaml
 # Structural quality gates (add to existing config)
-- repo: local
+- repo: https://github.com/bnjbvr/cargo-machete
+  rev: v0.9.2
   hooks:
     - id: cargo-machete
-      name: unused deps
-      entry: cargo machete
-      language: system
-      types: [toml]
-      pass_filenames: false
 
+- repo: local
+  hooks:
+    # owner: devshell (no-hook-language) a recipe of the project that calls rg
     - id: lint-boundaries
       name: layer boundaries
       entry: just lint-boundaries
@@ -404,6 +403,13 @@ bench:
       types: [rust]
       pass_filenames: false
 ```
+
+pre-commit builds the `cargo-machete` hook in its own rust environment, and the `machete` recipe
+reaches it through `pre-commit run`. The `lint-boundaries` hook keeps `language: system` because no
+upstream hook exists for a recipe of the project. The comment above its `- id:` line names the owner
+and the class, as
+[04 — Quality gates](../../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)
+says.
 
 ### GitHub Actions — nightly quality gates
 

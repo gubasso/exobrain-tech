@@ -50,42 +50,17 @@
           pkgs.just                    # task runner
           pkgs.pre-commit              # per-project git hooks
           pkgs.dprint                  # markdown formatter
-          pkgs.editorconfig-checker    # .editorconfig lint
           # Node for the markdownlint-cli2 pre-commit hook. pre-commit's node
           # language falls back to nodeenv, which downloads a generic-glibc
           # node that cannot execute on a Nix host (no /lib64 loader); with
           # node+npm on PATH it uses `language_version: system` instead.
           pkgs.nodejs
 
-          # Vendored corpus-wide gates call rg, and the root table-of-contents
-          # hook calls md_toc. System hooks resolve off the ambient PATH, so
-          # both tools need declared providers here.
-          pkgs.ripgrep
-          pkgs.python3Packages.md-toc
-
-          # Tools whose upstream hook is `language: python` but ships a
-          # prebuilt, dynamically linked binary in the wheel. Such a binary
-          # hard-codes the ELF interpreter /lib64/ld-linux-x86-64.so.2, which
-          # does not exist on a Nix host, so the hook installs cleanly and
-          # then dies at exec with a bare ENOENT. The nixpkgs builds link
-          # against the glibc in the store, so taking the tool from here and
-          # marking its hook `language: system` removes the failure mode
-          # outright — no patchelf, no hand-repaired ~/.cache/pre-commit.
-          #
-          # Every `language: system` hook resolves off the ambient PATH and
-          # gets no environment of its own, so each one needs a named provider
-          # in this list. Currently: dprint, typos, committed, lychee, and the
-          # two shell tools below.
-          pkgs.typos
-          pkgs.committed
-
-          # awk backs the prose gate, and markdownlint-cli2 backs the heading
-          # shapes. The linter has its own pre-commit environment, but a gate
-          # that cannot be run outside pre-commit cannot be run against a path
-          # the hook misses, or exercised against a deliberate violation —
-          # which `just test-gates` does for both.
-          pkgs.gawk
-          pkgs.markdownlint-cli2
+          # A hook tool that pre-commit can build an environment for, such as
+          # typos, committed, md-toc, or editorconfig-checker, is pinned in
+          # .pre-commit-config.yaml and has no package here. A language
+          # library never enters this shell
+          # (project-platform:the-most-specific-native-owner-holds-each-dependency).
 
           # jq reads the evaluated system set in .hooks/check-one-system.sh,
           # which the one-system pre-push hook and `just test-one-system` run.
@@ -97,7 +72,7 @@
           # rustup-init, which pre-commit runs to build the environment of the
           # rust hook (ripsecrets), downloads the toolchain with curl. A clean
           # machine has no curl of its own to lend it
-          # (project-platform:the-devshell-supplies-every-project-tool).
+          # (project-platform:the-most-specific-native-owner-holds-each-dependency).
           pkgs.curl
 
           # The two tools behind `knowledge-base-boundary:a-shipped-script-is-gated`.

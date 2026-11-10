@@ -1,5 +1,5 @@
 {
-  description = "python (poetry) dev shell";
+  description = "python (uv) dev shell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -13,30 +13,23 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
-        # Single source of truth for the Python version — declared explicitly.
-        # Keep it within your pyproject requires-python.
-        # See ../../02-per-project-devshell.md ("Aligning the Python version").
+        # The one declared Python version. Keep it within the requires-python
+        # of pyproject.toml. See ../../02-per-project-devshell.md ("Aligning the
+        # Python version").
         python = pkgs.python313;
       in
-      # Stock pkgs.poetry is built against nixpkgs' default CPython and creates
-      # the venv with THAT interpreter, not whatever is on PATH. Assert the two
-      # agree, so exactly one Python exists in the shell (no findpython/virtualenv
-      # race) and the venv matches the pin above — all from cache, no Poetry
-      # rebuild. If a nixpkgs bump moves Poetry's Python this fails loudly (bump
-      # `python` to match) instead of silently drifting the venv.
-      assert python.version == pkgs.poetry.python.version;
       {
         devShells.default = pkgs.mkShell {
           packages = [
             python
-            pkgs.poetry
+            pkgs.uv
             pkgs.pre-commit
             pkgs.just
             # native build deps for C-extensions, uncomment as needed:
             # pkgs.swig pkgs.openssl pkgs.pkg-config
           ];
 
-          # Precompiled manylinux wheels Poetry installs (grpcio, numpy,
+          # Precompiled manylinux wheels that uv installs (grpcio, numpy,
           # pydantic-core, …) link against a system libstdc++.so.6 / libz.so.1
           # that Nix keeps off the default loader path. Expose the gcc C++
           # runtime + zlib so `import`ing them works. Without this you get
@@ -47,7 +40,22 @@
             pkgs.zlib
           ];
 
-          shellHook = ''echo "dev shell ready — run: poetry install"'';
+          # Hand the pinned interpreter to uv, forbid interpreter downloads,
+          # install uv.lock into .venv as it is, and put .venv/bin on PATH.
+          # Messages go to stderr: `nix develop --command` and `direnv exec`
+          # share stdout with the command. After a change of pyproject.toml,
+          # run `uv lock`, then `direnv reload`.
+          # See ../../02-per-project-devshell.md ("Layering a language venv").
+          shellHook = ''
+            root="$(git rev-parse --show-toplevel)"
+            export UV_PYTHON="${python}/bin/python3"
+            export UV_PYTHON_DOWNLOADS=never
+            export UV_PROJECT_ENVIRONMENT="$root/.venv"
+            uv sync --frozen --quiet --project "$root" \
+              || echo "uv sync failed: after a change of pyproject.toml, run uv lock" >&2
+            export VIRTUAL_ENV="$root/.venv"
+            export PATH="$root/.venv/bin:$PATH"
+          '';
         };
       }
     );

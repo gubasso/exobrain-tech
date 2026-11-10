@@ -14,9 +14,34 @@ lockfile (`uv.lock`, generated: the hooks that rewrite or judge exclude it, see
 - Distributable package: `uv init --package <name>` (adds a build backend and `src/` layout).
 - In an existing directory: `uv init` (or `uv init --package`).
 
-`uv add <dep>` / `uv add --dev <dep>` manage runtime and dev dependencies. Alternatives that solve
-the same job — pick one and keep it as the single owner: **Poetry**, **PDM**, or **pip-tools**
-(`pip-compile`) over a plain `pip` + `requirements.txt` flow.
+`uv add <dep>` / `uv add --dev <dep>` manage runtime and dev dependencies. `pyproject.toml` and
+`uv.lock` own every Python library of the project, and the flake holds none, as
+[who owns each dependency](../../../programming/project-bootstrap/03-local-dev-environment.md#who-owns-each-dependency)
+says. Poetry, PDM, and pip-tools (`pip-compile`) are alternatives for a project that already uses
+one of them. Each project keeps one manager.
+
+## A single script
+
+A standalone script declares its dependencies in an inline PEP 723 block at the top of the file. uv
+reads the block, builds an isolated environment, and runs the script in it:
+
+```python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#   "httpx",
+# ]
+# ///
+```
+
+`uv init --script <file> --python 3.12` writes the block, and `uv add --script <file> <dep>` adds a
+dependency to it. Run the script with `uv run --script <file>`, or mark it executable and run it
+directly through the shebang. `uv lock --script <file>` pins the versions in a `<file>.lock` beside
+it.
+
+A script moves to a project with `pyproject.toml` when its tests need its third-party packages,
+because pytest then runs in an environment that holds both.
 
 ## `pyproject.toml` baseline metadata (PEP 621)
 

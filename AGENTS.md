@@ -47,7 +47,7 @@ Non-negotiable: a stated rule is applied, not re-raised. Where this file, the me
 
 ## Executable artifacts and tools
 
-A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the chapter that explains it and carries three obligations in the same change (ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. The repository's own tools and hooks follow `project-platform:the-devshell-supplies-every-project-tool`, `project-platform:the-hooks-are-the-only-gate`, and `project-platform:hooks-exclude-generated-files`.
+A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the chapter that explains it and carries three obligations in the same change (ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. The repository's own tools and hooks follow `project-platform:the-most-specific-native-owner-holds-each-dependency`, `project-platform:the-hooks-are-the-only-gate`, and `project-platform:hooks-exclude-generated-files`.
 
 ## No document narrates its own history
 

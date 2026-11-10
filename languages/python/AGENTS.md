@@ -1,6 +1,6 @@
 ---
 digest-of: languages/python
-last-synced: 2026-07-10
+last-synced: 2026-11-10
 token-estimate: 400
 ---
 
@@ -15,9 +15,12 @@ conventions.
 ## Key Points
 
 - **Environment vs dependencies**: the Python runtime is provisioned by the project's Nix flake
-  devShell (canonical per-project environment manager); Poetry manages dependencies inside it. Do
-  not replace Poetry with Nix/poetry2nix by default. See
-  `../../workflows/development-tools-workflow.md` and `../../tools/nix/README.md`.
+  devShell (canonical per-project environment manager). uv manages dependencies inside it, from
+  `pyproject.toml` and `uv.lock` for a project and a PEP 723 block for a single script. A flake
+  never holds a Python library. Poetry, PDM, and pip-tools are alternatives for a project that
+  already uses one, with one manager in each project. See
+  `project-bootstrap-spec/00-toolchain-and-layout.md`,
+  `../../workflows/development-tools-workflow.md`, and `../../tools/nix/README.md`.
 - **Django review guide**: Django-specific review heuristics (N+1 queries, migrations, security,
   template injection).
 - **General notes** (`python.md`): project environment/runtime, shell commands via subprocess, type
@@ -25,7 +28,7 @@ conventions.
 - **Pydantic**: Mixin patterns with enums, validator patterns (field/model validators).
 - **Testing**: pytest conftest fixture patterns and organization.
 - **Packaging**: local Python module with CLI access in a virtualenv; Poetry deps, lockfile export,
-  container-deploy patterns.
+  container-deploy patterns for a project that already uses Poetry (`python-poetry.md`).
 - **Frameworks**: Eve, Flask, MongoDB integration notes.
 
 ## Maintenance Notes

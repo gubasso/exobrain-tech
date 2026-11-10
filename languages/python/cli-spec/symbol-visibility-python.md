@@ -107,14 +107,22 @@ is rejected: it carries the same "people forget" failure mode as the original bu
 ### `pyproject.toml`
 
 Ship the checker as a dev-only (sdist-only) package so it is importable in a dev checkout but stays
-out of the wheel:
+out of the wheel. The uv build backend puts only the module of the project in the wheel, and
+`source-include` adds the checker to the sdist. `uv sync` installs the project editable from `src/`,
+so `dev_checks` imports in the checkout:
 
 ```toml
-[tool.poetry]
-packages = [
-    {include = "<your_package>", from = "src"},
-    {include = "dev_checks", from = "src", format = "sdist"},
-]
+[project]
+name = "<your-package>"
+version = "0.1.0"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "<your_package>"
+source-include = ["src/dev_checks/**"]
 ```
 
 ### `.pre-commit-config.yaml`
@@ -123,9 +131,10 @@ packages = [
 # Direction A — custom checker.
 - repo: local
   hooks:
+    # owner: pyproject.toml (project-environment) runs a module of the project in its venv
     - id: symbol-visibility
       name: symbol visibility (internal symbols must be _-prefixed)
-      entry: poetry run python -m dev_checks.visibility_check
+      entry: uv run python -m dev_checks.visibility_check
       language: system
       pass_filenames: false
       always_run: true
@@ -151,9 +160,8 @@ Keeping it in a dedicated hook avoids turning on preview mode for the whole rule
 
 `src/dev_checks/visibility.py` — pure logic, no I/O presentation:
 `scan_visibility(repo_root) -> list[Violation]`. `src/dev_checks/visibility_check.py` — thin
-`argparse`/`print` `main()` with `if __name__ == "__main__": raise
-SystemExit(main())`, exit `1` on
-any violation. A reference implementation:
+`argparse`/`print` `main()` with `if __name__ == "__main__": raise SystemExit(main())`, exit `1`
+on any violation. A reference implementation:
 
 ```python
 def scan_visibility(repo_root):
@@ -187,8 +195,8 @@ that merely shares a common name (`logger`, `app`).
 
 ## 7. Verification & adoption
 
-1. `poetry run python -m dev_checks.visibility_check` → clean.
-2. `poetry run ruff check --select PLC2701 --preview src` → clean; confirm it is _active_ by
+1. `uv run python -m dev_checks.visibility_check` → clean.
+2. `uv run ruff check --select PLC2701 --preview src` → clean; confirm it is _active_ by
    importing a private name in a throwaway file (silent without `--preview`).
 3. `mypy --strict` + full test run after the cleanup rename — these catch any mis-rename (broken
    import, a renamed keyword-argument name, a `TypeVar` string mismatch).

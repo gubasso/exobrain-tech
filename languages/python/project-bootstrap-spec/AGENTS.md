@@ -1,6 +1,6 @@
 ---
 digest-of: languages/python/project-bootstrap-spec
-last-synced: 2026-07-10
+last-synced: 2026-11-10
 token-estimate: 650
 ---
 
@@ -18,8 +18,11 @@ library). Publishing is out of scope.
 
 - **Manager:** `uv` is the modern default — one tool for interpreter, virtualenv (`.venv`), lockfile
   (`uv.lock`), and deps. Scaffold `uv init <name>` (app) or `uv init --package <name>`
-  (distributable, adds build backend + `src/`). Alternatives, pick one owner: Poetry, PDM,
-  pip-tools.
+  (distributable, adds build backend + `src/`). Poetry, PDM, and pip-tools are alternatives for a
+  project that already uses one, with one manager in each project.
+- **Single script:** a PEP 723 block declares its dependencies, the shebang
+  `#!/usr/bin/env -S uv run --script` runs it, and `uv add --script` edits the block. It moves to a
+  project when its tests need its third-party packages.
 - **Manifest:** `pyproject.toml` (PEP 621). Bootstrap sets only `name`, `version`,
   `requires-python`, `description`, and a `[build-system]` backend (`hatchling` or `uv_build`).
   Publish-grade metadata (`license`, `authors`, `readme`, `urls`, `classifiers`, `keywords`) is

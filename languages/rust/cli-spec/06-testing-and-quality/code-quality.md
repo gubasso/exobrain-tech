@@ -17,7 +17,7 @@
 | Complexity metrics            | `rust-code-analysis-cli` | Pre-push     | `pkgs.rust-code-analysis`     |
 | Clippy restriction lints      | `clippy` (built-in)      | Pre-commit   | The pinned Rust toolchain.    |
 | Clippy complexity thresholds  | `clippy.toml`            | Pre-commit   | Config file only.             |
-| Unused dependencies           | `cargo-machete`          | Pre-commit   | `pkgs.cargo-machete`          |
+| Unused dependencies           | `cargo-machete`          | Pre-commit   | Upstream pre-commit hook.     |
 | Unused dependencies (precise) | `cargo-udeps`            | Scheduled CI | `pkgs.cargo-udeps` (+nightly) |
 | Security / license audit      | `cargo-deny`             | Pre-push     | `pkgs.cargo-deny`             |
 | CVE scanning                  | `cargo-audit`            | Pre-push     | `pkgs.cargo-audit`            |
@@ -25,7 +25,8 @@
 | LOC metrics                   | `tokei`                  | Pre-push     | `pkgs.tokei`                  |
 | Continuous benchmarking       | Bencher + `criterion`    | Scheduled CI | `pkgs.cargo-criterion`        |
 
-Every tool comes from the devshell, and CI repeats the hook stages in it. A scheduled CI job is
+pre-commit builds the `cargo-machete` hook from its upstream repository. The devshell supplies every
+other tool, and CI repeats the hook stages in it. A scheduled CI job is
 outside the push rule and is listed, as [05 — CI](../../../../programming/project-bootstrap/05-ci.md#ci-only-checks) says.
 
 ## Complexity metrics with `rust-code-analysis`
@@ -168,7 +169,7 @@ Use both: clippy for fast gating, `rust-code-analysis` for deeper analysis and t
 dependency isn't mentioned, it's likely unused.
 
 ```bash
-cargo machete   # pkgs.cargo-machete in the devshell
+pre-commit run cargo-machete --all-files   # the upstream hook, pinned in .pre-commit-config.yaml
 ```
 
 **False positives:** crates used only via macros (e.g., `tracing` used via `#[instrument]`) may not
@@ -425,8 +426,14 @@ lint-boundaries:
 
 ```yaml
 # .pre-commit-config.yaml
+- repo: https://github.com/bnjbvr/cargo-machete
+  rev: v0.9.2
+  hooks:
+    - id: cargo-machete
+
 - repo: local
   hooks:
+    # owner: devshell (no-hook-language) a recipe of the project that calls rg
     - id: lint-boundaries
       name: layer boundaries
       entry: just lint-boundaries
@@ -434,6 +441,11 @@ lint-boundaries:
       types: [rust]
       pass_filenames: false
 ```
+
+`cargo-machete` is an upstream hook in rust, so pre-commit builds its environment. The
+`lint-boundaries` recipe has no upstream hook and keeps `language: system`, as
+[04 — Quality gates](../../../../programming/project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)
+says.
 
 ## Complete quality gate integration
 
@@ -459,7 +471,7 @@ lint-boundaries:
 # --- Dependency hygiene ---
 
 machete:
-    cargo machete
+    pre-commit run cargo-machete --all-files
 
 deny:
     cargo deny check

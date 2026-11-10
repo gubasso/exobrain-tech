@@ -24,26 +24,33 @@ rustup-as-installer).
 The devShell provides the package-manager binary; the package manager still owns dependency
 resolution and the lockfile. Nix does **not** replace it by default.
 
-| Language | Dependency manager (runs inside the devShell)                      |
-| -------- | ------------------------------------------------------------------ |
-| Python   | Poetry — see [python-poetry](../languages/python/python-poetry.md) |
-| JS / TS  | npm / pnpm / yarn                                                  |
-| Rust     | Cargo                                                              |
-| Go       | Go modules                                                         |
+| Language | Dependency manager (runs inside the devShell)                                                         |
+| -------- | ----------------------------------------------------------------------------------------------------- |
+| Python   | uv, see [toolchain and layout](../languages/python/project-bootstrap-spec/00-toolchain-and-layout.md) |
+| JS / TS  | npm / pnpm / yarn                                                                                     |
+| Rust     | Cargo                                                                                                 |
+| Go       | Go modules                                                                                            |
+
+Each dependency has one owner, the most specific file that declares it. The rule and its order are
+in [who owns each dependency](../programming/project-bootstrap/03-local-dev-environment.md#who-owns-each-dependency).
 
 Typical Python flow (first-time setup):
 
 ```bash
-direnv allow           # once per project; hooks the devShell + venv on every cd
-poetry install         # create the venv
-direnv reload          # pick up the freshly-created venv
+direnv allow           # once per project: enters the devShell, which syncs .venv from uv.lock
+uv sync                # lock and install after a change of pyproject.toml
 ```
 
-With direnv hooked (see
-[nix — Automatic activation](../tools/nix/02-per-project-devshell.md#automatic-activation-direnv)),
-`cd` into the project auto-enters the devShell and activates the Poetry venv — no manual
-`eval "$(poetry env activate)"`. That manual step is only for plain `nix develop` without direnv.
+The devShell hands its interpreter to uv, runs `uv sync --frozen`, and puts `.venv/bin` on `PATH`,
+so a `cd` into the project activates the venv with no manual step. That layering is in
+[nix: layering a language venv](../tools/nix/02-per-project-devshell.md#layering-a-language-venv-python--uv)
+and [nix: aligning the Python version](../tools/nix/02-per-project-devshell.md#aligning-the-python-version).
+Direnv itself is in
+[nix: automatic activation](../tools/nix/02-per-project-devshell.md#automatic-activation-direnv).
 
-Reach for `poetry2nix` / `cargo2nix` only when you want **Nix itself** to build the app from the
-lockfile — a bigger change than managing the environment, and it creates a second source of truth
-beside the native lockfile.
+Poetry, PDM, and pip-tools are alternatives for a project that already uses one of them. Each
+project keeps one manager. Poetry is in [python-poetry](../languages/python/python-poetry.md).
+
+Reach for `uv2nix`, `poetry2nix`, or `cargo2nix` only when Nix itself builds the app from the
+lockfile. That is a bigger change than managing the environment, and it creates a second source of
+truth beside the native lockfile.

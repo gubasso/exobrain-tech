@@ -15,29 +15,51 @@ starting templates are owned by
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md) — follow it for
 the template; the language binding names the toolchain that goes inside.
 
-## Who supplies each tool
+## Who owns each dependency
 
-Three owners supply the tools of a project, and each tool has exactly one:
+Each dependency of a project has exactly one owner: the most specific file that declares that kind
+of dependency natively. What uses the dependency picks the owner. To place a dependency, ask which
+is the most specific file that can declare it natively. The owners run from the most specific to the
+most general:
 
-- The devshell holds the major tools: the language toolchain, `pre-commit`, the task runner, and
-  every tool that a task-runner recipe, a `language: system` hook, or a `language: script` hook
-  calls from `PATH`.
-- pre-commit manages the tools of a hook whose language gets an environment that pre-commit builds,
-  such as `python`, `golang`, `node`, or `rust`.
-- The host supplies only the ubiquitous tools: `git`, `wt`, `bash`, `awk`, `sed`, `grep`, and the
-  coreutils. `nix` and `direnv` are host tools too, because they enter the devshell, and so are the
-  tools that deploy the host itself, such as `nixos-rebuild` and `home-manager`.
+1. The manifest of the stack holds what the code of the project uses. A Python project declares its
+   packages, and the dev tools that run in its environment, such as pytest and pyright, in
+   `pyproject.toml`, and `uv.lock` locks them. A single Python script declares its packages in a
+   PEP 723 block. A Rust crate uses `Cargo.toml`, a Node project uses `package.json` and its lock
+   file, and a Go module uses `go.mod`.
+2. The hook configuration holds what a hook uses. `.pre-commit-config.yaml` pins each hook tool for
+   which pre-commit can build an environment, with `rev` and `additional_dependencies`.
+3. The devshell holds the major tools: the language toolchains and their managers, such as python
+   with uv, cargo, and nodejs, then `pre-commit`, the task runner, and the project tools. It also
+   holds each tool that no owner above can declare, such as statix, bats with its libraries, or a
+   cargo subcommand, the system libraries that a native build links, and the runtime that
+   pre-commit needs to build a hook environment on a clean machine.
+4. The host supplies what the project does not own: `git`, `wt`, `bash`, `awk`, `sed`, `grep`, the
+   coreutils, `nix`, `direnv`, the tools that deploy the host, the standard ELF loader, and the
+   tools that carry credentials, such as `gh`, `glab`, `ssh`, and `aws`.
 
-A hook or recipe that calls a host tool from `PATH` follows the rule. A project tool that is
-missing goes into the devshell, never onto the host. A hook added without its provider in the
-devshell passes only on a machine that happens to carry the tool, and fails on a clean machine and
-in CI.
+One tool has one owner. A tool that one level declares is not declared again at another level. A
+runtime that the devshell gives to an owner below it, such as the python of a uv project or the
+nodejs of a node hook, is not a second owner.
+
+A recipe reaches a hook tool through `pre-commit run <id>`, and a tool of the manifest through the
+runner of the manifest, such as `uv run`, `cargo`, or `npm run`.
+
+A flake never holds a language library. A Python, Node, or Perl package goes to the manifest of its
+stack, and the devshell keeps only the interpreter and its manager.
+
+The host supplies the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`. A hook environment can
+hold a prebuilt binary that links it, such as the typos wheel. A conventional distribution carries
+the loader, and a NixOS host gets it from nix-ld.
 
 When pre-commit cannot build the environment of a hook from a clean environment, the devshell
 supplies the missing dependency, and pre-commit still manages the packages of the hook. A project
 with `node` hooks puts `nodejs` in its devshell, because the generic node build that pre-commit
 downloads does not run on a host without the standard glibc loader, such as a Nix host. A `rust`
 hook needs `curl` from the devshell, because `rustup-init` downloads the toolchain with it.
+
+A hook that keeps `language: system` is an exception with a recorded owner and class, as
+[04 — Quality gates](./04-quality-gates.md#git-hooks) says.
 
 A Nix flake is the example here, not the rule. The Nix form, with the package list, is in
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md#git-hooks-pre-commit).

@@ -10,8 +10,8 @@
     - [Scenario: A system is advertised with no host behind it](#scenario-a-system-is-advertised-with-no-host-behind-it)
   - [`project-platform:library-topics-stay-platform-neutral` — Library topics stay open](#project-platformlibrary-topics-stay-platform-neutral--library-topics-stay-open)
     - [Scenario: A portable chapter describes an access-control mode](#scenario-a-portable-chapter-describes-an-access-control-mode)
-  - [`project-platform:the-devshell-supplies-every-project-tool` — The devshell supplies every project tool](#project-platformthe-devshell-supplies-every-project-tool--the-devshell-supplies-every-project-tool)
-    - [Scenario: A hook builds its environment on a machine with no curl](#scenario-a-hook-builds-its-environment-on-a-machine-with-no-curl)
+  - [`project-platform:the-most-specific-native-owner-holds-each-dependency` — The most specific native owner holds each dependency](#project-platformthe-most-specific-native-owner-holds-each-dependency--the-most-specific-native-owner-holds-each-dependency)
+    - [Scenario: A hook that pre-commit can build](#scenario-a-hook-that-pre-commit-can-build)
   - [`project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate](#project-platformthe-hooks-are-the-only-gate--the-git-hooks-are-the-only-gate)
     - [Scenario: A check is added outside the hooks](#scenario-a-check-is-added-outside-the-hooks)
   - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
@@ -66,21 +66,29 @@ platform-specific claim to the implementation that proves it.
 
 Verify: reviewer confirms the chapter states no operating system as a universal requirement
 
-### `project-platform:the-devshell-supplies-every-project-tool` — The devshell supplies every project tool
+### `project-platform:the-most-specific-native-owner-holds-each-dependency` — The most specific native owner holds each dependency
 
-The project MUST supply from `flake.nix` every tool that a recipe, a `language: system` hook, or a
-`language: script` hook calls, and every tool that pre-commit's installers need to build a hook
-environment from a clean machine. The host supplies only `git`, `bash`, `awk`, `sed`, `grep`, the
-coreutils, `nix`, and `direnv`. The chapter that states the general rule is
-`programming/project-bootstrap/03-local-dev-environment.md`, "Who supplies each tool".
+The project MUST give each dependency exactly one owner, the most specific file that declares it
+natively. `.pre-commit-config.yaml` pins each hook tool for which pre-commit builds an environment.
+`flake.nix` holds the toolchain, `pre-commit`, the task runner, the project tools such as `sdd`, each
+tool that no hook language can build, and each runtime that pre-commit needs to build a hook
+environment from a clean machine, such as `curl` for `rustup-init`. `flake.nix` holds no language
+library. A hook that keeps `language: system` or `script` carries an `# owner:` comment with its
+class. The host supplies only `git`, `bash`, `awk`, `sed`, `grep`, the coreutils, `nix`, `direnv`,
+and the standard ELF loader. The chapter that states the general rule is
+`programming/project-bootstrap/03-local-dev-environment.md`, "Who owns each dependency".
 
-#### Scenario: A hook builds its environment on a machine with no curl
+#### Scenario: A hook that pre-commit can build
 
 - GIVEN an empty pre-commit cache and a `PATH` that holds only the host tools
-- WHEN pre-commit builds the rust environment of the secret scanner
-- THEN `rustup-init` finds `curl` in the devshell and the build succeeds
+- WHEN pre-commit builds the environment of every hook, the rust environment of the secret scanner
+  included
+- THEN each managed hook builds from its pinned `rev`, and `rustup-init` finds `curl` in the devshell
 
-Verify: `env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$(mktemp -d)" nix develop --command pre-commit install-hooks`
+Verify: `d="$(mktemp -d)"; flock -w 3600 "$HOME/.cache/heavy-check.lock" env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$d" nix develop --command pre-commit install-hooks; chmod -R u+w "$d"; rm -rf "$d"`
+
+The verification rebuilds every hook environment, so it runs once for each change of `flake.nix` or
+`.pre-commit-config.yaml`, never on every check.
 
 ### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 

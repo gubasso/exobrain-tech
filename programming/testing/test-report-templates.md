@@ -215,10 +215,15 @@ test = [
 
 ### Wire a pre-commit hook for unit tests
 
+pytest runs in the environment of the project, so its hook keeps `language: system` with an owner
+comment, as
+[04 — Quality gates](../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
+
 ```yaml
 # .pre-commit-config.yaml
 - repo: local
   hooks:
+    # owner: pyproject.toml (project-environment) pytest imports the package and its dependencies
     - id: pytest-unit
       name: pytest (unit)
       entry: pytest

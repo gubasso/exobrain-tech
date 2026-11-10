@@ -46,9 +46,8 @@ test-one-system:
 # A new gate is demonstrated failing against an intentional violation before it
 # is trusted (ADR-executable-artifacts-in-the-library), and `.hooks/test-gates.sh`
 # is where every one of those violations is written. It runs the gates that ship
-# rather than a copy of them, which is what the devShell entries for awk and
-# markdownlint-cli2 are for: a tool reachable only inside pre-commit cannot be
-# run against a deliberate violation.
+# rather than a copy of them, so each tool that a gate calls outside pre-commit
+# has its provider in the devShell or on the host.
 test-gates:
     nix develop --command .hooks/test-gates.sh
 

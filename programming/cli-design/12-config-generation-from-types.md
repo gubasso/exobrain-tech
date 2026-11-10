@@ -111,6 +111,7 @@ wire it as a pre-commit hook (and the same command in CI):
 
 ```yaml
 # .pre-commit-config.yaml
+# owner: devshell (project-environment) the generator is a crate of the project
 - id: config-examples
   name: config examples are in sync with types
   entry: cargo run -p example-generator -- --check
@@ -120,8 +121,10 @@ wire it as a pre-commit hook (and the same command in CI):
 ```
 
 Because the examples are a whole-model relationship, regenerate and stage **all**
-of them, not per-changed-file (`pass_filenames: false`, `always_run: true`). See
-[`best-practices/pre-commit.md`](../best-practices/pre-commit.md) for hook wiring.
+of them, not per-changed-file (`pass_filenames: false`, `always_run: true`). The hook keeps
+`language: system` because the generator is a crate of the project, as
+[04 — Quality gates](../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
+See [`best-practices/pre-commit.md`](../best-practices/pre-commit.md) for hook wiring.
 
 ### Staleness is a comparison, not a cache
 

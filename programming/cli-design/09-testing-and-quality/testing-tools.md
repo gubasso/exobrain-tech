@@ -213,6 +213,7 @@ repos:
   # Python
   - repo: local
     hooks:
+      # owner: pyproject.toml (project-environment) pytest imports the package and its dependencies
       - id: pytest-unit
         name: pytest (unit)
         entry: pytest
@@ -225,6 +226,7 @@ repos:
   # Rust
   - repo: local
     hooks:
+      # owner: devshell (project-environment) cargo builds the crate with the pinned toolchain
       - id: cargo-nextest-unit
         name: cargo nextest (unit, pre-commit profile)
         entry: cargo
@@ -240,6 +242,7 @@ repos:
   # TypeScript
   - repo: local
     hooks:
+      # owner: package.json (project-environment) vitest runs in the node_modules of the project
       - id: vitest-unit
         name: vitest run (unit)
         entry: pnpm
@@ -252,6 +255,7 @@ repos:
   # Bash
   - repo: local
     hooks:
+      # owner: devshell (project-environment) bats tests the project scripts in the devshell
       - id: bats-unit
         name: bats (unit)
         entry: bats
@@ -265,11 +269,18 @@ repos:
 Match exactly one block to your project's language; delete the rest. Add a `pre-push` block with the
 integration suite — same shape, just `stages: [pre-push]` and the integration directory.
 
+Each test runner keeps `language: system` because it runs in the environment of the project. The
+comment above each `- id:` line names the file that declares the tool and the class of the
+exception, as
+[04 — Quality gates](../../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)
+says.
+
 ### `pre-push` — integration tests
 
 ```yaml
 - repo: local
   hooks:
+    # owner: pyproject.toml (project-environment) pytest imports the package and its dependencies
     - id: pytest-integration
       name: pytest (integration)
       entry: pytest
@@ -336,7 +347,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
-      # mutmut comes from the devshell, like every other project tool.
+      # mutmut comes from the devshell.
       - run: nix develop --command mutmut run --paths-to-mutate=src/myapp || true
       - run: nix develop --command mutmut results
       - name: Upload report

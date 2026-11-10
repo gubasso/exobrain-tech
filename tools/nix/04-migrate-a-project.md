@@ -12,17 +12,17 @@ three files to a repo.
 ## Steps
 
 1. **Pick the template.** Copy from [`templates/`](templates/) into the repo root:
-   - Python (Poetry) → `templates/python/{flake.nix,.envrc}`
+   - Python (uv) → `templates/python/{flake.nix,.envrc}`
    - Rust → `templates/rust/{flake.nix,.envrc}` (keep the repo's existing `rust-toolchain.toml`)
    - Node → `templates/node/{flake.nix,.envrc}`
    - Zig → `templates/zig/{flake.nix,.envrc}`
    - Anything else → `templates/generic/{flake.nix,.envrc}`
 
 2. **Tune `flake.nix`** to the runtime the project needs (e.g. `nodejs_22`, a Zig version, add
-   `pkgs.<system-lib>` for native builds). **For Python/Poetry**, pin the version explicitly and add
-   the `assert python.version == pkgs.poetry.python.version` guard so the venv can't drift from the
-   pin; see [`02-per-project-devshell.md`](./02-per-project-devshell.md) ("Aligning the Python
-   version").
+   `pkgs.<system-lib>` for native builds). For Python, pin the interpreter inside `requires-python`,
+   and keep the uv `shellHook` that hands it to uv. See
+   [Layering a language venv](./02-per-project-devshell.md#layering-a-language-venv-python--uv) and
+   [Aligning the Python version](./02-per-project-devshell.md#aligning-the-python-version).
 
 3. **Generate the lock** on a host with Nix + network (never fabricate it):
    ```bash
@@ -36,9 +36,8 @@ three files to a repo.
 
 6. **Install deps inside the shell** (the language manager still owns them):
    ```bash
-   poetry install        # or: pnpm install / cargo build
+   uv sync               # writes uv.lock; or: pnpm install / cargo build
    pre-commit install
-   direnv reload          # Python: re-scan so the venv layers onto PATH
    ```
 
 7. **Drop non-Nix provisioning**: delete any `mise.toml` / `.tool-versions`, drop `mise install` /
@@ -51,6 +50,6 @@ three files to a repo.
 ## dctl specifics
 
 - Once the repo has `flake.nix` + `.envrc`, the dctl lifecycle hooks
-  (`direnv exec . poetry install`, etc.) light up automatically; before that they no-op.
+  (`direnv exec . uv sync`, etc.) light up automatically; before that they no-op.
 - Rust: keep `rust-toolchain.toml` — the flake reads it (see
   [03-rust-toolchain](./03-rust-toolchain.md)); no `~/.rustup` volume anymore.
