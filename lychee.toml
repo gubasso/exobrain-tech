@@ -43,6 +43,11 @@ exclude_loopback = true
 # or that aren't worth flapping CI over. Curate per-repo; this list is
 # a sensible starting set for a tech-notes KB.
 exclude = [
+  # --- Docs that are down while the product is up ---
+  # Every page under the Devbox docs returns 404 since 2026-11-08, its root
+  # included, while https://www.jetify.com/devbox loads. The cited claims stay
+  # true. Remove the entry when the docs answer again.
+  "^https://www\\.jetify\\.com/docs/devbox/",
   # --- Anti-bot challenge hosts (links valid in a browser) ---
   "^https?://(www\\.)?stackoverflow\\.com",
   "^https?://(www\\.)?superuser\\.com",
