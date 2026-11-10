@@ -57,6 +57,18 @@ Non-negotiable: a file states what is true now, never how it got that way — no
 
 Non-negotiable: the filesystem owns its own state, and no document indexes it. Forbidden is the enumeration kept because the directory exists — a tree of the tree, a topic-to-filename table, a `source-files` list. A list whose entries carry their own payload stays (ADR-filesystem-owns-disk-state).
 
+
+<!-- BEGIN release-kit -->
+
+## Workflow
+
+- This repository runs the release-kit workflow. `rk method invariants` states what must stay true.
+- Every commit that reaches the trunk MUST be a Conventional Commit.
+- Run `rk status` before changing any file `.release-kit/manifest.json` names. Before reading a gap in `rk setup check` as a setup defect, run `rk setup status`. A credential this runtime cannot reach leaves a step unknown, which is an observation boundary and not drift. Never ask the operator to mount, expose, recreate, or rotate a secret only so an agent check can pass.
+- The full method is `rk method --list`.
+
+<!-- END release-kit -->
+
 <!-- BEGIN spec-driven-docs docs -->
 ## Documentation
 
@@ -69,14 +81,3 @@ Non-negotiable: the filesystem owns its own state, and no document indexes it. F
 - Run `sdd verify` before handoff. <!-- markdownlint-disable-line MD013 -->
 - Keep adopted specs, the tracking registry, and local integration instance-owned. <!-- markdownlint-disable-line MD013 -->
 <!-- END spec-driven-docs docs -->
-
-<!-- BEGIN release-kit -->
-
-## Workflow
-
-- This repository runs the release-kit workflow. `rk method invariants` states what must stay true.
-- Every commit that reaches the trunk MUST be a Conventional Commit.
-- Run `rk status` before changing any file `.release-kit/manifest.json` names. Before reading a gap in `rk setup check` as a setup defect, run `rk setup status`. A credential this runtime cannot reach leaves a step unknown, which is an observation boundary and not drift. Never ask the operator to mount, expose, recreate, or rotate a secret only so an agent check can pass.
-- The full method is `rk method --list`.
-
-<!-- END release-kit -->

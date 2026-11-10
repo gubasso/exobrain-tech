@@ -9,7 +9,7 @@
     # Freshness is the manager's own verb: nix flake update spec-driven-docs,
     # with the tag moved to match, followed by sdd upgrade.
     spec-driven-docs = {
-      url = "github:gubasso/spec-driven-docs/v0.15.0";
+      url = "github:gubasso/spec-driven-docs/v0.15.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # The release-kit convention's own binary, `rk`. The workflow hooks of the
