@@ -1,4 +1,4 @@
-# 05 — Evaluations
+# Evaluations
 
 A test suite answers whether the mechanism works. An evaluation answers whether the agent uses it
 correctly. The two are different artifacts with different failure modes, and a project that runs
@@ -29,7 +29,7 @@ output changes, and when the model changes underneath both.
 Trigger asks whether the skill loads when it must and stays silent when it must not. Behavior asks
 whether a loaded skill produces the right outcome. Portability asks whether the package loads and
 runs on each runtime it claims. Adversarial asks whether the skill holds its boundaries under
-hostile input, and [15 — Skill security](./15-skill-security.md) states the threats it covers.
+hostile input, and [Skill security](./skill-security.md) states the threats it covers.
 
 ## Trigger fixtures
 
@@ -155,7 +155,7 @@ the safeguard model in
 
 ## See also
 
-- [00 — The four layers](./00-model.md) — which layer each check belongs to.
-- [03 — Skills](./03-skills.md) — the artifact an evaluation grades.
-- [15 — Skill security](./15-skill-security.md) — the threats an adversarial suite covers.
-- [90 — Worked example](./90-worked-example.md) — an evaluation written against one project.
+- [The four layers](./model.md) — which layer each check belongs to.
+- [Skills](./skills.md) — the artifact an evaluation grades.
+- [Skill security](./skill-security.md) — the threats an adversarial suite covers.
+- [Worked example](./worked-example.md) — an evaluation written against one project.

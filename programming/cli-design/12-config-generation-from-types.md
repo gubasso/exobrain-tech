@@ -98,7 +98,7 @@ the trigger fired rather than to route around it with a hidden subcommand.
 
 A `schema` / `--print-config` subcommand is the runtime companion to the committed
 artifacts: expose the JSON Schema
-([the worked example's `schema` subcommand](../agent-integration/90-worked-example.md)) and let
+([the worked example's `schema` subcommand](../agent-integration/worked-example.md)) and let
 `--print-config` dump the effective config
 ([03 — Schema discipline](./03-config-precedence.md#schema-discipline)). Same
 source of truth, three surfaces: committed example, committed schema, live command.

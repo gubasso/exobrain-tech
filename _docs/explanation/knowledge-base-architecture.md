@@ -54,7 +54,7 @@ draft by rewriting it into its durable home, then deleting the draft.
 ## The AGENTS.md digest standard
 
 The library states the general pattern in
-[agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md);
+[agent-integration — Instruction files](../../programming/agent-integration/instruction-files.md);
 what follows is how this repository instantiates it.
 
 Every substantial content area carries an `AGENTS.md` **digest**: a concise map of that directory's

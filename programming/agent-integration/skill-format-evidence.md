@@ -1,9 +1,9 @@
-# 21 — Skill Format Evidence
+# Skill Format Evidence
 
 What the Agent Skills specification and the vendors that adopt it say about a skill's format and
 size, each read from its primary source on 2026-10-08 and read again as raw text on 2026-10-10.
-[16 — Skill format](./16-skill-format.md) and [17 — Skill size budget](./17-skill-size-budget.md)
-rest on it and on [22 — Skill format research](./22-skill-format-research.md). An entry states what
+[Skill format](./skill-format.md) and [Skill size budget](./skill-size-budget.md)
+rest on it and on [Skill format research](./skill-format-research.md). An entry states what
 its source says, with a short quote where the wording matters.
 
 ## The Agent Skills specification
@@ -184,9 +184,9 @@ default)". The runtime fact is dated in
 
 ## See also
 
-- [22 — Skill format research](./22-skill-format-research.md) — context engineering, the papers, the
+- [Skill format research](./skill-format-research.md) — context engineering, the papers, the
   measurement, the installers, and the conflicts these sources leave open.
-- [03 — Skills](./03-skills.md) — the portable baseline these sources describe.
+- [Skills](./skills.md) — the portable baseline these sources describe.
 - [tools/codex — skills](../../tools/codex/skills.md) and
   [tools/gemini-cli — skills](../../tools/gemini-cli/skills.md) — the runtime facts above, dated per
   vendor.

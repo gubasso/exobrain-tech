@@ -1,12 +1,12 @@
-# 18 — Setup Skill Skeleton
+# Setup Skill Skeleton
 
 A setup skill sets up the tool it ships with in a project: it provisions the tool, lands the tool's
 files, migrates a project that documents or configures itself some other way, upgrades and repairs
 what landed, and tunes the tool's settings. This chapter fills the section order of
-[16 — Skill format](./16-skill-format.md) for that skill. The verbs the skill reads instead of
+[Skill format](./skill-format.md) for that skill. The verbs the skill reads instead of
 following a
-procedure are [19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md), and
-the migration is [20 — Migrating from an archive](./20-migrating-from-an-archive.md).
+procedure are [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md), and
+the migration is [Migrating from an archive](./migrating-from-an-archive.md).
 
 ## The scope principle
 
@@ -175,8 +175,8 @@ gave goes in, so a declined offer reads as asked and answered.
 
 ## See also
 
-- [11 — Router and gates](./11-router-and-gates.md) — the router this skeleton refines.
-- [16 — Skill format](./16-skill-format.md) — the section order and the writing conventions.
-- [19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md) — the verbs each
+- [Router and gates](./router-and-gates.md) — the router this skeleton refines.
+- [Skill format](./skill-format.md) — the section order and the writing conventions.
+- [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) — the verbs each
   section reads.
-- [20 — Migrating from an archive](./20-migrating-from-an-archive.md) — the migrate task in full.
+- [Migrating from an archive](./migrating-from-an-archive.md) — the migrate task in full.

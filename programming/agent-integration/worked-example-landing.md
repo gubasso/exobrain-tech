@@ -1,4 +1,4 @@
-# 91 — Worked Example: Landing
+# Worked Example: Landing
 
 One tool that writes files into other projects, shown across the whole lifecycle. The domain is
 deliberately absurd, so the shape stays visible.
@@ -9,7 +9,7 @@ deliberately absurd, so the shape stays visible.
 and the notes a keeper writes and keeps. It writes those into the project's own tree, it is
 installed by whatever manager the project already uses, and it never installs itself.
 
-What it writes falls into the three classes [08](./08-candidate-artifacts-and-receipts.md) names.
+What it writes falls into the three classes [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) names.
 
 | Destination         | Class         | Who owns it after creation       |
 | ------------------- | ------------- | -------------------------------- |
@@ -63,7 +63,7 @@ the agent reads to understand either. None of that lands.
 ## The migration
 
 The agent reads the stage against the project, in the evidence order
-[10](./10-operator-selected-versions-and-agent-guided-migration.md) sets, and finds three questions
+[Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) sets, and finds three questions
 the tool cannot answer.
 
 The collision at `roost/flight-hours.yml` is the sharp one. A file is there, the receipt does not
@@ -137,6 +137,6 @@ home directory, the project root, or a directory with no stage receipt would eac
 
 ## See also
 
-- [90 — Worked example](./90-worked-example.md) — the same four layers, for a tool that does not
+- [Worked example](./worked-example.md) — the same four layers, for a tool that does not
   write into projects.
-- [99 — Checklist](./99-checklist.md) — what to walk before shipping either.
+- [Checklist](./checklist.md) — what to walk before shipping either.

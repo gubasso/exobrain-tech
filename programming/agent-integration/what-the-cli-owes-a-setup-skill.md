@@ -1,10 +1,10 @@
-# 19 — What the CLI Owes a Setup Skill
+# What the CLI Owes a Setup Skill
 
 A setup skill keeps the judgment: the intent, the questions to the operator, and the decisions a
 merge needs. Every step a program can decide belongs to the tool's own command-line interface, so
 the skill reads a result instead of following a procedure, and a test holds the step. This chapter
 lists what that interface provides, in generic terms. The skill that reads it is
-[18 — Setup skill skeleton](./18-setup-skill-skeleton.md).
+[Setup skill skeleton](./setup-skill-skeleton.md).
 
 The test for each item is the same: a step two agents could carry out differently from the same
 evidence is a step the tool computes.
@@ -91,14 +91,14 @@ evidence is a step the tool computes.
 A run keeps no state of its own. The repository, the stage receipt, and version control are the
 records, and a later run reads the state from the status report rather than from a log of an earlier
 run. A migration is the one exception, because it spans many runs, and
-[20 — Migrating from an archive](./20-migrating-from-an-archive.md) states its workspace and
+[Migrating from an archive](./migrating-from-an-archive.md) states its workspace and
 registry.
 
 ## See also
 
-- [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) — the record the
+- [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) — the record the
   compare verb's record half reads.
-- [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
+- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the
   pipeline these verbs implement.
-- [11 — Router and gates](./11-router-and-gates.md) — which checks belong to a program.
-- [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) — the skill that reads these verbs.
+- [Router and gates](./router-and-gates.md) — which checks belong to a program.
+- [Setup skill skeleton](./setup-skill-skeleton.md) — the skill that reads these verbs.

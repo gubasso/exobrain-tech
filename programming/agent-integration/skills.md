@@ -1,4 +1,4 @@
-# 03 — Skills
+# Skills
 
 A skill is the playbook layer's artifact. It tells the agent when to reach for a mechanism and how
 to compose it into a workflow. It does not restate the mechanism's own reference material, and it
@@ -80,7 +80,7 @@ Three parts carry the routing.
 An agent under-triggers a skill whose description reads like a title, and over-triggers one that
 names a domain in the abstract. Ambiguity between two skills costs more than a missing skill, so the
 boundary clause earns its characters. Routing is probabilistic, and a description is a claim about
-it, so [05 — Evaluations](./05-evaluations.md) states how the claim is checked.
+it, so [Evaluations](./evaluations.md) states how the claim is checked.
 
 ## Progressive disclosure is a budget
 
@@ -96,7 +96,7 @@ matches how often the agent needs it.
 
 The specification's guidance follows the same shape: roughly 100 tokens of metadata for every
 installed skill, a small body once a skill activates, and resources on demand.
-[17 — Skill size budget](./17-skill-size-budget.md) states the caps, counted in characters.
+[Skill size budget](./skill-size-budget.md) states the caps, counted in characters.
 
 One test decides every paragraph of the body.
 
@@ -118,7 +118,7 @@ further reference, because each hop costs a read and hides which file owns the r
 ## The body
 
 The body is a table of contents with judgment in it, not a manual.
-[16 — Skill format](./16-skill-format.md) states its section order and the writing conventions.
+[Skill format](./skill-format.md) states its section order and the writing conventions.
 
 - Put the condition before the instruction it controls.
 - Point at the mechanism's own help output rather than copying flags. A copied flag list is wrong
@@ -176,10 +176,10 @@ whether the work looks right.
 
 ## See also
 
-- [00 — The four layers](./00-model.md) — what the playbook layer never carries.
-- [04 — Skill distribution](./04-skill-distribution.md) — where a package installs.
-- [05 — Evaluations](./05-evaluations.md) — how a skill is checked rather than assumed.
-- [15 — Skill security](./15-skill-security.md) — the rules that bound what a run reaches.
+- [The four layers](./model.md) — what the playbook layer never carries.
+- [Skill distribution](./skill-distribution.md) — where a package installs.
+- [Evaluations](./evaluations.md) — how a skill is checked rather than assumed.
+- [Skill security](./skill-security.md) — the rules that bound what a run reaches.
 
 ## The adapters
 

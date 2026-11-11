@@ -43,7 +43,7 @@ contract** — what the program does, not how it does it.
 | Mutation testing        | Tests actually detect changes in production code.          | [09 § Mutation testing](./testing-strategy.md#mutation-testing-as-quality-gate)                   |
 | Contract tests          | API / CLI output schemas remain stable across versions.    | [09a § Contract testing](./testing-tools.md#contract-testing)                                     |
 | Argv-contract tests     | Subprocess invocations produce correct argument vectors.   | [09 § Argv-contract](./testing-strategy.md#argv-contract-tests-for-clis-that-wrap-other-binaries) |
-| Eval harnesses          | AI agent workflows produce correct results over N samples. | [agent-integration/05](../../agent-integration/05-evaluations.md)                                 |
+| Eval harnesses          | AI agent workflows produce correct results over N samples. | [agent-integration — Evaluations](../../agent-integration/evaluations.md)                         |
 
 ### Category 2: Structural quality gates
 
@@ -149,12 +149,12 @@ Sources:
 An eval is a regression signal distinct from the test suite: the suite verifies that the CLI works,
 and an eval verifies that the agent uses it correctly. What an eval checks, how many samples a rate
 needs, and when a stable eval becomes a gate are in
-[agent-integration/05 — Evaluations](../../agent-integration/05-evaluations.md).
+[agent-integration — Evaluations](../../agent-integration/evaluations.md).
 
 ## Verification loops
 
 The validation loop a skill carries, in
-[agent-integration/03 — Skills](../../agent-integration/03-skills.md), generalized to agent-written
+[agent-integration — Skills](../../agent-integration/skills.md), generalized to agent-written
 code:
 
 ```text
@@ -205,7 +205,7 @@ Add to [99 — Checklist](../99-checklist.md):
 - [09 — Testing Strategy](./testing-strategy.md) — the testing pyramid and principles.
 - [09a — Testing Tools](./testing-tools.md) — per-language testing tool matrix.
 - [10a — Code Quality Tools](./code-quality-tools.md) — per-language quality gate tool matrix.
-- [agent-integration/05 — Evaluations](../../agent-integration/05-evaluations.md) — evals, and the
+- [agent-integration — Evaluations](../../agent-integration/evaluations.md) — evals, and the
   tests an agent writes badly.
 - [05 — Designing for LLM Agents](../05-designing-for-llm-agents.md) — CLI design for agent
   consumption.

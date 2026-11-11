@@ -6,7 +6,7 @@
 schema_version: 1
 tracked:
   - id: agent-skills-specification
-    path: programming/agent-integration/03-skills.md
+    path: programming/agent-integration/skills.md
     last_checked: 2026-09-14
     cadence_days: 90
     why: >-
@@ -21,9 +21,9 @@ tracked:
         to it
       - advance last_checked
     dependents:
-      - programming/agent-integration/12-prior-art.md
-      - programming/agent-integration/21-skill-format-evidence.md
-      - programming/agent-integration/22-skill-format-research.md
+      - programming/agent-integration/prior-art.md
+      - programming/agent-integration/skill-format-evidence.md
+      - programming/agent-integration/skill-format-research.md
       - tools/claude-code/skills.md
       - tools/codex/skills.md
       - tools/gemini-cli/skills.md
@@ -41,7 +41,7 @@ tracked:
       - correct the roots, the fields, the caps, and the permission surface
       - advance last_checked
     dependents:
-      - programming/agent-integration/21-skill-format-evidence.md
+      - programming/agent-integration/skill-format-evidence.md
 
   - id: claude-code-memory-files
     path: tools/claude-code/memory-file-loading.md
@@ -56,7 +56,7 @@ tracked:
         the limits
       - advance last_checked
     dependents:
-      - programming/agent-integration/21-skill-format-evidence.md
+      - programming/agent-integration/skill-format-evidence.md
 
   - id: codex-skills
     path: tools/codex/skills.md
@@ -70,7 +70,7 @@ tracked:
       - correct the scopes, the collision behavior, and the configuration keys
       - advance last_checked
     dependents:
-      - programming/agent-integration/21-skill-format-evidence.md
+      - programming/agent-integration/skill-format-evidence.md
 
   - id: codex-instruction-files
     path: tools/codex/instruction-files.md
@@ -84,8 +84,8 @@ tracked:
       - correct the names, the chain, and the limit
       - advance last_checked
     dependents:
-      - programming/agent-integration/21-skill-format-evidence.md
-      - programming/agent-integration/22-skill-format-research.md
+      - programming/agent-integration/skill-format-evidence.md
+      - programming/agent-integration/skill-format-research.md
 
   - id: gemini-cli-skills
     path: tools/gemini-cli/skills.md
@@ -102,7 +102,7 @@ tracked:
         description and size statements
       - advance last_checked
     dependents:
-      - programming/agent-integration/21-skill-format-evidence.md
+      - programming/agent-integration/skill-format-evidence.md
 
   - id: opencode-skills
     path: tools/opencode/skills.md
@@ -118,7 +118,7 @@ tracked:
     dependents: []
 
   - id: agent-skills-authoring-guides
-    path: programming/agent-integration/21-skill-format-evidence.md
+    path: programming/agent-integration/skill-format-evidence.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -135,7 +135,7 @@ tracked:
     dependents: []
 
   - id: claude-skill-authoring-guidance
-    path: programming/agent-integration/21-skill-format-evidence.md
+    path: programming/agent-integration/skill-format-evidence.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -154,11 +154,11 @@ tracked:
         conflict table
       - advance last_checked
     dependents:
-      - programming/agent-integration/22-skill-format-research.md
+      - programming/agent-integration/skill-format-research.md
       - tools/claude-code/skills.md
 
   - id: openai-skill-creator
-    path: programming/agent-integration/21-skill-format-evidence.md
+    path: programming/agent-integration/skill-format-evidence.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -171,11 +171,11 @@ tracked:
         conflict table
       - advance last_checked
     dependents:
-      - programming/agent-integration/22-skill-format-research.md
+      - programming/agent-integration/skill-format-research.md
       - tools/codex/skills.md
 
   - id: skill-adopter-pages
-    path: programming/agent-integration/21-skill-format-evidence.md
+    path: programming/agent-integration/skill-format-evidence.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -192,7 +192,7 @@ tracked:
     dependents: []
 
   - id: model-context-windows-and-tokens
-    path: programming/agent-integration/22-skill-format-research.md
+    path: programming/agent-integration/skill-format-research.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -216,7 +216,7 @@ tracked:
     dependents: []
 
   - id: vendor-prompting-guides
-    path: programming/agent-integration/22-skill-format-research.md
+    path: programming/agent-integration/skill-format-research.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -234,7 +234,7 @@ tracked:
     dependents: []
 
   - id: skill-installer-pages
-    path: programming/agent-integration/22-skill-format-research.md
+    path: programming/agent-integration/skill-format-research.md
     last_checked: 2026-10-10
     cadence_days: 90
     why: >-
@@ -250,7 +250,7 @@ tracked:
     dependents: []
 
   - id: reference-implementations-map
-    path: programming/agent-integration/13-reference-implementations.md
+    path: programming/agent-integration/reference-implementations.md
     last_checked: 2026-10-11
     cadence_days: 90
     why: >-

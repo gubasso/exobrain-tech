@@ -3,7 +3,7 @@
 Verified 2026-09-14 against <https://code.claude.com/docs/en/skills>.
 
 Claude Code's differences from the portable baseline in
-[agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md). The baseline is
+[agent-integration — Skills](../../programming/agent-integration/skills.md). The baseline is
 the conforming package the Agent Skills specification defines; everything below is this vendor's
 addition to it or exception from it.
 
@@ -90,7 +90,7 @@ following for Claude's skills in general.
   contents.
 
 The portable sources behind both are in
-[agent-integration/21 — Skill format evidence](../../programming/agent-integration/21-skill-format-evidence.md).
+[agent-integration — Skill format evidence](../../programming/agent-integration/skill-format-evidence.md).
 
 ## The permission model
 
@@ -123,8 +123,8 @@ and `${CLAUDE_EFFORT}` carry session state.
 
 ## See also
 
-- [agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md) — the baseline
+- [agent-integration — Skills](../../programming/agent-integration/skills.md) — the baseline
   this adapter deviates from.
-- [agent-integration/04 — Skill distribution](../../programming/agent-integration/04-skill-distribution.md) —
+- [agent-integration — Skill distribution](../../programming/agent-integration/skill-distribution.md) —
   what the roots above are an instance of.
 - [memory-file-loading](./memory-file-loading.md) — the same vendor's instruction-file facts.

@@ -1,4 +1,4 @@
-# 10 — Operator-Selected Versions and Agent-Guided Migration
+# Operator-Selected Versions and Agent-Guided Migration
 
 Upgrading a tool that writes into a project has two halves that want different owners. Choosing and
 installing the version is the project's decision, made with the manager it already uses. Working out
@@ -18,7 +18,7 @@ second set of trust decisions the project never authorized.
 An update is therefore a distinct, separately authorized event, and it happens before migration
 starts. After it, the installed executable reports its own identity and version, stages its own
 projection, and serves the knowledge matching that version, per
-[06 — Documentation and discovery](./06-documentation-and-discovery.md).
+[Documentation and discovery](./documentation-and-discovery.md).
 
 ## The order an agent reads evidence
 
@@ -51,13 +51,13 @@ Evidence varies. What the agent may do does not grow when the evidence shrinks.
 | Neither             | unknown    | The files, and nothing about their origin                                |
 
 The provenance column is the word a compare verb reports per destination, per
-[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md), so the agent reads
+[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md), so the agent reads
 the class rather than deriving it. "Receipt" means the receipt vouches for the bytes on disk now,
 not only that it names the path.
 
 Each row down is less certainty, not more permission. Unknown ownership is shown to the person
 rather than resolved by inference, and the refusal from
-[08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) holds at every
+[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) holds at every
 row: an unattributed whole file is not overwritten, however plausible the guess.
 
 A heuristic may inform the agent. It never becomes the answer a person is shown. "This file matches
@@ -68,7 +68,7 @@ nobody does.
 
 The mechanical steps belong to the tool. These are the ones that need judgment, in the order the
 lifecycle in
-[09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)
+[Disposable staging and direct landing](./disposable-staging-and-direct-landing.md)
 runs them.
 
 - Preserve the project's intent. A configuration the project tuned means something, and the reason
@@ -87,7 +87,7 @@ runs them.
 
 Judgment needs evidence, and evidence the agent cannot reach is evidence nobody has.
 
-- One always-visible route to a described documentation index, per the three-step route in `06`.
+- One always-visible route to a described documentation index, per the three-step route in [Documentation and discovery](./documentation-and-discovery.md).
 - A reader that returns one exact topic by its identifier.
 - A machine-readable inventory of the stage: what it contains, what it omitted, what it could not
   claim.
@@ -106,11 +106,11 @@ Judgment needs evidence, and evidence the agent cannot reach is evidence nobody 
 
 ## See also
 
-- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the version-matched
+- [Documentation and discovery](./documentation-and-discovery.md) — the version-matched
   knowledge an update makes available.
-- [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) — the record
+- [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) — the record
   that decides which confidence class a destination falls into.
-- [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
+- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the
   lifecycle these judgments run inside.
-- [20 — Migrating from an archive](./20-migrating-from-an-archive.md) — moving a whole predecessor,
+- [Migrating from an archive](./migrating-from-an-archive.md) — moving a whole predecessor,
   a corpus or another tool's files, onto the new convention.

@@ -1,4 +1,4 @@
-# 06 — Documentation and Discovery
+# Documentation and Discovery
 
 Durable knowledge is the layer an agent reads on demand: what a project's own documentation owes an
 agent, and how a tool the project depends on makes its own knowledge reachable. The governance layer
@@ -48,7 +48,7 @@ reader            ->  one topic, by id
 
 The failure this route prevents is the eager one: an instruction file that embeds the corpus, or
 imports it, so every session carries a manual it did not need. Routing beats restating here for the
-same reason it does in [01 — Instruction files](./01-instruction-files.md), and the budget is the
+same reason it does in [Instruction files](./instruction-files.md), and the budget is the
 same budget.
 
 The second failure is the index nobody can use. An index that lists filenames answers only a
@@ -98,7 +98,7 @@ The layers this shelf names each own one job, and the discovery route touches al
 
 - The instruction file routes. It names the entry point, and states no topic's content.
 - A skill teaches a task. It points at the topic a step needs, with the condition for reading it,
-  the way [03 — Skills](./03-skills.md) states.
+  the way [Skills](./skills.md) states.
 - Durable knowledge explains the system. It is read when a step calls for it and at no other time.
 
 Each owns one role and restates none of the others. An instruction file that summarizes a topic has
@@ -107,6 +107,6 @@ invocation.
 
 ## See also
 
-- [00 — The four layers](./00-model.md) — why durable knowledge is a layer of its own.
-- [01 — Instruction files](./01-instruction-files.md) — the always-loaded line this route starts at.
-- [03 — Skills](./03-skills.md) — how a skill points at a topic rather than carrying it.
+- [The four layers](./model.md) — why durable knowledge is a layer of its own.
+- [Instruction files](./instruction-files.md) — the always-loaded line this route starts at.
+- [Skills](./skills.md) — how a skill points at a topic rather than carrying it.

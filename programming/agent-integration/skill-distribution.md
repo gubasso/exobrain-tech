@@ -1,4 +1,4 @@
-# 04 — Skill Distribution
+# Skill Distribution
 
 A skill package is discovered by an agent because it sits in a root that agent scans. Where those
 roots are is a vendor fact; how a project keeps one package reachable from several of them is not.
@@ -33,7 +33,7 @@ directory, and the canonical directory is the only place an edit lands. Whether 
 follows links is a vendor fact, dated in that vendor's adapter.
 
 A tool that installs its own skills does the same job with copies. Every installer the research in
-[22 — Skill format research](./22-skill-format-research.md#installing-a-skill-package) read installs
+[Skill format research](./skill-format-research.md#installing-a-skill-package) read installs
 a skill as one whole directory, with its own `references/`, and none reads a supporting file from
 outside it. Those that serve several runtime roots either copy the directory into each root or link
 each root to one canonical copy, and the links fail in ways the copies do not: a root no link
@@ -72,7 +72,7 @@ every runtime because there is one place to fix.
 
 One installed skill name has one owner. A second installer writing a package under a name the record
 already attributes is a collision, and it is reported rather than resolved, for the reason
-[08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) gives.
+[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) gives.
 
 An upgrade and a removal both read the record. An upgrade replaces what the record attributes and
 leaves everything else. A removal takes what the record attributes and stops. A file the record does
@@ -90,8 +90,8 @@ exist.
 
 ## See also
 
-- [00 — The four layers](./00-model.md) — why the playbook layer has a distribution question.
-- [03 — Skills](./03-skills.md) — the package this chapter distributes.
+- [The four layers](./model.md) — why the playbook layer has a distribution question.
+- [Skills](./skills.md) — the package this chapter distributes.
 
 ## The adapters
 

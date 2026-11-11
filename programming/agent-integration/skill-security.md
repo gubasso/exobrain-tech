@@ -1,4 +1,4 @@
-# 15 — Skill Security
+# Skill Security
 
 A skill is instructions a model follows while holding real tools. It is an input like any other
 input, and the rules below bound what a run can reach and what it can be talked into.
@@ -88,5 +88,5 @@ cases:
 
 ## See also
 
-- [03 — Skills](./03-skills.md) — the package these rules bound.
-- [05 — Evaluations](./05-evaluations.md) — how an adversarial suite is run and scored.
+- [Skills](./skills.md) — the package these rules bound.
+- [Evaluations](./evaluations.md) — how an adversarial suite is run and scored.

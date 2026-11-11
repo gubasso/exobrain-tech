@@ -123,7 +123,7 @@ satisfy a project check. The hooks adapt to the generator, not the generator to 
 A file that a person edits after the tool writes it is not generated, and neither is a file in which
 the tool owns only a marked region: the project owns those files and checks them like any other.
 The classes match the tool's side in
-[agent-integration/08](../agent-integration/08-candidate-artifacts-and-receipts.md).
+[agent-integration — Candidate artifacts and receipts](../agent-integration/candidate-artifacts-and-receipts.md).
 
 The cases that come up:
 

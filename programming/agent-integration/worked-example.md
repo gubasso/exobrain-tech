@@ -1,4 +1,4 @@
-# 90 — Worked Example
+# Worked Example
 
 One project across all four layers. The domain is deliberately absurd, so the shape stays visible
 and no real-world detail competes with it.
@@ -127,7 +127,7 @@ dispatch-messages/
 ```
 
 The body of `SKILL.md` is a table of contents with judgment in it. Its shape, and the frontmatter
-that triggers it, are in [03 — Skills](./03-skills.md); what this project adds is the workflow.
+that triggers it, are in [Skills](./skills.md); what this project adds is the workflow.
 
 ```markdown
 ## Dispatch a single message
@@ -182,10 +182,10 @@ checks:
 ```
 
 Ten samples, and the pass rate over time is the regression signal. See
-[05 — Evaluations](./05-evaluations.md) for what that rate means and when it becomes a gate.
+[Evaluations](./evaluations.md) for what that rate means and when it becomes a gate.
 
 ## See also
 
-- [91 — Worked example: landing](./91-worked-example-landing.md) — the same shelf applied to a tool
+- [Worked example: landing](./worked-example-landing.md) — the same shelf applied to a tool
   that writes files into other projects.
-- [99 — Checklist](./99-checklist.md) — what to walk before shipping.
+- [Checklist](./checklist.md) — what to walk before shipping.

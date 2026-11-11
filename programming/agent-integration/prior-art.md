@@ -1,4 +1,4 @@
-# 12 — Prior Art
+# Prior Art
 
 What already exists for the problems this shelf's landing chapters describe, read from primary
 sources on the date each entry records. An entry states what its source says. Where a conclusion is
@@ -59,7 +59,7 @@ file beside it. Read 2026-09-14 at <https://copier.readthedocs.io/en/stable/upda
 This is the design the landing chapters decline, and the reason is visible in the mechanism rather
 than in its quality. Re-rendering the version a project was generated from requires the running tool
 to reach and interpret an older release. That is the cross-release dependency
-[08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) refuses, and a
+[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) refuses, and a
 tool that embeds its own sources cannot do it at all without fetching a second copy of itself.
 
 ## Recording what a tool created
@@ -80,7 +80,7 @@ carries more than provenance.
 Four runtimes state their own discovery roots, precedence, frontmatter, activation, and permission
 models, and the differences are real enough that no portable rule covers them. Those facts are dated
 in each runtime's adapter under `tools/`, and the portable baseline they deviate from is
-[03 — Skills](./03-skills.md).
+[Skills](./skills.md).
 
 The specification that defines the portable package is at <https://agentskills.io/specification>,
 read 2026-09-14, and the rule that makes portability work is that an unrecognized frontmatter field
@@ -88,5 +88,5 @@ is ignored rather than rejected.
 
 ## See also
 
-- [13 — Reference implementations](./13-reference-implementations.md) — the concrete tools, mapped
+- [Reference implementations](./reference-implementations.md) — the concrete tools, mapped
   to the concepts above.

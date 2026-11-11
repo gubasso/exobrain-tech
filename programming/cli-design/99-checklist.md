@@ -114,10 +114,10 @@ waive it in an ADR — don't ship with silent gaps.
 
 The skill, its distribution, and the evals over it are checked in
 [agent-integration](../agent-integration/README.md): the package and its frontmatter in
-[03](../agent-integration/03-skills.md), the install roots in
-[04](../agent-integration/04-skill-distribution.md), the eval suite in
-[05](../agent-integration/05-evaluations.md), and what the project's instruction file carries in
-[01](../agent-integration/01-instruction-files.md).
+[Skills](../agent-integration/skills.md), the install roots in
+[Skill distribution](../agent-integration/skill-distribution.md), the eval suite in
+[Evaluations](../agent-integration/evaluations.md), and what the project's instruction file carries in
+[Instruction files](../agent-integration/instruction-files.md).
 
 ## Preflight & health checks
 

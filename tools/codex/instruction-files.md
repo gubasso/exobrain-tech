@@ -3,7 +3,7 @@
 Verified 2026-09-14 against <https://learn.chatgpt.com/docs/agent-configuration/agents-md>.
 
 Codex's instruction-file facts, against the portable rules in
-[agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md).
+[agent-integration — Instruction files](../../programming/agent-integration/instruction-files.md).
 
 ## Which file Codex reads
 
@@ -29,7 +29,7 @@ A session launched from the repository root walks root to root, so it never read
 root file.
 
 This is the difference that decides where a rule goes. See
-[01 — Instruction files](../../programming/agent-integration/01-instruction-files.md#where-a-rule-goes-under-eager-and-lazy-loading)
+[Instruction files](../../programming/agent-integration/instruction-files.md#where-a-rule-goes-under-eager-and-lazy-loading)
 for the portable rule it produces.
 
 ## The size limit
@@ -41,6 +41,6 @@ reduces what every session pays for.
 
 ## See also
 
-- [agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md) —
+- [agent-integration — Instruction files](../../programming/agent-integration/instruction-files.md) —
   what the root file carries whatever the vendor.
 - [skills](./skills.md) — the same vendor's skill facts.

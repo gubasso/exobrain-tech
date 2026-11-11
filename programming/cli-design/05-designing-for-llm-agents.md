@@ -4,7 +4,7 @@
 > designed for a person and one a coding agent consumes reliably.
 >
 > The rest of what a project carries for an agent — the skill, the instruction file, distribution,
-> and evaluation — is [programming/agent-integration](../agent-integration/00-model.md). This
+> and evaluation — is [programming/agent-integration](../agent-integration/model.md). This
 > chapter is that model's mechanism layer.
 
 ## TL;DR
@@ -91,7 +91,7 @@ Next:
 An error carries three parts, always: what went wrong, how to fix it, and what to do next. The exit
 code stays non-zero; the point is that the text carries the remediation, so the agent corrects
 itself without asking the operator. A worked pair of both shapes is in
-[agent-integration/90 — Worked example](../agent-integration/90-worked-example.md).
+[agent-integration — Worked example](../agent-integration/worked-example.md).
 
 ### 2.4 Mirror the CLIs the model already knows
 
@@ -169,7 +169,7 @@ then user file, then defaults.
 The agent-facing rubric is in
 [99 — Checklist § Designing for LLM coding agents](./99-checklist.md#designing-for-llm-coding-agents).
 The skill, distribution, and evaluation items are in
-[agent-integration](../agent-integration/00-model.md).
+[agent-integration](../agent-integration/model.md).
 
 ## References
 

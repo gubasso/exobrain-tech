@@ -1,7 +1,7 @@
-# 22 — Skill Format Research
+# Skill Format Research
 
-The research beneath [21](./21-skill-format-evidence.md), [16](./16-skill-format.md), and
-[17](./17-skill-size-budget.md): context engineering, context windows, the papers, a measurement of
+The research beneath [Skill format evidence](./skill-format-evidence.md), [Skill format](./skill-format.md), and
+[Skill size budget](./skill-size-budget.md): context engineering, context windows, the papers, a measurement of
 which size unit predicts tokens, the tools that install skills, the conflicts, and what could not be
 verified. Every source was read 2026-10-08, except those under "Installing a skill package", read
 2026-10-09, and every source was read again as raw text on 2026-10-10. A date in parentheses is the
@@ -192,9 +192,9 @@ What the sources establish:
 
 ## See also
 
-- [21 — Skill format evidence](./21-skill-format-evidence.md) — the specification and vendor
+- [Skill format evidence](./skill-format-evidence.md) — the specification and vendor
   guidance these findings sit beneath.
-- [04 — Skill distribution](./04-skill-distribution.md) — the scopes and roots the installers above
+- [Skill distribution](./skill-distribution.md) — the scopes and roots the installers above
   write into.
-- [05 — Evaluations](./05-evaluations.md) — how a format choice is checked against agent behavior
+- [Evaluations](./evaluations.md) — how a format choice is checked against agent behavior
   rather than assumed.

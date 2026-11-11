@@ -1,4 +1,4 @@
-# 01 — Instruction Files
+# Instruction Files
 
 The instruction file at a project's root is the governance layer's artifact. Every session loads it
 before the agent reads the request, so it is the one place a project states what holds for all work
@@ -75,7 +75,7 @@ documentation.
 
 ## See also
 
-- [00 — The four layers](./00-model.md) — why governance is a layer and what it never carries.
-- [03 — Skills](./03-skills.md) — where a procedure goes instead.
-- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the one always-loaded
+- [The four layers](./model.md) — why governance is a layer and what it never carries.
+- [Skills](./skills.md) — where a procedure goes instead.
+- [Documentation and discovery](./documentation-and-discovery.md) — the one always-loaded
   line this file owes a corpus, and where everything after it goes.

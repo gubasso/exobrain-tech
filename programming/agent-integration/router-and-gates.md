@@ -1,7 +1,7 @@
-# 11 — Router and Gates
+# Router and Gates
 
 The lifecycle in
-[09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md)
+[Disposable staging and direct landing](./disposable-staging-and-direct-landing.md)
 has mechanical steps and judgment steps, and they want different owners. This chapter states the
 skill that drives the sequence, and the boundary between a check a program can make and a decision
 only a person or an agent can.
@@ -13,9 +13,9 @@ A setup domain gets one skill, not one per verb. It drives the whole sequence an
 What the router does:
 
 - Discovers the installed documentation, by the three-step route in
-  [06 — Documentation and discovery](./06-documentation-and-discovery.md).
+  [Documentation and discovery](./documentation-and-discovery.md).
 - Gathers the project's evidence, in the order
-  [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) sets.
+  [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) sets.
 - Writes an explicit plan, in prose, before it changes anything. A person reads the plan and can
   refuse it.
 - Respects the authorization boundary. An action nobody asked for does not happen because a step
@@ -26,13 +26,13 @@ What the router does:
 
 What the router does not do: restate the projection, the ownership classes, the landing order, or
 the failure behavior. Those have chapters, and a skill that copies them has made a second copy that
-drifts. It links, the way [03 — Skills](./03-skills.md) requires of any skill's body.
+drifts. It links, the way [Skills](./skills.md) requires of any skill's body.
 
 The router picks its tasks through a gate, and the gate proposes while the operator confirms. It
 reads the target's state from the tool's classification, never from the request, crosses it with the
 intent the request carries, and presents the state, the intent, and the ordered tasks before it
 waits. A redirect reads the gate again with the new intent, and before each task the router names it
-in one line and waits once more. [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) states
+in one line and waits once more. [Setup skill skeleton](./setup-skill-skeleton.md) states
 the gate, its exits, and the sections around it.
 
 One skill rather than several also keeps the trigger surface legible. Three skills for staging,
@@ -59,7 +59,7 @@ a decision nobody reviewed.
 
 The boundary matters most where it is tempting to cross. Ownership of an unattributed file looks
 decidable, because the content often matches what the tool would generate. It is not decidable, and
-[08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) refuses rather
+[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) refuses rather
 than guesses.
 
 ## A gate proves its claim, or narrows it
@@ -82,12 +82,12 @@ overstates its reach is worse than no check, because the reach is what people re
 
 ## See also
 
-- [03 — Skills](./03-skills.md) — the package the router is an instance of.
-- [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
+- [Skills](./skills.md) — the package the router is an instance of.
+- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the
   sequence the router drives.
-- [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
+- [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) — the
   judgment the router escalates.
-- [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) — the router's sections and its gate,
+- [Setup skill skeleton](./setup-skill-skeleton.md) — the router's sections and its gate,
   filled for a setup skill.
 - [cli-design/09 — Testing and quality](../cli-design/09-testing-and-quality/README.md) — what a
   project's own checks are made of.

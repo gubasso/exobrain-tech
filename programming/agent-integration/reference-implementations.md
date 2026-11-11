@@ -1,4 +1,4 @@
-# 13 — Reference Implementations
+# Reference Implementations
 
 Two tools implement parts of the pattern the landing chapters state. This chapter maps concepts to
 their concrete names, so a reader moving between a portable chapter and a codebase knows which word
@@ -48,7 +48,7 @@ predecessor file is replaced by the new tool, carried into a project-owned file,
 forge-side steps run after the repository-side branch merges.
 
 The setup skill, `rk-setup`, fills the skeleton in
-[18 — Setup skill skeleton](./18-setup-skill-skeleton.md) with ten task files, read at `v0.9.0`.
+[Setup skill skeleton](./setup-skill-skeleton.md) with ten task files, read at `v0.9.0`.
 
 | Task             | What it serves                                                                |
 | ---------------- | ----------------------------------------------------------------------------- |
@@ -100,12 +100,12 @@ The upstream canon this repository runs as a pinned tool, named and linked once 
 
 Its migration moves a document corpus: the archive holds the old documents, and a group of decision
 records of the previous convention becomes one record whose considered options name each old
-decision. The skeleton in [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) and the verbs in
-[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md) describe this
+decision. The skeleton in [Setup skill skeleton](./setup-skill-skeleton.md) and the verbs in
+[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) describe this
 implementation in generic terms.
 
 ## See also
 
-- [12 — Prior art](./12-prior-art.md) — the sources the concepts came from.
-- [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
+- [Prior art](./prior-art.md) — the sources the concepts came from.
+- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the
   lifecycle these names implement.

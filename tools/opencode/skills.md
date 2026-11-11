@@ -3,7 +3,7 @@
 Verified 2026-09-14 against <https://opencode.ai/docs/skills/>.
 
 OpenCode's differences from the portable baseline in
-[agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md).
+[agent-integration — Skills](../../programming/agent-integration/skills.md).
 
 ## Discovery roots and precedence
 
@@ -64,7 +64,7 @@ specification's naming rule, and adds a permission layer outside the package.
 
 ## See also
 
-- [agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md) — the baseline
+- [agent-integration — Skills](../../programming/agent-integration/skills.md) — the baseline
   this adapter conforms to.
-- [agent-integration/04 — Skill distribution](../../programming/agent-integration/04-skill-distribution.md) —
+- [agent-integration — Skill distribution](../../programming/agent-integration/skill-distribution.md) —
   why reading another runtime's root matters to a project shipping one package.

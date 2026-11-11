@@ -1,4 +1,4 @@
-# 08 — Candidate Artifacts and Receipts
+# Candidate Artifacts and Receipts
 
 A tool that writes files into a project needs two facts at once: what the project should hold now,
 and what this tool put there last time. This chapter names both, and keeps them apart, because a
@@ -118,10 +118,10 @@ convenience for the property that the tool never destroys something it cannot ac
 
 ## See also
 
-- [00 — The four layers](./00-model.md) — where a tool's mechanism sits among what a project carries.
-- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the distinction between
+- [The four layers](./model.md) — where a tool's mechanism sits among what a project carries.
+- [Documentation and discovery](./documentation-and-discovery.md) — the distinction between
   project artifacts and tool references that decides what a candidate contains.
-- [09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md) — the
+- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the
   lifecycle that renders a candidate twice and writes the receipt last.
-- [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
+- [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) — the
   confidence classes a missing or partial record produces, and what none of them authorizes.

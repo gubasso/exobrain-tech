@@ -3,7 +3,7 @@
 Verified 2026-09-14 against <https://code.claude.com/docs/en/memory>.
 
 Claude Code's instruction-file facts, against the portable rules in
-[agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md).
+[agent-integration — Instruction files](../../programming/agent-integration/instruction-files.md).
 
 ## Which files Claude Code reads
 
@@ -77,6 +77,6 @@ a path-scoped rule return only when Claude next reads a file they apply to.
 
 ## See also
 
-- [agent-integration/01 — Instruction files](../../programming/agent-integration/01-instruction-files.md) —
+- [agent-integration — Instruction files](../../programming/agent-integration/instruction-files.md) —
   what the root file carries whatever the vendor.
 - [skills](./skills.md) — the same vendor's skill facts, and where a procedure goes instead of here.

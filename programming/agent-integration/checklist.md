@@ -1,4 +1,4 @@
-# 99 — Checklist
+# Checklist
 
 Walk this before shipping. Each section names the chapter that owns its rules, and restates none of
 them. An item that fails sends you to the owner, not to this page.
@@ -11,7 +11,7 @@ them. An item that fails sends you to the owner, not to this page.
 - [ ] A per-directory digest is generated, carries frontmatter, and states no rule of its own.
 - [ ] The file is short enough to be read rather than skimmed.
 
-Owner: [01 — Instruction files](./01-instruction-files.md)
+Owner: [Instruction files](./instruction-files.md)
 
 ## Playbook
 
@@ -26,7 +26,7 @@ Owner: [01 — Instruction files](./01-instruction-files.md)
 - [ ] Each script runs without a terminal, bounds its output, and returns a distinct exit code.
 - [ ] Every tool dependency is declared, checked, and fails legibly.
 
-Owner: [03 — Skills](./03-skills.md)
+Owner: [Skills](./skills.md)
 
 ## Skill format and size
 
@@ -41,8 +41,8 @@ Owner: [03 — Skills](./03-skills.md)
 - [ ] Every size is counted in characters: a body within 12,000, a reference within 32,000, and a
       reference over 8,000 opening with its sections.
 
-Owners: [16 — Skill format](./16-skill-format.md) and
-[17 — Skill size budget](./17-skill-size-budget.md)
+Owners: [Skill format](./skill-format.md) and
+[Skill size budget](./skill-size-budget.md)
 
 ## Setup skill
 
@@ -55,9 +55,9 @@ Owners: [16 — Skill format](./16-skill-format.md) and
 - [ ] The skill starts, integrates, and prunes no branch, and lands no rule that only shapes the
       workflow.
 
-Owners: [18 — Setup skill skeleton](./18-setup-skill-skeleton.md),
-[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md), and
-[20 — Migrating from an archive](./20-migrating-from-an-archive.md)
+Owners: [Setup skill skeleton](./setup-skill-skeleton.md),
+[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md), and
+[Migrating from an archive](./migrating-from-an-archive.md)
 
 ## Safety
 
@@ -68,7 +68,7 @@ Owners: [18 — Setup skill skeleton](./18-setup-skill-skeleton.md),
 - [ ] No secret appears in a prompt, a log, an example, a fixture, or an error.
 - [ ] The description says whether the skill contacts the network.
 
-Owner: [15 — Skill security](./15-skill-security.md)
+Owner: [Skill security](./skill-security.md)
 
 ## Distribution
 
@@ -77,7 +77,7 @@ Owner: [15 — Skill security](./15-skill-security.md)
 - [ ] A file the record does not claim stays, whoever wrote it.
 - [ ] Each file is written whole, and the record is written last.
 
-Owner: [04 — Skill distribution](./04-skill-distribution.md)
+Owner: [Skill distribution](./skill-distribution.md)
 
 ## Durable knowledge
 
@@ -87,7 +87,7 @@ Owner: [04 — Skill distribution](./04-skill-distribution.md)
 - [ ] A reader returns one exact topic by id.
 - [ ] The references a tool serves are the ones the running version was built with.
 
-Owner: [06 — Documentation and discovery](./06-documentation-and-discovery.md)
+Owner: [Documentation and discovery](./documentation-and-discovery.md)
 
 ## Landing
 
@@ -106,9 +106,9 @@ Owner: [06 — Documentation and discovery](./06-documentation-and-discovery.md)
 - [ ] Cleanup is its own command, identifies the stage by its receipt, and refuses a symlink, a
       filesystem or home root, the project root, and any ancestor of it.
 
-Owners: [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md),
-[09 — Disposable staging and direct landing](./09-disposable-staging-and-direct-landing.md), and
-[10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md)
+Owners: [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md),
+[Disposable staging and direct landing](./disposable-staging-and-direct-landing.md), and
+[Versions and migration](./operator-selected-versions-and-agent-guided-migration.md)
 
 ## Routing and checks
 
@@ -117,7 +117,7 @@ Owners: [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-r
 - [ ] Every check states what it holds, and no proxy stands in for the property it resembles.
 - [ ] A declared build target is proved by invoking its compiler.
 
-Owner: [11 — Router and gates](./11-router-and-gates.md)
+Owner: [Router and gates](./router-and-gates.md)
 
 ## Evidence
 
@@ -128,4 +128,4 @@ Owner: [11 — Router and gates](./11-router-and-gates.md)
 - [ ] The recorded result names the runtime, the model, the date, and the trial count.
 - [ ] A rewrite is compared against the result from before it.
 
-Owner: [05 — Evaluations](./05-evaluations.md)
+Owner: [Evaluations](./evaluations.md)

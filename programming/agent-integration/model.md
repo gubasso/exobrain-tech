@@ -1,4 +1,4 @@
-# 00 — The Four Layers
+# The Four Layers
 
 What a project carries for a coding agent falls into four layers. Each layer answers a different
 question, each has one class of artifact, and a project that skips one makes the other three work
@@ -68,11 +68,11 @@ to the other three layers and states only what has no other owner.
 
 ## See also
 
-- [01 — Instruction files](./01-instruction-files.md) — the governance layer's artifact.
-- [03 — Skills](./03-skills.md) — the playbook layer's artifact and its portable package shape.
-- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — the durable-knowledge
+- [Instruction files](./instruction-files.md) — the governance layer's artifact.
+- [Skills](./skills.md) — the playbook layer's artifact and its portable package shape.
+- [Documentation and discovery](./documentation-and-discovery.md) — the durable-knowledge
   layer, and the route that makes a corpus reachable without loading it.
-- [05 — Evaluations](./05-evaluations.md) — how a project checks that the layers work together.
-- [90 — Worked example](./90-worked-example.md) — one project shown across every layer at once.
+- [Evaluations](./evaluations.md) — how a project checks that the layers work together.
+- [Worked example](./worked-example.md) — one project shown across every layer at once.
 - [cli-design/05 — Designing for LLM coding agents](../cli-design/05-designing-for-llm-agents.md) —
   the mechanism layer, where the mechanism is a command-line tool.

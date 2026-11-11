@@ -15,7 +15,7 @@ reference.
 The root instruction file is hand-authored rules and routing, and a per-directory digest is a second
 shape generated from the subtree it maps. What each one carries, and why conflating them costs a
 project the place its conventions live, is
-[agent-integration/01 — Instruction files](../agent-integration/01-instruction-files.md).
+[agent-integration — Instruction files](../agent-integration/instruction-files.md).
 
 When you adopt the digest, fix its schema up front: required frontmatter (`digest-of`,
 `last-synced`, `token-estimate`) and stable body headings, regenerated from sources rather than
@@ -39,7 +39,7 @@ and routes by meaning. It may name the files under it, but not merely to list th
 
 A tool that seeds governance documents into a project owns what it wrote and nothing else, and how
 that ownership is recorded, previewed, and upgraded is
-[agent-integration/09 — Disposable staging and direct landing](../agent-integration/09-disposable-staging-and-direct-landing.md).
+[agent-integration — Disposable staging and direct landing](../agent-integration/disposable-staging-and-direct-landing.md).
 This shelf routes the step. It states no rule about the record, the ownership classes, or what
 happens on a later run.
 

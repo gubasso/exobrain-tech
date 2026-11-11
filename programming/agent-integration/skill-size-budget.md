@@ -1,9 +1,9 @@
-# 17 — Skill Size Budget
+# Skill Size Budget
 
 A skill is paid for in tokens, but no author can count tokens: every host tokenizes differently, and
 the most widely used tokenizer is not public. This chapter states the proxy a budget counts instead,
 the caps, and why each cap sits where it does. The sources and the measurement are in
-[22 — Skill format research](./22-skill-format-research.md).
+[Skill format research](./skill-format-research.md).
 
 ## Count characters
 
@@ -90,7 +90,7 @@ splits along its sections.
 
 ## See also
 
-- [03 — Skills](./03-skills.md) — progressive disclosure, the layers a budget prices.
-- [16 — Skill format](./16-skill-format.md) — what goes in the manual and what goes in a reference.
-- [22 — Skill format research](./22-skill-format-research.md) — the measurement, the papers, and the
+- [Skills](./skills.md) — progressive disclosure, the layers a budget prices.
+- [Skill format](./skill-format.md) — what goes in the manual and what goes in a reference.
+- [Skill format research](./skill-format-research.md) — the measurement, the papers, and the
   token rates.

@@ -4,7 +4,7 @@ Verified 2026-09-14 against <https://geminicli.com/docs/cli/skills/> and
 <https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/creating-skills.md>.
 
 Gemini CLI's differences from the portable baseline in
-[agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md).
+[agent-integration — Skills](../../programming/agent-integration/skills.md).
 
 ## Discovery tiers and precedence
 
@@ -72,5 +72,5 @@ granted by activating the skill.
 
 ## See also
 
-- [agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md) — the baseline
+- [agent-integration — Skills](../../programming/agent-integration/skills.md) — the baseline
   this adapter deviates from.

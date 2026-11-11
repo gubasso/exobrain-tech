@@ -1,12 +1,12 @@
-# 16 — Skill Format
+# Skill Format
 
-[03 — Skills](./03-skills.md) states what a skill is and what each part of the package is for. This
+[Skills](./skills.md) states what a skill is and what each part of the package is for. This
 chapter states the format a package follows once a project ships more than one skill, or one skill
 that runs more than one task: how the package is laid out, how the manual loads its references, the
 order of its sections, and how each instruction is written. The size of each file is
-[17 — Skill size budget](./17-skill-size-budget.md). The evidence behind every convention is in
-[21 — Skill format evidence](./21-skill-format-evidence.md) and
-[22 — Skill format research](./22-skill-format-research.md).
+[Skill size budget](./skill-size-budget.md). The evidence behind every convention is in
+[Skill format evidence](./skill-format-evidence.md) and
+[Skill format research](./skill-format-research.md).
 
 ## The package
 
@@ -45,7 +45,7 @@ new agent starts, so nothing loads twice.
 - A task file holds the agent's procedure and the questions it asks. The method stays in the tool's
   own documentation, and the task file routes to it.
 - A deterministic step stays a verb of the tool. A task file never computes what the tool can
-  compute, which [19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md)
+  compute, which [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md)
   states for a setup skill.
 - A branch small enough to stay in `SKILL.md` stays there. The split exists for the runs that do not
   need the branch.
@@ -68,7 +68,7 @@ The sections of `SKILL.md` follow the stages of a run, in the order a run takes 
 Models favor the instructions they read first, and a host that compacts a session keeps only the
 head of each skill, so what every run needs comes first, in the order the run needs it. A skill
 whose task routing precedes its pre-flight picks a task before it knows the state of the target.
-[18 — Setup skill skeleton](./18-setup-skill-skeleton.md) fills each section for a skill that sets
+[Setup skill skeleton](./setup-skill-skeleton.md) fills each section for a skill that sets
 up a tool.
 
 ## Writing the instructions
@@ -99,7 +99,7 @@ up a tool.
 
 The `description` states what the skill does, then when to use it, with the key terms first, because
 a host that shortens the listing keeps the head. It stays in the third person, within 1,024
-characters, and it carries no angle brackets. [03 — Skills](./03-skills.md) states why the
+characters, and it carries no angle brackets. [Skills](./skills.md) states why the
 description is the whole trigger surface.
 
 ```yaml
@@ -123,18 +123,18 @@ change that breaks one fails before it merges.
 | The sections follow the stage order  | the `##` headings of `SKILL.md` equal the order above                                 |
 | No capitals for emphasis             | every capitals word outside frontmatter, code, and link targets is an allowed acronym |
 | The description holds its contract   | its length, its voice, and no angle brackets                                          |
-| The size budget                      | per [17](./17-skill-size-budget.md)                                                   |
+| The size budget                      | per [Skill size budget](./skill-size-budget.md)                                       |
 
 The rest, one action per step, one fact in one file, the deletion test, is a reviewer's call, and
 the project states it as such rather than as a gate.
 
 ## See also
 
-- [03 — Skills](./03-skills.md) — what a skill is, and the description as the trigger surface.
-- [04 — Skill distribution](./04-skill-distribution.md) — how a package installs, with what it
+- [Skills](./skills.md) — what a skill is, and the description as the trigger surface.
+- [Skill distribution](./skill-distribution.md) — how a package installs, with what it
   shares copied in.
-- [17 — Skill size budget](./17-skill-size-budget.md) — the caps, in characters.
-- [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) — the section order, filled for a setup
+- [Skill size budget](./skill-size-budget.md) — the caps, in characters.
+- [Setup skill skeleton](./setup-skill-skeleton.md) — the section order, filled for a setup
   skill.
-- [21 — Skill format evidence](./21-skill-format-evidence.md) — the sources each convention rests
+- [Skill format evidence](./skill-format-evidence.md) — the sources each convention rests
   on.

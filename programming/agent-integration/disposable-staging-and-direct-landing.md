@@ -1,4 +1,4 @@
-# 09 — Disposable Staging and Direct Landing
+# Disposable Staging and Direct Landing
 
 A person or an agent about to let a tool rewrite part of a project wants to see what it would write
 before it writes. This chapter states how to give them that without turning the preview into an
@@ -18,8 +18,8 @@ Five steps run inside each task that lands files, and the order is the content.
 
 Two more steps run once per run, in the setup skill's post-flight after its last task: verify with
 the tool's own judge and the project's checks, then clean the stage under explicit authorization.
-[18 — Setup skill skeleton](./18-setup-skill-skeleton.md) states that split, and
-[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md) the compare verb
+[Setup skill skeleton](./setup-skill-skeleton.md) states that split, and
+[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) the compare verb
 both comparisons read.
 
 ## Production never reads a staged byte
@@ -55,7 +55,7 @@ The stage is knowledge and evidence, and it is a directory nobody has to trust.
   could not claim.
 - The changelog and the migration guidance for the installed version.
 - The version-matched reference material an agent reads to understand any of the above, per
-  [06 — Documentation and discovery](./06-documentation-and-discovery.md).
+  [Documentation and discovery](./documentation-and-discovery.md).
 
 Project documentation the projection selected is an artifact and sits in the tree. The broader
 reference corpus is reference material and stays reference material: the stage exposes it so an
@@ -67,7 +67,7 @@ verification, which is exactly when a person most wants to know what was suppose
 ## Landing by ownership
 
 Direct landing writes into the project, and every write is decided by the ownership classes in
-[08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md).
+[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md).
 
 Validate first. Resolve every destination path, check it stays inside the target, and classify every
 collision, before anything is written. A run that discovers a refusal halfway through has already
@@ -144,9 +144,9 @@ prevent.
 
 ## See also
 
-- [06 — Documentation and discovery](./06-documentation-and-discovery.md) — what the stage exposes
+- [Documentation and discovery](./documentation-and-discovery.md) — what the stage exposes
   and what it does not land.
-- [08 — Candidate artifacts and receipts](./08-candidate-artifacts-and-receipts.md) — the candidate
+- [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) — the candidate
   both renders compute, and the record the last write updates.
-- [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
+- [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) — the
   judgment that runs between the two renders, and who owns the version underneath them.

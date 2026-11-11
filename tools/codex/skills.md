@@ -3,7 +3,7 @@
 Verified 2026-09-14 against <https://learn.chatgpt.com/docs/build-skills>.
 
 Codex's differences from the portable baseline in
-[agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md).
+[agent-integration — Skills](../../programming/agent-integration/skills.md).
 
 ## Discovery roots and precedence
 
@@ -72,7 +72,7 @@ The vendor's skill-creator skill, read 2026-10-08 at
 
 The instruction-file chain has its own byte limit, stated in
 [instruction-files](./instruction-files.md). The portable sources beside these are in
-[agent-integration/21 — Skill format evidence](../../programming/agent-integration/21-skill-format-evidence.md).
+[agent-integration — Skill format evidence](../../programming/agent-integration/skill-format-evidence.md).
 
 ## The permission model
 
@@ -88,6 +88,6 @@ skill operates inside is the session's rather than the package's.
 
 ## See also
 
-- [agent-integration/03 — Skills](../../programming/agent-integration/03-skills.md) — the baseline
+- [agent-integration — Skills](../../programming/agent-integration/skills.md) — the baseline
   this adapter deviates from.
 - [instruction-files](./instruction-files.md) — the same vendor's instruction-file facts.

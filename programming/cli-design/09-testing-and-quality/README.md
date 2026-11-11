@@ -31,7 +31,7 @@ Read in this order: strategy first (principles), then tools (implementation), th
 - [General CLI design index](../README.md)
 - [00 — Architecture](../00-architecture.md) — where `tests/`, `support/`, and `snapshots/` sit.
 - [04 — Coding Style](../04-coding-style-rust-zig.md) — strict lints, module size caps.
-- [agent-integration/05 — Evaluations](../../agent-integration/05-evaluations.md) — the hazards of
+- [agent-integration — Evaluations](../../agent-integration/evaluations.md) — the hazards of
   a test an agent wrote, and why an eval is a separate signal.
 - [99 — Checklist](../99-checklist.md) — testing and quality sections.
 - Language-specific guides:

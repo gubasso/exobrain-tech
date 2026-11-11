@@ -28,7 +28,7 @@ Everyday work after setup is not here; this is the one-time scaffold.
 
 3. **Seed governance docs:** `CLAUDE.md` (agent instructions), the `AGENTS.md` convention, and an
    ADR scaffold for decisions. → [02 — Governance & docs](./02-governance-and-docs.md) and
-   [agent-integration/01 — Instruction files](../agent-integration/01-instruction-files.md).
+   [agent-integration — Instruction files](../agent-integration/instruction-files.md).
    _Automate:_
    `bootstrap-governance`.
 

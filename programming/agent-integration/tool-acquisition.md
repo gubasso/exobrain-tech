@@ -1,4 +1,4 @@
-# 07 — Tool Acquisition
+# Tool Acquisition
 
 Before a tool can land anything into a project, the project has to obtain the tool, at a version it
 records, through the manager it already runs. This is the mechanism layer from the project's side:
@@ -140,7 +140,7 @@ repository already carries, and runs each install as a step the operator approve
 lands in a file the contributors share. A host install leaves no manager file, so the tool records
 it as a decision in its own configuration, with the lowest version a host may run, and its status
 reads that decision as a state of its own rather than as an unwired target.
-[18 — Setup skill skeleton](./18-setup-skill-skeleton.md) states the task.
+[Setup skill skeleton](./setup-skill-skeleton.md) states the task.
 
 ## Serving against editing
 
@@ -175,7 +175,7 @@ version, and the manager installs it.
 What a tool may write into a project's own directories when it does write is
 [11 — XDG scaffolding](../cli-design/11-xdg-scaffolding.md). Who selects the version, and what an
 agent owes an operator when moving between two of them needs judgment, is
-[10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md).
+[Versions and migration](./operator-selected-versions-and-agent-guided-migration.md).
 
 ## Sources
 

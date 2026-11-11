@@ -1,12 +1,12 @@
-# 20 — Migrating from an Archive
+# Migrating from an Archive
 
 A setup skill meets two kinds of predecessor: a document corpus written under another convention,
 and another tool's configuration that does the same job. Both migrate the same way. The predecessor
 moves into an archive, a clean first landing replaces it, and the project is rebuilt from the
 archive one group at a time, with a registry recording every step. This chapter states that
 procedure and why each step holds. The skill that runs it is
-[18 — Setup skill skeleton](./18-setup-skill-skeleton.md), and the verbs it reads are
-[19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md).
+[Setup skill skeleton](./setup-skill-skeleton.md), and the verbs it reads are
+[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md).
 
 ## Why archive first
 
@@ -143,8 +143,8 @@ The statuses are pending, mapped, written, verified, and dropped.
 
 ## See also
 
-- [10 — Versions and migration](./10-operator-selected-versions-and-agent-guided-migration.md) — the
+- [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) — the
   evidence order and the confidence classes.
-- [18 — Setup skill skeleton](./18-setup-skill-skeleton.md) — the gate that picks the migrate task.
-- [19 — What the CLI owes a setup skill](./19-what-the-cli-owes-a-setup-skill.md) — the verbs each
+- [Setup skill skeleton](./setup-skill-skeleton.md) — the gate that picks the migrate task.
+- [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) — the verbs each
   step reads.
