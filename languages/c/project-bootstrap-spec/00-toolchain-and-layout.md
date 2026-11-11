@@ -45,9 +45,3 @@ and the "works on my machine" gap closes before any code is written. The per-pro
 by [nix/02 — per-project devShell](../../../tools/nix/02-per-project-devshell.md); this binding only
 declares _which_ tools belong in the shell (gcc/clang, cmake/meson, ninja, clang-format, clang-tidy,
 cppcheck).
-
-## Automation
-
-Deterministic scaffolding is delegated to cog helpers — `bootstrap-nix` for the devShell,
-`bootstrap-taskrunner` for build/test recipes. The steps above are the SoT; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

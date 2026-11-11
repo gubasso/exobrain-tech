@@ -17,8 +17,8 @@ The general
 [local dev environment](../../../programming/project-bootstrap/03-local-dev-environment.md) chapter
 owns the Nix devShell; this binding only names what it must provide: a pinned `nodejs` and the
 package manager (`pnpm` / `nodePackages.pnpm`). Add them to the flake's `buildInputs` so
-`direnv`/`nix develop` yields the same Node and pnpm locally and in CI. `bootstrap-nix` scaffolds
-the flake; add the Node inputs to it. Do not restate the general devShell setup here.
+`direnv`/`nix develop` yields the same Node and pnpm locally and in CI. Do not restate the general
+devShell setup here.
 
 ## Stylesheet architecture & naming
 
@@ -69,9 +69,3 @@ src/
 
 Bootstrap owns the _ordering_ (get a buildable entry stylesheet first); deeper authoring patterns
 live in the broader [CSS reference notes](../).
-
-## Automation
-
-`bootstrap-nix` provides the Node-hosting devShell; `bootstrap-taskrunner` wires the build/lint
-recipes. The steps above are the SoT — see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

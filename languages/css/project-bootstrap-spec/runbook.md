@@ -12,7 +12,7 @@ overlay that slots into it.
 - The [general bootstrap runbook](../../../programming/project-bootstrap/runbook.md) is understood —
   repo created, foundations and governance in place.
 - A Nix devShell exists (or will) to host Node.js and the package manager — see
-  [00 — Toolchain & layout](./00-toolchain-and-layout.md). _Automate:_ `bootstrap-nix`.
+  [00 — Toolchain & layout](./00-toolchain-and-layout.md).
 
 ## Steps
 
@@ -29,15 +29,14 @@ overlay that slots into it.
    one toolchain. → [00 — Toolchain & layout](./00-toolchain-and-layout.md).
 
 4. **Configure quality gates.** `stylelint` (with `stylelint-config-standard`), `prettier`, and an
-   optional visual-regression approach. → [01 — Quality gates](./01-quality-gates.md). _Automate:_
-   `bootstrap-lint`, `bootstrap-taskrunner`.
+   optional visual-regression approach. → [01 — Quality gates](./01-quality-gates.md).
 
 5. **Pick the implementation kind.** For a reusable design system, follow
    [`stylesheet-library.md`](./stylesheet-library.md); other kinds are followups.
 
 6. **Continue the general spine.** Return to the
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
-   security if not already done. _Automate:_ `bootstrap-ci`.
+   security if not already done.
 
 ## Reference
 

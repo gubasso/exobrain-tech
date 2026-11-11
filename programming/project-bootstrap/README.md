@@ -7,9 +7,7 @@ baseline. Use this tree as the source of truth for _what_ a new project must hav
 language-specific `project-bootstrap-spec/` bindings for the concrete tooling.
 
 Bootstrap is deliberately the **earliest** phase — repo → foundations → gates. The durable value
-here is the ordered checklist and the one-owner-per-fact discipline, not any single command;
-automation ([cog](https://github.com/gubasso/cog)) accelerates the _how_ but this tree owns the
-_what_.
+here is the ordered checklist and the one-owner-per-fact discipline, not any single command.
 
 ## The three-layer model
 
@@ -61,7 +59,6 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 | 4 | [Quality gates](./04-quality-gates.md)                 | Formatter, linter, pre-commit, task runner — fail fast, one command.                 |
 | 5 | [CI](./05-ci.md)                                       | First CI workflow: build, test, format-check, lint on every push.                    |
 | 6 | [Security baseline](./06-security-baseline.md)         | Secrets hygiene, dependency audit, OpenSSF Scorecard.                                |
-| 7 | [Automation with cog](./07-automation-with-cog.md)     | The SoT-vs-cog contract and the domain→helper map.                                   |
 
 ## Language-specific bindings
 
@@ -102,4 +99,3 @@ when you bootstrap a project of that kind.
 - **The runbook is the spine.** [`runbook.md`](./runbook.md) is the ordered _what_; chapters are the
   _why_; language and kind bindings are _overlays_.
 - **Tool docs are linked, not copied.** A tool that owns its own shelf keeps it; this tree links.
-- **cog automates _how_; this tree owns _what_.** If they disagree, fix the runbook first, then cog.

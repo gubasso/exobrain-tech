@@ -24,7 +24,7 @@ it hands off to a later phase.
 - **Node in the devShell:** the general `03-local-dev-environment.md` owns the Nix devShell; this
   binding only names what it must provide — a pinned `nodejs` and the package manager
   (`pnpm`/`nodePackages.pnpm`) in the flake's `buildInputs` so `direnv`/`nix develop` yields one
-  toolchain locally and in CI. `bootstrap-nix` scaffolds the flake; add the Node inputs to it.
+  toolchain locally and in CI.
 - **Architecture & naming:** **ITCSS** layer model (Settings → Tools → Generic → Elements → Objects
   → Components → Utilities) for predictable, monotonic specificity; **BEM**
   (`block__element--modifier`) for flat, low-specificity component classes; a tokens/variables layer
@@ -42,7 +42,7 @@ it hands off to a later phase.
   formatter, disable overlap with `stylelint-config-prettier`) for whitespace/wrapping. Optional
   visual regression (Playwright `toHaveScreenshot`, or Storybook+Chromatic/BackstopJS) only once a
   component library exists. Wire `stylelint` + `prettier --check` into pre-commit; expose `lint`/
-  `fmt` recipes via `bootstrap-taskrunner`. Bootstrap only requires lint + format to pass.
+  `fmt` recipes in the task runner. Bootstrap only requires lint + format to pass.
 - **stylesheet-library kind:** a reusable design-system / component-library package adds, in order —
   design tokens (custom properties and/or Sass vars in the settings layer; **Style Dictionary** for
   multi-target emit); a theming seam via custom-property overrides (base `:root` plus
@@ -51,9 +51,6 @@ it hands off to a later phase.
   library mode or `sass`/`postcss-cli`, shipping compiled `.css` plus Sass partials); npm packaging
   (`main`/`style`, `exports`, `sideEffects: ["*.css"]`, `files`/`.npmignore`), validated with
   `npm publish --dry-run`. Actual npm publishing is later-phase, not owned here.
-- **Automation:** `bootstrap-nix` (Node devShell), `bootstrap-lint` (hooks),
-  `bootstrap-taskrunner` (build/lint recipes), `bootstrap-ci`. The runbook steps are the SoT — see
-  general `07-automation-with-cog.md`.
 
 ## Maintenance Notes
 

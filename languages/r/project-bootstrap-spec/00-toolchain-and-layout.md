@@ -55,9 +55,3 @@ The `usethis` scaffold is enough to start. Package layout (`R/`, `man/`, `tests/
 detailed in [`package-project.md`](./package-project.md); analysis layout (`renv`, `targets`,
 Quarto) in [`analysis-project.md`](./analysis-project.md). Bootstrap owns the _ordering_ (get a
 loadable project first); the kind files own the shape-specific _how_.
-
-## Automation
-
-`bootstrap-nix` provides the R interpreter via the devShell; `renv` pins the packages on top. The
-steps above are the SoT; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

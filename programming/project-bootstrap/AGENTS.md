@@ -27,16 +27,13 @@ with concrete tooling.
   quality-gated baseline ready for feature work.
 - **The runbook is the spine.** `runbook.md` is the ordered _what_ (8 steps); chapters explain the
   _why_ behind each step; language and kind bindings are overlays.
-- **SoT-vs-cog contract.** This repo is the SoT for _what_; `cog bootstrap-*` skills (one per
-  domain) automate _how_. If they disagree, **fix the runbook first, then cog** — the documented
-  step wins.
-- **Chapter topics 00–07.** 00 bootstrap model (once-per-project phase, three-layer model); 01
+- **Chapter topics 00–06.** 00 bootstrap model (once-per-project phase, three-layer model); 01
   repository foundation (`.gitignore`, SPDX `LICENSE`, `README` skeleton); 02 governance & docs
   (`CLAUDE.md`, `AGENTS.md` convention, MADR-minimal ADR scaffold, README-as-index); 03 local dev
   environment (Nix devShell + `.envrc`, who owns each dependency, `.editorconfig`); 04 quality gates
   (formatter, linter, git hooks in two stages, hook exception classes, generated files, task runner); 05 CI (the two hook stages repeated in
   the devshell, the CI-only list); 06 security baseline (secrets hygiene, dependency audit,
-  OpenSSF Scorecard); 07 automation with cog (the contract and domain→helper map).
+  OpenSSF Scorecard).
 - Dependency owners. Each dependency has one owner, the most specific file that declares it
   natively: the manifest of the stack (`pyproject.toml` with `uv.lock`, a PEP 723 block,
   `Cargo.toml`, `package.json`), then `.pre-commit-config.yaml` for each hook tool that pre-commit

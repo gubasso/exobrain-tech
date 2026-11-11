@@ -40,7 +40,7 @@ Adopt one only when a component library exists — see
 
 Wire `stylelint` and `prettier --check` into the pre-commit hooks from the general
 [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) so failures surface
-locally in seconds. Expose them as task-runner recipes (`lint`, `fmt`) via `bootstrap-taskrunner`.
+locally in seconds. Expose them as task-runner recipes (`lint`, `fmt`).
 
 ## Publish-readiness (later phase)
 

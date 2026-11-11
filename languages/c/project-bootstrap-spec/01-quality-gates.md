@@ -56,4 +56,4 @@ Pick one lightweight framework and wire it into the build system's test runner (
 
 Wire `clang-format --dry-run --Werror` and `clang-tidy`/`cppcheck` into the pre-commit hooks from
 the general [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) so
-failures surface locally in seconds. `bootstrap-lint` automates the hook wiring.
+failures surface locally in seconds.

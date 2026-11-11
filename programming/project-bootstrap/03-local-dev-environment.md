@@ -81,9 +81,3 @@ formatter (chapter [04](./04-quality-gates.md)) so the two never fight. The form
 authoritative for code, and `.editorconfig` covers the authored files that no formatter owns. A
 generated file, such as a lock file, follows its generator, and editorconfig-checker excludes it
 ([04 — Generated files](./04-quality-gates.md#generated-files)).
-
-## Automation
-
-`bootstrap-nix` scaffolds the flake devShell + `.envrc`; `bootstrap-lint` writes the
-`.editorconfig` and aligns it with the detected formatter/linter. The setup above is the SoT; see
-[07 — Automation with cog](./07-automation-with-cog.md).

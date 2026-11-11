@@ -43,9 +43,6 @@ library). Publishing is out of scope.
 - **Library kind:** public API via `__all__` + private internals; `py.typed` marker (PEP 561); test
   the installed package (src layout enforces it); a docs skeleton (`mkdocs`/`sphinx`) if the API is
   non-trivial.
-- **Automation:** `bootstrap-nix` provisions the devShell; `bootstrap-lint` wires the hooks.
-  The SoT-vs-cog contract lives in general `07-automation-with-cog.md` — the runbook owns the
-  _what_, cog the _how_.
 
 ## Maintenance Notes
 

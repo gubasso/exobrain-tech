@@ -31,8 +31,7 @@ orderings (CLI, web-app). Publishing and deploy are out of scope.
   as the baseline.
 - **Node pin:** `.nvmrc` (e.g. `20`) for nvm/fnm (or a Volta block), plus an `engines.node` range so
   a wrong Node is caught on install. A Nix devShell provisions that same Node so local and CI share
-  one toolchain (`nix/02-per-project-devshell`). No JS-specific scaffold skill — `npm init` /
-  `tsc --init` are the SoT; general foundations use the `bootstrap-*` skills.
+  one toolchain (`nix/02-per-project-devshell`).
 - **Quality gates:** `prettier` (format, `--check .`), `eslint` (lint, flat `eslint.config.js`,
   `typescript-eslint`, `--max-warnings=0`, `eslint-config-prettier` to avoid overlap), a test runner
   (`vitest` modern default, `jest` alternative) wired to `npm test`, `tsc --noEmit` (typecheck), and

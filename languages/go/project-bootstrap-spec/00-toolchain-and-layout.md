@@ -39,8 +39,3 @@ Host the pinned Go toolchain in the Nix devShell so local and CI share one versi
 [nix/02 — Per-project devShell](../../../tools/nix/02-per-project-devshell.md). Keep the
 Nix-provided Go version aligned with the `go`/`toolchain` directives in `go.mod`. This closes the
 "works on my machine" gap before any code is written.
-
-## Automation
-
-`bootstrap-nix` provisions the devShell that hosts the toolchain. The steps above are the SoT; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

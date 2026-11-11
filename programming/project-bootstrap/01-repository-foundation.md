@@ -34,9 +34,3 @@ pointing at its license. Choose the model deliberately and state it in the `READ
 The `README.md` is the project index. At a minimum it states: what the project is (one line), how to
 build/run it, how to set up the dev environment, and where the deeper docs live. Keep it an index
 that routes to detail, not a place that duplicates it.
-
-## Automation
-
-`bootstrap-repo` lays down a language-aware `.gitignore`, an SPDX `LICENSE`, and a `README`
-skeleton. The manual steps above are the SoT; the skill accelerates them. See
-[07 — Automation with cog](./07-automation-with-cog.md).

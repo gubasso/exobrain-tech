@@ -22,8 +22,7 @@ overlay that slots into it.
 
 2. **Initialise the reproducible environment.** `renv::init()` to create `renv.lock` and pin the
    package library; commit `renv.lock` and `.Rprofile`. →
-   [00 — Toolchain & layout](./00-toolchain-and-layout.md). _Automate:_ `bootstrap-nix` hosts the R
-   version; `renv` pins the packages.
+   [00 — Toolchain & layout](./00-toolchain-and-layout.md).
 
 3. **Pin the R version and host it in Nix.** Record the R version (in `DESCRIPTION` `Depends:`
    and/or `renv.lock`) and wire R into the Nix devShell so local and CI share one interpreter. →
@@ -32,7 +31,6 @@ overlay that slots into it.
 
 4. **Configure quality gates.** styler/air (format), lintr (lint), testthat (tests), and — for
    packages — `R CMD check`, wired into pre-commit. → [01 — Quality gates](./01-quality-gates.md).
-   _Automate:_ `bootstrap-lint`, `bootstrap-taskrunner`.
 
 5. **Pick the implementation kind.** For a package, follow
    [`package-project.md`](./package-project.md); for a reproducible analysis, follow

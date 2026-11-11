@@ -18,7 +18,7 @@ is general `03-local-dev-environment.md` and `tools/nix`.
 ## Key Points
 
 - **Scaffold:** `nix flake init` drops a minimal `flake.nix`; `nix flake init -t <flake>#<name>`
-  starts from a template. `bootstrap-nix` automates a starting flake + devShell.
+  starts from a template.
 - **`flake.nix` shape:** one attribute set with `description`, `inputs`, `outputs` (a function). The
   bootstrap choice is the **outputs harness** — `flake-utils` (`eachDefaultSystem`, minimal
   ceremony, small flakes) vs `flake-parts` (module-system structure, step up as the flake grows

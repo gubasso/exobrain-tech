@@ -18,7 +18,6 @@ overlay that slots into it.
 
 1. **Scaffold the crate.** `cargo new <name>` for a binary or `cargo new --lib <name>` for a library
    (`cargo init` in an existing dir). → [00 — Toolchain & layout](./00-toolchain-and-layout.md).
-   _Automate:_ `bootstrap-rust`.
 
 2. **Pin the toolchain.** Add a `rust-toolchain.toml` and wire it into the Nix devShell so local and
    CI use the same Rust version. → [00 — Toolchain & layout](./00-toolchain-and-layout.md),

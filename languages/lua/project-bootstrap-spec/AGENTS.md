@@ -44,9 +44,6 @@ rockspec metadata) is a later phase, out of scope here.
   `luarocks make`/`luarocks build` and confirm the module is `require`-able from the devShell → add
   `busted` specs under `spec/` covering the public API. Stops at a locally-buildable, gated,
   `require`-able rock; tagging a real rockspec and `luarocks upload` is later-phase.
-- **Automation:** `bootstrap-nix` provisions the devShell hosting runtime + tooling;
-  `bootstrap-lint` and `bootstrap-taskrunner` wire the gates; `bootstrap-ci` continues the
-  general spine. The notes are the SoT; see general `07-automation-with-cog.md`.
 
 ## Maintenance Notes
 

@@ -22,20 +22,18 @@ overlay that slots into it.
 2. **Host the toolchain in the devShell.** Add `bash`, `shfmt`, `shellcheck`, and `bats` to the Nix
    devShell so local and CI share one set of versions. →
    [00 — Toolchain & layout](./00-toolchain-and-layout.md),
-   [nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md). _Automate:_
-   `bootstrap-nix`.
+   [nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md).
 
 3. **Configure quality gates.** `shfmt` for formatting, `shellcheck` for linting, and `bats-core`
    for tests; wire all three into pre-commit and the task runner. →
-   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint`,
-   `bootstrap-taskrunner`.
+   [01 — Quality gates](./01-quality-gates.md).
 
 4. **Pick the implementation kind.** For a CLI tool, follow [`cli-project.md`](./cli-project.md);
    other kinds are followups.
 
 5. **Continue the general spine.** Return to the
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
-   security if not already done. _Automate:_ `bootstrap-ci`.
+   security if not already done.
 
 ## Reference
 

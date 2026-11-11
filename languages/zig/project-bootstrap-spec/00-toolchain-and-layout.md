@@ -63,10 +63,3 @@ lives in `build.zig.zon`.
 The default `zig init` layout (`src/main.zig` and/or `src/root.zig`, plus the two manifests) is
 enough to start. Grow `src/` into modules as the project needs; there is no enforced deeper
 convention. Bootstrap owns getting a project that `zig build` succeeds on.
-
-## Automation
-
-Zig has no dedicated `bootstrap-zig` cog skill yet — run `zig init` manually. The cross-domain
-skills still apply (`bootstrap-nix`, `bootstrap-lint`, `bootstrap-taskrunner`, `bootstrap-ci`);
-see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

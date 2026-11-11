@@ -48,9 +48,6 @@ analysis). Publishing (CRAN) is out of scope — it hands off to a later phase.
   `targets` in `_targets.R` (`tar_make()` re-runs only stale steps); author a Quarto `.qmd` / R
   Markdown `.Rmd` report as the terminal target; CI runs `renv::restore()` then `tar_make()`/render.
   No `R CMD check`. Stops at a pipeline that restores and runs green from the lockfile.
-- **Automation:** `bootstrap-nix` provisions the R interpreter; `bootstrap-lint` /
-  `bootstrap-taskrunner` wire the gates. The steps here are the SoT; cog owns the _how_ (general
-  `07-automation-with-cog.md`).
 
 ## Maintenance Notes
 

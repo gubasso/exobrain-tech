@@ -73,9 +73,3 @@ For a single package, the default `uv init` layout is enough to start. For a CLI
 a distributable library, follow the implementation-kind file: [`cli-project.md`](./cli-project.md)
 or [`library-project.md`](./library-project.md). Bootstrap owns the _ordering_ (get an importable,
 buildable project first); the kind files own the shape-specific additions.
-
-## Automation
-
-`bootstrap-nix` provisions the devShell that hosts the interpreter and `uv`; the general
-[07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md)
-explains the SoT-vs-cog contract.

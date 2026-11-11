@@ -82,10 +82,3 @@ Pin one Node version so local, CI, and the devShell agree:
   share one toolchain — see
   [nix/02 — per-project devShell](../../../tools/nix/02-per-project-devshell.md). This closes the
   "works on my machine" gap before any code is written.
-
-## Automation
-
-The general foundations (repo files, Nix devShell, editorconfig, pre-commit, task runner, CI) are
-automated by the general `bootstrap-*` skills; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).
-There is no JS-specific scaffold skill — the `npm init` / `tsc --init` steps above are the SoT.

@@ -45,16 +45,11 @@ install/distribution, and versioning are out of scope — they are later-phase w
   (`-fvisibility=hidden`) + export macro; install headers + library plus a discovery file
   (`pkg-config` `.pc` and/or CMake package config); plan `soname`/version early, keep header changes
   additive within a major version.
-- **Automation:** deterministic scaffolding delegates to cog helpers — `bootstrap-nix` (devShell +
-  `.envrc`), `bootstrap-lint` (formatter alignment and hook wiring),
-  `bootstrap-taskrunner` (build/test/format recipes), `bootstrap-ci` (first CI workflow). The
-  SoT-vs-cog contract lives in general `07-automation-with-cog.md` — the runbook owns the _what_,
-  cog the _how_.
 
 ## Maintenance Notes
 
 - General spine: `../../../programming/project-bootstrap/` (general runbook, `04-quality-gates.md`,
-  `06-security-baseline.md`, `07-automation-with-cog.md`). Toolchain hosting:
+  `06-security-baseline.md`). Toolchain hosting:
   `../../../tools/nix/02-per-project-devshell.md`.
 - `daemon-project.md` and other implementation kinds are declared followups; add them when they land.
 - Re-verify build-system, compiler, and gate-tool defaults against upstream on a cadence when

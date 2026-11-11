@@ -58,9 +58,3 @@ local and CI share one runtime — see
 [nix/02 — per-project devShell](../../../tools/nix/02-per-project-devshell.md). The devShell hosts
 the chosen `lua`/`luajit` and puts LuaRocks on `PATH`, closing the "works on my machine" gap before
 any code is written.
-
-## Automation
-
-`bootstrap-nix` provisions the devShell that hosts the runtime and tooling; the steps above are the
-SoT. See
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

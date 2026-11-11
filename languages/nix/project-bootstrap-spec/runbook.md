@@ -19,8 +19,7 @@ overlay that slots into it.
 ## Steps
 
 1. **Scaffold the flake.** `nix flake init` (or `nix flake init -t <template>`) to drop a
-   `flake.nix`. → [00 — Toolchain & layout](./00-toolchain-and-layout.md). _Automate:_
-   `bootstrap-nix` lays down a starting flake.
+   `flake.nix`. → [00 — Toolchain & layout](./00-toolchain-and-layout.md).
 
 2. **Choose the outputs harness.** `flake-utils` (`eachDefaultSystem`) for a small flake, or
    `flake-parts` for a larger, modular one. →

@@ -57,9 +57,3 @@ There is no compiler to pin, but the _tools_ still need pinning so local and CI 
 `shfmt`, `shellcheck`, and `bats` to the per-project Nix devShell — see
 [nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md). This closes the "works
 on my machine" gap (Bash version, ShellCheck version) before any code is written.
-
-## Automation
-
-The general dev-env and gate skills (`bootstrap-nix`, `bootstrap-lint`, `bootstrap-taskrunner`)
-lay down the devShell and gate wiring. The steps above are the SoT; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

@@ -19,8 +19,7 @@ out of scope.
 - **Scaffold:** `cargo new <name>` for a binary (`Cargo.toml` + `src/main.rs`),
   `cargo new --lib
   <name>` for a library (`src/lib.rs`); `cargo init` (or `cargo init --lib`) in
-  an existing dir. `bootstrap-rust` automates the scaffold, and only scaffolds when the project is
-  not already a crate.
+  an existing dir.
 - **`Cargo.toml` baseline:** set the minimum now — `name`, `version`, `edition`, short `description`
   — enough to build and test. Publish-grade metadata (`license`, `repository`, `keywords`,
   `categories`, `exclude`) is deferred to the publishing phase; do not duplicate that gate here.
@@ -51,6 +50,4 @@ out of scope.
 
 - General spine: `../../../programming/project-bootstrap/`. Detailed CLI structure: `../cli-spec/`.
 - `library-project.md` and `web-service.md` are declared followup kinds; add them when those kinds are bootstrapped.
-- Automation contract lives in general `07-automation-with-cog.md` — the runbook owns the _what_,
-  `bootstrap-rust` (cog) the _how_.
 - No conflicts among the current source files.

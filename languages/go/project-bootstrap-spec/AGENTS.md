@@ -44,9 +44,6 @@ service). Do the general steps first, then this overlay.
   request IDs) before routes; load port/timeouts/deps from env/flags with explicit defaults and set
   `ReadTimeout`/`WriteTimeout` on `http.Server`; graceful shutdown on `SIGINT`/`SIGTERM` via
   `server.Shutdown(ctx)`.
-- **Automation:** `bootstrap-nix` provisions the devShell; `bootstrap-lint` +
-  `bootstrap-taskrunner` wire gates; `bootstrap-ci` for CI. These chapters are the SoT; the
-  SoT-vs-cog contract lives in general `07-automation-with-cog.md`.
 
 ## Maintenance Notes
 

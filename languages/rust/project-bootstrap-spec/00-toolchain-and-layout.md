@@ -9,9 +9,6 @@ to pin the toolchain, and where the detailed layout spec lives.
 - Library: `cargo new --lib <name>` (creates `src/lib.rs`).
 - In an existing directory: `cargo init` (or `cargo init --lib`).
 
-`bootstrap-rust` automates this scaffold (and only scaffolds when the project is not already a
-crate).
-
 ## `Cargo.toml` baseline metadata
 
 Set the minimum now: `name`, `version`, `edition`, and a short `description`. Leave publish-grade
@@ -32,9 +29,3 @@ subcommands, multiple modules, or a workspace, follow the detailed structure spe
 [`../cli-spec/00-directory-tree.md`](../cli-spec/00-directory-tree.md) and
 [`../cli-spec/01-crate-layout.md`](../cli-spec/01-crate-layout.md). Bootstrap owns the _ordering_
 (get a buildable crate first); `cli-spec/` owns the detailed _how_.
-
-## Automation
-
-`bootstrap-rust` lays down the crate skeleton and optional rustfmt/clippy/deny config. The steps
-above are the SoT; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

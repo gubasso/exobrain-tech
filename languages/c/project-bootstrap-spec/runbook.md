@@ -27,21 +27,17 @@ overlay that slots into it.
 
 3. **Configure quality gates.** Add `.clang-format` and `.clang-tidy`, a cppcheck invocation, an
    ASan/UBSan build variant for tests/CI, and a unit-test framework (Unity, CMocka, or Criterion). →
-   [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint` (formatter
-   alignment and hook wiring), `bootstrap-taskrunner` (build/test/format
-   recipes).
+   [01 — Quality gates](./01-quality-gates.md).
 
 4. **Pick the implementation kind.** For a CLI, follow [`cli-project.md`](./cli-project.md); for a
    shared/static library, follow [`library-project.md`](./library-project.md).
 
 5. **Continue the general spine.** Return to the
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
-   security if not already done. _Automate:_ `bootstrap-ci` (first CI workflow), `bootstrap-nix`
-   (devShell + `.envrc`).
+   security if not already done.
 
 ## Reference
 
 - [00 — Toolchain & layout](./00-toolchain-and-layout.md) ·
   [01 — Quality gates](./01-quality-gates.md) ·
-  [general runbook](../../../programming/project-bootstrap/runbook.md) ·
-  [general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md)
+  [general runbook](../../../programming/project-bootstrap/runbook.md)

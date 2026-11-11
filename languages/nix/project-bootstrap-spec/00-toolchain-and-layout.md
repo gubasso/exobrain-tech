@@ -10,7 +10,7 @@ link to the [Nix language shelf](../README.md) — do not restate it here.
 - Empty starting point: `nix flake init` (drops a minimal `flake.nix` in the current dir).
 - From a template: `nix flake init -t <flake>#<name>` (e.g. a `flake-parts` or devShell template).
 
-`bootstrap-nix` automates a starting flake. See [`02-flakes.md`](../02-flakes.md) for the minimal
+See [`02-flakes.md`](../02-flakes.md) for the minimal
 `flake.nix` shape (`description`, `inputs`, `outputs`).
 
 ## `flake.nix` structure
@@ -58,8 +58,3 @@ For the shape of each output (`packages`, `devShells`, `nixosModules`, `overlays
 schema in [`03-flake-outputs.md`](../03-flake-outputs.md) and, for modules,
 [`04-nixos-and-modules.md`](../04-nixos-and-modules.md). Bootstrap owns the _ordering_ (get an
 evaluable, `nix flake check`-clean flake first); the language shelf owns the detailed _how_.
-
-## Automation
-
-`bootstrap-nix` lays down a starting flake and devShell. The steps above are the SoT; see
-[general 07 — Automation with cog](../../../programming/project-bootstrap/07-automation-with-cog.md).

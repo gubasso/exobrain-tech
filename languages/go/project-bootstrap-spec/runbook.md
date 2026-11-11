@@ -25,20 +25,18 @@ overlay that slots into it.
 3. **Pin the Go version.** Set the `go` and `toolchain` directives in `go.mod` and wire the same Go
    version into the Nix devShell so local and CI match. →
    [00 — Toolchain & layout](./00-toolchain-and-layout.md),
-   [nix/02 — Per-project devShell](../../../tools/nix/02-per-project-devshell.md). _Automate:_
-   `bootstrap-nix`.
+   [nix/02 — Per-project devShell](../../../tools/nix/02-per-project-devshell.md).
 
 4. **Configure quality gates.** `gofmt`/`goimports` for format, `go vet` + `golangci-lint` for lint,
    `go test -race` for tests, and `govulncheck` for the security baseline; wire them into
-   pre-commit. → [01 — Quality gates](./01-quality-gates.md). _Automate:_ `bootstrap-lint`,
-   `bootstrap-taskrunner`.
+   pre-commit. → [01 — Quality gates](./01-quality-gates.md).
 
 5. **Pick the implementation kind.** For a CLI, follow [`cli-project.md`](./cli-project.md); for an
    HTTP service, follow [`web-service.md`](./web-service.md); a library is a followup.
 
 6. **Continue the general spine.** Return to the
    [general runbook](../../../programming/project-bootstrap/runbook.md) for governance, CI, and
-   security if not already done. _Automate:_ `bootstrap-ci`.
+   security if not already done.
 
 ## Reference
 

@@ -42,9 +42,3 @@ that ownership is recorded, previewed, and upgraded is
 [agent-integration — Disposable staging and direct landing](../agent-integration/disposable-staging-and-direct-landing.md).
 This shelf routes the step. It states no rule about the record, the ownership classes, or what
 happens on a later run.
-
-## Automation
-
-`bootstrap-governance` seeds `CLAUDE.md`, an `AGENTS.md`, and an ADR scaffold (MADR-minimal plus a
-self-containment ADR). The conventions above are the SoT; see
-[07 — Automation with cog](./07-automation-with-cog.md).

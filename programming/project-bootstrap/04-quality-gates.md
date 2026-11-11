@@ -149,9 +149,3 @@ The cases that come up:
 A task runner gives one entry point for common recipes — `fmt`, `lint`, `test`, `build` — so
 contributors and CI invoke the same commands. A `justfile` is a good default; an existing `Makefile`
 can be augmented in place. This is the single command surface the other gates hang off.
-
-## Automation
-
-`bootstrap-lint` installs the hook framework and a starter hook set; `bootstrap-taskrunner`
-scaffolds a `justfile` (or augments a `Makefile`). The gates above are the SoT; see
-[07 — Automation with cog](./07-automation-with-cog.md).

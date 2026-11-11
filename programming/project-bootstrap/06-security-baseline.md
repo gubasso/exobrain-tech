@@ -31,9 +31,3 @@ Track and vet dependencies:
 branch protection, pinned dependencies, token permissions, CI-test presence, and more. Use its
 checks as the target checklist for the security posture — most map directly to steps already in this
 runbook (CI in chapter [05](./05-ci.md), least-privilege CI tokens, etc.).
-
-## Automation
-
-Secrets hygiene and dependency auditing are partly wired by the CI and repo-foundation skills; the
-security requirements above are the SoT. See
-[07 — Automation with cog](./07-automation-with-cog.md).

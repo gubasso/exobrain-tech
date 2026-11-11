@@ -41,7 +41,7 @@ linter.
 
 Wire `zig fmt --check .` and `zig build test` into the pre-commit hooks from the general
 [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) so failures surface
-locally in seconds. A task runner recipe (`bootstrap-taskrunner`) that fronts these as one command
+locally in seconds. A task runner recipe that fronts these as one command
 keeps local and CI invocations identical.
 
 ## Security baseline
