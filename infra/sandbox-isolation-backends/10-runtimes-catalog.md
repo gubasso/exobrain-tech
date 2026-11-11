@@ -237,7 +237,7 @@ lists the selection criteria.
   mounts the OCI bundle into the guest; Firecracker has no virtio-fs and pays a
   devmapper-snapshotter cost in Kata-on-FC); **TSI's host-side proxy** terminates per-connection TCP
   on the host's `AF_INET` stack via real userspace sockets
-  ([libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/main/patches)) — different from
+  ([libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/e5521023f9d0fda5c2dfcb4cf592dc5441f2ad25/patches)) — different from
   FC's TAP+netfilter path, not strictly smaller; **virtio-gpu (virgl/venus)** is available via
   `krun_set_gpu_options` (FC has no GPU support) but is **off by default** in
   `podman --runtime krun`. These are the technical content behind the §4.4 trade-off, not a

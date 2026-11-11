@@ -172,7 +172,7 @@ libkrun's host-facing device surface is **wider than bare Firecracker's** in thr
 2. **TSI's host-side proxy** opens real host `AF_INET` / `AF_INET6` / `AF_UNIX` sockets on behalf of
    the guest, terminating per-connection TCP state on the **host** kernel. Firecracker uses TAP +
    netfilter instead. See the
-   [libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/main/patches).
+   [libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/e5521023f9d0fda5c2dfcb4cf592dc5441f2ad25/patches).
 3. **virtio-gpu (virgl/venus)** is available via `krun_set_gpu_options`. It is **off by default** in
    this implementation and gated behind an explicit profile opt-in to keep the surface bounded.
 
@@ -347,7 +347,7 @@ Full annotated bibliography: [90-references.md](./90-references.md).
 - [crun `krun.1` manpage](https://man.archlinux.org/man/krun.1.en) —
   `crun --krun` invocation contract.
 - [libkrun/krunvm](https://github.com/libkrun/krunvm) — reference CLI built on libkrun.
-- [libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/main/patches) — Transparent Socket
+- [libkrunfw TSI patch](https://github.com/libkrun/libkrunfw/tree/e5521023f9d0fda5c2dfcb4cf592dc5441f2ad25/patches) — Transparent Socket
   Impersonation implementation.
 - [libkrun discussion #538 — security model](https://github.com/libkrun/libkrun/discussions/538) —
   "guest and VMM pertain to the same security context."

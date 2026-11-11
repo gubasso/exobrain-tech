@@ -30,7 +30,7 @@ file is the deduplicated superset, grouped by subject.
 - [Cloud Hypervisor — release notes](https://github.com/cloud-hypervisor/cloud-hypervisor/blob/main/release-notes.md)
 - [libkrun/libkrun](https://github.com/libkrun/libkrun)
 - [libkrun #538 — security-model discussion](https://github.com/libkrun/libkrun/discussions/538)
-- [libkrunfw — Transparent Socket Impersonation patch](https://github.com/libkrun/libkrunfw/tree/main/patches)
+- [libkrunfw — Transparent Socket Impersonation patch](https://github.com/libkrun/libkrunfw/tree/e5521023f9d0fda5c2dfcb4cf592dc5441f2ad25/patches)
 - [containers/crun](https://github.com/containers/crun)
 - [crun — `krun.1` manpage (Arch)](https://man.archlinux.org/man/krun.1.en)
 - [rust-vmm — shared VMM crates](https://github.com/rust-vmm)
