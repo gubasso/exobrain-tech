@@ -104,11 +104,12 @@ fn attribute_file(dot_git: &Path, checkout: &Checkout) -> Attribution {
     let Ok(text) = std::fs::read_to_string(dot_git) else {
         return Attribution::Unknown("unreadable .git file".to_owned());
     };
+    // Git reads a gitfile as `gitdir: <path>` from the first byte, with only
+    // trailing whitespace after the path, and rejects anything else.
     let Some(pointer) = text
-        .lines()
-        .find_map(|line| line.strip_prefix("gitdir:"))
-        .map(str::trim)
-        .filter(|p| !p.is_empty())
+        .strip_prefix("gitdir: ")
+        .map(str::trim_end)
+        .filter(|p| !p.is_empty() && !p.contains('\n'))
     else {
         return Attribution::Unknown("malformed .git file".to_owned());
     };

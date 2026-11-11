@@ -110,6 +110,27 @@ fn finds_copies_of_this_checkout_and_reports_a_relative_or_malformed_gitdir_as_u
 }
 
 #[test]
+fn finds_copies_of_this_checkout_and_reports_a_gitdir_after_leading_text_as_unknown() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    // Git reads `gitdir: ` only from the first byte, so a pointer that a
+    // later line holds is no gitfile, even when it names this checkout.
+    let git_dir = std::fs::canonicalize(repo.join(".git")).unwrap();
+    let text = format!("not a gitfile\ngitdir: {}\n", git_dir.display());
+    let copy = world.plant_file("garbage", &text, Some(BIG));
+    let out = world.guard(&repo).output().unwrap();
+    let report = stdout_of(&out);
+    assert_eq!(out.status.code(), Some(0), "{report}");
+    assert!(
+        report.contains(&format!("{}  malformed .git file", copy.display())),
+        "{report}"
+    );
+    let daily = world.guard(&repo).arg("--daily").output().unwrap();
+    assert_eq!(daily.status.code(), Some(0));
+    assert!(daily.stderr.is_empty(), "{}", stderr_of(&daily));
+}
+
+#[test]
 fn finds_copies_of_this_checkout_from_a_removed_worktree() {
     let world = World::new();
     let repo = world.repo("repo", None);
