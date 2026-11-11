@@ -38,4 +38,4 @@ in every driving skill as the prose safeguard.
 
 ## Status
 
-Implemented (2026-06-17) in the standalone `cog` project, which now owns the agent and skill trees.
+Implemented (2026-06-17).
