@@ -13,8 +13,8 @@
 #       pre-push    : slower, network-aware (link check, flake evaluation).
 #       commit-msg  : Conventional Commits shape.
 #     The two stages together run every check, each check in one stage, and
-#     no CI runs (`project-platform:the-hooks-are-the-only-gate`). The push
-#     stage does not rerun the commit stage.
+#     CI only mirrors them (`project-platform:the-hooks-are-the-only-gate`).
+#     The push stage does not rerun the commit stage.
 #   - Generated files follow their generator. Every hook that rewrites or
 #     judges excludes them, in the tool's own configuration where it has one,
 #     and the reading hooks keep them (`project-platform:hooks-exclude-generated-files`):

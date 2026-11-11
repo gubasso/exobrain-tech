@@ -11,9 +11,9 @@ Single source of truth for how `exobrain-tech` works. `README.md` indexes the co
 
 ## What the product is
 
-Non-negotiable: the product is the library — the knowledge itself. It lives in the eight top-level buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platforms/`, `workflows/`, `data/`), and may use whatever structure serves the knowledge within a bucket.
+Non-negotiable: the knowledge product is the library — the knowledge itself. It lives in the eight top-level buckets (`programming/`, `languages/`, `systems/`, `infra/`, `tools/`, `platforms/`, `workflows/`, `data/`), and may use whatever structure serves the knowledge within a bucket. `crates/` holds the programs the repository ships to the projects that follow the canon, starting with the `exobrain` CLI (ADR-the-repository-also-ships-a-cli).
 
-`_docs/` is not the product. `specs/` states what binds; the Diátaxis zones (`decisions/`, `guides/`, `reference/`, `explanation/`) hold the rest. Never place a knowledge article there. Placement test: "Is this about how the KB works?" → `_docs/`; "Is this knowledge the library serves?" → the owning bucket (ADR-docs-vs-library-boundary).
+`_docs/` is not the product. `specs/` states what binds; the Diátaxis zones (`decisions/`, `guides/`, `reference/`, `explanation/`) hold the rest. Never place a knowledge article there. Placement test: "Is this about how the KB works?" → `_docs/`; "Is this knowledge the library serves?" → the owning bucket (ADR-docs-vs-library-boundary); "Is this a program the repository ships?" → `crates/`.
 
 Two boundaries bind what lives here. Private equipment identity, security posture, recovery material, credentials, and personal workflows belong in `exobrain-tech-vault`. And this repository names no planning, project-management, or workflow method (ADR-the-repository-names-no-planning-method).
 
@@ -27,7 +27,7 @@ Load the specs of every domain you touch before acting. Each rule has a stable I
 
 Non-negotiable: a stated rule is applied, not re-raised. Where this file, the method, or a source it cites answers something, that is the answer. Report only what is still open; a closed item hides the live ones. Retrofitting a rule onto older files is ordinary pre-commit work (ADR-a-stated-rule-is-applied-not-re-raised).
 
-`master` is the trunk: the only permanent branch. Work reaches it through a short-lived branch in its own linked worktree, which `rk integrate` rebases onto the trunk locally, and then the trunk is pushed. No pull request and no CI run: the commit and push hooks are the whole gate (ADR-the-trunk-integrates-locally-and-the-hooks-are-the-gate).
+`master` is the trunk: the only permanent branch. Work reaches it through a short-lived branch in its own linked worktree, which `rk integrate` rebases onto the trunk locally, and then the trunk is pushed. No pull request carries the work. The commit and push hooks are the gate, and CI only mirrors them, cuts releases, and judges the release pull request (ADR-releases-run-in-ci).
 
 ## Authoring
 
@@ -47,7 +47,7 @@ Non-negotiable: a stated rule is applied, not re-raised. Where this file, the me
 
 ## Executable artifacts and tools
 
-A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the chapter that explains it and carries three obligations in the same change (ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. The repository's own tools and hooks follow `project-platform:the-most-specific-native-owner-holds-each-dependency`, `project-platform:the-hooks-are-the-only-gate`, and `project-platform:hooks-exclude-generated-files`.
+A bucket may ship a working artifact a reader is expected to copy and run. It lives beside the chapter that explains it and carries three obligations in the same change (ADR-executable-artifacts-in-the-library): a gate, a `just test` case, and its tools in the devShell. A program in `crates/` carries its contract in `_docs/specs/SPEC-cli.md` and the Rust gates of the hooks. The repository's own tools and hooks follow `project-platform:the-most-specific-native-owner-holds-each-dependency`, `project-platform:the-hooks-are-the-only-gate`, and `project-platform:hooks-exclude-generated-files`.
 
 ## No document narrates its own history
 

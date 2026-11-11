@@ -17,6 +17,15 @@ decisions, architecture, conventions, and patterns that govern how the knowledge
 and maintained. When you want to record _how the knowledge base works_, write in `_docs/`. When you
 want to record _knowledge_, write in the content tree.
 
+## The programs the repository ships
+
+`crates/` is a Rust workspace that ships programs to the projects that follow the library's rules,
+starting with the `exobrain` CLI. A program lives there when it enforces a rule the library states,
+so the rule, its check, and its guard change in one commit and share one release
+(`ADR-the-repository-also-ships-a-cli`). The knowledge stays the product, and `crates/` serves it.
+Its contract is `_docs/specs/SPEC-cli.md`, and CI cuts its releases (`ADR-releases-run-in-ci`). The
+software is MIT under `LICENSE-MIT`, and the knowledge is CC BY 4.0 under `LICENSE`.
+
 ## Content structure
 
 The content tree is owned by the filesystem. Organize it by subject, with directories that group

@@ -96,19 +96,28 @@ The verification rebuilds every hook environment, so it runs once for each chang
 ### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 
 The project MUST run every check in its commit stage or its push stage, each check in exactly one of
-them, and MUST run no CI. A fast check on the staged files runs at commit, and a costly check, such
-as a flake evaluation or the link check, runs at push. The push stage MUST NOT rerun a commit-stage
-hook. A branch reaches the trunk through `rk integrate` and a push from a checkout that ran both
-stages, so a change that passed its hooks is the change that lands. The chapter that states the
-general rule is `programming/project-bootstrap/04-quality-gates.md`, "Git hooks".
+them. A fast check on the staged files runs at commit, and a costly check, such as a flake evaluation
+or the link check, runs at push. The push stage MUST NOT rerun a commit-stage hook. A branch reaches
+the trunk through `rk integrate` and a push from a checkout that ran both stages, so a change that
+passed its hooks is the change that lands. CI MUST hold only three kinds of workflow:
+
+- The validation workflow, `ci.yml`, whose every `run:` step is a `pre-commit run` of one hook
+  stage, so a push that passed its hooks passes CI.
+- The release workflows, `release-plz.yml` and `release.yml`, which create tags, releases, and
+  artifacts and check nothing the hooks do not check.
+- The pull-request checks, `pr-title.yml`, which judge what only a pull request has. No push starts
+  them.
+
+The chapter that states the general rule is `programming/project-bootstrap/04-quality-gates.md`,
+"Git hooks".
 
 #### Scenario: A check is added outside the hooks
 
-- GIVEN a new check that a recipe runs and no hook stage runs
+- GIVEN a new check that a CI step runs and no hook stage runs
 - WHEN a contributor pushes a change that the check rejects
-- THEN nothing stopped the push, so the check moves into the commit or the push stage
+- THEN the push passed and CI failed, so the check moves into the commit or the push stage
 
-Verify: `[ ! -e .github/workflows ] && just lint`
+Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) grep -E '^[[:space:]]*(- )?run:' "$f" | grep -vq 'pre-commit run' && exit 1 ;; release-plz.yml|release.yml|pr-title.yml) ;; *) exit 1 ;; esac; done; just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 

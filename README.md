@@ -1,6 +1,6 @@
 # Exobrain Tech
 
-Public technical knowledge base. The KB — the library, the content — is the product and lives in the top-level topic buckets; `_docs/` holds repository governance and metadata about that product, not the product itself.
+Public technical knowledge base. The KB — the library, the content — is the knowledge product and lives in the top-level topic buckets. `crates/` holds the programs the repository ships to the projects that follow its rules, starting with the `exobrain` CLI. `_docs/` holds repository governance and metadata about both, not the product itself.
 
 ## KB Index
 
@@ -21,5 +21,6 @@ Public technical knowledge base. The KB — the library, the content — is the 
 
 ## License
 
-Content is licensed under [Creative Commons Attribution 4.0 International](LICENSE)
-(CC BY 4.0), copyright 2026 Gustavo Basso.
+The knowledge content is licensed under
+[Creative Commons Attribution 4.0 International](LICENSE) (CC BY 4.0), and the software under
+`crates/` under the [MIT License](LICENSE-MIT). Copyright 2026 Gustavo Basso.
