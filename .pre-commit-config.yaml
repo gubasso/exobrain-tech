@@ -27,6 +27,11 @@
 #       .github/workflows/release-plz.yml rk
 #       .github/workflows/pr-commits.yml  rk
 #       .github/workflows/release.yml     cargo-dist
+#     Each Markdown form or wording gate below also skips CHANGELOG.md, and
+#     the two wording scripts leave it out of their git grep. The file does
+#     not exist before the first release, and check-useless-excludes refuses
+#     an exclude that matches nothing, so a hook with no other exclude skips
+#     it through `files:`.
 #     The specs, templates, and schema sdd ships stay byte-equal to the copy
 #     `sdd spec` and the landing print, so the formatters skip them too: md-toc
 #     through its exclude, and dprint through dprint.json.
@@ -205,7 +210,7 @@ repos:
         # -c: don't gate on TOC list coherence (free-form notes may diverge).
         # -p: write in place. --skip-lines 1: don't TOC the H1 title.
         args: [-p, -c, --skip-lines, '1', github]
-        exclude: '^_docs/specs/SPEC-(budget-debt|comparison-docs|decision-records|docs-format|docs-foundations|docs-specs|guides|instance|known-issues|spec-to-code|tracking|writing-policy|writing-style)\.md$'
+        exclude: '^(_docs/specs/SPEC-(budget-debt|comparison-docs|decision-records|docs-format|docs-foundations|docs-specs|guides|instance|known-issues|spec-to-code|tracking|writing-policy|writing-style)\.md|CHANGELOG\.md)$'
 
   # --- Markdown lint (style gate + ordered-list renumber autofix) ---
   #
@@ -234,11 +239,15 @@ repos:
         language: pygrep
         types: [markdown]
         entry: '\]\((?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/)[^)/\s:]+\.[A-Za-z0-9]+(?:#[^)]*)?\)'
+        # Skips release-plz's CHANGELOG.md, as the header says.
+        files: '^(?!CHANGELOG\.md$)'
       - id: no-bare-relative-link-defs
         name: markdown link definitions must be explicit (./, ../, or a path)
         language: pygrep
         types: [markdown]
         entry: '^\s*\[[^\]]+\]:\s+(?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/|<)[^\s/:#]+\.[A-Za-z0-9]+'
+        # Skips release-plz's CHANGELOG.md, as the header says.
+        files: '^(?!CHANGELOG\.md$)'
 
   # --- No document indexes the filesystem (ADR-filesystem-owns-disk-state; pre-commit, local) ---
   #
@@ -262,11 +271,15 @@ repos:
         language: pygrep
         types: [markdown]
         entry: '^source-files:'
+        # Skips release-plz's CHANGELOG.md, as the header says.
+        files: '^(?!CHANGELOG\.md$)'
       - id: no-source-map-section
         name: no topic-to-filename source map section
         language: pygrep
         types: [markdown]
         entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
+        # Skips release-plz's CHANGELOG.md, as the header says.
+        files: '^(?!CHANGELOG\.md$)'
 
 
   # Instance policy: this retired name is specific to this knowledge base. The
@@ -292,6 +305,8 @@ repos:
         language: system
         types: [markdown]
         entry: .hooks/guide-recipe-shape.sh
+        # Skips release-plz's CHANGELOG.md, as the header says.
+        files: '^(?!CHANGELOG\.md$)'
 
   # Instance policy: this repository is an instance of the documentation canon,
   # so every mention of it is an upstream dependency reference, declared once.
@@ -452,7 +467,7 @@ repos:
         language: pygrep
         types: [text]
         entry: '^(?!.*nix-path-ok).*(\bgetFlake\s*+(?:\(\s*+(?!\\?["''](?:git\+file:|/nix/store/))|\\?["''](?!git\+file:|/nix/store/))|(?<![\w-])path:(?!/nix/store/)[^\s`''"),\]:?\\0-9-])'  # nix-path-ok: the hook's own expression
-        exclude: '^\.hooks/flake-reference-corpus/must-fail\.txt$'
+        exclude: '^(\.hooks/flake-reference-corpus/must-fail\.txt|CHANGELOG\.md)$'
 
   # --- The Rust workspace in crates/ ---
   #

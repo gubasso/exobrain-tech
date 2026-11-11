@@ -20,7 +20,7 @@ set -u
 
 bad=$(git grep -In -f .hooks/unnamed-methods.txt -- \
   ':(exclude)_docs/decisions' ':(exclude).hooks/unnamed-methods.txt' \
-  ':(exclude).spec-driven-docs/manifest.json') || true
+  ':(exclude).spec-driven-docs/manifest.json' ':(exclude)CHANGELOG.md') || true
 [ -z "$bad" ] || {
   echo "FAIL knowledge-base-boundary:a-retired-name-does-not-return"
   echo "$bad"

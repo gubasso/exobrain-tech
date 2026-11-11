@@ -34,7 +34,7 @@ status=0
 # (ADR-a-flake-pinned-tool-input-is-a-tool-dependency).
 stray=$(git grep -In -F -e "$name" -- \
   ":(exclude)$home" ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
-  ':(exclude)flake.nix' ':(exclude)flake.lock' \
+  ':(exclude)flake.nix' ':(exclude)flake.lock' ':(exclude)CHANGELOG.md' \
   ":(exclude).$name" ':(exclude)_docs/.markdownlint-cli2.jsonc' |
   sed -e "s/\.$name/PROJECTION/g" \
     -e "s/$name-verify/PROJECTION/g" \
