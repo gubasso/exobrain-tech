@@ -101,8 +101,9 @@ or the link check, runs at push. The push stage MUST NOT rerun a commit-stage ho
 the trunk through `rk integrate` and a push from a checkout that ran both stages, so a change that
 passed its hooks is the change that lands. CI MUST hold only three kinds of workflow:
 
-- The validation workflow, `ci.yml`, whose every `run:` step is a `pre-commit run` of one hook
-  stage, so a push that passed its hooks passes CI.
+- The validation workflow, `ci.yml`, whose every `run:` step is one `pre-commit run` call of one
+  hook stage, alone on its line and bare or through `nix develop --command`, so a push that passed
+  its hooks passes CI. A hook skip list goes in the step's `env:`.
 - The release workflows, `release-plz.yml` and `release.yml`, which create tags, releases, and
   artifacts and check nothing the hooks do not check.
 - The pull-request checks, `pr-title.yml`, which judge what only a pull request has. No push starts
@@ -117,7 +118,7 @@ The chapter that states the general rule is `programming/project-bootstrap/04-qu
 - WHEN a contributor pushes a change that the check rejects
 - THEN the push passed and CI failed, so the check moves into the commit or the push stage
 
-Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) grep -E '^[[:space:]]*(- )?run:' "$f" | grep -vq 'pre-commit run' && exit 1 ;; release-plz.yml|release.yml|pr-title.yml) ;; *) exit 1 ;; esac; done; just lint`
+Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) grep -E '^[[:space:]]*(- )?run:' "$f" | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?pre-commit run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1 ;; release-plz.yml|release.yml|pr-title.yml) ;; *) exit 1 ;; esac; done; just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 
