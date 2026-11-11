@@ -6,7 +6,7 @@ result-*
 # lychee link-checker cache (pre-push hook)
 .lycheecache
 
-# --- cog gitignore (generic) ---
+# --- generic gitignore ---
 # Generic ignores
 # OS / editor cruft
 .DS_Store
