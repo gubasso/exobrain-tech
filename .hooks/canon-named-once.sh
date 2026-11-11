@@ -50,7 +50,7 @@ stray=$(git grep -In -F -e "$name" -- \
 
 pinned=$(git grep -In -F -e "$url/" -- \
   ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
-  ":(exclude).$name") || true
+  ":(exclude).$name" ':(exclude)CHANGELOG.md') || true
 [ -z "$pinned" ] || {
   echo "FAIL $rule: an upstream link carries a version or a deep path"
   echo "$pinned"
