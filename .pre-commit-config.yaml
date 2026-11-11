@@ -472,7 +472,8 @@ repos:
   # --- The Rust workspace in crates/ ---
   #
   # The fast checks run at commit on the Rust and Cargo files. The costly
-  # checks run at push, so a push that passed its hooks passes CI.
+  # checks run at push, so a push that passed its hooks passes the test job of
+  # CI. The release build of cargo-dist runs in CI only.
   - repo: local
     hooks:
       # owner: devshell (project-environment) cargo fmt is part of the Rust toolchain that the devshell pins.
@@ -522,17 +523,6 @@ repos:
         entry: sh -c 'dist plan > /dev/null && dist generate --check'
         language: system
         files: '(^dist-workspace\.toml|^\.github/workflows/release\.yml|(^|/)Cargo\.toml)$'
-        pass_filenames: false
-        stages: [pre-push]
-      # Every release target builds before a push, the same build that the
-      # dist-build job of ci.yml runs for the release gate
-      # (project-platform:the-hooks-are-the-only-gate).
-      # owner: devshell (project-environment) dist build compiles the crate with the toolchain of the devshell.
-      - id: dist-build
-        name: cargo-dist build of every release target
-        entry: dist build --artifacts=local --target x86_64-unknown-linux-gnu
-        language: system
-        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^rust-toolchain\.toml|^dist-workspace\.toml)$'
         pass_filenames: false
         stages: [pre-push]
 
