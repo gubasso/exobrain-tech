@@ -24,3 +24,6 @@ tmp/
 .env.local
 # Nix devshell
 /result
+
+# Rust build output
+/target

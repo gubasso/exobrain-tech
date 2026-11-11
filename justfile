@@ -6,7 +6,7 @@
 # artifact a reader is expected to copy and run, and
 # ADR-executable-artifacts-in-the-library requires such an
 # artifact to be gated here rather than asserted. `test` is where that gate
-# lives. `build` stays a no-op — nothing is compiled.
+# lives. `build` compiles the `exobrain` CLI of the Rust workspace in crates/.
 
 # List available recipes.
 default:
@@ -23,7 +23,11 @@ lint:
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
 # expected to copy and run. Every one of those is linted and formatted here.
-test: test-gates test-shipped-scripts test-one-system verify-instance
+test: test-gates test-shipped-scripts test-one-system verify-instance test-crates
+
+# Run the test suite of the Rust workspace in crates/.
+test-crates:
+    nix develop --command cargo nextest run
 
 # Lint and format-check every shell script the buckets ship
 # (`knowledge-base-boundary:a-shipped-script-is-gated`).
@@ -55,15 +59,23 @@ test-gates:
 verify-instance:
     nix develop --command sdd verify --target .
 
-# Nothing to compile for a knowledge base.
+# Build the `exobrain` CLI into target/debug, which .envrc puts on PATH.
 build:
-    @echo "no build: exobrain-tech ships documents and drop-in artifacts, not binaries"
+    nix develop --command cargo build
+
+# Install the `exobrain` CLI into the cargo bin folder, and remove it again.
+install:
+    nix develop --command cargo install --path crates/exobrain --locked
+
+uninstall:
+    nix develop --command cargo uninstall exobrain
 
 # Format the markdown tree with dprint, and the shipped shell scripts with
 # shfmt. shfmt takes no layout flags: `.editorconfig` carries them.
 fmt:
     nix develop --command dprint fmt
     nix develop --command .hooks/shipped-scripts.sh --fix
+    nix develop --command cargo fmt
 
 # Format, then lint, then verify the shipped artifacts.
 check: fmt lint test

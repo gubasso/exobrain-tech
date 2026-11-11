@@ -1,0 +1,36 @@
+[workspace]
+members = ["crates/*"]
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.89"
+license = "MIT"
+repository = "https://github.com/gubasso/exobrain-tech"
+
+[workspace.lints.rust]
+unused_must_use = "deny"
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+unwrap_used = "warn"
+expect_used = "warn"
+todo = "deny"
+dbg_macro = "deny"
+unimplemented = "deny"
+panic = "deny"
+wildcard_imports = "deny"
+exit = "deny"
+allow_attributes_without_reason = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

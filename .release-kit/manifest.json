@@ -4,10 +4,15 @@
   "origin": "init",
   "landed_at": "2026-11-10T03:24:48Z",
   "profile": {
-    "technologies": [],
+    "technologies": [
+      "rust"
+    ],
     "forge": "github",
     "release": {
-      "mode": "none"
+      "mode": "automatic",
+      "driver": "rust",
+      "style": "trunk",
+      "line_prefix": "release/"
     }
   },
   "git": {
@@ -17,7 +22,7 @@
     "merge_form": "rebase"
   },
   "capabilities": {
-    "nix_packaging": false,
+    "nix_packaging": true,
     "reporting_policy": false,
     "scorecard": false,
     "workflow_guards": false
@@ -26,22 +31,55 @@
     "repo": "gubasso/exobrain-tech",
     "security_contact": "",
     "security_response": "best-effort",
-    "required_check": "",
-    "required_workflow": ""
+    "required_check": "test",
+    "required_workflow": "ci"
   },
   "files": [
     {
+      "destination": ".github/workflows/pr-commits.yml",
+      "kind": "rendered",
+      "sha256": "c05088594a3f0671a4d0f8a528a4b8986608dc868214203752cca3a12cac5034"
+    },
+    {
+      "destination": ".github/workflows/release-plz.yml",
+      "kind": "rendered",
+      "sha256": "6cc7e3ef08caebf8b5f226b37f6933f5940bcbbd2f00af7542eefa8f192aec79"
+    },
+    {
       "destination": ".pre-commit-config.yaml",
       "kind": "rendered",
-      "sha256": "151460bda31526427d23530b0d082ebc58100ac8a829f0df3aab9ad086413d3a",
+      "sha256": "2e49622147559b92430461a04a1b18a6caa50367b7c294294002db06ddd350d7",
       "placement": "region"
     },
     {
       "destination": "AGENTS.md",
       "kind": "rendered",
-      "sha256": "d4395f03e9d00161dbd264131d157352d7e42bf4a81a866aad2b42c1bb021a14",
+      "sha256": "15c454420e999029c05d3bd9a906634c380296e229b331af8f09164054d088c8",
       "placement": "region"
+    },
+    {
+      "destination": "dist-workspace.toml",
+      "kind": "seeded",
+      "sha256": "84b6e8a7658c4c3e1c9bfa12f44c8ffe021bc259d2e306c11b56734baa8f9cd6"
+    },
+    {
+      "destination": "release-plz.toml",
+      "kind": "seeded",
+      "sha256": "3e3d82e6ed942fc51878e0f36d8718c390a43c3b248924df20f55ed4111027f7"
     }
   ],
-  "pins": {}
+  "pins": {
+    "attest": "4",
+    "cargo-dist": "0.32.0",
+    "checkout": "4",
+    "create-github-app-token": "3",
+    "dist-checkout": "6",
+    "dist-download-artifact": "8",
+    "dist-upload-artifact": "7",
+    "magic-nix-cache-action": "13",
+    "nix-image": "2.35.2",
+    "nix-installer-action": "19",
+    "release-plz": "0.3.160",
+    "rust-toolchain": "stable"
+  }
 }

@@ -106,8 +106,8 @@ passed its hooks is the change that lands. CI MUST hold only three kinds of work
   its hooks passes CI. A hook skip list goes in the step's `env:`.
 - The release workflows, `release-plz.yml` and `release.yml`, which create tags, releases, and
   artifacts and check nothing the hooks do not check.
-- The pull-request checks, `pr-title.yml`, which judge what only a pull request has. No push starts
-  them.
+- The pull-request checks, `pr-commits.yml`, which judge what only a pull request has. No push
+  starts them.
 
 The chapter that states the general rule is `programming/project-bootstrap/04-quality-gates.md`,
 "Git hooks".
@@ -118,15 +118,16 @@ The chapter that states the general rule is `programming/project-bootstrap/04-qu
 - WHEN a contributor pushes a change that the check rejects
 - THEN the push passed and CI failed, so the check moves into the commit or the push stage
 
-Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) grep -E '^[[:space:]]*(- )?run:' "$f" | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?pre-commit run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1 ;; release-plz.yml|release.yml|pr-title.yml) ;; *) exit 1 ;; esac; done; just lint`
+Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) grep -E '^[[:space:]]*(- )?run:' "$f" | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?pre-commit run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 
 The project MUST exclude every file a tool generates from every hook that rewrites or judges it, in
 the tool's own configuration where the tool has one, and MUST keep it under the hooks that only read
-it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json` (rk),
-`.spec-driven-docs/manifest.json`, and
-`_docs/.markdownlint-cli2.jsonc` (sdd). The chapter that states the general rule is
+it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json`,
+`.github/workflows/release-plz.yml`, and `.github/workflows/pr-commits.yml` (rk),
+`.spec-driven-docs/manifest.json` and `_docs/.markdownlint-cli2.jsonc` (sdd), `Cargo.lock`
+(cargo), `CHANGELOG.md` (release-plz), and `.github/workflows/release.yml` (cargo-dist). The chapter that states the general rule is
 `programming/project-bootstrap/04-quality-gates.md`, "Generated files".
 
 #### Scenario: sdd rewrites its manifest
@@ -136,7 +137,7 @@ it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json` (rk
 - THEN no formatter, fixer, spell check, or editorconfig check changes or rejects the file, and the
   JSON parser and the secret scan still read it
 
-Verify: `nix develop --command bash -c 'p="$(dprint output-file-paths)" || exit 1; printf "%s\n" "$p" | grep -qE "/(flake\.lock|\.release-kit/manifest\.json|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$" && exit 1; for f in flake.lock .release-kit/manifest.json .spec-driven-docs/manifest.json _docs/.markdownlint-cli2.jsonc; do grep -qF "\"$f\"" _typos.toml && grep -qF "\"^${f//./\\\\.}\$\"" .editorconfig-checker.json || exit 1; done'`
+Verify: `nix develop --command bash -c 'p="$(dprint output-file-paths)" || exit 1; printf "%s\n" "$p" | grep -qE "/(flake\.lock|\.release-kit/manifest\.json|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md)$" && exit 1; for f in flake.lock .release-kit/manifest.json .spec-driven-docs/manifest.json _docs/.markdownlint-cli2.jsonc Cargo.lock CHANGELOG.md .github/workflows/release-plz.yml .github/workflows/pr-commits.yml .github/workflows/release.yml; do grep -qF "\"$f\"" _typos.toml && grep -qF "\"^${f//./\\\\.}\$\"" .editorconfig-checker.json || exit 1; done'`
 
 ### `project-platform:a-flake-is-read-from-its-git-tree` — A flake reference reads the git tree
 

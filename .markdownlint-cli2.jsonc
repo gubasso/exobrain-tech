@@ -92,6 +92,8 @@
     "node_modules/",
     ".obsidian/",
     ".trash/",
-    "draft*"
+    "draft*",
+    // Written by release-plz (project-platform:hooks-exclude-generated-files).
+    "CHANGELOG.md"
   ]
 }

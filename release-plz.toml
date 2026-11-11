@@ -1,0 +1,24 @@
+[workspace]
+changelog_update = true
+# The bot's own release request has a release-plz-* head branch, which is
+# exactly what the branch heuristic behind this default recognizes: the
+# release half fires only on the push that lands that request's bump, so an
+# ordinary work merge publishes nothing and the release decision stays on the
+# one merge button.
+release_always = false
+# exobrain is not published to a registry (`publish = false` in its
+# Cargo.toml). Versions come from the git tags, so with no matching tag the
+# crate's own version is the initial release.
+publish = false
+git_only = true
+changelog_path = "CHANGELOG.md"
+# This tag shape assumes one released package.
+git_tag_name = "v{{ version }}"
+# cargo-dist owns the GitHub release, because it is the half that has the
+# installers to attach. release-plz creating it first leaves dist's host job
+# failing on "a release with the same tag name already exists" and every
+# release carrying no binaries. The tag stays release-plz's; git_tag_enable is
+# separate and still on.
+git_release_enable = false
+# exobrain is a binary-only crate, so no external consumer holds an API.
+semver_check = false

@@ -6,13 +6,20 @@
 # Generated files follow their generator, so the spell check skips them
 # (project-platform:hooks-exclude-generated-files): flake.lock is nix's,
 # .release-kit/manifest.json is rk's, and the sdd manifest and the docs
-# markdownlint configuration are sdd's.
+# markdownlint configuration are sdd's, Cargo.lock is cargo's, CHANGELOG.md is
+# release-plz's, the release-plz and pr-commits workflows are rk's, and the
+# release workflow is cargo-dist's.
 [files]
 extend-exclude = [
   "flake.lock",
   ".spec-driven-docs/manifest.json",
   ".release-kit/manifest.json",
   "_docs/.markdownlint-cli2.jsonc",
+  "Cargo.lock",
+  "CHANGELOG.md",
+  ".github/workflows/release-plz.yml",
+  ".github/workflows/pr-commits.yml",
+  ".github/workflows/release.yml",
 ]
 
 [default.extend-words]

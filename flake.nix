@@ -3,6 +3,12 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # The Rust toolchain that rust-toolchain.toml names, so the devshell, the
+    # package, and CI compile with one compiler.
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # The documentation canon, taken as the tool that serves its own gates.
     # The tag in this URL is the version and flake.lock is the content pin, so
     # a lock entry is mandatory (ADR-a-flake-pinned-tool-input-is-a-tool-dependency).
@@ -26,6 +32,7 @@
     {
       self,
       nixpkgs,
+      rust-overlay,
       spec-driven-docs,
       release-kit,
     }:
@@ -36,7 +43,11 @@
       # (ADR-linux-is-the-only-supported-project-target). This binds the
       # toolchain. The library's own subject matter stays platform-neutral.
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ (import rust-overlay) ];
+      };
+      toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
     in
     {
       devShells.${system}.default = pkgs.mkShell {
@@ -85,10 +96,42 @@
           # need a provider here.
           pkgs.shellcheck
           pkgs.shfmt
+
+          # The Rust toolchain of the `exobrain` workspace in crates/, from
+          # rust-toolchain.toml. A toolchain is no language library.
+          toolchain
+          # owner: devshell. The cargo subcommands that the push-stage hooks
+          # and the justfile run. No hook language builds a cargo subcommand.
+          pkgs.cargo-nextest
+          pkgs.cargo-deny
+          # owner: devshell. The release tools: release-plz proves the
+          # release configuration with its dry run, and cargo-dist plans and
+          # renders the release workflow that the dist-plan hook checks.
+          pkgs.release-plz
+          pkgs.cargo-dist
         ];
         shellHook = ''
           echo "dev shell ready"
         '';
       };
+
+      # The `exobrain` binary, built under Nix from the committed lock with
+      # the toolchain that rust-toolchain.toml pins.
+      packages.${system}.default = pkgs.callPackage ./nix/package.nix {
+        rustPlatform = pkgs.makeRustPlatform {
+          cargo = toolchain;
+          rustc = toolchain;
+        };
+      };
+      checks.${system} = {
+        package = self.packages.${system}.default;
+        # The built binary answers at all. nix flake check builds only the
+        # checks output, so the package is named there as well.
+        smoke = pkgs.runCommand "exobrain-smoke" { } ''
+          ${pkgs.lib.getExe self.packages.${system}.default} --version
+          touch $out
+        '';
+      };
+      formatter.${system} = pkgs.nixfmt-rfc-style;
     };
 }

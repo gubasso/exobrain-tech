@@ -20,6 +20,8 @@
     // Written whole by rk (project-platform:hooks-exclude-generated-files).
     ".release-kit/manifest.json",
     "_docs/.markdownlint-cli2.jsonc",
+    // Written by release-plz (project-platform:hooks-exclude-generated-files).
+    "CHANGELOG.md",
     // Shipped by sdd and kept byte-equal to its copy, so no formatter reshapes them.
     "_docs/specs/SPEC-budget-debt.md",
     "_docs/specs/SPEC-comparison-docs.md",

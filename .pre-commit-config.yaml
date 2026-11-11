@@ -22,6 +22,11 @@
 #       .spec-driven-docs/manifest.json   sdd
 #       .release-kit/manifest.json        rk
 #       _docs/.markdownlint-cli2.jsonc    sdd
+#       Cargo.lock                        cargo
+#       CHANGELOG.md                      release-plz
+#       .github/workflows/release-plz.yml rk
+#       .github/workflows/pr-commits.yml  rk
+#       .github/workflows/release.yml     cargo-dist
 #     The specs, templates, and schema sdd ships stay byte-equal to the copy
 #     `sdd spec` and the landing print, so the formatters skip them too: md-toc
 #     through its exclude, and dprint through dprint.json.
@@ -87,12 +92,19 @@ repos:
 # side of the boundary alone guards one side alone.
   - repo: local
     hooks:
+      - id: rk-no-hand-authored-tag
+        name: rk no hand-authored tag
+        stages: [pre-push]
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: sh -c 'case "$PRE_COMMIT_REMOTE_BRANCH" in refs/tags/v*) echo "never author a tag; the release automation mints every v* tag" >&2; exit 1;; esac'
       - id: rk-status-check
         name: rk status check
         language: system
         pass_filenames: false
         entry: rk status --check --target .
-        files: '^(\.github/workflows/|\.gitlab-ci\.yml$|\.gitlab/ci/|AGENTS\.md$|\.release-kit/|\.pre-commit-config\.yaml$)'
+        files: '^(\.github/workflows/|\.gitlab-ci\.yml$|\.gitlab/ci/|AGENTS\.md$|\.release-kit/|\.pre-commit-config\.yaml$|release-plz\.toml$|dist-workspace\.toml$|release-please-config\.json$|cliff\.toml$|\.release-please-manifest\.json$|VERSION$)'
 # END release-kit
   # --- Housekeeping (auto-fix where possible) ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -103,13 +115,13 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]   # keep two-space hard breaks
         stages: [pre-commit]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml)$'
       - id: end-of-file-fixer
         stages: [pre-commit]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml)$'
       - id: mixed-line-ending
         args: [--fix=lf]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml)$'
       - id: check-added-large-files
         args: ['--maxkb=16384']
         stages: [pre-commit]
@@ -441,6 +453,62 @@ repos:
         types: [text]
         entry: '^(?!.*nix-path-ok).*(\bgetFlake\s*+(?:\(\s*+(?!\\?["''](?:git\+file:|/nix/store/))|\\?["''](?!git\+file:|/nix/store/))|(?<![\w-])path:(?!/nix/store/)[^\s`''"),\]:?\\0-9-])'  # nix-path-ok: the hook's own expression
         exclude: '^\.hooks/flake-reference-corpus/must-fail\.txt$'
+
+  # --- The Rust workspace in crates/ ---
+  #
+  # The fast checks run at commit on the Rust and Cargo files. The costly
+  # checks run at push, so a push that passed its hooks passes CI.
+  - repo: local
+    hooks:
+      # owner: devshell (project-environment) cargo fmt is part of the Rust toolchain that the devshell pins.
+      - id: cargo-fmt
+        name: cargo fmt check
+        entry: cargo fmt --check
+        language: system
+        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^rust-toolchain\.toml)$'
+        pass_filenames: false
+      # owner: devshell (project-environment) cargo clippy is part of the Rust toolchain and builds the crate.
+      - id: cargo-clippy
+        name: cargo clippy
+        entry: cargo clippy --all-targets -- -D warnings
+        language: system
+        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^(rust-toolchain|clippy)\.toml)$'
+        pass_filenames: false
+      # owner: devshell (project-environment) cargo nextest runs the test suite of the crate.
+      - id: cargo-nextest
+        name: cargo nextest
+        entry: cargo nextest run
+        language: system
+        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^rust-toolchain\.toml|^\.config/nextest\.toml)$'
+        pass_filenames: false
+        stages: [pre-push]
+      # owner: devshell (project-environment) cargo deny is a cargo subcommand that reads the lock file of the workspace.
+      - id: cargo-deny
+        name: cargo deny
+        entry: cargo deny check
+        language: system
+        files: '((^|/)Cargo\.(toml|lock)|^deny\.toml)$'
+        pass_filenames: false
+        stages: [pre-push]
+      # owner: host (no-hook-language) nix comes from the host and has no hook in a language that pre-commit builds.
+      - id: nix-flake-check
+        name: nix flake check
+        entry: nix flake check
+        language: system
+        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^rust-toolchain\.toml|^flake\.(nix|lock)|^nix/)'
+        pass_filenames: false
+        stages: [pre-push]
+      # The release workflow that cargo-dist renders matches its configuration,
+      # and the release plans the binary. The forge never runs a dist plan on a
+      # pull request (`pr-run-mode = "skip"`), so this hook holds that proof.
+      # owner: devshell (no-hook-language) cargo-dist publishes no pre-commit hook.
+      - id: dist-plan
+        name: cargo-dist plan and generated workflow
+        entry: sh -c 'dist plan > /dev/null && dist generate --check'
+        language: system
+        files: '(^dist-workspace\.toml|^\.github/workflows/release\.yml|(^|/)Cargo\.toml)$'
+        pass_filenames: false
+        stages: [pre-push]
 
   # --- Meta: keep the config itself honest ---
   - repo: meta

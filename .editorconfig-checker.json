@@ -3,6 +3,11 @@
     "^flake\\.lock$",
     "^\\.spec-driven-docs/manifest\\.json$",
     "^\\.release-kit/manifest\\.json$",
-    "^_docs/\\.markdownlint-cli2\\.jsonc$"
+    "^_docs/\\.markdownlint-cli2\\.jsonc$",
+    "^Cargo\\.lock$",
+    "^CHANGELOG\\.md$",
+    "^\\.github/workflows/release-plz\\.yml$",
+    "^\\.github/workflows/pr-commits\\.yml$",
+    "^\\.github/workflows/release\\.yml$"
   ]
 }
