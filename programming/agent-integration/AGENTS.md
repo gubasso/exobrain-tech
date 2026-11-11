@@ -1,7 +1,7 @@
 ---
 digest-of: programming/agent-integration
 last-synced: 2026-11-11
-token-estimate: 1850
+token-estimate: 1900
 ---
 
 # AGENTS
@@ -48,9 +48,8 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 ### Distribution
 
 - Two scopes: user, owned by the person; project, committed with the land it drives.
-- One authored package, linked or copied into each runtime's root; an installer that embeds its
-  packages copies them, shared content included. It writes only what it declared and removes only
-  what its record claims.
+- One authored package, linked or copied into each runtime's root; an embedding installer copies
+  it with shared content, writes only what it declared, and removes only what its record claims.
 - Each file is written whole and the record is written last, so a failed install leaves files the
   record does not yet claim. Rerunning is the fix.
 
@@ -64,8 +63,11 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 - Project artifacts land; tool references are exposed, never landed. One always-loaded line, one
   described index with stable ids, one reader returning an exact topic, from the running version.
 
-### Candidate artifacts and receipts
+### The target model, candidate artifacts, and receipts
 
+- One configuration, typed by domain in an open set, one owner per answer. Precedence: flag,
+  configuration, record, observation, default. The record is source-free; an edited answer stays
+  pending until a landing records it. Availability is per capability at its dimensions.
 - A candidate is desired state for one invocation, from the executable's own sources, the resolved
   configuration, and the observed capabilities. The receipt is attributed installed state, and an
   older receipt schema is bounded record-reading.
@@ -104,8 +106,7 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 - One router skill per setup domain. It discovers, gathers evidence, writes an explicit plan, waits
   for authorization, invokes the mechanical surfaces, and escalates. It restates no chapter's rules.
 - A program decides facts: a path resolves, a schema matches, a record covers, a link resolves, a
-  budget holds. A person or an agent decides intent, semantics, selection, and unattributed
-  ownership.
+  budget holds. A person or agent decides intent, semantics, selection, and unattributed ownership.
 - A check states what it holds. A declared build target is proved by invoking the compiler, and a
   search over the source enforces a narrower policy without standing in for it.
 
@@ -138,8 +139,7 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 ### Worked examples and the checklist
 
 - `worked-example.md` is one project across the four layers. `worked-example-landing.md` is one
-  tool that writes into other projects, through greenfield, an update, an unattributed collision, a
-  failure part way, a rerun, and cleanup.
+  tool landing into others: greenfield, update, unattributed collision, failure, rerun, cleanup.
 - `checklist.md` walks every layer before shipping, names each section's owner and restates no rule.
 
 ## Maintenance notes
