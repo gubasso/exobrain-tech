@@ -13,8 +13,8 @@ plus general language and framework references.
 
 ## Key Points
 
-- **Code review guide (JS)**: JavaScript-specific review heuristics loaded by `review-code-deep`
-  when `.js`/`.mjs`/`.cjs` files are in the diff.
+- **Code review guide (JS)**: JavaScript-specific review heuristics for `.js`, `.mjs`, and `.cjs`
+  files.
 - **TypeScript review guide**: TS-specific heuristics (strict mode, type narrowing, any/unknown,
   generics).
 - **React review guide**: React-specific heuristics (hooks rules, key prop, effect dependencies,
@@ -28,6 +28,4 @@ plus general language and framework references.
 
 ## Maintenance Notes
 
-- Review guides are loaded on demand by the review-code-deep skill based on file extensions in the
-  diff.
 - No CLI-spec subdirectory exists for JavaScript; CLI patterns use the general `cli-design/` canon.
