@@ -19,7 +19,7 @@ question, and the index follows it.
 | Mechanism         | What does the agent run?                | [cli-design](../cli-design/README.md) for the tool, [Tool acquisition](./tool-acquisition.md) for obtaining it |
 | Playbook          | What does the agent load for this task? | [Skills](./skills.md), [Skill distribution](./skill-distribution.md), [Skill security](./skill-security.md)    |
 | Durable knowledge | What does the agent read on demand?     | [Documentation and discovery](./documentation-and-discovery.md)                                                |
-| Governance        | What binds every session?               | [Instruction files](./instruction-files.md)                                                                    |
+| Governance        | What binds every session?               | [Instruction files](./instruction-files.md), [The authorization boundary](./authorization-boundary.md)         |
 
 [The four layers](./model.md) states the model itself: what each layer carries, what it
 never carries, who ships what, and the three boundary mistakes a design makes.
@@ -37,6 +37,7 @@ and the checklist come last.
 | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | [The four layers](./model.md)                                                        | The model, the ownership rule, and the boundaries a design gets wrong                                                                          |
 | [Instruction files](./instruction-files.md)                                          | What the root file carries, why it routes instead of restating, and the generated digest beside it                                             |
+| [The authorization boundary](./authorization-boundary.md)                            | What a request authorizes, the cost of naming each action, and the glossary of request terms that lowers it                                    |
 | [Skills](./skills.md)                                                                | The portable package, the frontmatter contract, the description as the trigger surface, the body, scripts against references, validation loops |
 | [Skill distribution](./skill-distribution.md)                                        | The two scopes, one source for many runtimes, and what an installer owes a home                                                                |
 | [Evaluations](./evaluations.md)                                                      | Why an eval is a separate signal from a test, the four suites, the rate and its floor, and the tests an agent writes badly                     |
@@ -70,7 +71,7 @@ A project that does nothing else does these.
   ends.
 - Put the workflow in a skill and the conventions in the instruction file, and let each point at the
   other rather than copying it.
-- State the boundary. An agent takes an irreversible action only where the request named it.
+- State the [authorization boundary](./authorization-boundary.md). An agent takes an action only where the request names it, and a request to change code authorizes the file changes alone.
 - Check the agent's use of the tool, not only the tool. One prompt, ten samples, and a rate you
   watch over time.
 - Let the project pin the tool through the manager it already runs, and ship the loop that moves

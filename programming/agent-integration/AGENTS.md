@@ -1,7 +1,7 @@
 ---
 digest-of: programming/agent-integration
 last-synced: 2026-11-11
-token-estimate: 1800
+token-estimate: 1850
 ---
 
 # AGENTS
@@ -23,17 +23,19 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 - Each layer has what it never carries. A project that owns a land ships the skills that operate
   it, under its own install command, and a skill's name has one owner.
 
-### Instruction files
+### Instruction files and the authorization boundary
 
 - The root file is hand-authored rules and routing. Judgment has no generator. A per-directory
   digest is generated, carries frontmatter, and states no rule of its own.
 - Every sentence is loaded in every session, so routing beats restating. A subtree's rules go to
   its own file, reached by a plain pointer.
+- A request authorizes the actions it names, and a code change the file changes alone. A root
+  glossary of compound terms, each a named list holding the one below, makes a run cheap to name.
+  The root file lists the term names and points at it. The glossary enforces nothing.
 
 ### Skills and security
 
-- One authored owner per kind of content: judgment in `SKILL.md`, durable knowledge in a reference,
-  mechanics in a script.
+- One owner per kind: judgment in `SKILL.md`, knowledge in a reference, mechanics in a script.
 - Two required fields and four optional ones, an unrecognized field ignored. The description is the
   whole trigger: what it produces, the phrasings a person types, the boundary against a sibling.
 - Progressive disclosure is a budget, priced in `skill-size-budget.md`. The deletion test decides every paragraph.
@@ -55,14 +57,12 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 ### Evaluations
 
 - A test says the mechanism works; an eval says the agent uses it. Four suites: trigger, behavior,
-  portability, adversarial. A rate over at least ten trials, graded on the outcome, against a run
-  with the skill absent.
+  portability, adversarial. A rate over 10+ trials, graded on outcome, against a skill-free run.
 
 ### Documentation and discovery
 
 - Project artifacts land; tool references are exposed, never landed. One always-loaded line, one
-  described index with stable ids, one reader returning an exact topic, served by the running
-  version.
+  described index with stable ids, one reader returning an exact topic, from the running version.
 
 ### Candidate artifacts and receipts
 
