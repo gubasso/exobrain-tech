@@ -18,3 +18,4 @@ extend-exclude = [
 [default.extend-words]
 gere = "gere"   # Portuguese verb form ("gere o arquivo"), not a typo of "here"
 mis = "mis"     # valid "mis-" prefix in compounds (mis-spelled, mis-organized)
+platforma = "platforma" # an md-toc anchor joins `project-platform:` to a rule ID that starts with "a-"

@@ -1,0 +1,24 @@
+builtins.getFlake ("git+file://" + toString ref)
+nix eval "git+file://$ROOT?dir=nix#x"
+nix flake check .
+builtins.getFlake "/nix/store/abc-source"
+"path:/nix/store/abc-source"
+let url = "git+file://x"; in builtins.getFlake url
+A bare path makes getFlake fetch the folder.
+The `path:` scheme copies every file.
+path: ~/.cache/pre-commit
+nix eval "path:$TMP/probe" # nix-path-ok: temp fixture
+inputs.base.url = "path:./images/base"; # nix-path-ok: relative input of a generated flake
+"path:" + pin
+use std::path::Path;
+use std::path::{Component, Path, PathBuf};
+```rust
+let p = std::path::PathBuf::new();
+```
+.with_context(|| format!("loading prefs from {path:?}"))?;
+[[ -n ${path:-} ]] || continue
+path=${path:1:-1}
+Debt::parse("schema_version: 1\nno-personal-path:\n  a.md: {}\n")
+"internal-path:3 .draft/plan.md is git-ignored",
+2. request-path:<RUN_DIR>/request.md
+"recovery names no repository path:\n{stderr}"

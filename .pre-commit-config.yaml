@@ -410,7 +410,7 @@ repos:
         name: every gate fails when it should
         entry: just test-gates
         language: system
-        files: '^(\.hooks/|\.markdownlint/|\.spec-driven-docs/|\.pre-commit-config\.yaml$|justfile$)'
+        files: '^(\.hooks/|\.markdownlint/|\.spec-driven-docs/|\.pre-commit-config\.yaml$|\.pre-commit-hooks\.yaml$|justfile$)'
         pass_filenames: false
 
   # --- A flake holds no language library (pre-commit, pygrep) ---
@@ -424,6 +424,23 @@ repos:
         language: pygrep
         entry: '^(?!\s*#).*(withPackages|python3[0-9]*Packages\.|pythonPackages\.|nodePackages\.|perlPackages\.)'
         files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
+
+  # --- A flake reference reads the git tree (pre-commit, pygrep) ---
+  #
+  # The local twin of the hook that .pre-commit-hooks.yaml publishes
+  # (`project-platform:a-flake-is-read-from-its-git-tree`). A `path:` reference
+  # or a bare-path `getFlake` copies the whole working tree into the store,
+  # ignored files included. A legitimate line carries `nix-path-ok: <reason>`.
+  # The must-fail corpus holds the intended hits. .hooks/test-gates.sh holds
+  # the two entries equal and runs the published hook over the corpus.
+  - repo: local
+    hooks:
+      - id: no-path-flake-reference
+        name: a flake reference reads the git tree, not a path copy
+        language: pygrep
+        types: [text]
+        entry: '^(?!.*nix-path-ok).*(\bgetFlake\s*+(?:\(\s*+(?!\\?["''](?:git\+file:|/nix/store/))|\\?["''](?!git\+file:|/nix/store/))|(?<![\w-])path:(?!/nix/store/)[^\s`''"),\]:?\\0-9-])'  # nix-path-ok: the hook's own expression
+        exclude: '^\.hooks/flake-reference-corpus/must-fail\.txt$'
 
   # --- Meta: keep the config itself honest ---
   - repo: meta

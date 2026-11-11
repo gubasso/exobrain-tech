@@ -23,8 +23,20 @@
 
 ## Gotchas that bite newcomers
 
-1. **Flakes only see git-tracked files.** New/untracked files are invisible to `src = ./.;` builds.
-   `git add` them (even `git add -N`).
+1. The fetcher type decides which files a flake sees
+   ([path-like syntax](https://nix.dev/manual/nix/2.34/command-ref/new-cli/nix3-flake.html#path-like-syntax)).
+   A `git+file://` reference, and the CLI's `.` inside a git repository, see only the tracked files
+   and their working-tree edits, so a new file stays invisible to `src = ./.;` until `git add` (even
+   `git add -N`). A `path:` reference copies the whole folder into the store, ignored files
+   included: `target/`, `node_modules/`, `.venv`. `builtins.getFlake` reads a bare path as `path:`.
+   Each change to any file makes a new full copy. Read a project tree through its git tree:
+
+   ```bash
+   nix flake check path:.                               # nix-path-ok: the bad example
+   nix eval --expr 'builtins.getFlake (toString ./.)'   # nix-path-ok: the bad example
+   nix flake check .
+   nix eval --expr 'builtins.getFlake "git+file:///abs/repo?dir=nix"'
+   ```
 2. **Pinning matters — commit `flake.lock`.** It's what makes builds reproducible.
    `nix flake update` bumps everything; `--update-input <x>` bumps one.
 3. **Two nixpkgs = trouble.** Use `inputs.<x>.inputs.nixpkgs.follows = "nixpkgs"`.

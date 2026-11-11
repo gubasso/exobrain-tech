@@ -16,6 +16,8 @@
     - [Scenario: A check is added outside the hooks](#scenario-a-check-is-added-outside-the-hooks)
   - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
     - [Scenario: sdd rewrites its manifest](#scenario-sdd-rewrites-its-manifest)
+  - [`project-platform:a-flake-is-read-from-its-git-tree` — A flake reference reads the git tree](#project-platforma-flake-is-read-from-its-git-tree--a-flake-reference-reads-the-git-tree)
+    - [Scenario: A hook evaluates its own flake](#scenario-a-hook-evaluates-its-own-flake)
 
 <!--TOC-->
 
@@ -125,3 +127,24 @@ it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json` (rk
   JSON parser and the secret scan still read it
 
 Verify: `nix develop --command bash -c 'p="$(dprint output-file-paths)" || exit 1; printf "%s\n" "$p" | grep -qE "/(flake\.lock|\.release-kit/manifest\.json|\.spec-driven-docs/manifest\.json|_docs/\.markdownlint-cli2\.jsonc)$" && exit 1; for f in flake.lock .release-kit/manifest.json .spec-driven-docs/manifest.json _docs/.markdownlint-cli2.jsonc; do grep -qF "\"$f\"" _typos.toml && grep -qF "\"^${f//./\\\\.}\$\"" .editorconfig-checker.json || exit 1; done'`
+
+### `project-platform:a-flake-is-read-from-its-git-tree` — A flake reference reads the git tree
+
+When a command, a script, or a hook names a flake in a project working tree, it MUST read the git
+tree: `git+file://` with the root, with `?dir=` for a flake in a subfolder and `?shallow=1` where CI
+clones shallowly, or `.` from the CLI inside the repository. It MUST NOT name the tree as a `path:`
+reference or pass a bare path to `builtins.getFlake`, because either one copies every file of the
+folder into the store, ignored files included. A `path:` reference stays allowed for a `/nix/store`
+path, for a relative input inside a generated flake, and for a throwaway fixture folder, and such a
+line carries `nix-path-ok: <reason>`. The hook `no-path-flake-reference`, which this repository
+publishes in `.pre-commit-hooks.yaml`, enforces the rule line by line. It cannot follow a reference
+that a program assembles from parts. The chapter that states the general rule is
+`languages/nix/05-tooling-gotchas-resources.md`, gotcha 1.
+
+#### Scenario: A hook evaluates its own flake
+
+- GIVEN a worktree with a built `target/` folder that git ignores
+- WHEN a hook evaluates the flake of the worktree through `builtins.getFlake` on its bare path
+- THEN the hook refuses the line, because each run would copy `target/` into the store again
+
+Verify: `pre-commit run no-path-flake-reference --all-files`

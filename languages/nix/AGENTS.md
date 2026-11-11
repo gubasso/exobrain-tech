@@ -30,7 +30,8 @@ focus only; Nix-as-a-tool (install, devshells, templates, migration) lives in `t
   `imports`/`options`/`config`; `options` declare settings, `config` assigns, NixOS merges all
   `config`. Priority helpers `mkDefault`/`mkForce`/`mkIf`. Home Manager reuses the same module
   system for per-user config.
-- **Gotchas**: flakes only see git-tracked files; pure eval (no time/env/network); `//` is shallow;
+- **Gotchas**: a `git+file:` flake sees tracked files, a `path:` flake copies the whole folder
+  (gotcha 1 of `05-tooling-gotchas-resources.md`); pure eval (no time/env/network); `//` is shallow;
   unstable vs release branch; eval ≠ build ≠ runtime.
 
 ## Maintenance Notes

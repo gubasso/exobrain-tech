@@ -235,4 +235,61 @@ printf '#!/usr/bin/env bash\ncat $1\n' > .hooks/not-shipped.sh
 git add -A
 accept "shipped-scripts" "$shipped"
 
+# --- no-path-flake-reference ------------------------------------------------
+#
+# The hook is published in .pre-commit-hooks.yaml and runs here through a local
+# twin, so the two entries must stay one string: a twin that drifted would gate
+# this repository with an expression no consumer runs. The comparison drops the
+# trailing marker comment, which is YAML and not part of the value.
+entry_of() {
+  awk '/id: no-path-flake-reference$/ { found = 1 }
+    found && /^[[:space:]]*entry:/ {
+      sub(/^[[:space:]]*entry:[[:space:]]*/, "")
+      sub(/[[:space:]]+#.*$/, "")
+      print
+      exit
+    }' "$1"
+}
+published=$(entry_of "$root/.pre-commit-hooks.yaml")
+twin=$(entry_of "$root/.pre-commit-config.yaml")
+[ -n "$published" ] || fail "no-path-flake-reference has no published entry"
+[ "$published" = "$twin" ] ||
+  fail "no-path-flake-reference: the published entry and the local twin differ"
+
+# The negative control runs the published hook, through `pre-commit try-repo`,
+# with no local exclusion. Each must-fail line fails alone, so one hit cannot
+# hide a case that stopped matching, and the must-pass file passes whole.
+corpus=$root/.hooks/flake-reference-corpus
+c="$work/flake-reference"
+rm -rf "$c"
+mkdir -p "$c"
+git -C "$c" init -q
+n=0
+while IFS= read -r line; do
+  n=$((n + 1))
+  printf '%s\n' "$line" > "$c/case-$n.txt"
+done < "$corpus/must-fail.txt"
+cp "$corpus/must-pass.txt" "$c/must-pass.txt"
+git -C "$c" add -A
+cd "$c"
+# A try-repo that cannot load the manifest also exits 1, so a bare exit code
+# would pass every must-fail case over a broken hook. Each verdict reads the
+# result line that pre-commit prints for the hook itself.
+try_hook() {
+  pre-commit try-repo "$root" no-path-flake-reference --files "$1" 2>&1
+}
+i=0
+while [ "$i" -lt "$n" ]; do
+  i=$((i + 1))
+  if out=$(try_hook "case-$i.txt"); then
+    fail "no-path-flake-reference accepted must-fail line $i"
+  fi
+  printf '%s\n' "$out" | grep -q '^- hook id: no-path-flake-reference$' ||
+    fail "no-path-flake-reference did not run on must-fail line $i: $out"
+done
+out=$(try_hook must-pass.txt) ||
+  fail "no-path-flake-reference rejected the must-pass file: $out"
+printf '%s\n' "$out" | grep -q 'not a path copy\.*Passed$' ||
+  fail "no-path-flake-reference did not pass the must-pass file: $out"
+
 echo "test-gates: every gate failed when it should"

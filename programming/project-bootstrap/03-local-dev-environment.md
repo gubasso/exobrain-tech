@@ -15,6 +15,11 @@ starting templates are owned by
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md) — follow it for
 the template; the language binding names the toolchain that goes inside.
 
+A recipe or a script reaches the flake of its own project through `.` or a `git+file://` reference,
+never through a `path:` reference, which copies the ignored files of the tree into the store each
+time a file changes. [Nix gotcha 1](../../languages/nix/05-tooling-gotchas-resources.md#gotchas-that-bite-newcomers)
+explains the fetcher types.
+
 ## Who owns each dependency
 
 Each dependency of a project has exactly one owner: the most specific file that declares that kind

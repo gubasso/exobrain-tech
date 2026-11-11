@@ -52,6 +52,33 @@ nix flake check
 This is the Nix analogue of "one command fails fast" and is what CI runs. See the output schema for
 `checks` in [`03-flake-outputs.md`](../03-flake-outputs.md).
 
+## A flake reference reads the git tree
+
+A command, a script, or a hook that names a flake in the project tree reads its git tree:
+`git+file://` with the root, `?dir=` for a flake in a subfolder, `?shallow=1` where CI clones
+shallowly, or `.` from the CLI inside the repository. A `path:` reference and a bare-path
+`builtins.getFlake` copy the whole folder into the store, ignored files included, as
+[gotcha 1](../05-tooling-gotchas-resources.md#gotchas-that-bite-newcomers) explains.
+
+```bash
+nix flake check --no-build path:.?dir=nix   # nix-path-ok: the bad example
+nix flake check --no-build .?dir=nix
+```
+
+A line that holds a legitimate `path:` use, such as a `/nix/store` path, a relative input inside a
+generated flake, or a throwaway fixture folder, carries the marker `nix-path-ok: <reason>`. The
+hook `no-path-flake-reference` enforces the rule line by line. Add it to `.pre-commit-config.yaml`:
+
+```yaml
+- repo: https://github.com/gubasso/exobrain-tech
+  rev: vX.Y.Z
+  hooks:
+    - id: no-path-flake-reference
+```
+
+The hook reads each line on its own, so it misses a reference that a program assembles from parts
+or that spans two lines.
+
 ## Pre-commit wiring — `git-hooks.nix`
 
 Wire `nixpkgs-fmt`/`alejandra`, `statix`, and `deadnix` into git hooks with

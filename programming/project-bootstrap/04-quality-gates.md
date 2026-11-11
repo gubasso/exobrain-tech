@@ -36,6 +36,11 @@ explicit `stages:`. Read the pinned manifest of each remote repository, and set 
 names a stage the hook does not belong to. A project that gates its integration on the manual stage
 keeps `manual` in both lists.
 
+A project with a flake also carries `no-path-flake-reference`, the hook that refuses a `path:` flake
+reference to the working tree, because such a reference copies every ignored file into the store.
+The [Nix quality gates](../../languages/nix/project-bootstrap-spec/01-quality-gates.md#a-flake-reference-reads-the-git-tree)
+state the rule and the hook entry.
+
 ### Who builds a hook environment
 
 A hook takes the environment that pre-commit builds by default: pin its upstream repository with

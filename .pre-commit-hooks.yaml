@@ -1,0 +1,11 @@
+# The hooks this repository publishes. Each id is a public interface: it is
+# never renamed or removed without a major release
+# (ADR-exobrain-tech-publishes-pre-commit-hooks). The repository runs each
+# expression on itself through a local twin in .pre-commit-config.yaml, and
+# .hooks/test-gates.sh holds the two entries equal.
+- id: no-path-flake-reference
+  name: a flake reference reads the git tree, not a path copy
+  description: project-platform:a-flake-is-read-from-its-git-tree
+  language: pygrep
+  types: [text]
+  entry: '^(?!.*nix-path-ok).*(\bgetFlake\s*+(?:\(\s*+(?!\\?["''](?:git\+file:|/nix/store/))|\\?["''](?!git\+file:|/nix/store/))|(?<![\w-])path:(?!/nix/store/)[^\s`''"),\]:?\\0-9-])'  # nix-path-ok: the hook's own expression

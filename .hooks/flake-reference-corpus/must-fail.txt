@@ -1,0 +1,11 @@
+builtins.getFlake (toString ./.)
+builtins.getFlake "/tmp/repo"
+builtins.getFlake "/tmp/repo" # git+file is preferred
+builtins.getFlake \"path:$REPO_ROOT\"
+nix eval "path:$ROOT?dir=nix#x"
+nix flake check --no-build path:.?dir=nix
+nix flake check path:project
+flake="path:{{ dir }}"
+format!("path:{}?dir=nix", dir)
+--override-input dwm path:~/src/dwm
+nix eval "path:$NIXPKGS_PIN"
