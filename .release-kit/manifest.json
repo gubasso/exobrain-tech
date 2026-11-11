@@ -1,6 +1,6 @@
 {
   "schema_version": 12,
-  "rk_version": "0.9.7",
+  "rk_version": "0.9.8",
   "origin": "init",
   "landed_at": "2026-11-10T03:24:48Z",
   "profile": {
@@ -12,7 +12,8 @@
       "mode": "automatic",
       "driver": "rust",
       "style": "trunk",
-      "line_prefix": "release/"
+      "line_prefix": "release/",
+      "registry": "none"
     }
   },
   "git": {
@@ -43,7 +44,7 @@
     {
       "destination": ".github/workflows/release-plz.yml",
       "kind": "rendered",
-      "sha256": "6cc7e3ef08caebf8b5f226b37f6933f5940bcbbd2f00af7542eefa8f192aec79"
+      "sha256": "73c3fa1d41997082d8a471fd92753f6b304d7354f2cb422a097d1f8100ff2d33"
     },
     {
       "destination": ".pre-commit-config.yaml",
@@ -60,12 +61,12 @@
     {
       "destination": "dist-workspace.toml",
       "kind": "seeded",
-      "sha256": "84b6e8a7658c4c3e1c9bfa12f44c8ffe021bc259d2e306c11b56734baa8f9cd6"
+      "sha256": "07a1e50091d12edccd8ef20c57350a09d902cd6ce4d699cfde99d6bdefdcba69"
     },
     {
       "destination": "release-plz.toml",
       "kind": "seeded",
-      "sha256": "3e3d82e6ed942fc51878e0f36d8718c390a43c3b248924df20f55ed4111027f7"
+      "sha256": "e03011f4ac971f064729064af855c8a884d90b2ace4d36a7e01778dbdadf5b7f"
     }
   ],
   "pins": {
@@ -79,7 +80,7 @@
     "magic-nix-cache-action": "13",
     "nix-image": "2.35.2",
     "nix-installer-action": "19",
-    "release-plz": "0.3.160",
+    "release-plz": "0.4.3",
     "rust-toolchain": "stable"
   }
 }

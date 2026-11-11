@@ -101,9 +101,13 @@ or the link check, runs at push. The push stage MUST NOT rerun a commit-stage ho
 the trunk through `rk integrate` and a push from a checkout that ran both stages, so a change that
 passed its hooks is the change that lands. CI MUST hold only three kinds of workflow:
 
-- The validation workflow, `ci.yml`, whose every `run:` step is one `pre-commit run` call of one
-  hook stage, alone on its line and bare or through `nix develop --command`, so a push that passed
-  its hooks passes CI. A hook skip list goes in the step's `env:`.
+- The validation workflow, `ci.yml`. Every `run:` step of its job `test` is one `pre-commit run`
+  call of one hook stage, alone on its line and bare or through `nix develop --command`, so a push
+  that passed its hooks passes CI. A hook skip list goes in the step's `env:`.
+- Beside `test`, `ci.yml` MAY hold the `dist-plan` and `dist-build` jobs that `rk binding rust`
+  serves, as `test` needs, and no other job. They MAY stay only while the pre-push hook
+  `dist-build` runs `dist build` for every target that `dist-workspace.toml` lists. rk judges from
+  the workflow alone that every release target builds before a merge, so no hook can satisfy it.
 - The release workflows, `release-plz.yml` and `release.yml`, which create tags, releases, and
   artifacts and check nothing the hooks do not check.
 - The pull-request checks, `pr-commits.yml`, which judge what only a pull request has. No push
@@ -118,7 +122,7 @@ The chapter that states the general rule is `programming/project-bootstrap/04-qu
 - WHEN a contributor pushes a change that the check rejects
 - THEN the push passed and CI failed, so the check moves into the commit or the push stage
 
-Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) grep -E '^[[:space:]]*(- )?run:' "$f" | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?pre-commit run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; just lint`
+Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) awk '/^  test:/{t=1;next} /^  [^ #]/{t=0} t' "$f" | grep -E '^[[:space:]]*(- )?run:' | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?pre-commit run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1; awk '/^jobs:/{j=1;next} /^[^ #]/{j=0} j && /^  [A-Za-z0-9_-]+:/' "$f" | grep -Evq '^  (test|dist-plan|dist-build):' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; for t in $(sed -n 's/^targets = \[\(.*\)\]/\1/p' dist-workspace.toml | tr -d '",'); do grep -Eq "entry: dist build .*--target $t( |$)" .pre-commit-config.yaml || exit 1; done; just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 

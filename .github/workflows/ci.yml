@@ -17,6 +17,7 @@ jobs:
   # It runs unless cancelled, so a job added later as a need cannot turn a
   # failure into a skip that the forge reads as success.
   test:
+    needs: [dist-plan, dist-build]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
@@ -35,3 +36,77 @@ jobs:
       - run: nix develop --command pre-commit run --all-files --hook-stage pre-push
         env:
           SKIP: lychee-system
+
+  # rk's rust binding serves the two jobs below verbatim, and the gate needs
+  # them so that every release target builds before a merge. The dist-build
+  # hook runs the same build at pre-push
+  # (project-platform:the-hooks-are-the-only-gate).
+  dist-plan:
+    runs-on: ubuntu-latest
+    outputs:
+      plan: ${{ steps.plan.outputs.plan }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: install dist at the configured pin
+        run: |
+          set -euo pipefail
+          pin="$(grep -m1 '^cargo-dist-version' dist-workspace.toml | cut -d'"' -f2)"
+          [ -n "$pin" ] || { echo "dist-workspace.toml names no cargo-dist-version"; exit 1; }
+          curl --proto '=https' --tlsv1.2 -LsSf \
+            "https://github.com/axodotdev/cargo-dist/releases/download/v$pin/cargo-dist-installer.sh" | sh
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          echo "DIST_PIN=$pin" >> "$GITHUB_ENV"
+      - name: dist runs at the configured pin
+        run: dist --version | grep -Fq "$DIST_PIN"
+      - name: the committed workflow is what the pin produces
+        run: |
+          set -euo pipefail
+          git ls-files --error-unmatch -- .github/workflows/release.yml > /dev/null
+          dist generate
+          git diff --exit-code -- .github/workflows/release.yml
+      - name: the configuration produces a viable release
+        id: plan
+        run: |
+          set -euo pipefail
+          dist plan --output-format=json > plan-dist-manifest.json
+          echo "plan=$(jq -c . plan-dist-manifest.json)" >> "$GITHUB_OUTPUT"
+
+  dist-build:
+    needs: dist-plan
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.dist-plan.outputs.plan).ci.github.artifacts_matrix }}
+    runs-on: ${{ matrix.runner }}
+    container: ${{ matrix.container && matrix.container.image || null }}
+    steps:
+      - name: enable windows longpaths
+        run: git config --global core.longpaths true
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - name: install Rust where the container has none
+        if: ${{ matrix.container }}
+        run: |
+          if ! command -v cargo > /dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          fi
+      - name: install dist
+        run: ${{ matrix.install_dist.run }}
+      - name: dist runs at the configured pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          pin="$(grep -m1 '^cargo-dist-version' dist-workspace.toml | cut -d'"' -f2)"
+          dist --version | grep -Fq "$pin"
+      - name: install the system packages the target needs
+        run: ${{ matrix.packages_install }}
+      - name: build the matrix target
+        env:
+          DIST_ARGS: ${{ matrix.dist_args }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC2086
+          dist build $DIST_ARGS
