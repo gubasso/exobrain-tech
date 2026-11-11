@@ -32,11 +32,14 @@
    Each change to any file makes a new full copy. Read a project tree through its git tree:
 
    ```bash
-   nix flake check path:.                               # nix-path-ok: the bad example
-   nix eval --expr 'builtins.getFlake (toString ./.)'   # nix-path-ok: the bad example
+   nix flake check path:.                                        # nix-path-ok: the bad example
+   nix eval --impure --expr 'builtins.getFlake (toString ./.)'   # nix-path-ok: the bad example
    nix flake check .
-   nix eval --expr 'builtins.getFlake "git+file:///abs/repo?dir=nix"'
+   nix eval --impure --expr 'builtins.getFlake "git+file:///abs/repo?dir=nix"'
    ```
+
+   `builtins.getFlake` on a working tree needs `--impure`, because a working tree is not a locked
+   reference.
 2. **Pinning matters — commit `flake.lock`.** It's what makes builds reproducible.
    `nix flake update` bumps everything; `--update-input <x>` bumps one.
 3. **Two nixpkgs = trouble.** Use `inputs.<x>.inputs.nixpkgs.follows = "nixpkgs"`.
