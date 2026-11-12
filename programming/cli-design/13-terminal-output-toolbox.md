@@ -189,15 +189,30 @@ d2 --stdout-format ascii --ascii-mode extended graph.d2 -   # 0.7 or later; --as
 Two traps, both measured: it defaults to SVG even with `--ascii-mode`, so `--stdout-format ascii`
 is not optional, and it writes a `success:` banner to stdout that a pipeline has to strip.
 
+### Adopted for a live dashboard
+
+A view that refreshes on its own, with panels, gauges, and a chart that move, is an interactive
+program, not a printed report, and the tools above do not draw it. Textual does, measured on
+2026-11-11 in the vitals project:
+
+| Tool                                                           | Version | Draws                                                   | Size                          |
+| -------------------------------------------------------------- | ------- | ------------------------------------------------------- | ----------------------------- |
+| [`textual`](https://github.com/Textualize/textual)             | 8.2.8   | Titled panels, gauges, tables, screens, themes, palette | 6.6 MiB, plus 2.6 MiB of rich |
+| [`textual-plot`](https://github.com/davidfokkema/textual-plot) | 0.10.1  | Braille line charts with a legend and axis labels       | 264 KiB, plus 32 MiB of numpy |
+
+It owns the screen, so it is not pipe-safe, and a printed report keeps the tools above. A read-only
+printed view built on it is still a worse pager. The chapter of the library is
+[Live terminal dashboards with Textual](../../languages/python/tui-textual.md).
+
 ### Rejected
 
-| Tool                             | Reason                                                                                                                                                                                                                                                    |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gnuplot`                        | Passes pipe safety, but drags in cairo, pango, gdk-pixbuf, and fontconfig, emits `Fontconfig error` even for `set terminal dumb`, and produces `+---+` frames with `A` overplot markers — worse output than `asciigraph` at a thousand times the closure. |
-| `mermaid-cli`                    | 11.12.0 does clear the 11.4 floor for kanban diagrams, but needs Chromium and emits SVG or PNG. `d2` does the job natively.                                                                                                                               |
-| `visidata`, `textual`, `wtfutil` | Interactive TUIs. Their payoff is mutating the data; a read-only TUI is a worse pager.                                                                                                                                                                    |
-| `plantuml`                       | `-ttxt` works but needs a JVM.                                                                                                                                                                                                                            |
-| `python3Packages.sparklines`     | Identical output to fifteen lines of `awk`.                                                                                                                                                                                                               |
+| Tool                         | Reason                                                                                                                                                                                                                                                    |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gnuplot`                    | Passes pipe safety, but drags in cairo, pango, gdk-pixbuf, and fontconfig, emits `Fontconfig error` even for `set terminal dumb`, and produces `+---+` frames with `A` overplot markers — worse output than `asciigraph` at a thousand times the closure. |
+| `mermaid-cli`                | 11.12.0 does clear the 11.4 floor for kanban diagrams, but needs Chromium and emits SVG or PNG. `d2` does the job natively.                                                                                                                               |
+| `visidata`, `wtfutil`        | Interactive TUIs. Their payoff is mutating the data; a read-only TUI is a worse pager.                                                                                                                                                                    |
+| `plantuml`                   | `-ttxt` works but needs a JVM.                                                                                                                                                                                                                            |
+| `python3Packages.sparklines` | Identical output to fifteen lines of `awk`.                                                                                                                                                                                                               |
 
 ### Rasterising diagrams does not work
 

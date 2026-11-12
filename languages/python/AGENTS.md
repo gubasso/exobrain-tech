@@ -29,6 +29,8 @@ conventions.
 - **Typing** (`typing.md`): the typing contract: pydantic at the boundary, frozen dataclasses
   inside, `NewType` units, `StrEnum` sets, `Protocol` adapters, `Result` from `returns`, and the
   untyped-library adapter.
+- **Textual** (`tui-textual.md`): live terminal dashboards: the app, screen, widget, and `.tcss`
+  split, the sampling worker, themes, the palette, charts, and Pilot and snapshot tests.
 - **Pydantic**: Mixin patterns with enums, validator patterns (field/model validators).
 - **Testing**: pytest conftest fixture patterns and organization.
 - **Packaging**: local Python module with CLI access in a virtualenv; Poetry deps, lockfile export,
