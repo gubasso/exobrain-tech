@@ -26,3 +26,4 @@ extend-exclude = [
 gere = "gere"   # Portuguese verb form ("gere o arquivo"), not a typo of "here"
 mis = "mis"     # valid "mis-" prefix in compounds (mis-spelled, mis-organized)
 platforma = "platforma" # an md-toc anchor joins `project-platform:` to a rule ID that starts with "a-"
+CPY = "CPY"     # the ruff rule prefix of copyright notices, as in CPY001

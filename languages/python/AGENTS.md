@@ -1,6 +1,6 @@
 ---
 digest-of: languages/python
-last-synced: 2026-11-10
+last-synced: 2026-11-11
 token-estimate: 400
 ---
 
@@ -14,9 +14,10 @@ conventions.
 
 ## Key Points
 
-- **Environment vs dependencies**: the Python runtime is provisioned by the project's Nix flake
-  devShell (canonical per-project environment manager). uv manages dependencies inside it, from
-  `pyproject.toml` and `uv.lock` for a project and a PEP 723 block for a single script. A flake
+- **Environment vs dependencies**: the host supplies uv, and uv owns the Python runtime: it installs
+  the exact patch of `.python-version` and manages dependencies, from `pyproject.toml` and `uv.lock`
+  for a project and a PEP 723 block for a single script. The Nix flake devShell holds the project
+  tools. A flake
   never holds a Python library. Poetry, PDM, and pip-tools are alternatives for a project that
   already uses one, with one manager in each project. See
   `project-bootstrap-spec/00-toolchain-and-layout.md`,
@@ -25,6 +26,9 @@ conventions.
   template injection).
 - **General notes** (`python.md`): project environment/runtime, shell commands via subprocess, type
   hints (mypy cheat sheet), CLI libraries (docopt), rich/pprint, project layout, imports.
+- **Typing** (`typing.md`): the typing contract: pydantic at the boundary, frozen dataclasses
+  inside, `NewType` units, `StrEnum` sets, `Protocol` adapters, `Result` from `returns`, and the
+  untyped-library adapter.
 - **Pydantic**: Mixin patterns with enums, validator patterns (field/model validators).
 - **Testing**: pytest conftest fixture patterns and organization.
 - **Packaging**: local Python module with CLI access in a virtualenv; Poetry deps, lockfile export,

@@ -33,11 +33,11 @@ library). Publishing is out of scope.
   `[tool.uv] required-version` pins uv, `.python-version` names the exact patch, and `.envrc` holds
   `use flake`, then `layout uv`. The devshell holds no Python and no uv (`00-toolchain-and-layout`,
   "uv, the interpreter, and the environment manager").
-- **Quality gates (configured in `pyproject.toml`):** `ruff` (format + lint, supersedes black +
-  flake8 + isort) and `mypy`/`pyright` (typecheck, strict for new code) as upstream hooks pinned in
-  `.pre-commit-config.yaml`, `pytest` (tests under `tests/`) as a dev dependency,
-  `pip-audit` (security baseline, PyPI Advisory DB / OSV). Wire all into pre-commit so failures
-  surface locally.
+- **Quality gates (configured in `pyproject.toml`):** `ruff` with `select = ["ALL"]` (format +
+  lint) as its upstream hook; mypy strict with the extra error codes and the pydantic and returns
+  plugins, from the project venv where a plugin needs the `uv.lock` versions; `pytest` (tests under
+  `tests/`) and `pip-audit` (security baseline, PyPI Advisory DB / OSV) as dev dependencies. The
+  typing contract is `../typing.md`. Wire all into pre-commit so failures surface locally.
 - **CLI kind:** console-script entry under `[project.scripts]`; arg-parsing via `argparse` (stdlib)
   or `click`/`typer`; consistent error type + non-zero exit codes; stdlib `logging` (human on
   stdout, logs on stderr); config precedence flags > env > file, validated early (e.g. `pydantic`).

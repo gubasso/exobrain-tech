@@ -21,17 +21,48 @@ ruff check
 If you inherit an older project, **black** (format), **flake8** (lint), and **isort** (imports) are
 the stack `ruff` supersedes; keep one owner rather than running both.
 
-## Typecheck — `mypy` / `pyright`
+## Typecheck — mypy strict
 
-Add a static type checker. Pick one, and run it as its hook:
+A new project runs mypy with the full typing contract from its first commit, so the first line of
+code already meets it. The contract and its types are in [Typing a Python project](../typing.md).
+The configuration lives in `pyproject.toml`:
 
-```bash
-mypy src        # or:
-pyright
+```toml
+[tool.mypy]
+strict = true
+warn_unreachable = true
+files = ["src", "tests"]
+enable_error_code = [
+    "exhaustive-match", "explicit-override", "possibly-undefined", "redundant-expr",
+    "truthy-bool", "truthy-iterable", "ignore-without-code", "unused-awaitable", "deprecated",
+    "mutable-override", "redundant-self", "unimported-reveal", "explicit-any",
+]
+plugins = ["pydantic.mypy", "returns.contrib.mypy.returns_plugin"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
 ```
 
-Configure under `[tool.mypy]` in `pyproject.toml` (pyright reads `pyproject.toml` or
-`pyrightconfig.json`). Prefer strict mode for new code.
+`exhaustive-match` fails a `match` on a `StrEnum` or on a `Result` that misses a case, and
+`explicit-any` fails a written `Any`. A project that loads no plugin can take pyright from
+`RobertCraigie/pyright-python` instead.
+
+ruff selects every rule family, and its ignore list holds only a rule that conflicts with
+`ruff format`, a rule that excludes another selected one, and a rule the project rejects by name,
+each with its reason:
+
+```toml
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812", # ruff format owns the trailing commas
+    "D203",   # excludes D211
+    "D213",   # excludes D212
+    "CPY001", # the root LICENSE covers every file
+]
+```
 
 ## Tests — `pytest`
 
@@ -55,16 +86,25 @@ Run it in CI so a vulnerable dependency cannot merge.
 
 ## Pre-commit wiring
 
-ruff, mypy, and pyright take their upstream hooks, because only a hook runs them: `ruff-check` and
-`ruff-format` from `astral-sh/ruff-pre-commit`, `mypy` from `pre-commit/mirrors-mypy` with the
-typed libraries in `additional_dependencies`, or `pyright` from `RobertCraigie/pyright-python`,
-which reads the venv that `pyrightconfig.json` names. pytest runs the test suite of the project, so
+ruff and pyright take their upstream hooks, because only a hook runs them: `ruff-check` and
+`ruff-format` from `astral-sh/ruff-pre-commit`, and `pyright` from `RobertCraigie/pyright-python`,
+which reads the venv that `pyrightconfig.json` names. mypy takes `pre-commit/mirrors-mypy` with the
+typed libraries in `additional_dependencies` while it loads no plugin. With the pydantic and returns
+plugins, each plugin must load the version of its library that `uv.lock` pins, a reason specific to
+the repository: mypy becomes a dev dependency and runs from the project venv. pytest runs the test suite of the project, so
 it stays a dev dependency in `pyproject.toml` and keeps a `language: system` hook with its owner
 comment:
 
 ```yaml
 - repo: local
   hooks:
+    # owner: pyproject.toml (project-environment) the pydantic and returns plugins of mypy must load the versions that uv.lock pins.
+    - id: mypy
+      name: mypy (strict)
+      entry: uv run --frozen mypy
+      language: system
+      types: [python]
+      pass_filenames: false
     # owner: pyproject.toml (project-environment) pytest runs the test suite in the uv environment.
     - id: pytest
       name: pytest

@@ -55,8 +55,10 @@ phase. Bootstrap only needs enough to build, import, and test.
 
 Prefer the **src layout** — the importable package lives under `src/<name>/`, tests under `tests/`.
 This forces you to test the installed package rather than the source tree and avoids accidental
-implicit imports. `uv init --package` scaffolds this shape; for an application, move the package
-under `src/` to match.
+implicit imports. `uv init --package` scaffolds this shape, with a `[project.scripts]` entry and the
+`uv_build` backend, and it is the default for a command-line tool too. Add `src/<name>/py.typed`, so
+a type checker reads the package as typed, and a `__main__.py` that calls the entry point, so
+`python -m <name>` runs it. For an application, move the package under `src/` to match.
 
 ## uv, the interpreter, and the environment manager
 

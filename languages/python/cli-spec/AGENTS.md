@@ -1,6 +1,6 @@
 ---
 digest-of: languages/python/cli-spec
-last-synced: 2026-07-10
+last-synced: 2026-11-11
 token-estimate: 500
 ---
 
@@ -24,8 +24,10 @@ callbacks.
   `commands/<name>.py`; Typer params project into Pydantic request models before services run.
 - **Parse-shape to runtime-shape**: Typer parameters map to Pydantic request models. Validation in
   `__post_init__`/validators, not handler bodies.
-- **Error handling**: Typed `AppError` subclasses carry stable `kind` and context, map explicitly to
-  BSD sysexits, and are caught once at the Typer boundary for structured stderr output.
+- **Error handling**: A new project returns `Result[T, E]` from `returns` inside the program, with
+  `@safe` only in an adapter, and `main` maps a `Failure` to its BSD sysexits code, the one exit.
+  Typed `AppError` subclasses carry stable `kind` and context, map explicitly to BSD sysexits, and
+  are caught once at the Typer boundary for structured stderr output.
 - **Config precedence**: Two patterns: (1) manual 5-layer loader with `lru_cache`, `platformdirs`,
   provenance dict; (2) `pydantic-settings` with `settings_customise_sources` for larger configs.
 - **Provenance**: Errors must name the source layer (`user-file:/path`, `env:MYAPP_X`,

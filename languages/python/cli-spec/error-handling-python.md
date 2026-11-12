@@ -6,7 +6,42 @@
 > the Python implementation using typed exceptions and Typer.
 
 Typed exception classes per layer, one top-level `AppError` base, explicit `kind` and `context`, and
-one Typer boundary that maps `AppError` to BSD sysexits and emits a structured error to `stderr`.
+one Typer boundary that maps `AppError` to BSD sysexits and emits a structured error to `stderr`. A
+new project carries its failures inside the program as `Result` values instead, and keeps the same
+mapping at its one boundary, as the next section states.
+
+## A Result inside the program
+
+Inside the program, a fallible function returns `Result[T, E]` from `returns`, and `E` is a typed
+error: a frozen dataclass with a `StrEnum` kind and a message. `@safe` wraps a call into a library
+that raises, in an adapter module and nowhere else, and `.alt` maps the caught exception to a kind.
+The types are in [Typing a Python project](../typing.md).
+
+`main` is the one boundary. It matches the `Result` of the run, writes the message of a `Failure` to
+`stderr`, and exits with the sysexits code of its kind, the mapping that the rest of this chapter
+gives an `AppError`. It also catches an exception that escapes the run, logs it, and exits
+`EX_SOFTWARE = 70`. No other function calls `sys.exit` or raises `SystemExit`:
+
+```python
+def main() -> None:
+    try:
+        result = run(sys.argv[1:])
+    except Exception as exc:  # noqa: BLE001 - the one boundary
+        LOGGER.exception("internal error")
+        result = Failure(AppError(kind=AppErrorKind.INTERNAL, message=f"internal error: {exc}"))
+    match outcome(result):
+        case Success(_):
+            sys.exit(ExitCode.OK)
+        case Failure(error):
+            sys.stderr.write(f"{error.message}\n")
+            sys.exit(exit_code(error.kind))
+```
+
+Typer keeps `main` the boundary when the command runs with `standalone_mode=False`: Typer then
+returns the parsed request instead of exiting, and a usage error raises a subclass of the public
+`typer.TyperException`, which `run` maps to `EX_USAGE = 64`. Typer 0.29 vendors click under a
+private module, so code catches the public class and imports nothing of click. A test parses every
+module with `ast` and fails when a function other than `main` names `sys.exit` or `SystemExit`.
 
 ## The layer table
 
