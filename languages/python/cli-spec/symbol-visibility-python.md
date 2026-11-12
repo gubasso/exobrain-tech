@@ -195,8 +195,10 @@ that merely shares a common name (`logger`, `app`).
 
 ## 7. Verification & adoption
 
-1. `uv run python -m dev_checks.visibility_check` → clean.
-2. `uv run ruff check --select PLC2701 --preview src` → clean; confirm it is _active_ by
+1. `env -u PYTHONPATH uv run python -m dev_checks.visibility_check` → clean. The prefix drops the
+   `PYTHONPATH` that a nixpkgs devshell exports
+   ([Git hooks (pre-commit)](../../../tools/nix/02-per-project-devshell.md#git-hooks-pre-commit)).
+2. `env -u PYTHONPATH uv run ruff check --select PLC2701 --preview src` → clean; confirm it is _active_ by
    importing a private name in a throwaway file (silent without `--preview`).
 3. `mypy --strict` + full test run after the cleanup rename — these catch any mis-rename (broken
    import, a renamed keyword-argument name, a `TypeVar` string mismatch).

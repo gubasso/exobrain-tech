@@ -7,8 +7,10 @@
 1. the host provides uv, and uv provides the Python of the project, see
    [nix: Python and uv in a devshell](./nix/02-per-project-devshell.md#python-and-uv-in-a-devshell)
 2. uv add dvc
-3. run with: `uv run dvc`
-   - `alias dvc='uv run dvc'`
+3. run with: `env -u PYTHONPATH uv run dvc`, which drops the `PYTHONPATH` of the nixpkgs
+   pre-commit in the devshell
+   ([nix: Git hooks (pre-commit)](./nix/02-per-project-devshell.md#git-hooks-pre-commit))
+   - `alias dvc='env -u PYTHONPATH uv run dvc'`
 
 ### Setup remote
 
