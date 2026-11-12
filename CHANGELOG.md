@@ -13,10 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - *(exobrain/host-check)* check the host tools a project lists
 
-### Fixed
-
-- *(exobrain/host-check)* report every problem, find tools as a shell
-
 ## [1.0.0](https://github.com/gubasso/exobrain-tech/releases/tag/v1.0.0) - 2026-11-11
 
 ### Added
