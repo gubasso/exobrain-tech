@@ -78,7 +78,9 @@ tool that no hook language can build, and each runtime that pre-commit needs to 
 environment from a clean machine, such as `curl` for `rustup-init`. `flake.nix` holds no language
 library. A hook that keeps `language: system` or `script` carries an `# owner:` comment with its
 class. The host supplies only `git`, `bash`, `awk`, `sed`, `grep`, the coreutils, `nix`, `direnv`,
-and the standard ELF loader. The chapter that states the general rule is
+`uv`, and the standard ELF loader. uv builds Python environments, so the host supplies it, and uv
+owns the interpreter it installs: `flake.nix` holds neither uv nor a Python for a uv project, which
+pins uv with `[tool.uv] required-version` and the interpreter patch with `.python-version`. The chapter that states the general rule is
 `programming/project-bootstrap/03-local-dev-environment.md`, "Who owns each dependency".
 
 #### Scenario: A hook that pre-commit can build

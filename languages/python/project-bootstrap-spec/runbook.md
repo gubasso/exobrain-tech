@@ -11,8 +11,8 @@ overlay that slots into it.
 
 - The [general bootstrap runbook](../../../programming/project-bootstrap/runbook.md) is understood —
   repo created, foundations and governance in place.
-- A Nix devShell exists (or will) to host the interpreter and `uv` — see
-  [nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md).
+- The host supplies uv, and a Nix devShell exists (or will) for the project tools — see
+  [nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md#python-and-uv-in-a-devshell).
 
 ## Steps
 
@@ -20,10 +20,10 @@ overlay that slots into it.
    package). This lays down `pyproject.toml` (PEP 621) and a `.python-version`. →
    [00 — Toolchain & layout](./00-toolchain-and-layout.md).
 
-2. **Adopt the src layout and pin Python.** Move the package under `src/`, and let
-   `.python-version` + the Nix devShell pin one interpreter for local and CI. →
-   [00 — Toolchain & layout](./00-toolchain-and-layout.md),
-   [nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md).
+2. **Adopt the src layout and pin uv and Python.** Move the package under `src/`, set
+   `[tool.uv] required-version`, and write the exact patch in `.python-version`, which uv installs
+   for local and CI. →
+   [00 — Toolchain & layout](./00-toolchain-and-layout.md#uv-the-interpreter-and-the-environment-manager).
 
 3. **Configure quality gates.** `ruff` (format + lint), `mypy`/`pyright` (typecheck), `pytest`
    (tests), and `pip-audit` for the security baseline — all configured in `pyproject.toml`. →

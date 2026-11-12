@@ -38,24 +38,30 @@ most general:
    pyright, or ruff: pre-commit is a guardrail from outside the project, so it owns what it brings.
    A manifest holds such a tool only when the project itself uses it too, or when the hook comment
    states a reason specific to the repository.
-3. The devshell holds the major tools: the language toolchains and their managers, such as python
-   with uv, cargo, and nodejs, then `pre-commit`, the task runner, and the project tools. It also
+3. The devshell holds the major tools: the language toolchains and their managers, such as cargo
+   and nodejs, then `pre-commit`, the task runner, and the project tools. It also
    holds each tool that no owner above can declare, such as statix, bats with its libraries, or a
    cargo subcommand, the system libraries that a native build links, and the runtime that
    pre-commit needs to build a hook environment on a clean machine.
 4. The host supplies what the project does not own: `git`, `wt`, `bash`, `awk`, `sed`, `grep`, the
-   coreutils, `nix`, `direnv`, the tools that deploy the host, the standard ELF loader, and the
+   coreutils, the tools that build environments, `nix`, `direnv`, and `uv`, the tools that deploy the
+   host, the standard ELF loader, and the
    tools that carry credentials, such as `gh`, `glab`, `ssh`, and `aws`.
 
 One tool has one owner. A tool that one level declares is not declared again at another level. A
-runtime that the devshell gives to an owner below it, such as the python of a uv project or the
-nodejs of a node hook, is not a second owner.
+runtime that the devshell gives to an owner below it, such as the nodejs of a node hook or the go
+of a golang hook, is not a second owner. A manager that installs its own runtime natively owns it:
+uv installs the interpreter of a uv project, so neither the devshell nor the host supplies a Python
+to it (`project-platform:the-most-specific-native-owner-holds-each-dependency`). The uv convention,
+with the interpreter pin and the activation for each environment manager, is
+[uv, the interpreter, and the environment manager](../../languages/python/project-bootstrap-spec/00-toolchain-and-layout.md#uv-the-interpreter-and-the-environment-manager).
 
 A recipe reaches a hook tool through `pre-commit run <id>`, and a tool of the manifest through the
 runner of the manifest, such as `uv run`, `cargo`, or `npm run`.
 
 A flake never holds a language library. A Python, Node, or Perl package goes to the manifest of its
-stack, and the devshell keeps only the interpreter and its manager.
+stack. The devshell keeps the toolchain and its manager, except where the host supplies the manager,
+as it supplies uv.
 
 The host supplies the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`. A hook environment can
 hold a prebuilt binary that links it, such as the typos wheel. A conventional distribution carries

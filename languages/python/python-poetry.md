@@ -1,7 +1,7 @@
 # Python Poetry
 
 > uv is the default Python package manager: see
-> [Layering a language venv](../../tools/nix/02-per-project-devshell.md#layering-a-language-venv-python--uv).
+> [uv, the interpreter, and the environment manager](./project-bootstrap-spec/00-toolchain-and-layout.md#uv-the-interpreter-and-the-environment-manager).
 > This page serves a project that already uses Poetry. Poetry is the dependency and packaging
 > manager (deps, lockfile, scripts), not the environment manager. The Python runtime and the Poetry
 > binary come from the project's Nix flake devShell, and Poetry runs inside it (`nix develop`, then

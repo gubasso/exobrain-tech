@@ -61,57 +61,47 @@ Values in angle brackets are placeholders. Copy-paste starting points per langua
 }
 ```
 
-## Layering a language venv (Python / uv)
+## Python and uv in a devshell
 
-The devshell syncs the venv of the project and puts it on `PATH`, so `.envrc` holds only
-`use flake` and console scripts resolve with no manual activation. The `shellHook` hands the
-interpreter of the flake to uv, stops uv from downloading another interpreter, installs `uv.lock`
-into `.venv`, and puts `.venv/bin` first on `PATH`:
+The host supplies uv, and uv owns the interpreter, so the devshell of a uv project holds no Python,
+no uv, and no `shellHook` for either. The convention, with the pins and the activation for each
+environment manager, is
+[uv, the interpreter, and the environment manager](../../languages/python/project-bootstrap-spec/00-toolchain-and-layout.md#uv-the-interpreter-and-the-environment-manager).
+Under direnv, `.envrc` loads the flake, then lets direnv's `layout uv` sync and activate `.venv`:
+
+```bash
+use flake
+layout uv
+```
+
+`nix develop --command` reads no `.envrc`, so a recipe, a hook, and CI reach the tools of the
+project through `uv run`, which syncs `.venv` first.
+
+A project that Nix also packages builds on the nixpkgs Python of the exact patch in
+`.python-version`. The flake derives that interpreter from the file, and a check fails when nixpkgs
+ships another patch, so the shipped program and the uv-managed venv run one interpreter:
 
 ```nix
 let
-  python = pkgs.python313; # the one declared Python version
+  pythonVersion = pkgs.lib.fileContents ./.python-version; # an exact patch, such as 3.15.2
+  python =
+    pkgs."python${pkgs.lib.concatStrings (pkgs.lib.take 2 (pkgs.lib.splitVersion pythonVersion))}";
 in
 {
-  devShells.default = pkgs.mkShell {
-    packages = [ python pkgs.uv ];
-    shellHook = ''
-      root="$(git rev-parse --show-toplevel)"
-      export UV_PYTHON="${python}/bin/python3"
-      export UV_PYTHON_DOWNLOADS=never
-      export UV_PROJECT_ENVIRONMENT="$root/.venv"
-      uv sync --frozen --quiet --project "$root" \
-        || echo "uv sync failed: after a change of pyproject.toml, run uv lock" >&2
-      export VIRTUAL_ENV="$root/.venv"
-      export PATH="$root/.venv/bin:$PATH"
-    '';
-  };
+  checks.${system}.python-version = pkgs.runCommand "python-version-is-aligned" { } ''
+    if [ "${python.version}" != "${pythonVersion}" ]; then
+      echo "nixpkgs ships Python ${python.version}, and .python-version names ${pythonVersion}" >&2
+      exit 1
+    fi
+    touch "$out"
+  '';
 }
 ```
 
-`--frozen` installs `uv.lock` as it is and never rewrites it. After a change of `pyproject.toml`,
-run `uv lock` inside the shell, then `direnv reload`. The root comes from git, so the hook syncs the
-same venv from any subdirectory and from a linked worktree. The hook prints its messages on stderr,
-because `nix develop --command <cmd>` and `direnv exec . <cmd>` share stdout with the command.
-
-## Aligning the Python version
-
-The flake pins the interpreter, `flake.lock` pins it transitively, and that pin is the one declared
-Python version of the shell. `UV_PYTHON` hands it to uv, and `UV_PYTHON_DOWNLOADS=never` keeps uv
-from fetching a managed interpreter, so the venv runs on the pin. `requires-python` in
-`pyproject.toml` bounds the versions the package supports, a range such as `>=3.11`. It is package
-metadata, not the dev pin. Keep the pin inside that range: uv refuses an interpreter outside it.
-`pkgs.uv` is a native binary and carries no interpreter, so the shell holds a single Python. A
-project that uses Poetry gets a second interpreter from the closure of `pkgs.poetry`. That trap and
-its guard are in
-[Aligning the Python version under Nix](../../languages/python/python-poetry.md#aligning-the-python-version-under-nix).
-
-Do not run `uv python install`. It downloads an interpreter outside the Nix store that
-`flake.lock` does not pin.
-
 ## Binary wheels need the C++ runtime (`libstdc++.so.6`)
 
-A pure Nix devShell provides the runtimes and build tools, but **not** the shared C/C++ runtime
+This section binds a venv built on a Nix interpreter, which a Poetry project still uses. A
+uv-managed CPython runs on the host loader and finds the host libraries itself. A pure Nix devShell provides the runtimes and build tools, but **not** the shared C/C++ runtime
 libraries on the dynamic loader's search path — Nix reaches those only through RPATHs baked into
 nix-built binaries. Precompiled **manylinux wheels** (grpcio's `cygrpc.so`, `numpy`,
 `pydantic-core`, `cryptography`, …) are **not** nix-built: uv drops them in as-is, and they
@@ -171,6 +161,25 @@ the hook records that owner:
       pass_filenames: false
 ```
 
+The nixpkgs `pre-commit` puts the libraries of its own Python on `PYTHONPATH` in the shell, and that
+variable shadows the packages of a project venv that runs another Python. The nixpkgs `virtualenv`
+needs it only because it imports `packaging` without declaring it (nixos-unstable and master,
+2026-11-11). Declare the dependency, and unset the variable:
+
+```nix
+pre-commit = pkgs.pre-commit.override {
+  python3Packages = pkgs.python3Packages.overrideScope (
+    _final: prev: {
+      virtualenv = prev.virtualenv.overridePythonAttrs (old: {
+        dependencies = (old.dependencies or [ ]) ++ [ prev.packaging ];
+        doCheck = false;
+      });
+    }
+  );
+};
+# in mkShell: packages = [ pre-commit ... ]; shellHook = "unset PYTHONPATH";
+```
+
 Install the git hook once inside the shell with `pre-commit install`, which is idempotent. Make it
 automatic on shell entry with a `shellHook` running `pre-commit install`, or go fully
 Nix-native with [cachix/git-hooks.nix](https://github.com/cachix/git-hooks.nix), the same project as
@@ -192,8 +201,8 @@ nix flake update nixpkgs    # bump one input only
 - Nix supplies runtimes and non-language system tools; it does **not** replace the project's package
   manager by default (no uv2nix / cargo2nix unless you specifically want Nix to build the app).
 - A flake holds no language library: no `python3.withPackages`, no `python3Packages.*`, and no
-  `nodePackages.*`. A library goes to the manifest of its stack, and the devshell keeps only the
-  interpreter and its manager
+  `nodePackages.*`. A library goes to the manifest of its stack, and the devshell keeps the
+  toolchain and its manager, except where the host supplies the manager, as it supplies uv
   ([Who owns each dependency](../../programming/project-bootstrap/03-local-dev-environment.md#who-owns-each-dependency)).
 - Offline / no-nix host: author `flake.nix` + `.envrc`, but `flake.lock` can only be generated where
   `nix` and network are available. **Do not fabricate a lock.**

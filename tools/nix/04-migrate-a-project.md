@@ -19,10 +19,10 @@ three files to a repo.
    - Anything else → `templates/generic/{flake.nix,.envrc}`
 
 2. **Tune `flake.nix`** to the runtime the project needs (e.g. `nodejs_22`, a Zig version, add
-   `pkgs.<system-lib>` for native builds). For Python, pin the interpreter inside `requires-python`,
-   and keep the uv `shellHook` that hands it to uv. See
-   [Layering a language venv](./02-per-project-devshell.md#layering-a-language-venv-python--uv) and
-   [Aligning the Python version](./02-per-project-devshell.md#aligning-the-python-version).
+   `pkgs.<system-lib>` for native builds). For Python, the devshell holds no interpreter and
+   no uv: the host supplies uv, `.python-version` names the exact patch, and `.envrc` adds
+   `layout uv`. See
+   [Python and uv in a devshell](./02-per-project-devshell.md#python-and-uv-in-a-devshell).
 
 3. **Generate the lock** on a host with Nix + network (never fabricate it):
    ```bash

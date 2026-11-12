@@ -58,14 +58,62 @@ This forces you to test the installed package rather than the source tree and av
 implicit imports. `uv init --package` scaffolds this shape; for an application, move the package
 under `src/` to match.
 
-## Python version pinning + virtualenv + Nix
+## uv, the interpreter, and the environment manager
 
-Pin one interpreter version with `.python-version` (a single line, e.g. `3.12`). `uv` reads it to
-create and manage the project virtualenv (`.venv/`) automatically; you rarely activate it by hand
-(`uv run <cmd>` uses it). The canonical per-project setup provisions the interpreter (and `uv`) from
-a Nix devShell so local and CI share one toolchain — see
-[nix/02-per-project-devshell](../../../tools/nix/02-per-project-devshell.md). This closes the "works
-on my machine" gap before any code is written.
+A tool that builds environments belongs to the host, and a tool that a project uses inside its
+environment belongs to the project. `nix`, `mise`, `asdf`, `direnv`, and `git` build environments,
+and so does uv: it installs interpreters, creates venvs, and runs tools in isolation. The host
+supplies uv, and no environment manager of a project supplies it again. uv installs CPython, so uv
+owns the interpreter, and no environment manager supplies a Python to a uv project
+(`project-platform:the-most-specific-native-owner-holds-each-dependency`).
+
+Pin uv in `pyproject.toml`. A uv outside the range refuses to run the project, on the host, in CI,
+and in an editor alike. `uv sync --locked` installs the same `uv.lock` on every uv inside the range,
+so pin `==` only where every machine must run one uv:
+
+```toml
+[tool.uv]
+required-version = ">=0.13.7"
+```
+
+Pin the interpreter in `.python-version` with the exact patch, such as `3.15.2`, never a minor line
+such as `3.15`. With a minor line, uv installs the newest patch that its own release knows, so the
+patch drifts with the uv version. With an exact patch, a uv that does not know the patch fails
+loudly, and `required-version` names the first uv that knows it. `requires-python` bounds the
+versions the package supports, such as `>=3.15`. It is package metadata, not the pin.
+
+A project that Nix also packages runs the shipped program on a nixpkgs interpreter. The flake reads
+`.python-version`, takes the nixpkgs Python of that patch, and a flake check fails when nixpkgs ships
+another patch. When nixpkgs and uv disagree on the newest patch, pin the patch that both supply. The
+Nix form is in
+[Python and uv in a devshell](../../../tools/nix/02-per-project-devshell.md#python-and-uv-in-a-devshell).
+
+`uv run` syncs `.venv` before each command, so a recipe, a hook, and CI need no activation. For an
+interactive shell, direnv's `layout uv` syncs `.venv` with `--frozen`, sets `VIRTUAL_ENV`, and puts
+`.venv/bin` on `PATH`. A project needs no `shellHook`, no `UV_PROJECT_ENVIRONMENT`, and no
+`UV_PYTHON`, because uv finds the project root and uses `.venv` by default. CI installs uv as
+[05 — CI](../../../programming/project-bootstrap/05-ci.md) shows.
+
+| Environment manager    | Holds uv          | Holds Python | Activation                                       |
+| ---------------------- | ----------------- | ------------ | ------------------------------------------------ |
+| Nix flake under direnv | no, the host does | no, uv does  | `use flake`, then `layout uv` in `.envrc`        |
+| mise                   | no, the host does | no, uv does  | `python.uv_venv_auto = "source"` in `[settings]` |
+| asdf                   | no, the host does | no, uv does  | `layout uv` under direnv; asdf activates no venv |
+| none                   | no, the host does | no, uv does  | `layout uv` under direnv, or `uv run` alone      |
+
+mise documents `python.uv_venv_auto` for a uv project with a `uv.lock`, and `_.python.venv` for a
+project without uv ([mise Python](https://mise.jdx.dev/lang/python.html), v2026.11.6, read
+2026-11-11). Its cookbook also installs uv through `[tools]`, which this convention leaves to the
+host. asdf manages tool versions in `.tool-versions` alone
+([asdf configuration](https://asdf-vm.com/manage/configuration.html), read 2026-11-11).
+
+The trade-offs:
+
+- The managed CPython is a python-build-standalone build. It runs on the host loader, so a
+  manylinux wheel needs no `LD_LIBRARY_PATH`. A NixOS host needs nix-ld for it.
+- The interpreter sits in `~/.local/share/uv/python`, outside the Nix store. `required-version` and
+  the exact patch in `.python-version` pin it, not `flake.lock`.
+- The first `uv sync` on a clean machine downloads the interpreter, and CI caches it.
 
 ## Layout detail
 

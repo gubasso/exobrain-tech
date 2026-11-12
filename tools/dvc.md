@@ -4,8 +4,8 @@
 
 ## Installation and Setup
 
-1. the devShell of the project provides python and uv, see
-   [nix: layering a language venv](./nix/02-per-project-devshell.md#layering-a-language-venv-python--uv)
+1. the host provides uv, and uv provides the Python of the project, see
+   [nix: Python and uv in a devshell](./nix/02-per-project-devshell.md#python-and-uv-in-a-devshell)
 2. uv add dvc
 3. run with: `uv run dvc`
    - `alias dvc='uv run dvc'`

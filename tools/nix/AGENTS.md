@@ -1,6 +1,6 @@
 ---
 digest-of: tools/nix
-last-synced: 2026-11-10
+last-synced: 2026-11-11
 token-estimate: 600
 ---
 
@@ -24,12 +24,14 @@ and flake syntax live in `languages/nix/`. Who owns each dependency of a project
 - Three files per project: `flake.nix`, the generated `flake.lock`, and `.envrc` with `use flake`
   (`00-overview.md`).
 - A flake holds no language library: no `python3.withPackages`, no `python3Packages.*`, no
-  `nodePackages.*`. The devshell keeps the interpreter and its manager (`02-per-project-devshell.md`,
-  "Notes").
-- Python uses uv. The flake pins the interpreter, and the `shellHook` sets `UV_PYTHON` to it and
-  `UV_PYTHON_DOWNLOADS=never`, runs `uv sync --frozen`, and puts `.venv/bin` on `PATH`.
-  `requires-python` bounds the pin. `.envrc` stays `use flake` only (`02-per-project-devshell.md`,
-  "Layering a language venv" and "Aligning the Python version", `templates/python/`).
+  `nodePackages.*`. The devshell keeps a toolchain and its manager, except where the host supplies
+  the manager (`02-per-project-devshell.md`, "Notes").
+- Python uses uv, which the host supplies and which owns the interpreter: the devshell holds no
+  Python, no uv, and no `shellHook` for them. `.python-version` names the exact patch, and `.envrc`
+  holds `use flake`, then `layout uv`. A flake that packages the project takes the nixpkgs Python of
+  that patch and checks it (`02-per-project-devshell.md`, "Python and uv in a devshell",
+  `templates/python/`). The nixpkgs `pre-commit` needs its `virtualenv` fixed so the shell can unset
+  `PYTHONPATH` ("Git hooks (pre-commit)").
 - The Poetry two-interpreter trap and its `assert` guard serve projects that already use Poetry,
   and live in `languages/python/python-poetry.md`.
 - The devshell holds `pre-commit` and only the tools of the hooks that keep `language: system`

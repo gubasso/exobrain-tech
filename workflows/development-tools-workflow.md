@@ -41,10 +41,10 @@ direnv allow           # once per project: enters the devShell, which syncs .ven
 uv sync                # lock and install after a change of pyproject.toml
 ```
 
-The devShell hands its interpreter to uv, runs `uv sync --frozen`, and puts `.venv/bin` on `PATH`,
-so a `cd` into the project activates the venv with no manual step. That layering is in
-[nix: layering a language venv](../tools/nix/02-per-project-devshell.md#layering-a-language-venv-python--uv)
-and [nix: aligning the Python version](../tools/nix/02-per-project-devshell.md#aligning-the-python-version).
+The host supplies uv, uv installs the interpreter of `.python-version`, and `layout uv` in `.envrc`
+syncs `.venv` and puts `.venv/bin` on `PATH`, so a `cd` into the project activates the venv with no
+manual step. That layering is in
+[nix: Python and uv in a devshell](../tools/nix/02-per-project-devshell.md#python-and-uv-in-a-devshell).
 Direnv itself is in
 [nix: automatic activation](../tools/nix/02-per-project-devshell.md#automatic-activation-direnv).
 

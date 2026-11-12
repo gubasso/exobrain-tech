@@ -1,6 +1,6 @@
 ---
 digest-of: languages/python/project-bootstrap-spec
-last-synced: 2026-11-10
+last-synced: 2026-11-11
 token-estimate: 650
 ---
 
@@ -29,9 +29,10 @@ library). Publishing is out of scope.
   deferred to the publishing phase — do not duplicate that gate here.
 - **Layout:** src layout — importable package under `src/<name>/`, `tests/` outside `src/` so tests
   run against the installed package.
-- **Interpreter pin:** `.python-version` (single line) pins one interpreter; `uv` reads it to manage
-  `.venv` (`uv run <cmd>`). A Nix devShell provisions the interpreter + `uv` so local and CI share
-  one toolchain (`nix/02-per-project-devshell`).
+- **uv and the interpreter:** the host supplies uv, and uv owns the interpreter.
+  `[tool.uv] required-version` pins uv, `.python-version` names the exact patch, and `.envrc` holds
+  `use flake`, then `layout uv`. The devshell holds no Python and no uv (`00-toolchain-and-layout`,
+  "uv, the interpreter, and the environment manager").
 - **Quality gates (configured in `pyproject.toml`):** `ruff` (format + lint, supersedes black +
   flake8 + isort) and `mypy`/`pyright` (typecheck, strict for new code) as upstream hooks pinned in
   `.pre-commit-config.yaml`, `pytest` (tests under `tests/`) as a dev dependency,
