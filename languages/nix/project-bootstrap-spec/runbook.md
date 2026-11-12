@@ -34,8 +34,8 @@ overlay that slots into it.
    [00 — Toolchain & layout](./00-toolchain-and-layout.md).
 
 5. **Configure quality gates.** Pick a formatter (`nixpkgs-fmt` or `alejandra`), add `statix` +
-   `deadnix`, expose `checks` so `nix flake check` gates them, and wire git hooks via
-   `git-hooks.nix`. → [01 — Quality gates](./01-quality-gates.md).
+   `deadnix`, expose `checks` so `nix flake check` gates them, and pin the git hooks in
+   `.pre-commit-config.yaml` for the host prek. → [01 — Quality gates](./01-quality-gates.md).
 
 6. **Pick the implementation kind.** For the standard packages+devShells flake, follow
    [`flake-project.md`](./flake-project.md); overlay-only and module-only kinds are followups.

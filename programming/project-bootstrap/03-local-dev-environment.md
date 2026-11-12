@@ -76,8 +76,8 @@ hold a prebuilt binary that links it, such as the typos wheel. A conventional di
 the loader, and a NixOS host gets it from nix-ld.
 
 The git hook runner is a host tool, because git runs an installed hook from every shell, the shells
-without the devshell included. A runner in a devshell would also put its own Python on
-`PYTHONPATH`, which shadows the packages of a uv project. prek is a Rust runner that reads
+without the devshell included. A runner written in Python, placed in a devshell, would also put
+its own Python on `PYTHONPATH`, which shadows the packages of a uv project. prek is a Rust runner that reads
 `.pre-commit-config.yaml`, and the configuration names the oldest prek that it accepts with
 `minimum_prek_version`.
 

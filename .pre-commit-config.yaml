@@ -480,8 +480,11 @@ repos:
   #
   # The local twin of the hook that .pre-commit-hooks.yaml publishes
   # (`project-platform:the-host-supplies-the-hook-runner`). The host supplies
-  # the runner, so a devshell that lists it, as a `pkgs.` attribute, as a bare
-  # item of a `with pkgs;` list, or on a line of its own, fails. A flake that
+  # the runner, so a devshell that lists it, as a `pkgs.` attribute (quoted or
+  # not), as a bare item of a `with pkgs;` list, inside a `${ }` interpolation,
+  # or on a line of its own, fails. The entry reads a line outside its "..."
+  # strings, so a string that only names the runner passes. It reads one line
+  # at a time, so it cannot tell a line inside a '' ... '' string. A flake that
   # installs the runner on a host marks that line `hook-runner-ok: <reason>`.
   # .hooks/test-gates.sh holds the two entries equal and runs the published
   # hook over fixtures that it builds at run time.
@@ -491,7 +494,7 @@ repos:
         name: a flake holds no git hook runner
         language: pygrep
         files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
-        entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|[^#]*?(?:\bpkgs\.(?:pre-commit|prek)(?![\w-])|\bwith\s+pkgs\s*;[^#]*[\[\s](?:pre-commit|prek)(?=[\s\]])))'
+        entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{))*")*?(?:\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|"(?:[^"\\$]|\\.|\$(?!\{))*\$\{[^}]*\bpkgs\.(?:pre-commit|prek)(?![\w-])|\bwith\s+pkgs\s*;(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{))*")*?[\[\s](?:pre-commit|prek)(?=[\s\]])))'
 
   # --- The Rust workspace in crates/ ---
   #

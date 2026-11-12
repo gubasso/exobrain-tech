@@ -332,6 +332,10 @@ must_fail "            $pc"
 must_fail "            $pk # the runner"
 must_fail "  packages = with pkgs; [ just $pc ];"
 must_fail "  packages = with pkgs; [ $pk ];"
+must_fail "  packages = [ pkgs.\"$pc\" ];"
+must_fail "  shellHook = \"echo \$HOME \${pkgs.$pc}/bin/$pc\";"
+must_fail "  x = \"a\"; packages = [ pkgs.$pk ];"
+must_fail "  packages = [ pkgs.\"$pk\" ];" nix/devshell.nix
 must_fail "  packages = [ pkgs.$pk ];" nix/devshell.nix
 # The must-pass flake holds every near miss in one file.
 {
@@ -341,7 +345,16 @@ must_fail "  packages = [ pkgs.$pk ];" nix/devshell.nix
   printf '%s\n' "  packages = with pkgs; [ just uv ]; # not $pk"
   printf '%s\n' "  shellHook = \"$pk install\";"
   printf '%s\n' "  description = \"runs $pc on the host\";"
+  # A string literal that only names the runner declares nothing.
+  printf '%s\n' "  description = \"pkgs.$pk\";"
+  printf '%s\n' "  shellHook = \"echo pkgs.$pc\";"
+  printf '%s\n' "  description = \"with pkgs; [ $pk ]\";"
+  printf '%s\n' "  description = \"a \\\" pkgs.$pk\";"
+  printf '%s\n' "  url = \"github:o/r#pkgs.$pk\";"
 } > "$c/flake.nix"
+# The same near misses under nix/, the other file form the hook reads.
+mkdir -p "$c/nix"
+cp "$c/flake.nix" "$c/nix/devshell.nix"
 # A file that is neither a flake nor under nix/ is not read at all.
 mkdir -p "$c/modules"
 printf '%s\n' "  home.packages = [ pkgs.$pk ];" > "$c/modules/runner.nix"
@@ -357,10 +370,12 @@ while [ "$i" -lt "$n" ]; do
   printf '%s\n' "$out" | grep -q "^- hook id: $runner_hook\$" ||
     fail "$runner_hook did not run on must-fail case $i: $out"
 done
-out=$(try_hook "$runner_hook" flake.nix) ||
-  fail "$runner_hook rejected the must-pass flake: $out"
-printf '%s\n' "$out" | grep -q 'hook runner\.*Passed$' ||
-  fail "$runner_hook did not pass the must-pass flake: $out"
+for f in flake.nix nix/devshell.nix; do
+  out=$(try_hook "$runner_hook" "$f") ||
+    fail "$runner_hook rejected the must-pass file $f: $out"
+  printf '%s\n' "$out" | grep -q 'hook runner\.*Passed$' ||
+    fail "$runner_hook did not pass the must-pass file $f: $out"
+done
 out=$(try_hook "$runner_hook" modules/runner.nix) ||
   fail "$runner_hook read a file outside its scope: $out"
 printf '%s\n' "$out" | grep -q 'hook runner\.*(no files to check)Skipped$' ||

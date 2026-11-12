@@ -108,8 +108,8 @@ the python hooks prove the uv of the host
 
 The host MUST supply the git hook runner, `prek`, and `flake.nix` MUST NOT hold one. Git runs an
 installed hook from every shell, with or without the devshell, so the runner belongs beside git. A
-runner in a devshell also exports its own Python on `PYTHONPATH`, which shadows the packages of a uv
-project. `.pre-commit-config.yaml` names the oldest runner that the project accepts with
+runner written in Python, placed in a devshell, also exports its own Python on `PYTHONPATH`, which
+shadows the packages of a uv project. `.pre-commit-config.yaml` names the oldest runner that the project accepts with
 `minimum_prek_version`. A line of a flake that installs the runner on a host carries
 `hook-runner-ok: <reason>`. The hook `no-hook-runner-in-flake`, which this repository publishes in
 `.pre-commit-hooks.yaml`, enforces the rule line by line in `flake.nix` and under `nix/`. It reads

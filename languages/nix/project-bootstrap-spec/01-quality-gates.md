@@ -81,8 +81,11 @@ or that spans two lines.
 
 The host supplies the git hook runner, prek, so no devshell lists it. The hook
 `no-hook-runner-in-flake` refuses a runner in `flake.nix` or under `nix/`: as a `pkgs.` attribute,
-as an item of a one-line `with pkgs;` list, or on a line of its own. A flake that installs the
-runner on a host marks that line `hook-runner-ok: <reason>`. Add the hook beside the first one:
+quoted or not, inside a `${ }` interpolation, as an item of a one-line `with pkgs;` list, or on a
+line of its own. It reads each line outside its `"..."` strings, so a string that only names the
+runner passes, and as a line-based hook it cannot see into a `'' ... ''` string. A flake that
+installs the runner on a host marks that line `hook-runner-ok: <reason>`. Add the hook beside the
+first one:
 
 ```yaml
 - repo: https://github.com/gubasso/exobrain-tech
@@ -92,12 +95,11 @@ runner on a host marks that line `hook-runner-ok: <reason>`. Add the hook beside
     - id: no-hook-runner-in-flake
 ```
 
-## Pre-commit wiring — `git-hooks.nix`
+## Git hooks
 
-Wire `nixpkgs-fmt`/`alejandra`, `statix`, and `deadnix` into git hooks with
-[`git-hooks.nix`](https://github.com/cachix/git-hooks.nix), the same project as
-`pre-commit-hooks.nix`. It
-generates a `pre-commit` install step and can also expose the same hooks as a
-`checks.<sys>.pre-commit` derivation, so local hooks and `nix flake check` share one definition.
-This slots into the general
-[04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) hook layer.
+`.pre-commit-config.yaml` pins the Nix hooks, and the host prek runs them. `deadnix` runs through
+its upstream hook at a pinned `rev`. The formatter and `statix` run as `language: system` hooks on
+the devshell tools, each with the `# owner:` comment that the general
+[04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md) chapter defines. No
+flake input generates the hook configuration, so the same file serves the hooks and CI. `nix flake
+check` runs the `checks` of the flake, and CI runs both it and the two hook stages.

@@ -1,6 +1,6 @@
 ---
 digest-of: languages/nix/project-bootstrap-spec
-last-synced: 2026-07-10
+last-synced: 2026-11-12
 token-estimate: 700
 ---
 
@@ -38,9 +38,10 @@ is general `03-local-dev-environment.md` and `tools/nix`.
   (`treefmt-nix` for multi-language repos); `statix` (Nix anti-patterns, `statix fix`);
   `deadnix --fail` (unused bindings/args). Expose all as `checks.<sys>.*` derivations so
   **`nix flake check`** validates the whole flake — the "one command fails fast" gate CI runs.
-- **Pre-commit:** wire formatter + `statix` + `deadnix` via `git-hooks.nix`, the same project as
-  `pre-commit-hooks.nix`; it generates the `pre-commit` install step and can expose the same hooks
-  as `checks.<sys>.pre-commit`, so local hooks and `nix flake check` share one definition.
+- **Git hooks:** `.pre-commit-config.yaml` pins the hooks and the host prek runs them: `deadnix`
+  through its upstream hook, the formatter and `statix` as `language: system` hooks on the devshell
+  tools with an `# owner:` comment. No devshell holds the runner, and `no-hook-runner-in-flake`
+  refuses one in `flake.nix` or `nix/`. CI runs `nix flake check` and both hook stages.
 - **flake-project kind:** the standard shape; layer onto an evaluable flake in order —
   `packages.default` (`stdenv.mkDerivation` or
   `buildRustPackage`/`buildGoModule`/`buildNpmPackage`), `devShells.default` (`mkShell` with
@@ -56,7 +57,7 @@ is general `03-local-dev-environment.md` and `tools/nix`.
   `../../../tools/nix/`.
 - `overlay-project.md` (overlay-only) and `module-project.md` (module-only) are declared followup
   kinds; add them when they land.
-- Re-verify default-tool choices (`nixpkgs-fmt` vs `alejandra`, `git-hooks.nix`) against upstream on
+- Re-verify default-tool choices (`nixpkgs-fmt` vs `alejandra`, the upstream `deadnix` hook) against upstream on
   a cadence when regenerating.
 - No conflicts among the current source files.
   </content>
