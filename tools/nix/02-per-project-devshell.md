@@ -199,7 +199,8 @@ nix flake update nixpkgs    # bump one input only
 
 - Ignore `.direnv/` and `/result` in `.gitignore`.
 - Nix supplies runtimes and non-language system tools; it does **not** replace the project's package
-  manager by default (no uv2nix / cargo2nix unless you specifically want Nix to build the app).
+  manager by default (no uv2nix / cargo2nix unless you specifically want Nix to build the app, as
+  [05 — Package a uv project](./05-package-a-uv-project.md) does).
 - A flake holds no language library: no `python3.withPackages`, no `python3Packages.*`, and no
   `nodePackages.*`. A library goes to the manifest of its stack, and the devshell keeps the
   toolchain and its manager, except where the host supplies the manager, as it supplies uv

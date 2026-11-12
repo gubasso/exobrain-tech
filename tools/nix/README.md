@@ -7,16 +7,18 @@ automatically on `cd`.
 
 ## The boundary (three package managers, three jobs)
 
-| Manager              | Owns                                                                                        | Examples                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| **zypper** (distro)  | Kernel, drivers, DE, system services, the Nix daemon itself, ABI/build libs                 | `gcc`, `glibc-devel`, `libopenssl-3-devel`, Playwright browser libs                      |
-| **Nix** (this)       | Global user CLIs (lean profile) **+** each project's toolchain & dev tools (flake devShell) | global: `ripgrep`, `neovim`, `starship`; per-project: `python`, `rust`, `just`, `dprint` |
-| **language pkg-mgr** | The project's dependency graph (runs _inside_ the devShell)                                 | `cargo`, `uv`, `pnpm` own their lockfiles                                                |
+| Manager              | Owns                                                                                        | Examples                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **zypper** (distro)  | Kernel, drivers, DE, system services, the Nix daemon itself, ABI/build libs                 | `gcc`, `glibc-devel`, `libopenssl-3-devel`, Playwright browser libs            |
+| **Nix** (this)       | Global user CLIs (lean profile) **+** each project's toolchain & dev tools (flake devShell) | global: `ripgrep`, `neovim`, `starship`; per-project: `rust`, `just`, `dprint` |
+| **language pkg-mgr** | The project's dependency graph (runs _inside_ the devShell)                                 | `cargo`, `uv`, `pnpm` own their lockfiles                                      |
 
 Rule of thumb: needs root / boot / hardware / display → **zypper**. A user CLI or a project runtime
 → **Nix**. A library your code imports → the **language's** manager, invoked inside the Nix
 devShell. Nix does **not** replace the language package manager (no uv2nix / cargo2nix unless
-you deliberately want Nix to _build_ the app).
+you deliberately want Nix to _build_ the app, as in
+[05-package-a-uv-project](./05-package-a-uv-project.md)). uv is the exception to "inside the
+devShell": it builds Python environments, so the host supplies it, beside `nix` and `direnv`.
 
 Within Nix there's a second split — **lean global / rich per-project**. A small **global profile**
 (via `nix profile` or Home Manager) holds only the CLIs you want in _every_ shell (`ripgrep`,
@@ -38,6 +40,8 @@ version, it belongs in their flake, not the profile.
    approach.
 5. [04-migrate-a-project](./04-migrate-a-project.md) — step-by-step to move one repo off
    mise/rustup.
+6. [05-package-a-uv-project](./05-package-a-uv-project.md) — build a uv project from `uv.lock` with
+   uv2nix, and install it on a host.
 
 Copy-paste starting points live in [`templates/`](templates/) (python, rust, node, zig, generic).
 
