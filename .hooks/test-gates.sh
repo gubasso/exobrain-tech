@@ -336,6 +336,14 @@ must_fail "  packages = [ pkgs.\"$pc\" ];"
 must_fail "  shellHook = \"echo \$HOME \${pkgs.$pc}/bin/$pc\";"
 must_fail "  x = \"a\"; packages = [ pkgs.$pk ];"
 must_fail "  packages = [ pkgs.\"$pk\" ];" nix/devshell.nix
+# A string with an unrelated interpolation does not hide a later reference.
+must_fail "  { label = \"\${name}\"; packages = [ pkgs.$pk ]; }"
+must_fail "  { label = \"\${name}\"; packages = [ pkgs.\"$pc\" ]; }"
+must_fail "  { shellHook = \"echo \${name} \${pkgs.$pk}/bin/$pk\"; }"
+must_fail "  { label = \"\${name}\"; packages = [ pkgs.$pc ]; }" nix/devshell.nix
+must_fail "  { label = \"\${name}\"; packages = [ pkgs.\"$pk\" ]; }" nix/devshell.nix
+must_fail "  { shellHook = \"echo \${name} \${pkgs.$pc}\"; }" nix/devshell.nix
+must_fail "  label = \"\${a}\${b}\"; packages = with pkgs; [ $pk ];"
 must_fail "  packages = [ pkgs.$pk ];" nix/devshell.nix
 # The must-pass flake holds every near miss in one file.
 {
@@ -351,6 +359,8 @@ must_fail "  packages = [ pkgs.$pk ];" nix/devshell.nix
   printf '%s\n' "  description = \"with pkgs; [ $pk ]\";"
   printf '%s\n' "  description = \"a \\\" pkgs.$pk\";"
   printf '%s\n' "  url = \"github:o/r#pkgs.$pk\";"
+  printf '%s\n' "  label = \"\${name}\"; description = \"pkgs.$pk\";"
+  printf '%s\n' "  shellHook = \"echo \${name} pkgs.$pc\";"
 } > "$c/flake.nix"
 # The same near misses under nix/, the other file form the hook reads.
 mkdir -p "$c/nix"

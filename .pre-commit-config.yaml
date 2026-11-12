@@ -483,8 +483,10 @@ repos:
   # the runner, so a devshell that lists it, as a `pkgs.` attribute (quoted or
   # not), as a bare item of a `with pkgs;` list, inside a `${ }` interpolation,
   # or on a line of its own, fails. The entry reads a line outside its "..."
-  # strings, so a string that only names the runner passes. It reads one line
-  # at a time, so it cannot tell a line inside a '' ... '' string. A flake that
+  # strings, so a string that only names the runner passes, and it reads past
+  # an interpolation that names no runner. It reads one line at a time, so it
+  # cannot tell a line inside a '' ... '' string, and an interpolation that
+  # holds a nested } ends at that brace. A flake that
   # installs the runner on a host marks that line `hook-runner-ok: <reason>`.
   # .hooks/test-gates.sh holds the two entries equal and runs the published
   # hook over fixtures that it builds at run time.
@@ -494,7 +496,7 @@ repos:
         name: a flake holds no git hook runner
         language: pygrep
         files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
-        entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{))*")*?(?:\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|"(?:[^"\\$]|\\.|\$(?!\{))*\$\{[^}]*\bpkgs\.(?:pre-commit|prek)(?![\w-])|\bwith\s+pkgs\s*;(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{))*")*?[\[\s](?:pre-commit|prek)(?=[\s\]])))'
+        entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*")*?(?:\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*\$\{[^}]*?\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|\bwith\s+pkgs\s*;(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*")*?[\[\s](?:pre-commit|prek)(?=[\s\]])))'
 
   # --- The Rust workspace in crates/ ---
   #
