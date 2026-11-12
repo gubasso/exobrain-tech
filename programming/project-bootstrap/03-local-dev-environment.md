@@ -50,11 +50,8 @@ most general:
    host, the standard ELF loader, and the
    tools that carry credentials, such as `gh`, `glab`, `ssh`, and `aws`.
 
-A project uses a host tool by name, as it uses `git`. It holds no detection, no fallback, and no
-check for one: where the host lacks the tool, the command fails, and the developer installs it. A
-recipe never probes for a host tool and never switches to a second tool when the first is missing.
-The `README.md` of the project lists its host requirements, as
-[01 — `README` skeleton](./01-repository-foundation.md#readme-skeleton) says.
+A project uses a host tool by name, as it uses `git`, and lists it once in
+`host-requirements.toml`, as [Host requirements](#host-requirements) says.
 
 One tool has one owner. A tool that one level declares is not declared again at another level. A
 runtime that the devshell gives to an owner below it, such as the nodejs of a node hook or the go
@@ -93,6 +90,75 @@ A hook that keeps `language: system` is an exception with a recorded owner and c
 
 A Nix flake is the example here, not the rule. The Nix form, with the package list, is in
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md#git-hooks).
+
+## Host requirements
+
+A project lists each host tool that its `justfile`, `Makefile`, git hooks, and scripts call, once,
+in `host-requirements.toml` at its root. A version requirement uses Cargo's syntax, with an
+explicit operator, because Cargo reads a bare `"2.57.0"` as `^2.57.0`, which a future 3.0.0 fails.
+A tool that enforces its own version from its own configuration, such as prek with
+`minimum_prek_version`, takes the wildcard `"*"`, and the checker leaves its version to it. The
+file lists no tool that the manifest, the hook configuration, or the devshell owns.
+
+```toml
+schema = 1
+
+[tools.git]
+version = ">=2.36.0"
+
+[tools.gh]
+version = ">=2.57.0"
+
+[tools.prek]
+version = "*"
+```
+
+`exobrain host-check`, from the exobrain-tech flake input, reads the file. With no argument it
+checks every tool, and with names it checks only those. It reports each missing tool and each
+version that misses its requirement, one line each, and then exits 1. It never picks another tool,
+and where a tool is missing, the developer installs it. Nothing checks when a shell enters the
+folder, so `.envrc` holds no check.
+
+The call site decides where the check runs and names the tools that it needs:
+
+- A `justfile` checks the tools of every recipe once, in a top-level assignment, which just runs
+  before any recipe. A recipe that alone uses a tool checks it in its first line. A bare call checks
+  every listed tool, so it stands only where every recipe needs every tool.
+
+  ```just
+  _host := shell("exobrain host-check git prek")
+
+  release:
+      exobrain host-check gh
+      gh release list
+  ```
+
+- A script checks near its top, or at the top of the chunk that uses the tool:
+  `exobrain host-check gh`.
+- A `Makefile` checks in the first line of each dev target that needs the tool, such as `lint`,
+  `test`, or `check`. A package build can run the same `Makefile` where `exobrain` is absent, so the
+  check is never a `$(shell ...)` at parse time and never in `all`, `install`, or a build target.
+- A git hook needs no check, because prek stops the run and names a missing executable. A hook tool
+  with a version requirement gets its check through a recipe that the hook calls.
+
+The `host-requirements` hook that exobrain-tech publishes runs `exobrain host-check --parse-only`
+each time the file changes, so a malformed file fails at commit. A project that takes the flake
+input takes the hook too.
+
+A project without the exobrain-tech flake input checks natively in its `justfile`: just 1.39 and
+later has `require(name)`, and just 1.16 and later has `semver_matches(version, requirement)`, which
+reads the requirement strings of the file unchanged
+([just functions](https://just.systems/man/en/functions.html)). That project cannot run the hook,
+and just halts on a malformed requirement at the first check that reads it. A project with no call
+site at all, whose only callers are its git hooks, lists its tools with no `version`, because no
+check enforces one. The `README.md` of the project links the file and repeats none of it, as
+[01 — `README` skeleton](./01-repository-foundation.md#readme-skeleton) shows.
+
+A shipped application is a separate scope. It checks the tools that it needs at runtime in its own
+code, at the start of a command, with the list held in that code, so the check reaches the host of
+each user. A doctor command can report them. No file serves that scope.
+
+The rule is `project-platform:host-requirements-list-the-host-tools`.
 
 ## `.editorconfig`
 

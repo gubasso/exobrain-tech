@@ -391,4 +391,59 @@ out=$(try_hook "$runner_hook" modules/runner.nix) ||
 printf '%s\n' "$out" | grep -q 'hook runner\.*(no files to check)Skipped$' ||
   fail "$runner_hook did not skip a file outside its scope: $out"
 
+# --- host-requirements ---------------------------------------------------------
+#
+# Published and run through a local twin, held equal as above. The hook runs
+# the exobrain binary of this checkout, so the case builds it first and puts it
+# first on PATH. Each malformed file sits in its own tree, so each one fails
+# alone, and the example of the convention passes.
+same_as_twin host-requirements
+req_hook=host-requirements
+(cd "$root" && cargo build -q -p exobrain) || fail "$req_hook: cargo build failed"
+PATH="$root/target/debug:$PATH"
+export PATH
+n=0
+must_fail_req() {
+  n=$((n + 1))
+  d="$work/host-requirements-fail-$n"
+  mkdir -p "$d"
+  git -C "$d" init -q
+  printf '%b' "$1" > "$d/host-requirements.toml"
+  git -C "$d" add -A
+}
+must_fail_req 'schema = 1\n[tools.gh]\nversion = "2.57.0"\n'
+must_fail_req 'schema = 1\n[tools.gh]\nversion = "2.*"\n'
+must_fail_req 'schema = 1\n[tools.gh]\nversion = ">=banana"\n'
+must_fail_req 'schema = 1\n[tools.gh]\nflavor = "x"\n'
+must_fail_req 'schema = 1\nscope = "global"\n'
+must_fail_req 'schema = 2\n'
+must_fail_req '[tools.git]\n'
+i=0
+while [ "$i" -lt "$n" ]; do
+  i=$((i + 1))
+  cd "$work/host-requirements-fail-$i"
+  if out=$(try_hook "$req_hook" host-requirements.toml); then
+    fail "$req_hook accepted must-fail file $i"
+  fi
+  printf '%s\n' "$out" | grep -q "^- hook id: $req_hook\$" ||
+    fail "$req_hook did not run on must-fail file $i: $out"
+done
+d="$work/host-requirements-pass"
+mkdir -p "$d"
+git -C "$d" init -q
+printf '%s\n' 'schema = 1' '' '[tools.git]' 'version = ">=2.36.0"' '' \
+  '[tools.gh]' 'version = ">=2.57.0"' '' '[tools.prek]' 'version = "*"' \
+  > "$d/host-requirements.toml"
+printf '%s\n' 'not a requirements file' > "$d/other.toml"
+git -C "$d" add -A
+cd "$d"
+out=$(try_hook "$req_hook" host-requirements.toml) ||
+  fail "$req_hook rejected the example: $out"
+printf '%s\n' "$out" | grep -q 'parses\.*Passed$' ||
+  fail "$req_hook did not pass the example: $out"
+out=$(try_hook "$req_hook" other.toml) ||
+  fail "$req_hook read a file outside its scope: $out"
+printf '%s\n' "$out" | grep -q 'parses\.*(no files to check)Skipped$' ||
+  fail "$req_hook did not skip a file outside its scope: $out"
+
 echo "test-gates: every gate failed when it should"

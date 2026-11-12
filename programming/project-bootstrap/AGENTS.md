@@ -1,6 +1,6 @@
 ---
 digest-of: programming/project-bootstrap
-last-synced: 2026-11-11
+last-synced: 2026-11-12
 token-estimate: 900
 ---
 
@@ -30,7 +30,7 @@ with concrete tooling.
 - **Chapter topics 00–06.** 00 bootstrap model (once-per-project phase, three-layer model); 01
   repository foundation (`.gitignore`, SPDX `LICENSE`, `README` skeleton); 02 governance & docs
   (`CLAUDE.md`, `AGENTS.md` convention, MADR-minimal ADR scaffold, README-as-index); 03 local dev
-  environment (Nix devShell + `.envrc`, who owns each dependency, `.editorconfig`); 04 quality gates
+  environment (Nix devShell + `.envrc`, who owns each dependency, host requirements, `.editorconfig`); 04 quality gates
   (formatter, linter, git hooks in two stages, hook exception classes, generated files, task runner); 05 CI (the two hook stages repeated in
   the devshell, the CI-only list); 06 security baseline (secrets hygiene, dependency audit,
   OpenSSF Scorecard).
@@ -40,8 +40,12 @@ with concrete tooling.
   runner can build, then the devshell for the toolchains, the task runner, and what no owner above
   can declare, then the host for the base tools, the git hook runner prek, the ELF loader, and the
   credentialed tools. The hook configuration owns a tool that only a hook uses, a linter or a type
-  checker included. No devshell holds a hook runner. A project uses a host tool by name, with no
-  probe and no fallback, and its README lists the host requirements.
+  checker included. No devshell holds a hook runner. A project uses a host tool by name and lists it
+  once in `host-requirements.toml`, with a Cargo version requirement where it needs one, or `"*"`
+  for a tool that checks its own version. A call site runs `exobrain host-check <tools>` where it
+  needs them: once at the top of a `justfile`, at the top of a recipe or script that alone uses a
+  tool, or in a dev target of a `Makefile`. Nothing checks on shell entry, nothing falls back, and
+  the README links the file. A shipped application checks its runtime tools in its own code.
   A flake holds no language library. Python uses uv. A hook that keeps `language: system` carries
   an `# owner:` comment with one of five classes.
 - CI parity. The commit stage runs the fast checks and the push stage the costly ones; together

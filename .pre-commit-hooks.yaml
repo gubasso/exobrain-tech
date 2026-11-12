@@ -15,3 +15,10 @@
   language: pygrep
   files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
   entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*")*?(?:\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*\$\{[^}]*?\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|\bwith\s+pkgs\s*;(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*")*?[\[\s](?:pre-commit|prek)(?=[\s\]])))'
+- id: host-requirements
+  name: host-requirements.toml parses
+  description: project-platform:host-requirements-list-the-host-tools
+  language: system
+  entry: exobrain host-check --parse-only
+  pass_filenames: false
+  files: '^host-requirements\.toml$'

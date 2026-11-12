@@ -6,13 +6,17 @@
 //! surface, `commands` the handlers, `store` the store listing and the
 //! `nix path-info` query, `origin` the checkout and the attribution of a
 //! copy, `stamp` the daily stamp and its lock, `switch` the off switches,
+//! `manifest` the parse of `host-requirements.toml`, `probe` the host
+//! lookup and the version cache of `host-check`,
 //! `output` the one place that prints, and `error` the exit codes.
 
 pub mod cli;
 pub mod commands;
 pub mod error;
+pub mod manifest;
 pub mod origin;
 pub mod output;
+pub mod probe;
 pub mod stamp;
 pub mod store;
 pub mod switch;

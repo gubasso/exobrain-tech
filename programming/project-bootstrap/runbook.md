@@ -33,7 +33,7 @@ Everyday work after setup is not here; this is the one-time scaffold.
 4. **Set up the local dev environment:** a Nix devShell + `.envrc` (direnv) for a reproducible
    toolchain, and an `.editorconfig` for cross-editor consistency. Each dependency has one owner, the
    most specific file that declares it natively, and the host supplies only what the project does
-   not own. →
+   not own, which `host-requirements.toml` lists. →
    [03 — Local dev environment](./03-local-dev-environment.md).
 
 5. **Wire the quality gates:** a formatter, a linter, git hooks, and a task runner (a single entry

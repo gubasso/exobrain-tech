@@ -14,6 +14,8 @@
     - [Scenario: A hook that prek can build](#scenario-a-hook-that-prek-can-build)
   - [`project-platform:the-host-supplies-the-hook-runner` — The host supplies the git hook runner](#project-platformthe-host-supplies-the-hook-runner--the-host-supplies-the-git-hook-runner)
     - [Scenario: A devshell lists the hook runner](#scenario-a-devshell-lists-the-hook-runner)
+  - [`project-platform:host-requirements-list-the-host-tools` — host-requirements.toml lists the host tools](#project-platformhost-requirements-list-the-host-tools--host-requirementstoml-lists-the-host-tools)
+    - [Scenario: A recipe needs a tool that the host lacks](#scenario-a-recipe-needs-a-tool-that-the-host-lacks)
   - [`project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate](#project-platformthe-hooks-are-the-only-gate--the-git-hooks-are-the-only-gate)
     - [Scenario: A check is added outside the hooks](#scenario-a-check-is-added-outside-the-hooks)
   - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
@@ -81,8 +83,8 @@ tool that no hook language can build, and each runtime that a hook takes from th
 and no hook runner. A hook that keeps `language: system` or `script` carries an `# owner:` comment
 with its class. The host supplies only `git`, the hook runner `prek`, `bash`, `awk`, `sed`, `grep`,
 the coreutils, `nix`, `direnv`, `uv`, and the standard ELF loader. The project uses a host tool by
-name, as it uses `git`, and holds no probe and no fallback for one: where the host lacks it, the
-command fails, and the developer installs it. `README.md` lists these host requirements. uv builds Python environments, so the host supplies it, and uv
+name, as it uses `git`, and lists it in `host-requirements.toml`
+(`project-platform:host-requirements-list-the-host-tools`). uv builds Python environments, so the host supplies it, and uv
 owns the interpreter it installs: the devshell holds neither uv nor a Python for a uv project, which
 pins uv with `[tool.uv] required-version` and the interpreter patch with `.python-version`. The one
 Python in the flake of a uv project builds its uv2nix package: the nixpkgs interpreter of that
@@ -124,6 +126,47 @@ list that spans several lines. The chapter that states the general rule is
 - THEN the hook refuses the line, because the host supplies the runner
 
 Verify: `prek run no-hook-runner-in-flake --all-files`
+
+### `project-platform:host-requirements-list-the-host-tools` — host-requirements.toml lists the host tools
+
+The project MUST list each host tool that its `justfile`, `Makefile`, git hooks, and scripts call
+once in `host-requirements.toml` at its root, and MUST check a tool with `exobrain host-check` where
+it uses one. `SPEC-cli.md` owns the format of the file and the behavior of the checker. `version` is
+a Cargo requirement with an explicit operator. A tool that enforces its own version from its own
+configuration, such as prek with `minimum_prek_version`, takes `version = "*"`, and the checker
+then checks only its presence. The file lists no tool that a manifest, `.pre-commit-config.yaml`,
+or the devshell owns.
+
+A call site names the tools that it needs. A `justfile` checks the tools of every recipe once, in
+a top-level assignment such as `_host := shell("exobrain host-check git wt")`, and a recipe or a
+script that alone uses a tool checks it in its first line. A bare `exobrain host-check` checks every
+tool of the file, so it stands only where every recipe needs every listed tool. A `Makefile` checks
+in the first line of each dev target that needs the tool, such as `lint`, `test`, or `check`, and
+never in a `$(shell ...)` at parse time or in `all`, `install`, or a build target, because a package
+build runs the same file where `exobrain` is absent. A git hook needs no check, because prek names a
+missing executable. Nothing checks when a shell enters the folder, no check picks another tool or
+falls back, and where a tool is missing, the developer installs it. `README.md` links the file and
+repeats none of it. The hook `host-requirements`, which this repository publishes in
+`.pre-commit-hooks.yaml`, validates the file each time it changes.
+
+A project without the exobrain-tech flake input checks natively in its `justfile` with `require()`
+and `semver_matches()`, which read the requirement strings unchanged. It cannot run the hook, and
+just halts on a malformed requirement at the first check that reads it. A project with no call site
+lists its tools with no `version`, because no check enforces one. This repository is such a
+project: its checker is its own build, which a clean clone lacks until `cargo build`. A shipped
+application is outside this rule: it checks the tools that it needs at runtime in its own code, at
+the start of a command, with the list held in that code. The chapter that states the general rule
+is `programming/project-bootstrap/03-local-dev-environment.md`, "Host requirements".
+
+#### Scenario: A recipe needs a tool that the host lacks
+
+- GIVEN a `host-requirements.toml` that lists `git` and `gh`, and a release recipe that alone uses
+  `gh`
+- WHEN a host without `gh` runs any recipe, and then the release recipe
+- THEN every other recipe runs, and the release recipe stops at its first line with
+  `host tool gh is missing`
+
+Verify: `cargo run -q -p exobrain -- host-check --parse-only`
 
 ### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 

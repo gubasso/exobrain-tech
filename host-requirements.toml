@@ -1,0 +1,25 @@
+# The host tools of this repository's dev environment
+# (project-platform:host-requirements-list-the-host-tools). Every entry is
+# presence-only: the exobrain checker is this repository's own build, so no
+# recipe can call it before `cargo build`, and nothing here checks a version.
+# prek owns its version through minimum_prek_version in .pre-commit-config.yaml.
+schema = 1
+
+[tools.git]
+
+[tools.prek]
+version = "*"
+
+[tools.nix]
+
+[tools.direnv]
+
+[tools.uv]
+
+[tools.bash]
+
+[tools.awk]
+
+[tools.sed]
+
+[tools.grep]

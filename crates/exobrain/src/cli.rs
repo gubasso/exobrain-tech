@@ -1,6 +1,7 @@
 //! Command-line surface: clap derive types only, one module per
 //! subcommand's arguments. No behavior lives here.
 
+pub mod host_check;
 pub mod store_guard;
 
 use clap::{Parser, Subcommand};
@@ -17,6 +18,8 @@ pub struct Cli {
 /// Every subcommand the binary offers.
 #[derive(Debug, Subcommand)]
 pub enum Commands {
+    /// Check the host tools that host-requirements.toml lists.
+    HostCheck(host_check::HostCheckArgs),
     /// Find copies of this checkout in the Nix store.
     StoreGuard(store_guard::StoreGuardArgs),
 }

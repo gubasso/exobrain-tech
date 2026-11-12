@@ -1,8 +1,35 @@
 # CLI Specification
 
+<!--TOC-->
+
+- [Purpose](#purpose)
+- [Requirements](#requirements)
+  - [`cli:store-guard-finds-copies-of-this-checkout` — store-guard finds the store copies of this checkout](#clistore-guard-finds-copies-of-this-checkout--store-guard-finds-the-store-copies-of-this-checkout)
+    - [Scenario: A worktree is removed after its copy reached the store](#scenario-a-worktree-is-removed-after-its-copy-reached-the-store)
+  - [`cli:store-guard-exit-codes` — store-guard exits by what it found](#clistore-guard-exit-codes--store-guard-exits-by-what-it-found)
+    - [Scenario: The guard runs outside git](#scenario-the-guard-runs-outside-git)
+  - [`cli:store-guard-daily-runs-once-a-day` — The daily guard scans at most once a day](#clistore-guard-daily-runs-once-a-day--the-daily-guard-scans-at-most-once-a-day)
+    - [Scenario: The first scan of the day fails](#scenario-the-first-scan-of-the-day-fails)
+  - [`cli:store-guard-stays-quiet-when-switched-off` — The daily guard stays off when switched off](#clistore-guard-stays-quiet-when-switched-off--the-daily-guard-stays-off-when-switched-off)
+    - [Scenario: A CI runner exports an empty CI variable](#scenario-a-ci-runner-exports-an-empty-ci-variable)
+  - [`cli:output-is-human-or-json` — Output is human text or one JSON object](#clioutput-is-human-or-json--output-is-human-text-or-one-json-object)
+    - [Scenario: A script reads the report](#scenario-a-script-reads-the-report)
+  - [`cli:host-check-validates-the-file` — host-check parses the file with a typed parser](#clihost-check-validates-the-file--host-check-parses-the-file-with-a-typed-parser)
+    - [Scenario: A version has no operator](#scenario-a-version-has-no-operator)
+  - [`cli:host-check-checks-the-named-tools` — host-check checks the tools a call names](#clihost-check-checks-the-named-tools--host-check-checks-the-tools-a-call-names)
+    - [Scenario: A host lacks a tool that one recipe uses](#scenario-a-host-lacks-a-tool-that-one-recipe-uses)
+  - [`cli:host-check-reports-every-failure` — host-check reports every failure before it exits](#clihost-check-reports-every-failure--host-check-reports-every-failure-before-it-exits)
+    - [Scenario: Two tools fail at once](#scenario-two-tools-fail-at-once)
+  - [`cli:host-check-caches-versions` — host-check caches each version it reads](#clihost-check-caches-versions--host-check-caches-each-version-it-reads)
+    - [Scenario: A package manager upgrades a tool in place](#scenario-a-package-manager-upgrades-a-tool-in-place)
+  - [`cli:host-check-exit-codes` — host-check exits by what it found](#clihost-check-exit-codes--host-check-exits-by-what-it-found)
+    - [Scenario: A project has no file](#scenario-a-project-has-no-file)
+
+<!--TOC-->
+
 ## Purpose
 
-Rules for the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids, and `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies.
+Rules for the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids, and `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports.
 
 ## Requirements
 
@@ -56,7 +83,7 @@ Verify: `cargo nextest run -E 'test(daily_stays_quiet_when_switched_off)'`
 
 ### `cli:output-is-human-or-json` — Output is human text or one JSON object
 
-The binary MUST print its result on stdout, as human text by default and as one JSON object under `--json`, and MUST print every diagnostic on stderr. The `store-guard` object holds `checkout`, `copies` with `path`, `nar_size`, `registered`, and `origin` for each copy, `unattributed` with `path` and `reason` for each copy of unknown origin, and `total_nar_size`. `registered` is an RFC 3339 timestamp in UTC. The human report ends with the total, the remedy "run `nix store gc` once no process uses these paths", and the rule ID `project-platform:a-flake-is-read-from-its-git-tree`.
+The binary MUST print its result on stdout, as human text by default and as one JSON object under `--json`, and MUST print every diagnostic on stderr. `host-check` has no result, so it prints nothing on stdout. The `store-guard` object holds `checkout`, `copies` with `path`, `nar_size`, `registered`, and `origin` for each copy, `unattributed` with `path` and `reason` for each copy of unknown origin, and `total_nar_size`. `registered` is an RFC 3339 timestamp in UTC. The human report ends with the total, the remedy "run `nix store gc` once no process uses these paths", and the rule ID `project-platform:a-flake-is-read-from-its-git-tree`.
 
 #### Scenario: A script reads the report
 
@@ -65,3 +92,63 @@ The binary MUST print its result on stdout, as human text by default and as one 
 - THEN stdout parses as one object with exactly the documented keys, and the exit code is 1
 
 Verify: `cargo nextest run -E 'test(output_is_human_or_json)'`
+
+### `cli:host-check-validates-the-file` — host-check parses the file with a typed parser
+
+When `exobrain host-check` runs, the checker MUST read the first `host-requirements.toml` in the working folder or one of its parent folders, and MUST accept only `schema = 1` and `[tools.<name>]` tables, with an optional `version` and an optional `version_cmd` each. `<name>` is a plain command name. `version` is a Cargo version requirement in which each comma-separated comparator starts with `>=`, `>`, `<=`, `<`, `=`, `~`, or `^`, or it is `"*"` alone. The checker MUST reject an unknown key, another `schema`, a comparator with no operator, such as `"2.57.0"`, `"2.*"`, or `"2.x"`, and a requirement that Cargo's grammar does not parse. It reports every problem, one line each, with the file, the tool, and the reason. With `--parse-only`, the checker stops after the parse and runs no tool.
+
+#### Scenario: A version has no operator
+
+- GIVEN a file whose `gh` table holds `version = "2.57.0"` and whose `git` table holds an unknown key
+- WHEN the `host-requirements` hook runs `exobrain host-check --parse-only`
+- THEN the checker exits 2 with one line for `gh` and one for `git`, and runs no tool
+
+Verify: `cargo nextest run -E 'test(validates_the_file)'`
+
+### `cli:host-check-checks-the-named-tools` — host-check checks the tools a call names
+
+When `exobrain host-check` runs with no tool name, the checker MUST check every tool of the file. With tool names, it MUST check only those, and MUST exit 2 without a check when a name is not in the file. For each tool, the checker looks up the first executable of that name on `PATH`. For a tool whose `version` is a requirement, it runs the tool with `version_cmd`, which is `--version` by default and is passed as one argument. It reads the first version of stdout, then of stderr, takes two or three numbers, and pads a two-part version to `x.y.0`. A tool with no `version` or with `version = "*"` gets a presence check only, and the checker never runs it. No check picks another tool or falls back.
+
+#### Scenario: A host lacks a tool that one recipe uses
+
+- GIVEN a file that lists `git`, `gh`, and `prek`, on a host without `gh`
+- WHEN a `justfile` runs `exobrain host-check git prek` for every recipe
+- THEN the check passes, and only a call that names `gh` fails
+
+Verify: `cargo nextest run -E 'test(checks_the_named_tools)'`
+
+### `cli:host-check-reports-every-failure` — host-check reports every failure before it exits
+
+The checker MUST check every selected tool before it exits, and MUST print one line on stderr for each failure: `host tool <name> is missing`, `host tool <name> <version> does not match <requirement> (host-requirements.toml)`, or `host tool <name> printed no version for` the probe command.
+
+#### Scenario: Two tools fail at once
+
+- GIVEN a host with `gh` 2.40.1 against `>=2.57.0`, and no `git`
+- WHEN a recipe runs `exobrain host-check`
+- THEN stderr holds one line for `gh` and one for `git`, and the exit code is 1
+
+Verify: `cargo nextest run -E 'test(reports_every_failure)'`
+
+### `cli:host-check-caches-versions` — host-check caches each version it reads
+
+The checker MUST cache each version it reads under `${XDG_CACHE_HOME:-$HOME/.cache}/exobrain/host-check/`, keyed by the real path of the binary, its device, inode, size, and modification time, and its `version_cmd`. A cache hit runs no tool. A cache entry the checker cannot read or write makes it run the tool.
+
+#### Scenario: A package manager upgrades a tool in place
+
+- GIVEN a cached version of `/usr/bin/gh`
+- WHEN the package manager replaces `/usr/bin/gh` with an older build, and a recipe runs the check
+- THEN the modification time no longer matches, so the checker runs the tool and reports the new version
+
+Verify: `cargo nextest run -E 'test(caches_versions)'`
+
+### `cli:host-check-exit-codes` — host-check exits by what it found
+
+The checker MUST exit 0 when every selected tool passes, 1 when at least one tool is missing or misses its requirement, and 2 when no file is found, the file fails the parse, or a call names a tool that the file does not list.
+
+#### Scenario: A project has no file
+
+- GIVEN a folder with no `host-requirements.toml` in it or above it
+- WHEN a recipe runs `exobrain host-check`
+- THEN the checker exits 2 and names the folder it searched from
+
+Verify: `cargo nextest run -E 'test(host_check_exit_codes)'`

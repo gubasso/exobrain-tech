@@ -498,6 +498,23 @@ repos:
         files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
         entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*")*?(?:\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*\$\{[^}]*?\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-]))|\bwith\s+pkgs\s*;(?:[^"#]|"(?:[^"\\$]|\\.|\$(?!\{)|\$\{(?:(?!\bpkgs\.(?:"(?:pre-commit|prek)"|(?:pre-commit|prek)(?![\w-])))[^}])*\})*")*?[\[\s](?:pre-commit|prek)(?=[\s\]])))'
 
+  # --- host-requirements.toml parses (system) ---
+  #
+  # The local twin of the hook that .pre-commit-hooks.yaml publishes
+  # (`project-platform:host-requirements-list-the-host-tools`). The typed parser
+  # of `exobrain host-check` is the validation of the format, and the hook runs
+  # only when the file changes. .hooks/test-gates.sh holds the two entries equal
+  # and runs the published hook over a malformed file and a valid one.
+  - repo: local
+    hooks:
+      # owner: devshell (project-environment) exobrain is the program that this repository builds into target/debug, which .envrc puts on PATH.
+      - id: host-requirements
+        name: host-requirements.toml parses
+        language: system
+        entry: exobrain host-check --parse-only
+        pass_filenames: false
+        files: '^host-requirements\.toml$'
+
   # --- The Rust workspace in crates/ ---
   #
   # The fast checks run at commit on the Rust and Cargo files. The costly
