@@ -503,15 +503,17 @@ repos:
   # The local twin of the hook that .pre-commit-hooks.yaml publishes
   # (`project-platform:host-requirements-list-the-host-tools`). The typed parser
   # of `exobrain host-check` is the validation of the format, and the hook runs
-  # only when the file changes. .hooks/test-gates.sh holds the two entries equal
-  # and runs the published hook over a malformed file and a valid one.
+  # only when the file changes. The twin runs the exobrain of this checkout
+  # through cargo, because a clean clone and CI have no built exobrain on PATH.
+  # .hooks/test-gates.sh holds the two entries equal past that cargo prefix, and
+  # runs the published hook over a malformed file and a valid one.
   - repo: local
     hooks:
-      # owner: devshell (project-environment) exobrain is the program that this repository builds into target/debug, which .envrc puts on PATH.
+      # owner: devshell (project-environment) exobrain is the program of this repository, which cargo builds from the checkout.
       - id: host-requirements
         name: host-requirements.toml parses
         language: system
-        entry: exobrain host-check --parse-only
+        entry: cargo run --quiet -p exobrain -- host-check --parse-only
         pass_filenames: false
         files: '^host-requirements\.toml$'
 

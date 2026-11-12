@@ -393,12 +393,20 @@ printf '%s\n' "$out" | grep -q 'hook runner\.*(no files to check)Skipped$' ||
 
 # --- host-requirements ---------------------------------------------------------
 #
-# Published and run through a local twin, held equal as above. The hook runs
-# the exobrain binary of this checkout, so the case builds it first and puts it
-# first on PATH. Each malformed file sits in its own tree, so each one fails
-# alone, and the example of the convention passes.
-same_as_twin host-requirements
+# Published and run through a local twin. The twin runs the exobrain of this
+# checkout through cargo, so its entry equals the published one once the cargo
+# prefix becomes `exobrain`. The case builds the binary and puts it first on
+# PATH for the published hook. Each malformed file sits in its own tree, so each
+# one fails alone, and the example of the convention passes.
 req_hook=host-requirements
+published=$(field_of "$req_hook" files "$root/.pre-commit-hooks.yaml")
+twin=$(field_of "$req_hook" files "$root/.pre-commit-config.yaml")
+[ "$published" = "$twin" ] || fail "$req_hook: the published files and the local twin differ"
+published=$(field_of "$req_hook" entry "$root/.pre-commit-hooks.yaml")
+twin=$(field_of "$req_hook" entry "$root/.pre-commit-config.yaml")
+[ -n "$published" ] || fail "$req_hook has no published entry"
+[ "exobrain ${twin#cargo run --quiet -p exobrain -- }" = "$published" ] ||
+  fail "$req_hook: the local twin does not run the published entry through cargo"
 (cd "$root" && cargo build -q -p exobrain) || fail "$req_hook: cargo build failed"
 PATH="$root/target/debug:$PATH"
 export PATH
