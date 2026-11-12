@@ -7,6 +7,31 @@ interpreter from uv
 ([Python and uv in a devshell](./02-per-project-devshell.md#python-and-uv-in-a-devshell)). The worked
 example is the vitals project ([gubasso/vitals](https://github.com/gubasso/vitals), v0.1.0).
 
+## The interpreter
+
+The package builds on the nixpkgs Python of the exact patch in `.python-version`, the interpreter
+that uv installs for development. The flake derives it from the file, and a check fails when nixpkgs
+ships another patch, so the shipped program and the uv-managed venv run one interpreter. Only a
+packaged project carries the check: a project that Nix does not package needs no Python in its
+flake, and the check would fail it whenever nixpkgs trails uv.
+
+```nix
+let
+  pythonVersion = pkgs.lib.fileContents ./.python-version; # an exact patch, such as 3.15.2
+  python =
+    pkgs."python${pkgs.lib.concatStrings (pkgs.lib.take 2 (pkgs.lib.splitVersion pythonVersion))}";
+in
+{
+  checks.${system}.python-version = pkgs.runCommand "python-version-is-aligned" { } ''
+    if [ "${python.version}" != "${pythonVersion}" ]; then
+      echo "nixpkgs ships Python ${python.version}, and .python-version names ${pythonVersion}" >&2
+      exit 1
+    fi
+    touch "$out"
+  '';
+}
+```
+
 ## The flake
 
 Add the three inputs of the
@@ -31,9 +56,7 @@ pyproject-build-systems = {
 };
 ```
 
-Build the libraries as wheels on the nixpkgs Python of the exact patch in `.python-version`, the
-`python` binding of the devshell chapter, so the shipped program and the uv-managed venv run one
-interpreter:
+Build the libraries as wheels on that `python`:
 
 ```nix
 workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };

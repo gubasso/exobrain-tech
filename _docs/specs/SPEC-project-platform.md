@@ -79,8 +79,10 @@ environment from a clean machine, such as `curl` for `rustup-init`. `flake.nix` 
 library. A hook that keeps `language: system` or `script` carries an `# owner:` comment with its
 class. The host supplies only `git`, `bash`, `awk`, `sed`, `grep`, the coreutils, `nix`, `direnv`,
 `uv`, and the standard ELF loader. uv builds Python environments, so the host supplies it, and uv
-owns the interpreter it installs: `flake.nix` holds neither uv nor a Python for a uv project, which
-pins uv with `[tool.uv] required-version` and the interpreter patch with `.python-version`. The chapter that states the general rule is
+owns the interpreter it installs: the devshell holds neither uv nor a Python for a uv project, which
+pins uv with `[tool.uv] required-version` and the interpreter patch with `.python-version`. The one
+Python in the flake of a uv project builds its uv2nix package: the nixpkgs interpreter of that
+patch, held equal to it by a flake check. The chapter that states the general rule is
 `programming/project-bootstrap/03-local-dev-environment.md`, "Who owns each dependency".
 
 #### Scenario: A hook that pre-commit can build

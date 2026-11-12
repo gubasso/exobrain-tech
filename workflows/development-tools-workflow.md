@@ -37,7 +37,7 @@ in [who owns each dependency](../programming/project-bootstrap/03-local-dev-envi
 Typical Python flow (first-time setup):
 
 ```bash
-direnv allow           # once per project: enters the devShell, which syncs .venv from uv.lock
+direnv allow           # once per project: enters the devShell, and layout uv syncs .venv from uv.lock
 uv sync                # lock and install after a change of pyproject.toml
 ```
 

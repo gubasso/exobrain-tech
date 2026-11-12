@@ -29,9 +29,9 @@ and flake syntax live in `languages/nix/`. Who owns each dependency of a project
 - Python uses uv, which the host supplies and which owns the interpreter: the devshell holds no
   Python, no uv, and no `shellHook` for them. `.python-version` names the exact patch, and `.envrc`
   holds `use flake`, then `layout uv`. A flake that packages the project takes the nixpkgs Python of
-  that patch and checks it (`02-per-project-devshell.md`, "Python and uv in a devshell",
-  `templates/python/`). The nixpkgs `pre-commit` needs its `virtualenv` fixed so the shell can unset
-  `PYTHONPATH` ("Git hooks (pre-commit)").
+  that patch and checks it (`05-package-a-uv-project.md`, "The interpreter"). The nixpkgs
+  `pre-commit` leaves `PYTHONPATH` in the shell, so a hook or recipe in the venv runs
+  `env -u PYTHONPATH uv run` (`02-per-project-devshell.md`, "Git hooks (pre-commit)").
 - The Poetry two-interpreter trap and its `assert` guard serve projects that already use Poetry,
   and live in `languages/python/python-poetry.md`.
 - The devshell holds `pre-commit` and only the tools of the hooks that keep `language: system`

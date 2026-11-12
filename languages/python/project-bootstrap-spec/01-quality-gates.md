@@ -89,26 +89,27 @@ Run it in CI so a vulnerable dependency cannot merge.
 ruff and pyright take their upstream hooks, because only a hook runs them: `ruff-check` and
 `ruff-format` from `astral-sh/ruff-pre-commit`, and `pyright` from `RobertCraigie/pyright-python`,
 which reads the venv that `pyrightconfig.json` names. mypy takes `pre-commit/mirrors-mypy` with the
-typed libraries in `additional_dependencies` while it loads no plugin. With the pydantic and returns
-plugins, each plugin must load the version of its library that `uv.lock` pins, a reason specific to
-the repository: mypy becomes a dev dependency and runs from the project venv. pytest runs the test suite of the project, so
+typed libraries in `additional_dependencies`. A plugin, such as the pydantic or the returns plugin,
+must load the version of its library that the project runs, so `additional_dependencies` pins the
+library at the `uv.lock` version, and the two pins move together. A project that keeps one pin runs
+mypy from the project venv instead, as a dev dependency, and its hook comment states that reason. pytest runs the test suite of the project, so
 it stays a dev dependency in `pyproject.toml` and keeps a `language: system` hook with its owner
 comment:
 
 ```yaml
 - repo: local
   hooks:
-    # owner: pyproject.toml (project-environment) the pydantic and returns plugins of mypy must load the versions that uv.lock pins.
+    # owner: pyproject.toml (project-environment) one pin: the plugins of mypy load the versions that uv.lock pins.
     - id: mypy
       name: mypy (strict)
-      entry: uv run --frozen mypy
+      entry: env -u PYTHONPATH uv run --frozen mypy
       language: system
       types: [python]
       pass_filenames: false
     # owner: pyproject.toml (project-environment) pytest runs the test suite in the uv environment.
     - id: pytest
       name: pytest
-      entry: uv run pytest
+      entry: env -u PYTHONPATH uv run --frozen pytest
       language: system
       pass_filenames: false
 ```

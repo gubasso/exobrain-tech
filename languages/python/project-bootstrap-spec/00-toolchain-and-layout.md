@@ -88,7 +88,7 @@ A project that Nix also packages runs the shipped program on a nixpkgs interpret
 `.python-version`, takes the nixpkgs Python of that patch, and a flake check fails when nixpkgs ships
 another patch. When nixpkgs and uv disagree on the newest patch, pin the patch that both supply. The
 Nix form is in
-[Python and uv in a devshell](../../../tools/nix/02-per-project-devshell.md#python-and-uv-in-a-devshell).
+[05 — Package a uv project](../../../tools/nix/05-package-a-uv-project.md#the-interpreter).
 
 `uv run` syncs `.venv` before each command, so a recipe, a hook, and CI need no activation. For an
 interactive shell, direnv's `layout uv` syncs `.venv` with `--frozen`, sets `VIRTUAL_ENV`, and puts

@@ -134,7 +134,7 @@ source-include = ["src/dev_checks/**"]
     # owner: pyproject.toml (project-environment) runs a module of the project in its venv
     - id: symbol-visibility
       name: symbol visibility (internal symbols must be _-prefixed)
-      entry: uv run python -m dev_checks.visibility_check
+      entry: env -u PYTHONPATH uv run python -m dev_checks.visibility_check
       language: system
       pass_filenames: false
       always_run: true

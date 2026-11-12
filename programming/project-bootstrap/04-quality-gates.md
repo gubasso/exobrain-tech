@@ -75,7 +75,7 @@ the file that declares the tool, as
     # owner: pyproject.toml (project-environment) pytest runs in the uv environment of the project.
     - id: pytest
       name: pytest
-      entry: uv run pytest
+      entry: env -u PYTHONPATH uv run pytest
       language: system
       pass_filenames: false
     # owner: devshell (recorded-failure) the managed hook fails with "<error>" on a clean host, YYYY-MM-DD.

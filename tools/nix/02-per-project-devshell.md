@@ -78,25 +78,8 @@ layout uv
 project through `uv run`, which syncs `.venv` first.
 
 A project that Nix also packages builds on the nixpkgs Python of the exact patch in
-`.python-version`. The flake derives that interpreter from the file, and a check fails when nixpkgs
-ships another patch, so the shipped program and the uv-managed venv run one interpreter:
-
-```nix
-let
-  pythonVersion = pkgs.lib.fileContents ./.python-version; # an exact patch, such as 3.15.2
-  python =
-    pkgs."python${pkgs.lib.concatStrings (pkgs.lib.take 2 (pkgs.lib.splitVersion pythonVersion))}";
-in
-{
-  checks.${system}.python-version = pkgs.runCommand "python-version-is-aligned" { } ''
-    if [ "${python.version}" != "${pythonVersion}" ]; then
-      echo "nixpkgs ships Python ${python.version}, and .python-version names ${pythonVersion}" >&2
-      exit 1
-    fi
-    touch "$out"
-  '';
-}
-```
+`.python-version`, and a flake check holds the two equal:
+[05 — Package a uv project](./05-package-a-uv-project.md#the-interpreter).
 
 ## Binary wheels need the C++ runtime (`libstdc++.so.6`)
 
@@ -161,24 +144,27 @@ the hook records that owner:
       pass_filenames: false
 ```
 
-The nixpkgs `pre-commit` puts the libraries of its own Python on `PYTHONPATH` in the shell, and that
-variable shadows the packages of a project venv that runs another Python. The nixpkgs `virtualenv`
-needs it only because it imports `packaging` without declaring it (nixos-unstable and master,
-2026-11-11). Declare the dependency, and unset the variable:
+The nixpkgs `pre-commit` puts the libraries of its own Python on `PYTHONPATH` in the shell
+(`nix print-dev-env` shows a `PYTHONPATH` of python3.14 site-packages, nixos-unstable of
+2026-11-11), and that variable shadows the packages of a project venv that runs another Python. The
+shell cannot drop it: the nixpkgs `virtualenv` imports `packaging` without declaring it, so
+pre-commit fails to build a Python hook environment without the variable, with
+`ModuleNotFoundError: No module named 'packaging'`. So every command that runs in the project venv
+drops the variable itself, in its hook entry and in its recipe:
 
-```nix
-pre-commit = pkgs.pre-commit.override {
-  python3Packages = pkgs.python3Packages.overrideScope (
-    _final: prev: {
-      virtualenv = prev.virtualenv.overridePythonAttrs (old: {
-        dependencies = (old.dependencies or [ ]) ++ [ prev.packaging ];
-        doCheck = false;
-      });
-    }
-  );
-};
-# in mkShell: packages = [ pre-commit ... ]; shellHook = "unset PYTHONPATH";
+```yaml
+# owner: pyproject.toml (project-environment) pytest runs the test suite in the uv environment.
+- id: pytest
+  name: pytest
+  entry: env -u PYTHONPATH uv run --frozen pytest
+  language: system
+  pass_filenames: false
 ```
+
+An interactive shell keeps the variable, so a command typed there runs as
+`env -u PYTHONPATH uv run <cmd>`. Declaring `packaging` in an override of `virtualenv` would let
+the shell unset the variable, but an override of a Python package set in `flake.nix` is what
+`no-language-library-in-flake` refuses.
 
 Install the git hook once inside the shell with `pre-commit install`, which is idempotent. Make it
 automatic on shell entry with a `shellHook` running `pre-commit install`, or go fully
