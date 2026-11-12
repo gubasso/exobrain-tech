@@ -79,6 +79,19 @@ hook `no-path-flake-reference` enforces the rule line by line. Add it to `.pre-c
 The hook reads each line on its own, so it misses a reference that a program assembles from parts
 or that spans two lines.
 
+The host supplies the git hook runner, prek, so no devshell lists it. The hook
+`no-hook-runner-in-flake` refuses a runner in `flake.nix` or under `nix/`: as a `pkgs.` attribute,
+as an item of a one-line `with pkgs;` list, or on a line of its own. A flake that installs the
+runner on a host marks that line `hook-runner-ok: <reason>`. Add the hook beside the first one:
+
+```yaml
+- repo: https://github.com/gubasso/exobrain-tech
+  rev: vX.Y.Z
+  hooks:
+    - id: no-path-flake-reference
+    - id: no-hook-runner-in-flake
+```
+
 ## Pre-commit wiring — `git-hooks.nix`
 
 Wire `nixpkgs-fmt`/`alejandra`, `statix`, and `deadnix` into git hooks with

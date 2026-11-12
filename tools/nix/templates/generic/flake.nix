@@ -18,10 +18,11 @@
           packages = [
             # pkgs.<language-runtime>   # e.g. go, deno, python314
             # pkgs.<package-manager>    # e.g. go, uv
-            # pkgs.pre-commit           # per-project git hooks; add only the tools of a
-            #                           # `language: system` hook of an exception class:
-            #                           # no-hook-language, project-environment,
-            #                           # recorded-failure, outside-caller
+            # pkgs.<hook-tool>          # only the tool of a `language: system` hook of
+            #                           # an exception class: no-hook-language,
+            #                           # project-environment, recorded-failure,
+            #                           # outside-caller. The host supplies the git
+            #                           # hook runner, prek.
             pkgs.just
           ];
           shellHook = ''echo "dev shell ready"'';

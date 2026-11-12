@@ -86,7 +86,7 @@ A record whose `upstream:` names Bugzilla MUST hold its `## Report` body in a fe
 lines are at most 79 columns. A record filed into a tracker that reflows MUST NOT be held to a
 width.
 
-Verify: `pre-commit run ki-bugzilla-report-width --all-files`
+Verify: `prek run ki-bugzilla-report-width --all-files`
 ```
 
 The rule is Bugzilla's, not every tracker's. GitHub and Jira reflow, so a hard width there is

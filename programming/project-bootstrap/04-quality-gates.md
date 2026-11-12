@@ -17,9 +17,11 @@ just warn, on the lints you care about, and run it in CI. The language binding p
 
 ## Git hooks
 
-Git hooks run the checks locally, so a failure surfaces before it reaches CI. Use a framework (e.g.
-[pre-commit](https://pre-commit.com/)) so hooks are declarative and shared. Two stages split the
-work:
+Git hooks run the checks locally, so a failure surfaces before it reaches CI. Declare them in
+`.pre-commit-config.yaml`, the format of [pre-commit](https://pre-commit.com/), and run them with
+[prek](https://prek.j178.dev/), a Rust runner of that format that the host supplies beside git
+([03](./03-local-dev-environment.md#who-owns-each-dependency)). The configuration names the oldest
+runner it accepts with `minimum_prek_version`. Two stages split the work:
 
 - The commit stage runs the fast checks: the formatter, the linter, and the cheap file checks.
 - The push stage runs the costly checks: the integration tests, the builds, and the networked
@@ -29,7 +31,7 @@ The two stages together run every check that CI runs, so a push that passed its 
 The push stage does not rerun the commit stage. Install both hook types, for example
 `default_install_hook_types: [pre-commit, commit-msg, pre-push]`.
 
-With pre-commit, `default_stages` covers only a hook that declares no `stages:` of its own. The
+`default_stages` covers only a hook that declares no `stages:` of its own. The
 `stages:` of a remote hook's manifest wins over it: the hooks of `pre-commit-hooks` declare
 `[pre-commit, pre-push, manual]`, so they run at push too unless the configuration gives each one an
 explicit `stages:`. Read the pinned manifest of each remote repository, and set `stages:` where it
@@ -43,7 +45,7 @@ state the rule and the hook entry.
 
 ### Who builds a hook environment
 
-A hook takes the environment that pre-commit builds by default: pin its upstream repository with
+A hook takes the environment that prek builds by default: pin its upstream repository with
 `rev`, and the hook declares its own language. A hook with `language: system`, `script`, or
 `unsupported`, or an upstream `-system` id, is an exception. A comment directly above it names its
 owner, its class, and its reason, in the form `# owner: <owner> (<class>) <reason>`. The owner is
@@ -51,22 +53,22 @@ the file that declares the tool, as
 [03 — Who owns each dependency](./03-local-dev-environment.md#who-owns-each-dependency) says:
 `pyproject.toml`, `package.json`, `devshell`, or `host`. The five classes:
 
-- `no-hook-language`: upstream publishes no hook in a language for which pre-commit builds an
+- `no-hook-language`: upstream publishes no hook in a language for which prek builds an
   environment, such as statix, lychee, or a script of the project.
-- `project-environment`: the hook runs the project itself or its toolchain, so pre-commit cannot
-  own the tool: the test suite (pytest, `cargo test`), a part of the toolchain (`cargo clippy`,
+- `project-environment`: the hook runs the project itself or its toolchain, so prek cannot own
+  the tool: the test suite (pytest, `cargo test`), a part of the toolchain (`cargo clippy`,
   `cargo fmt`, tsc), or a script that imports the code of the project. A type checker or a linter
   takes this class only with a reason in the comment that is specific to the repository.
 - `recorded-failure`: the managed hook fails on a clean machine of a supported host, even with the
   devshell fallback for hook setup. The comment names the error and the date.
-- `outside-caller`: a caller outside pre-commit needs the same tool and cannot reach it through
-  `pre-commit run`, such as a language server, or `nix fmt` for nixfmt.
+- `outside-caller`: a caller outside prek needs the same tool and cannot reach it through
+  `prek run`, such as a language server, or `nix fmt` for nixfmt.
 - `base-tool`: the hook calls only the base tools of the host. The owner is `host`.
 
 ```yaml
 - repo: local
   hooks:
-    # owner: devshell (no-hook-language) statix has no hook in a language that pre-commit builds.
+    # owner: devshell (no-hook-language) statix has no hook in a language that prek builds.
     - id: statix
       name: statix
       entry: statix check
@@ -75,7 +77,7 @@ the file that declares the tool, as
     # owner: pyproject.toml (project-environment) pytest runs in the uv environment of the project.
     - id: pytest
       name: pytest
-      entry: env -u PYTHONPATH uv run --frozen pytest
+      entry: uv run --frozen pytest
       language: system
       pass_filenames: false
     # owner: devshell (recorded-failure) the managed hook fails with "<error>" on a clean host, YYYY-MM-DD.

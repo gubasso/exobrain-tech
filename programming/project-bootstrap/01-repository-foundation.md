@@ -34,3 +34,17 @@ pointing at its license. Choose the model deliberately and state it in the `READ
 The `README.md` is the project index. At a minimum it states: what the project is (one line), how to
 build/run it, how to set up the dev environment, and where the deeper docs live. Keep it an index
 that routes to detail, not a place that duplicates it.
+
+The dev environment section lists the host requirements: each tool that the host supplies and the
+project uses, such as `git`, the git hook runner `prek`, `nix`, `direnv`, and `uv`. The project
+checks for none of them. A command that needs a missing one fails, and the developer installs it
+([03 — Who owns each dependency](./03-local-dev-environment.md#who-owns-each-dependency)).
+
+```markdown
+## Host requirements
+
+- `git`
+- `prek`, the git hook runner
+- `nix` and `direnv`, which load the devshell
+- `uv`, for a Python project
+```

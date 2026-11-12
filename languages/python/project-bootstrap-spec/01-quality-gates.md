@@ -102,14 +102,14 @@ comment:
     # owner: pyproject.toml (project-environment) one pin: the plugins of mypy load the versions that uv.lock pins.
     - id: mypy
       name: mypy (strict)
-      entry: env -u PYTHONPATH uv run --frozen mypy
+      entry: uv run --frozen mypy
       language: system
       types: [python]
       pass_filenames: false
     # owner: pyproject.toml (project-environment) pytest runs the test suite in the uv environment.
     - id: pytest
       name: pytest
-      entry: env -u PYTHONPATH uv run --frozen pytest
+      entry: uv run --frozen pytest
       language: system
       pass_filenames: false
 ```

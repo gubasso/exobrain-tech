@@ -29,15 +29,14 @@ and flake syntax live in `languages/nix/`. Who owns each dependency of a project
 - Python uses uv, which the host supplies and which owns the interpreter: the devshell holds no
   Python, no uv, and no `shellHook` for them. `.python-version` names the exact patch, and `.envrc`
   holds `use flake`, then `layout uv`. A flake that packages the project takes the nixpkgs Python of
-  that patch and checks it (`05-package-a-uv-project.md`, "The interpreter"). The nixpkgs
-  `pre-commit` leaves `PYTHONPATH` in the shell, so a hook or recipe in the venv runs
-  `env -u PYTHONPATH uv run` (`02-per-project-devshell.md`, "Git hooks (pre-commit)").
+  that patch and checks it (`05-package-a-uv-project.md`, "The interpreter").
 - The Poetry two-interpreter trap and its `assert` guard serve projects that already use Poetry,
   and live in `languages/python/python-poetry.md`.
-- The devshell holds `pre-commit` and only the tools of the hooks that keep `language: system`
-  under an exception class, each with a `# owner: <owner> (<class>) <reason>` comment above it,
-  plus the runtime pre-commit needs on a clean machine, such as nodejs for node hooks
-  (`02-per-project-devshell.md`, "Git hooks (pre-commit)").
+- The host supplies the git hook runner, prek, and no devshell holds one. The devshell holds only
+  the tools of the hooks that keep `language: system` under an exception class, each with a
+  `# owner: <owner> (<class>) <reason>` comment above it, plus the runtime a hook takes from the
+  system, such as nodejs for node hooks under `node: system` (`02-per-project-devshell.md`, "Git
+  hooks").
 - direnv fires only in prompt-drawing shells. A command shell, CI step, or agent uses
   `direnv exec . <cmd>` or `nix develop --command <cmd>` (`02-per-project-devshell.md`).
 - Binary manylinux wheels need `libstdc++.so.6` and `libz.so.1` on `LD_LIBRARY_PATH`

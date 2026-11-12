@@ -169,7 +169,7 @@ Use both: clippy for fast gating, `rust-code-analysis` for deeper analysis and t
 dependency isn't mentioned, it's likely unused.
 
 ```bash
-pre-commit run cargo-machete --all-files   # the upstream hook, pinned in .pre-commit-config.yaml
+prek run cargo-machete --all-files   # the upstream hook, pinned in .pre-commit-config.yaml
 ```
 
 **False positives:** crates used only via macros (e.g., `tracing` used via `#[instrument]`) may not
@@ -471,7 +471,7 @@ lint-boundaries:
 # --- Dependency hygiene ---
 
 machete:
-    pre-commit run cargo-machete --all-files
+    prek run cargo-machete --all-files
 
 deny:
     cargo deny check

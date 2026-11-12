@@ -15,8 +15,8 @@ default:
 # Lint: both hook stages over every file, the whole gate of this repository
 # (project-platform:the-hooks-are-the-only-gate).
 lint:
-    nix develop --command pre-commit run --all-files
-    nix develop --command pre-commit run --all-files --hook-stage pre-push
+    nix develop --command prek run --all-files
+    nix develop --command prek run --all-files --hook-stage pre-push
 
 # Verify what this repository ships
 # (ADR-executable-artifacts-in-the-library).
@@ -50,7 +50,7 @@ test-one-system:
 # A new gate is demonstrated failing against an intentional violation before it
 # is trusted (ADR-executable-artifacts-in-the-library), and `.hooks/test-gates.sh`
 # is where every one of those violations is written. It runs the gates that ship
-# rather than a copy of them, so each tool that a gate calls outside pre-commit
+# rather than a copy of them, so each tool that a gate calls outside the hook runner
 # has its provider in the devShell or on the host.
 test-gates:
     nix develop --command .hooks/test-gates.sh

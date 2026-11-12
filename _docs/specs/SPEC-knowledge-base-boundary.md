@@ -49,7 +49,7 @@ The boundary is current operation. A public tool input pinned in `flake.lock` is
 state because the lock fixes the revision every gate runs. Canon provenance is metadata for upgrade,
 not an input to routine verification (ADR-source-the-documentation-canon-upstream).
 
-Verify: `pre-commit run spec-driven-docs-verify --all-files`
+Verify: `prek run spec-driven-docs-verify --all-files`
 
 ### `knowledge-base-boundary:the-canon-is-named-once` — The upstream canon is named once
 
@@ -67,7 +67,7 @@ The decision log and the vendored payload are exempt: a record states its own mo
 payload is canon-written provenance. The version implemented lives in
 `.spec-driven-docs/manifest.json`, which the verifier reads and an upgrade rewrites.
 
-Verify: `pre-commit run canon-named-once --all-files`
+Verify: `prek run canon-named-once --all-files`
 
 ### `knowledge-base-boundary:a-tool-input-is-pinned` — A tool input resolves to one pinned revision
 
@@ -107,7 +107,7 @@ A name listed in `.hooks/unnamed-methods.txt` MUST NOT appear outside the decisi
 - THEN the commit fails, because the list is what stops the removal from being undone one file at a
   time
 
-Verify: `pre-commit run no-named-method --all-files`
+Verify: `prek run no-named-method --all-files`
 
 ### `knowledge-base-boundary:private-material-stays-in-the-vault` — Private material stays in the vault
 
@@ -146,4 +146,4 @@ those gates MUST run outside pre-commit as well.
 - WHEN the script carries an unquoted expansion or a foreign indent
 - THEN the change fails, because a drop-in this repository never ran is asserted rather than proven
 
-Verify: `pre-commit run shipped-scripts --all-files`
+Verify: `prek run shipped-scripts --all-files`

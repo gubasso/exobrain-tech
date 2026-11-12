@@ -23,9 +23,10 @@ devShell": it builds Python environments, so the host supplies it, beside `nix` 
 Within Nix there's a second split — **lean global / rich per-project**. A small **global profile**
 (via `nix profile` or Home Manager) holds only the CLIs you want in _every_ shell (`ripgrep`,
 `neovim`, `starship`, agent CLIs). Everything a _specific_ project needs — its language toolchain
-**and** its task runner, `pre-commit`, and the tools no other owner declares (`just`, `pre-commit`,
-`statix`, …) — lives in that project's **flake devShell**, pinned per repo. A hook tool that
-pre-commit can build an environment for stays in `.pre-commit-config.yaml`
+**and** its task runner and the tools no other owner declares (`just`, `statix`, …) — lives in that
+project's **flake devShell**, pinned per repo. The git hook runner, prek, is the other exception: git
+runs a hook from every shell, so the host supplies it beside git. A hook tool that prek can build an
+environment for stays in `.pre-commit-config.yaml`
 ([Who owns each dependency](../../programming/project-bootstrap/03-local-dev-environment.md#who-owns-each-dependency)).
 Keep the global profile lean: if only some projects need a tool, or it wants a project-pinned
 version, it belongs in their flake, not the profile.

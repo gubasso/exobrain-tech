@@ -28,7 +28,6 @@
             pkgs.cargo-deny
             pkgs.cargo-audit
             pkgs.just
-            pkgs.pre-commit
           ];
           # native deps for -sys crates, uncomment as needed:
           # buildInputs = [ pkgs.openssl ];

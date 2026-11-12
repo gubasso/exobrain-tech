@@ -9,6 +9,8 @@ To run in just a subdir or selected files...
 ```yaml
 ---
 files: ^my-subdif/
+# The host supplies prek; this is the oldest prek the configuration accepts.
+minimum_prek_version: "0.5.7"
 # Install the push stage too: the costly checks run there.
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
 # Covers only a hook with no `stages:` of its own. A remote hook's manifest

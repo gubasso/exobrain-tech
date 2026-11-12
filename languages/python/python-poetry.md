@@ -161,7 +161,7 @@ in
 assert python.version == pkgs.poetry.python.version;
 {
   devShells.default = pkgs.mkShell {
-    packages = [ python pkgs.poetry pkgs.pre-commit pkgs.just ];
+    packages = [ python pkgs.poetry pkgs.just ];
   };
 }
 ```

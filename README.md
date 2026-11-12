@@ -19,6 +19,18 @@ Public technical knowledge base. The KB — the library, the content — is the 
   notes and link collections carried over from the original KB main index; promote entries into the
   appropriate bucket as they mature.
 
+## Host requirements
+
+The devshell of `flake.nix` supplies every other tool. The host supplies these, and nothing checks
+for them: a command that needs a missing one fails, and you install it.
+
+- `git`
+- `prek`, the git hook runner, at the `minimum_prek_version` of `.pre-commit-config.yaml` or newer
+- `nix` and `direnv`, which load the devshell
+- `uv`, which builds the environments of the Python hooks
+- `bash`, `awk`, `sed`, `grep`, and the coreutils
+- the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`, which nix-ld supplies on NixOS
+
 ## License
 
 The knowledge content is licensed under

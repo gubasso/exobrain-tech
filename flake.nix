@@ -53,21 +53,20 @@
       devShells.${system}.default = pkgs.mkShell {
         packages = [
           # The documentation canon's own binary. It serves every delivered
-          # gate the pre-commit block wires and the offline instance check,
+          # gate the hook block wires and the offline instance check,
           # so the projection holds configuration and no scripts.
           spec-driven-docs.packages.${system}.default
           release-kit.packages.${system}.default
 
           pkgs.just                    # task runner
-          pkgs.pre-commit              # per-project git hooks
           pkgs.dprint                  # markdown formatter
-          # Node for the markdownlint-cli2 pre-commit hook. pre-commit's node
-          # language falls back to nodeenv, which downloads a generic-glibc
-          # node that cannot execute on a Nix host (no /lib64 loader); with
-          # node+npm on PATH it uses `language_version: system` instead.
+          # The runtime of the markdownlint-cli2 hook, a node hook that
+          # .pre-commit-config.yaml runs under `language_version: system`.
+          # Under `system`, prek takes the node on PATH and downloads none
+          # (https://prek.j178.dev/reference/language-support/).
           pkgs.nodejs
 
-          # A hook tool that pre-commit can build an environment for, such as
+          # A hook tool that the hook runner can build an environment for, such as
           # typos, committed, md-toc, or editorconfig-checker, is pinned in
           # .pre-commit-config.yaml and has no package here. A language
           # library never enters this shell
@@ -84,21 +83,16 @@
           # The link checker behind the `lychee-system` pre-push hook.
           pkgs.lychee
 
-          # rustup-init, which pre-commit runs to build the environment of the
-          # rust hook (ripsecrets), downloads the toolchain with curl. A clean
-          # machine has no curl of its own to lend it
-          # (project-platform:the-most-specific-native-owner-holds-each-dependency).
-          pkgs.curl
-
           # The two tools behind `knowledge-base-boundary:a-shipped-script-is-gated`.
           # Its hook is `language: system`, and `just test-gates` runs the gate
-          # against a deliberate violation outside pre-commit, so both tools
+          # against a deliberate violation outside the hook runner, so both tools
           # need a provider here.
           pkgs.shellcheck
           pkgs.shfmt
 
           # The Rust toolchain of the `exobrain` workspace in crates/, from
-          # rust-toolchain.toml. A toolchain is no language library.
+          # rust-toolchain.toml. A toolchain is no language library. prek
+          # also builds the rust hook (ripsecrets) with this cargo.
           toolchain
           # owner: devshell. The cargo subcommands that the push-stage hooks
           # and the justfile run. No hook language builds a cargo subcommand.

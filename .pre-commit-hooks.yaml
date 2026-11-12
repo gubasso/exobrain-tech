@@ -9,3 +9,9 @@
   language: pygrep
   types: [text]
   entry: '^(?!.*nix-path-ok).*(\bgetFlake\s*+(?:\(\s*+(?!\\?["''](?:git\+file:|/nix/store/))|\\?["''](?!git\+file:|/nix/store/))|(?<![\w-])path:(?!/nix/store/)[^\s`''"),\]:?\\0-9-])'  # nix-path-ok: the hook's own expression
+- id: no-hook-runner-in-flake
+  name: a flake holds no git hook runner
+  description: project-platform:the-host-supplies-the-hook-runner
+  language: pygrep
+  files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
+  entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|[^#]*?(?:\bpkgs\.(?:pre-commit|prek)(?![\w-])|\bwith\s+pkgs\s*;[^#]*[\[\s](?:pre-commit|prek)(?=[\s\]])))'

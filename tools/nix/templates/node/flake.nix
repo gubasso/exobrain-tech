@@ -18,7 +18,6 @@
           packages = [
             pkgs.nodejs_22
             pkgs.pnpm
-            pkgs.pre-commit
           ];
           # Playwright browser SYSTEM libs belong in this flake. Simplest path —
           # use the nixpkgs-provided browsers:

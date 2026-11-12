@@ -241,22 +241,31 @@ accept "shipped-scripts" "$shipped"
 # twin, so the two entries must stay one string: a twin that drifted would gate
 # this repository with an expression no consumer runs. The comparison drops the
 # trailing marker comment, which is YAML and not part of the value.
-entry_of() {
-  awk '/id: no-path-flake-reference$/ { found = 1 }
-    found && /^[[:space:]]*entry:/ {
-      sub(/^[[:space:]]*entry:[[:space:]]*/, "")
+# The same holds for every key that decides what the hook matches.
+field_of() {
+  awk -v id="$1" -v key="$2" '
+    $0 ~ "id: " id "$" { found = 1; next }
+    found && /id: / { exit }
+    found && $0 ~ "^[[:space:]]*" key ":" {
+      sub("^[[:space:]]*" key ":[[:space:]]*", "")
       sub(/[[:space:]]+#.*$/, "")
       print
       exit
-    }' "$1"
+    }' "$3"
 }
-published=$(entry_of "$root/.pre-commit-hooks.yaml")
-twin=$(entry_of "$root/.pre-commit-config.yaml")
-[ -n "$published" ] || fail "no-path-flake-reference has no published entry"
-[ "$published" = "$twin" ] ||
-  fail "no-path-flake-reference: the published entry and the local twin differ"
+same_as_twin() {
+  for key in entry files; do
+    published=$(field_of "$1" "$key" "$root/.pre-commit-hooks.yaml")
+    twin=$(field_of "$1" "$key" "$root/.pre-commit-config.yaml")
+    [ "$published" = "$twin" ] ||
+      fail "$1: the published $key and the local twin differ"
+  done
+  [ -n "$(field_of "$1" entry "$root/.pre-commit-hooks.yaml")" ] ||
+    fail "$1 has no published entry"
+}
+same_as_twin no-path-flake-reference
 
-# The negative control runs the published hook, through `pre-commit try-repo`,
+# The negative control runs the published hook, through `prek try-repo`,
 # with no local exclusion. Each must-fail line fails alone, so one hit cannot
 # hide a case that stopped matching, and the must-pass file passes whole.
 corpus=$root/.hooks/flake-reference-corpus
@@ -272,24 +281,89 @@ done < "$corpus/must-fail.txt"
 cp "$corpus/must-pass.txt" "$c/must-pass.txt"
 git -C "$c" add -A
 cd "$c"
-# A try-repo that cannot load the manifest also exits 1, so a bare exit code
-# would pass every must-fail case over a broken hook. Each verdict reads the
-# result line that pre-commit prints for the hook itself.
+# A try-repo that cannot load the manifest also exits non-zero, so a bare exit
+# code would pass every must-fail case over a broken hook. Each verdict reads
+# the result line that prek prints for the hook itself. try-repo reads the
+# working tree of $root, uncommitted changes included, through a temporary copy.
 try_hook() {
-  pre-commit try-repo "$root" no-path-flake-reference --files "$1" 2>&1
+  prek try-repo "$root" "$1" --files "$2" 2>&1
 }
 i=0
 while [ "$i" -lt "$n" ]; do
   i=$((i + 1))
-  if out=$(try_hook "case-$i.txt"); then
+  if out=$(try_hook no-path-flake-reference "case-$i.txt"); then
     fail "no-path-flake-reference accepted must-fail line $i"
   fi
   printf '%s\n' "$out" | grep -q '^- hook id: no-path-flake-reference$' ||
     fail "no-path-flake-reference did not run on must-fail line $i: $out"
 done
-out=$(try_hook must-pass.txt) ||
+out=$(try_hook no-path-flake-reference must-pass.txt) ||
   fail "no-path-flake-reference rejected the must-pass file: $out"
 printf '%s\n' "$out" | grep -q 'not a path copy\.*Passed$' ||
   fail "no-path-flake-reference did not pass the must-pass file: $out"
+
+# --- no-hook-runner-in-flake -----------------------------------------------
+#
+# Published and run through a local twin, held equal as above. The fixtures are
+# built here rather than kept in a corpus file, so no tracked file names a
+# runner in a devshell and a search of the tree for one stays empty.
+same_as_twin no-hook-runner-in-flake
+runner_hook=no-hook-runner-in-flake
+pc=pre-commit
+pk=prek
+c="$work/hook-runner"
+rm -rf "$c"
+mkdir -p "$c"
+git -C "$c" init -q
+# One case per directory, each the only line of its file, so every case fails
+# alone. The last case sits under nix/, which the hook reads beside flake.nix.
+n=0
+must_fail() {
+  n=$((n + 1))
+  f="$c/fail-$n/${2:-flake.nix}"
+  mkdir -p "$(dirname "$f")"
+  printf '%s\n' "$1" > "$f"
+}
+must_fail "          pkgs.$pc              # per-project git hooks"
+must_fail "  packages = [ pkgs.$pk ];"
+must_fail "    $pc = pkgs.$pc.override { };"
+must_fail "  shellHook = \"\${pkgs.$pk}/bin/$pk install\";"
+must_fail "            $pc"
+must_fail "            $pk # the runner"
+must_fail "  packages = with pkgs; [ just $pc ];"
+must_fail "  packages = with pkgs; [ $pk ];"
+must_fail "  packages = [ pkgs.$pk ];" nix/devshell.nix
+# The must-pass flake holds every near miss in one file.
+{
+  printf '%s\n' "# pkgs.$pc is a host tool, so this devshell lists none."
+  printf '%s\n' "  home.packages = [ pkgs.$pk ]; # hook-runner-ok: the host profile installs the runner"
+  printf '%s\n' "  packages = [ pkgs.$pc-hook-ensure-sops pkgs.just pkgs.uv ];"
+  printf '%s\n' "  packages = with pkgs; [ just uv ]; # not $pk"
+  printf '%s\n' "  shellHook = \"$pk install\";"
+  printf '%s\n' "  description = \"runs $pc on the host\";"
+} > "$c/flake.nix"
+# A file that is neither a flake nor under nix/ is not read at all.
+mkdir -p "$c/modules"
+printf '%s\n' "  home.packages = [ pkgs.$pk ];" > "$c/modules/runner.nix"
+git -C "$c" add -A
+cd "$c"
+i=0
+while [ "$i" -lt "$n" ]; do
+  i=$((i + 1))
+  f=$(git ls-files "fail-$i")
+  if out=$(try_hook "$runner_hook" "$f"); then
+    fail "$runner_hook accepted must-fail case $i ($f)"
+  fi
+  printf '%s\n' "$out" | grep -q "^- hook id: $runner_hook\$" ||
+    fail "$runner_hook did not run on must-fail case $i: $out"
+done
+out=$(try_hook "$runner_hook" flake.nix) ||
+  fail "$runner_hook rejected the must-pass flake: $out"
+printf '%s\n' "$out" | grep -q 'hook runner\.*Passed$' ||
+  fail "$runner_hook did not pass the must-pass flake: $out"
+out=$(try_hook "$runner_hook" modules/runner.nix) ||
+  fail "$runner_hook read a file outside its scope: $out"
+printf '%s\n' "$out" | grep -q 'hook runner\.*(no files to check)Skipped$' ||
+  fail "$runner_hook did not skip a file outside its scope: $out"
 
 echo "test-gates: every gate failed when it should"

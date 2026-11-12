@@ -363,7 +363,7 @@ lint-all: lint lint-complexity lint-boundaries
 # --- Dependency hygiene ---
 
 machete:
-    pre-commit run cargo-machete --all-files
+    prek run cargo-machete --all-files
 
 deny:
     cargo deny check
@@ -404,8 +404,8 @@ bench:
       pass_filenames: false
 ```
 
-pre-commit builds the `cargo-machete` hook in its own rust environment, and the `machete` recipe
-reaches it through `pre-commit run`. The `lint-boundaries` hook keeps `language: system` because no
+prek builds the `cargo-machete` hook in its own rust environment, and the `machete` recipe reaches
+it through `prek run`. The `lint-boundaries` hook keeps `language: system` because no
 upstream hook exists for a recipe of the project. The comment above its `- id:` line names the owner
 and the class, as
 [04 — Quality gates](../../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)

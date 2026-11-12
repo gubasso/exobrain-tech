@@ -37,13 +37,16 @@
 #     through its exclude, and dprint through dprint.json.
 #
 # Tool provisioning (`project-platform:the-most-specific-native-owner-holds-each-dependency`):
-#   A hook takes the environment that pre-commit builds from its pinned `rev`.
-#   A hook that keeps `language: system` carries an `# owner:` comment directly
-#   above it with its owner, class, and reason. Its tool resolves off the
-#   ambient PATH, so enter the shell (`direnv allow`, or `nix develop --command
-#   ...` when non-interactive) before running it. The devShell also supplies
-#   what pre-commit's own installers need from a clean machine: nodejs for the
-#   node hooks, curl for the rust hook.
+#   The host supplies the hook runner, prek, and `minimum_prek_version` below
+#   names the oldest one this file accepts. A hook takes the environment that
+#   prek builds from its pinned `rev`. A hook that keeps `language: system`
+#   carries an `# owner:` comment directly above it with its owner, class, and
+#   reason. Its tool resolves off the ambient PATH, so enter the shell
+#   (`direnv allow`, or `nix develop --command ...` when non-interactive)
+#   before running it. prek builds the rust hook with the cargo of the
+#   devShell toolchain and the python hooks with the uv of the host, and the
+#   devShell supplies nodejs for the node hooks
+#   (https://prek.j178.dev/reference/language-support/).
 #
 # Tooling stack (and what each owns):
 #   - pre-commit-hooks : whitespace, line endings, basic safety.
@@ -65,16 +68,18 @@
 #
 # First-run note:
 #   dprint will rewrite every .md file once. Run
-#     `pre-commit run --all-files`
+#     `prek run --all-files`
 #   and commit the result as a single "chore: dprint baseline" commit
 #   before turning hooks loose on normal work.
 
+# The oldest prek that runs this file; an older one stops with an error
+# (https://prek.j178.dev/reference/configuration/).
+minimum_prek_version: "0.5.7"
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
-# The node hooks run on the devShell nodejs. Without this line pre-commit
-# picks `system` only when it finds node and npm on PATH, and a clean-machine
-# install on 2026-11-10 picked `default` in two of three runs: nodeenv then
-# fetched an alpha node index entry and failed with "invalid literal for
-# int() with base 10: '0-alpha'".
+# The node hooks run on the devShell nodejs. Under `system`, prek takes a node
+# that it finds and downloads none
+# (https://prek.j178.dev/reference/language-support/), and a clean-machine
+# run on 2026-11-11 with prek 0.5.7 took the devShell nodejs.
 default_language_version:
   node: system
 # A hook with no `stages:` runs at commit only. A remote hook whose manifest
@@ -233,7 +238,7 @@ repos:
   # Both forms are covered: inline links [x](target) and reference-style link
   # definitions [label]: target (footnote/collapsed refs included).
   #
-  # pygrep is built into pre-commit — no external dependency, no companion file.
+  # pygrep is built into the hook runner — no external dependency, no companion file.
   - repo: local
     hooks:
       - id: no-bare-relative-links
@@ -265,7 +270,7 @@ repos:
   # A section that genuinely maps the tree gets a heading naming the knowledge it
   # carries — `## Directory domains`, saying what each part reserves — and passes.
   #
-  # pygrep is built into pre-commit — no external dependency, no devShell entry.
+  # pygrep is built into the hook runner — no external dependency, no devShell entry.
   - repo: local
     hooks:
       - id: no-source-files-frontmatter
@@ -470,6 +475,23 @@ repos:
         types: [text]
         entry: '^(?!.*nix-path-ok).*(\bgetFlake\s*+(?:\(\s*+(?!\\?["''](?:git\+file:|/nix/store/))|\\?["''](?!git\+file:|/nix/store/))|(?<![\w-])path:(?!/nix/store/)[^\s`''"),\]:?\\0-9-])'  # nix-path-ok: the hook's own expression
         exclude: '^(\.hooks/flake-reference-corpus/must-fail\.txt|CHANGELOG\.md)$'
+
+  # --- A flake holds no git hook runner (pre-commit, pygrep) ---
+  #
+  # The local twin of the hook that .pre-commit-hooks.yaml publishes
+  # (`project-platform:the-host-supplies-the-hook-runner`). The host supplies
+  # the runner, so a devshell that lists it, as a `pkgs.` attribute, as a bare
+  # item of a `with pkgs;` list, or on a line of its own, fails. A flake that
+  # installs the runner on a host marks that line `hook-runner-ok: <reason>`.
+  # .hooks/test-gates.sh holds the two entries equal and runs the published
+  # hook over fixtures that it builds at run time.
+  - repo: local
+    hooks:
+      - id: no-hook-runner-in-flake
+        name: a flake holds no git hook runner
+        language: pygrep
+        files: '(^|/)flake\.nix$|(^|/)nix/.*\.nix$'
+        entry: '^(?!\s*#)(?!.*hook-runner-ok)(?:\s*(?:pre-commit|prek)\s*(?:#.*)?$|[^#]*?(?:\bpkgs\.(?:pre-commit|prek)(?![\w-])|\bwith\s+pkgs\s*;[^#]*[\[\s](?:pre-commit|prek)(?=[\s\]])))'
 
   # --- The Rust workspace in crates/ ---
   #

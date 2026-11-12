@@ -117,26 +117,31 @@ see which library is missing and add that package (e.g. `pkgs.libz`, `pkgs.opens
 `nix-ld` needs the host to install the `nix-ld` module, which an RPM/openSUSE host lacks.
 `autoPatchelfHook` moves the wheel into Nix and breaks the split where uv owns the venv.
 
-## Git hooks (pre-commit)
+## Git hooks
 
-`pre-commit` is per-project, not a global tool. The devshell holds `pre-commit` and only the tools
-of the hooks that keep `language: system` under an exception class. pre-commit builds the
-environment of every other hook from `.pre-commit-config.yaml`
+The git hook runner, prek, is a host tool, like git. Git runs an installed hook from every shell,
+the shells without the devshell included, so the runner lives beside git. A devshell that held a
+runner written in Python would also export the Python of that runner on `PYTHONPATH`, and the
+variable would shadow the packages of a uv project. So the devshell holds no runner.
+
+The devshell holds only the tools of the hooks that keep `language: system` under an exception
+class. prek builds the environment of every other hook from `.pre-commit-config.yaml`
 ([Who builds a hook environment](../../programming/project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)).
-The devshell also holds the runtime that pre-commit needs to build a hook on a clean machine: a
-project with `node` hooks adds `pkgs.nodejs`, because the generic node that pre-commit downloads
-does not run on a host without the standard glibc loader, as on Nix. The host supplies only the
-base tools, `nix`, `direnv`, the ELF loader, and the tools that carry credentials
+It builds a Python hook with the uv of the host, a Rust hook with the cargo of the devshell, and a
+node hook with a node that it finds or downloads
+([prek language support](https://prek.j178.dev/reference/language-support/)). A project with `node`
+hooks adds `pkgs.nodejs` and names `node: system` in `default_language_version`, so prek downloads
+no node. The host supplies only the base tools, `nix`, `direnv`, `uv`, prek, the ELF loader, and
+the tools that carry credentials
 ([Who owns each dependency](../../programming/project-bootstrap/03-local-dev-environment.md#who-owns-each-dependency)).
 
-statix is a `no-hook-language` exception: upstream publishes no hook in a language for which
-pre-commit builds an environment. The devshell lists `pkgs.statix` beside `pkgs.pre-commit`, and
-the hook records that owner:
+statix is a `no-hook-language` exception: upstream publishes no hook in a language for which prek
+builds an environment. The devshell lists `pkgs.statix`, and the hook records that owner:
 
 ```yaml
 - repo: local
   hooks:
-    # owner: devshell (no-hook-language) statix has no hook in a language that pre-commit builds.
+    # owner: devshell (no-hook-language) statix has no hook in a language that prek builds.
     - id: statix
       name: statix
       entry: statix check
@@ -144,34 +149,22 @@ the hook records that owner:
       pass_filenames: false
 ```
 
-The nixpkgs `pre-commit` puts the libraries of its own Python on `PYTHONPATH` in the shell
-(`nix print-dev-env` shows a `PYTHONPATH` of python3.14 site-packages, nixos-unstable of
-2026-11-11), and that variable shadows the packages of a project venv that runs another Python. The
-shell cannot drop it: the nixpkgs `virtualenv` imports `packaging` without declaring it, so
-pre-commit fails to build a Python hook environment without the variable, with
-`ModuleNotFoundError: No module named 'packaging'`. So every command that runs in the project venv
-drops the variable itself, in its hook entry and in its recipe:
+A hook that runs in the project venv calls `uv run` with no prefix, because no runner Python reaches
+the shell:
 
 ```yaml
 # owner: pyproject.toml (project-environment) pytest runs the test suite in the uv environment.
 - id: pytest
   name: pytest
-  entry: env -u PYTHONPATH uv run --frozen pytest
+  entry: uv run --frozen pytest
   language: system
   pass_filenames: false
 ```
 
-An interactive shell keeps the variable, so a command typed there runs as
-`env -u PYTHONPATH uv run <cmd>`. Declaring `packaging` in an override of `virtualenv` would let
-the shell unset the variable, but an override of a Python package set in `flake.nix` is what
-`no-language-library-in-flake` refuses.
-
-Install the git hook once inside the shell with `pre-commit install`, which is idempotent. Make it
-automatic on shell entry with a `shellHook` running `pre-commit install`, or go fully
-Nix-native with [cachix/git-hooks.nix](https://github.com/cachix/git-hooks.nix), the same project as
-`pre-commit-hooks.nix`, which generates `.pre-commit-config.yaml` from Nix and installs the hook
-from the devShell's `shellHook`. In a sandbox that auto-activates direnv (e.g. dctl), a
-non-interactive lifecycle step must call it project-scoped: `direnv exec . pre-commit install`.
+Install the git hooks once per clone with `prek install`, from any shell. It writes a shim for each
+stage in `default_install_hook_types`. The shim records the path of the prek that wrote it and falls
+back to `prek` on `PATH` when that path is gone, so an update of the host does not break it. In a
+sandbox, a lifecycle step runs `prek install` directly, with no devshell around it.
 
 ## Maintaining the pin
 

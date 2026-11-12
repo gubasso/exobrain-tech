@@ -1,6 +1,6 @@
 ---
 digest-of: programming/project-bootstrap
-last-synced: 2026-11-10
+last-synced: 2026-11-11
 token-estimate: 900
 ---
 
@@ -36,10 +36,12 @@ with concrete tooling.
   OpenSSF Scorecard).
 - Dependency owners. Each dependency has one owner, the most specific file that declares it
   natively: the manifest of the stack (`pyproject.toml` with `uv.lock`, a PEP 723 block,
-  `Cargo.toml`, `package.json`), then `.pre-commit-config.yaml` for each hook tool that pre-commit
-  can build, then the devshell for the toolchains, `pre-commit`, the task runner, and what no owner
-  above can declare, then the host for the base tools, the ELF loader, and the credentialed tools.
-  pre-commit owns a tool that only a hook uses, a linter or a type checker included.
+  `Cargo.toml`, `package.json`), then `.pre-commit-config.yaml` for each hook tool that the hook
+  runner can build, then the devshell for the toolchains, the task runner, and what no owner above
+  can declare, then the host for the base tools, the git hook runner prek, the ELF loader, and the
+  credentialed tools. The hook configuration owns a tool that only a hook uses, a linter or a type
+  checker included. No devshell holds a hook runner. A project uses a host tool by name, with no
+  probe and no fallback, and its README lists the host requirements.
   A flake holds no language library. Python uses uv. A hook that keeps `language: system` carries
   an `# owner:` comment with one of five classes.
 - CI parity. The commit stage runs the fast checks and the push stage the costly ones; together

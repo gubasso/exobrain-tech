@@ -48,8 +48,9 @@ references it (nix-direnv keeps one under `.direnv/`).
 `nix profile` is an imperative global profile — good for **user CLIs** you always want; keep it
 lean. Anything tied to a _specific_ project belongs in that project's flake devShell, not the global
 profile: not just its language toolchain (so each repo pins its own node/python/rust version
-reproducibly, independent of what's globally installed), but also its **task runner, `pre-commit`,
-and the tools no other owner declares** (`just`, `pre-commit`, `statix`, …). Rule of thumb: if only
+reproducibly, independent of what's globally installed), but also its **task runner and the tools
+no other owner declares** (`just`, `statix`, …). The git hook runner, prek, is a host tool beside
+git, because git runs a hook from every shell. Rule of thumb: if only
 some projects need it — or it wants a project-pinned version — it goes in the project, not the
 profile. The manifest and `.pre-commit-config.yaml` own what they can declare
 ([Who owns each dependency](../../programming/project-bootstrap/03-local-dev-environment.md#who-owns-each-dependency)).

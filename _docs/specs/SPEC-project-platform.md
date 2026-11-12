@@ -11,7 +11,9 @@
   - [`project-platform:library-topics-stay-platform-neutral` — Library topics stay open](#project-platformlibrary-topics-stay-platform-neutral--library-topics-stay-open)
     - [Scenario: A portable chapter describes an access-control mode](#scenario-a-portable-chapter-describes-an-access-control-mode)
   - [`project-platform:the-most-specific-native-owner-holds-each-dependency` — The most specific native owner holds each dependency](#project-platformthe-most-specific-native-owner-holds-each-dependency--the-most-specific-native-owner-holds-each-dependency)
-    - [Scenario: A hook that pre-commit can build](#scenario-a-hook-that-pre-commit-can-build)
+    - [Scenario: A hook that prek can build](#scenario-a-hook-that-prek-can-build)
+  - [`project-platform:the-host-supplies-the-hook-runner` — The host supplies the git hook runner](#project-platformthe-host-supplies-the-hook-runner--the-host-supplies-the-git-hook-runner)
+    - [Scenario: A devshell lists the hook runner](#scenario-a-devshell-lists-the-hook-runner)
   - [`project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate](#project-platformthe-hooks-are-the-only-gate--the-git-hooks-are-the-only-gate)
     - [Scenario: A check is added outside the hooks](#scenario-a-check-is-added-outside-the-hooks)
   - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
@@ -71,31 +73,57 @@ Verify: reviewer confirms the chapter states no operating system as a universal 
 ### `project-platform:the-most-specific-native-owner-holds-each-dependency` — The most specific native owner holds each dependency
 
 The project MUST give each dependency exactly one owner, the most specific file that declares it
-natively. `.pre-commit-config.yaml` pins each hook tool for which pre-commit builds an environment,
-and it owns a tool that only a hook uses, even when the tool reads the files of this repository.
-`flake.nix` holds the toolchain, `pre-commit`, the task runner, the project tools such as `sdd`, each
-tool that no hook language can build, and each runtime that pre-commit needs to build a hook
-environment from a clean machine, such as `curl` for `rustup-init`. `flake.nix` holds no language
-library. A hook that keeps `language: system` or `script` carries an `# owner:` comment with its
-class. The host supplies only `git`, `bash`, `awk`, `sed`, `grep`, the coreutils, `nix`, `direnv`,
-`uv`, and the standard ELF loader. uv builds Python environments, so the host supplies it, and uv
+natively. `.pre-commit-config.yaml` pins each hook tool for which the hook runner builds an
+environment, and it owns a tool that only a hook uses, even when the tool reads the files of this
+repository. `flake.nix` holds the toolchain, the task runner, the project tools such as `sdd`, each
+tool that no hook language can build, and each runtime that a hook takes from the system, such as
+`nodejs` for a node hook under `language_version: system`. `flake.nix` holds no language library
+and no hook runner. A hook that keeps `language: system` or `script` carries an `# owner:` comment
+with its class. The host supplies only `git`, the hook runner `prek`, `bash`, `awk`, `sed`, `grep`,
+the coreutils, `nix`, `direnv`, `uv`, and the standard ELF loader. The project uses a host tool by
+name, as it uses `git`, and holds no probe and no fallback for one: where the host lacks it, the
+command fails, and the developer installs it. `README.md` lists these host requirements. uv builds Python environments, so the host supplies it, and uv
 owns the interpreter it installs: the devshell holds neither uv nor a Python for a uv project, which
 pins uv with `[tool.uv] required-version` and the interpreter patch with `.python-version`. The one
 Python in the flake of a uv project builds its uv2nix package: the nixpkgs interpreter of that
 patch, held equal to it by a flake check. The chapter that states the general rule is
 `programming/project-bootstrap/03-local-dev-environment.md`, "Who owns each dependency".
 
-#### Scenario: A hook that pre-commit can build
+#### Scenario: A hook that prek can build
 
-- GIVEN an empty pre-commit cache and a `PATH` that holds only the host tools
-- WHEN pre-commit builds the environment of every hook, the rust environment of the secret scanner
+- GIVEN an empty prek home and a `PATH` that holds only the host tools
+- WHEN prek builds the environment of every hook, the rust environment of the secret scanner
   included
-- THEN each managed hook builds from its pinned `rev`, and `rustup-init` finds `curl` in the devshell
+- THEN each managed hook builds from its pinned `rev`, the rust hook with the cargo of the devshell,
+  and the python hooks with the uv of the host
 
-Verify: `d="$(mktemp -d)"; env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):/usr/bin" PRE_COMMIT_HOME="$d" nix develop --command pre-commit install-hooks; rc=$?; chmod -R u+w "$d"; rm -rf "$d"; [ "$rc" -eq 0 ]`
+Verify: `d="$(mktemp -d)"; env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):$(dirname "$(command -v prek)"):$(dirname "$(command -v uv)"):/usr/bin" PREK_HOME="$d" PREK_UV_SOURCE=none nix develop --command prek prepare-hooks; rc=$?; chmod -R u+w "$d"; rm -rf "$d"; [ "$rc" -eq 0 ]`
 
 The verification rebuilds every hook environment, so it runs once for each change of `flake.nix` or
-`.pre-commit-config.yaml`, never on every check.
+`.pre-commit-config.yaml`, never on every check. `PREK_UV_SOURCE=none` stops prek from installing a uv of its own, so
+the python hooks prove the uv of the host
+([prek language support](https://prek.j178.dev/reference/language-support/)).
+
+### `project-platform:the-host-supplies-the-hook-runner` — The host supplies the git hook runner
+
+The host MUST supply the git hook runner, `prek`, and `flake.nix` MUST NOT hold one. Git runs an
+installed hook from every shell, with or without the devshell, so the runner belongs beside git. A
+runner in a devshell also exports its own Python on `PYTHONPATH`, which shadows the packages of a uv
+project. `.pre-commit-config.yaml` names the oldest runner that the project accepts with
+`minimum_prek_version`. A line of a flake that installs the runner on a host carries
+`hook-runner-ok: <reason>`. The hook `no-hook-runner-in-flake`, which this repository publishes in
+`.pre-commit-hooks.yaml`, enforces the rule line by line in `flake.nix` and under `nix/`. It reads
+one line at a time, so it cannot see the runner among other items on one line of a `with pkgs;`
+list that spans several lines. The chapter that states the general rule is
+`tools/nix/02-per-project-devshell.md`, "Git hooks".
+
+#### Scenario: A devshell lists the hook runner
+
+- GIVEN a `flake.nix` whose devshell lists the runner beside the task runner
+- WHEN the commit stage runs
+- THEN the hook refuses the line, because the host supplies the runner
+
+Verify: `prek run no-hook-runner-in-flake --all-files`
 
 ### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 
@@ -106,9 +134,10 @@ rerun a commit-stage hook. A branch reaches the trunk through `rk integrate` and
 checkout that ran both stages, so a change that passed its hooks is the change that lands. CI MUST
 hold only three kinds of workflow:
 
-- The validation workflow, `ci.yml`. Every `run:` step of its job `test` is one `pre-commit run`
-  call of one hook stage, alone on its line and bare or through `nix develop --command`, so a push
-  that passed its hooks passes `test`. A hook skip list goes in the step's `env:`.
+- The validation workflow, `ci.yml`. Every `run:` step of its job `test` is one `prek run` call of
+  one hook stage, alone on its line and bare or through `nix develop --command`, so a push that
+  passed its hooks passes `test`. A `uses:` step pinned by commit SHA installs prek. A hook skip
+  list goes in the step's `env:`.
 - Beside `test`, `ci.yml` MAY hold the `dist-plan` and `dist-build` jobs that `rk binding rust`
   serves, as `test` needs, and no other job. The `dist-plan` hook runs the same plan at push.
   `dist build` is the one check that only CI runs. It builds the release archives that users
@@ -128,7 +157,7 @@ The chapter that states the general rule is `programming/project-bootstrap/04-qu
 - WHEN a contributor pushes a change that the check rejects
 - THEN the push passed and CI failed, so the check moves into the commit or the push stage
 
-Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) awk '/^  test:/{t=1;next} /^  [^ #]/{t=0} t' "$f" | grep -E '^[[:space:]]*(- )?run:' | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?pre-commit run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1; awk '/^jobs:/{j=1;next} /^[^ #]/{j=0} j && /^  [A-Za-z0-9_-]+:/' "$f" | grep -Evq '^  (test|dist-plan|dist-build):' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; just lint`
+Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) awk '/^  test:/{t=1;next} /^  [^ #]/{t=0} t' "$f" | grep -E '^[[:space:]]*(- )?run:' | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?prek run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1; awk '/^jobs:/{j=1;next} /^[^ #]/{j=0} j && /^  [A-Za-z0-9_-]+:/' "$f" | grep -Evq '^  (test|dist-plan|dist-build):' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 
@@ -168,4 +197,4 @@ that a program assembles from parts. The chapter that states the general rule is
 - WHEN a hook evaluates the flake of the worktree through `builtins.getFlake` on its bare path
 - THEN the hook refuses the line, because each run would copy `target/` into the store again
 
-Verify: `pre-commit run no-path-flake-reference --all-files`
+Verify: `prek run no-path-flake-reference --all-files`

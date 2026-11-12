@@ -37,7 +37,7 @@ three files to a repo.
 6. **Install deps inside the shell** (the language manager still owns them):
    ```bash
    uv sync               # writes uv.lock; or: pnpm install / cargo build
-   pre-commit install
+   prek install          # the host prek; writes the git hook shims once per clone
    ```
 
 7. **Drop non-Nix provisioning**: delete any `mise.toml` / `.tool-versions`, drop `mise install` /

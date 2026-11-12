@@ -50,7 +50,7 @@ body is one ordered list.
 - WHEN a reader has to read the prose to find the command to run
 - THEN the gate rejects it, and the paragraphs become numbered steps
 
-Verify: `pre-commit run guide-recipe-shape --all-files`
+Verify: `prek run guide-recipe-shape --all-files`
 
 ### `kb-authoring:a-step-is-one-action` — A step is one action
 
@@ -88,7 +88,7 @@ the step.
 - WHEN each hook becomes a numbered step of its own
 - THEN the list stops reading as the sequence of the job, and the gate rejects the flat bullets
 
-Verify: `pre-commit run guide-recipe-shape --all-files`
+Verify: `prek run guide-recipe-shape --all-files`
 
 ### `kb-authoring:a-step-shows-its-output` — A step shows its output
 
@@ -151,7 +151,7 @@ A document MUST NOT carry an enumeration whose objective is to mirror what is on
 - WHEN a digest adds a `source-files:` frontmatter key, or a section headed `Source map`
 - THEN the change is rejected, while a list whose entries carry their own payload passes
 
-Verify: `pre-commit run no-source-files-frontmatter -a && pre-commit run no-source-map-section -a`
+Verify: `prek run no-source-files-frontmatter -a && prek run no-source-map-section -a`
 
 ### `kb-authoring:a-relative-link-is-explicit` — A relative link carries an explicit path
 
@@ -163,7 +163,7 @@ A relative link MUST open with `./`, `../`, or a multi-segment path.
 - WHEN a document links to one of them by basename alone
 - THEN the commit fails, because neither a reader nor an LSP can tell which file is meant
 
-Verify: `pre-commit run no-bare-relative-links -a && pre-commit run no-bare-relative-link-defs -a`
+Verify: `prek run no-bare-relative-links -a && prek run no-bare-relative-link-defs -a`
 
 ## Unenforced
 

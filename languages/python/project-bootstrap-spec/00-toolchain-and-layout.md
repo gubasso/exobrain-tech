@@ -90,10 +90,9 @@ another patch. When nixpkgs and uv disagree on the newest patch, pin the patch t
 Nix form is in
 [05 — Package a uv project](../../../tools/nix/05-package-a-uv-project.md#the-interpreter).
 
-`uv run` syncs `.venv` before each command, so a recipe, a hook, and CI need no activation. In a
-Nix devshell, each one runs `env -u PYTHONPATH uv run`, because the nixpkgs pre-commit exports a
-`PYTHONPATH` that shadows the venv
-([Git hooks (pre-commit)](../../../tools/nix/02-per-project-devshell.md#git-hooks-pre-commit)). For an
+`uv run` syncs `.venv` before each command, so a recipe, a hook, and CI need no activation. The
+host supplies the git hook runner, so a Nix devshell exports no runner Python that would shadow
+the venv ([Git hooks](../../../tools/nix/02-per-project-devshell.md#git-hooks)). For an
 interactive shell, direnv's `layout uv` syncs `.venv` with `--frozen`, sets `VIRTUAL_ENV`, and puts
 `.venv/bin` on `PATH`. A project needs no `shellHook`, no `UV_PROJECT_ENVIRONMENT`, and no
 `UV_PYTHON`, because uv finds the project root and uses `.venv` by default. CI installs uv as
