@@ -1,6 +1,6 @@
 {
   "schema_version": 12,
-  "rk_version": "0.9.8",
+  "rk_version": "0.9.12",
   "origin": "init",
   "landed_at": "2026-11-10T03:24:48Z",
   "profile": {
@@ -49,7 +49,7 @@
     {
       "destination": ".pre-commit-config.yaml",
       "kind": "rendered",
-      "sha256": "2e49622147559b92430461a04a1b18a6caa50367b7c294294002db06ddd350d7",
+      "sha256": "83551b7f87994cb8cc15aff7be48d2688eac330df67c8b509045692601b35419",
       "placement": "region"
     },
     {
@@ -71,7 +71,7 @@
   ],
   "pins": {
     "attest": "4",
-    "cargo-dist": "0.32.0",
+    "cargo-dist": "0.34.0",
     "checkout": "4",
     "create-github-app-token": "3",
     "dist-checkout": "6",

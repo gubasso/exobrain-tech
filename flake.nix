@@ -23,7 +23,7 @@
     # the trunk. The same tool-input reading as spec-driven-docs applies, and
     # `rk self-depend sync` in .envrc moves the tag and the lock together.
     release-kit = {
-      url = "github:gubasso/release-kit/v0.9.8";
+      url = "github:gubasso/release-kit/v0.9.12";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

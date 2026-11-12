@@ -64,3 +64,4 @@ merge_access_level = 40 # F: floor thirty
 [security]
 contact = "" # P: one line naming who receives a report when the forge channel is unavailable; empty keeps the forge's own wording
 response = "best-effort" # P: the acknowledgment window the policy promises: best-effort, 1 day, <n> days, 1 business day, or <n> business days
+scope = "" # P: one paragraph naming what the project does not own and where to report it instead; empty renders nothing

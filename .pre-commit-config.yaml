@@ -85,13 +85,15 @@ default_stages: [pre-commit]
 
 repos:
 # BEGIN release-kit
-# The release convention's hooks. Install every stage they run at:
-# pre-commit install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
+# The release convention's hooks. Install every stage they run at, with
+# the hook runner on PATH, prek or pre-commit, which take the same flags:
+# prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
 # A CI sweep needs no SKIP here: no hook in this block refuses a trunk
 # checkout. Set one where this project classifies a check of its own
 # local-only, naming that hook's id.
 # rk integrate runs this project's pre-integrate suite as
-# `pre-commit run --hook-stage manual --all-files`. Assign to the manual
+# `prek run --hook-stage manual --all-files`, or as `pre-commit run` with
+# the same arguments where prek is not on PATH. Assign to the manual
 # stage every check that must pass before work reaches the trunk, and have
 # continuous integration invoke the same stages: a check that runs on one
 # side of the boundary alone guards one side alone.
