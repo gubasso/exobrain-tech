@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 use semver::VersionReq;
-use serde::Deserialize;
+use toml::{Table, Value};
 
 /// The name of the file.
 pub const FILE_NAME: &str = "host-requirements.toml";
@@ -60,21 +60,6 @@ pub struct Manifest {
     pub tools: BTreeMap<String, Tool>,
 }
 
-#[derive(Deserialize)]
-#[serde(deny_unknown_fields)]
-struct RawFile {
-    schema: i64,
-    #[serde(default)]
-    tools: BTreeMap<String, toml::Value>,
-}
-
-#[derive(Deserialize)]
-#[serde(deny_unknown_fields)]
-struct RawTool {
-    version: Option<String>,
-    version_cmd: Option<String>,
-}
-
 /// The first `host-requirements.toml` in `start` or in one of its parent
 /// folders.
 #[must_use]
@@ -87,33 +72,60 @@ pub fn find(start: &Path) -> Option<PathBuf> {
 
 /// Parse the text of the file at `path`.
 ///
+/// The TOML syntax comes first, because a syntax error leaves nothing to
+/// read. Then every root key, the schema, and each field of each tool is
+/// judged on its own, so one run names every problem.
+///
 /// # Errors
 ///
 /// Every problem of the file, one line each, each naming the file, the
 /// tool where there is one, and the reason.
 pub fn parse(path: &Path, text: &str) -> Result<Manifest, Vec<String>> {
     let shown = path.display();
-    let raw: RawFile =
+    let root: Table =
         toml::from_str(text).map_err(|e| vec![format!("{shown}: {}", one_line(&e, text))])?;
     let mut problems = Vec::new();
-    if raw.schema != SCHEMA {
+    for key in root
+        .keys()
+        .filter(|k| !matches!(k.as_str(), "schema" | "tools"))
+    {
         problems.push(format!(
-            "{shown}: unknown schema {}; this exobrain reads schema {SCHEMA}",
-            raw.schema
+            "{shown}: unknown key {}; expected `schema` or `tools`",
+            quoted(key)
         ));
     }
+    match root.get("schema") {
+        None => problems.push(format!("{shown}: missing key `schema`")),
+        Some(Value::Integer(SCHEMA)) => {}
+        Some(Value::Integer(other)) => problems.push(format!(
+            "{shown}: unknown schema {other}; this exobrain reads schema {SCHEMA}"
+        )),
+        Some(other) => problems.push(format!(
+            "{shown}: `schema` is a {}, not an integer",
+            other.type_str()
+        )),
+    }
     let mut tools = BTreeMap::new();
-    for (name, value) in raw.tools {
-        match tool(&name, value) {
-            Ok(tool) => {
-                tools.insert(name, tool);
+    match root.get("tools") {
+        None => {}
+        Some(Value::Table(table)) => {
+            for (name, value) in table {
+                match tool(name, value) {
+                    Ok(tool) => {
+                        tools.insert(name.clone(), tool);
+                    }
+                    Err(reasons) => problems.extend(
+                        reasons
+                            .into_iter()
+                            .map(|reason| format!("{shown}: tool {}: {reason}", shown_name(name))),
+                    ),
+                }
             }
-            Err(reasons) => problems.extend(
-                reasons
-                    .into_iter()
-                    .map(|reason| format!("{shown}: tool {name}: {reason}")),
-            ),
         }
+        Some(other) => problems.push(format!(
+            "{shown}: `tools` is a {}, not a table",
+            other.type_str()
+        )),
     }
     if problems.is_empty() {
         Ok(Manifest {
@@ -125,9 +137,39 @@ pub fn parse(path: &Path, text: &str) -> Result<Manifest, Vec<String>> {
     }
 }
 
-/// A TOML error on one line: its message, then its line.
+/// A value of the file in double quotes, with every control character
+/// escaped, so it cannot break a line.
+fn quoted(value: &str) -> String {
+    format!("{value:?}")
+}
+
+/// A tool name as a message shows it: bare when it is a plain command
+/// name, else quoted.
+fn shown_name(name: &str) -> String {
+    if plain_name(name) {
+        name.to_string()
+    } else {
+        quoted(name)
+    }
+}
+
+/// A plain command name: not empty, with no whitespace, no control
+/// character, and no `/`.
+fn plain_name(name: &str) -> bool {
+    !name.is_empty()
+        && !name
+            .chars()
+            .any(|c| c.is_whitespace() || c.is_control() || c == '/')
+}
+
+/// A TOML error on one line: its message, folded, then its line.
 fn one_line(error: &toml::de::Error, text: &str) -> String {
-    let message = error.message().trim_end().trim_end_matches('.');
+    let message = error
+        .message()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    let message = message.trim_end_matches('.');
     error.span().map_or_else(
         || message.to_string(),
         |span| {
@@ -140,31 +182,65 @@ fn one_line(error: &toml::de::Error, text: &str) -> String {
     )
 }
 
-fn tool(name: &str, value: toml::Value) -> Result<Tool, Vec<String>> {
-    let mut reasons = Vec::new();
-    if name.is_empty() || name.contains(['/', '\0']) || name.trim() != name {
-        reasons.push("the name is not a plain command name".to_string());
+/// A string field of a tool, or the reason it is not one.
+fn string_field<'v>(table: &'v Table, key: &str) -> Result<Option<&'v str>, String> {
+    match table.get(key) {
+        None => Ok(None),
+        Some(Value::String(text)) => Ok(Some(text)),
+        Some(other) => Err(format!("`{key}` is a {}, not a string", other.type_str())),
     }
-    let raw = match RawTool::deserialize(value) {
-        Ok(raw) => raw,
-        Err(e) => {
-            reasons.push(e.message().trim_end_matches('.').to_string());
-            return Err(reasons);
+}
+
+fn tool(name: &str, value: &Value) -> Result<Tool, Vec<String>> {
+    let mut reasons = Vec::new();
+    if !plain_name(name) {
+        reasons.push(
+            "the name is not a plain command name (no whitespace, control character, or /)"
+                .to_string(),
+        );
+    }
+    let Value::Table(table) = value else {
+        reasons.push(format!("is a {}, not a table", value.type_str()));
+        return Err(reasons);
+    };
+    for key in table
+        .keys()
+        .filter(|k| !matches!(k.as_str(), "version" | "version_cmd"))
+    {
+        reasons.push(format!(
+            "unknown key {}; expected `version` or `version_cmd`",
+            quoted(key)
+        ));
+    }
+    let version_cmd = match string_field(table, "version_cmd") {
+        Ok(Some("")) => {
+            reasons.push("version_cmd is empty".to_string());
+            String::new()
+        }
+        Ok(Some(cmd)) if cmd.chars().any(char::is_control) => {
+            reasons.push(format!(
+                "version_cmd {} holds a control character",
+                quoted(cmd)
+            ));
+            String::new()
+        }
+        Ok(cmd) => cmd.unwrap_or(DEFAULT_VERSION_CMD).to_string(),
+        Err(reason) => {
+            reasons.push(reason);
+            String::new()
         }
     };
-    let version_cmd = raw
-        .version_cmd
-        .unwrap_or_else(|| DEFAULT_VERSION_CMD.to_string());
-    if version_cmd.is_empty() {
-        reasons.push("version_cmd is empty".to_string());
-    }
-    let requirement = raw
-        .version
-        .map_or(Ok(Requirement::Presence), |text| requirement(&text))
-        .unwrap_or_else(|reason| {
+    let requirement = match string_field(table, "version") {
+        Ok(None) => Requirement::Presence,
+        Ok(Some(text)) => requirement(text).unwrap_or_else(|reason| {
             reasons.push(reason);
             Requirement::Presence
-        });
+        }),
+        Err(reason) => {
+            reasons.push(reason);
+            Requirement::Presence
+        }
+    };
     if reasons.is_empty() {
         Ok(Tool {
             name: name.to_string(),
@@ -188,11 +264,13 @@ pub fn requirement(text: &str) -> Result<Requirement, String> {
     }
     for comparator in text.split(',').map(str::trim) {
         if comparator.is_empty() {
-            return Err(format!("version \"{text}\" has an empty comparator"));
+            return Err(format!("version {} has an empty comparator", quoted(text)));
         }
         if !OPERATORS.iter().any(|op| comparator.starts_with(op)) {
             return Err(format!(
-                "version \"{text}\": comparator \"{comparator}\" has no operator; {}",
+                "version {}: comparator {} has no operator; {}",
+                quoted(text),
+                quoted(comparator),
                 "write one of >=, >, <=, <, =, ~, ^, or the whole value \"*\""
             ));
         }
@@ -202,7 +280,7 @@ pub fn requirement(text: &str) -> Result<Requirement, String> {
             text: text.to_string(),
             req,
         })
-        .map_err(|e| format!("version \"{text}\" is not a Cargo requirement: {e}"))
+        .map_err(|e| format!("version {} is not a Cargo requirement: {e}", quoted(text)))
 }
 
 #[cfg(test)]

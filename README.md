@@ -1,6 +1,6 @@
 # Exobrain Tech
 
-Public technical knowledge base. The KB — the library, the content — is the knowledge product and lives in the top-level topic buckets. `crates/` holds the programs the repository ships to the projects that follow its rules, starting with the `exobrain` CLI. `_docs/` holds repository governance and metadata about both, not the product itself.
+This repository is a public technical knowledge base. The KB is the library, the content itself. It is the knowledge product, and it lives in the top-level topic buckets. `crates/` holds the programs that the repository ships to the projects that follow its rules, starting with the `exobrain` CLI. `_docs/` holds the repository governance and the metadata about both. It is not the product itself.
 
 ## KB Index
 
@@ -16,17 +16,17 @@ Public technical knowledge base. The KB — the library, the content — is the 
 ## Uncategorized Notes
 
 - [workflows/general-notes.md](workflows/general-notes.md) - staging area for uncategorized general
-  notes and link collections carried over from the original KB main index; promote entries into the
-  appropriate bucket as they mature.
+  notes and link collections from the original main index of the KB. Promote each entry into the
+  right bucket when it matures.
 
 ## Host requirements
 
 The devshell of `flake.nix` supplies every other tool. [`host-requirements.toml`](./host-requirements.toml)
 lists each host tool that a recipe, a hook, or a script calls. The host also supplies the coreutils
-and the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`, which nix-ld supplies on NixOS.
+and the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`. On NixOS, nix-ld supplies the loader.
 
 ## License
 
-The knowledge content is licensed under
-[Creative Commons Attribution 4.0 International](LICENSE) (CC BY 4.0), and the software under
-`crates/` under the [MIT License](LICENSE-MIT). Copyright 2026 Gustavo Basso.
+The [Creative Commons Attribution 4.0 International](LICENSE) license (CC BY 4.0) covers the
+knowledge content. The [MIT License](LICENSE-MIT) covers the software under `crates/`. Copyright
+2026 Gustavo Basso.

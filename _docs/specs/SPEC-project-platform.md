@@ -27,10 +27,14 @@
 
 ## Purpose
 
-Rules governing which systems this checkout's toolchain supports, where its tools come from, what its
-git hooks run, and the boundary between those choices and the knowledge the library
-publishes. They bind development and verification here. They do not narrow what a chapter may be
-about.
+These rules govern four choices of this checkout:
+
+- the systems that its toolchain supports
+- where its tools come from
+- what its git hooks run
+- the boundary between those choices and the knowledge that the library publishes
+
+They bind development and verification here. They do not narrow what a chapter can be about.
 
 ## Requirements
 
@@ -48,8 +52,9 @@ Verify: `just test-one-system`
 
 ### `project-platform:every-system-has-a-native-check` — Every supported system has a native required check
 
-The project MUST run its required check, the commit and push hook stages, natively on each system it
-advertises, and MUST NOT advertise a system no check exercises.
+The project MUST run its required check natively on each system that it advertises. The required
+check is the commit and push hook stages. The project MUST NOT advertise a system that no check
+exercises.
 
 #### Scenario: A system is advertised with no host behind it
 
@@ -76,19 +81,38 @@ Verify: reviewer confirms the chapter states no operating system as a universal 
 
 The project MUST give each dependency exactly one owner, the most specific file that declares it
 natively. `.pre-commit-config.yaml` pins each hook tool for which the hook runner builds an
-environment, and it owns a tool that only a hook uses, even when the tool reads the files of this
-repository. `flake.nix` holds the toolchain, the task runner, the project tools such as `sdd`, each
-tool that no hook language can build, and each runtime that a hook takes from the system, such as
-`nodejs` for a node hook under `language_version: system`. `flake.nix` holds no language library
-and no hook runner. A hook that keeps `language: system` or `script` carries an `# owner:` comment
-with its class. The host supplies only `git`, the hook runner `prek`, `bash`, `awk`, `sed`, `grep`,
-the coreutils, `nix`, `direnv`, `uv`, and the standard ELF loader. The project uses a host tool by
-name, as it uses `git`, and lists it in `host-requirements.toml`
-(`project-platform:host-requirements-list-the-host-tools`). uv builds Python environments, so the host supplies it, and uv
-owns the interpreter it installs: the devshell holds neither uv nor a Python for a uv project, which
-pins uv with `[tool.uv] required-version` and the interpreter patch with `.python-version`. The one
-Python in the flake of a uv project builds its uv2nix package: the nixpkgs interpreter of that
-patch, held equal to it by a flake check. The chapter that states the general rule is
+environment. It owns a tool that only a hook uses, even when the tool reads the files of this
+repository.
+
+`flake.nix` holds these items:
+
+- the toolchain
+- the task runner
+- the project tools, such as `sdd`
+- each tool that no hook language can build
+- each runtime that a hook takes from the system, such as `nodejs` for a node hook under
+  `language_version: system`
+
+`flake.nix` holds no language library and no hook runner. A hook that keeps `language: system` or
+`script` carries an `# owner:` comment with its class.
+
+The host supplies only these tools:
+
+- `git`, `bash`, `awk`, `sed`, `grep`, and the coreutils
+- the hook runner `prek`
+- `nix`, `direnv`, and `uv`
+- the standard ELF loader
+
+The project uses a host tool by name, as it uses `git`, and lists it in `host-requirements.toml`
+(`project-platform:host-requirements-list-the-host-tools`).
+
+uv builds Python environments, so the host supplies it. uv owns the interpreter that it installs.
+The devshell holds neither uv nor a Python for a uv project. Such a project pins uv with
+`[tool.uv] required-version` and the interpreter patch with `.python-version`. The one Python in
+the flake of a uv project builds its uv2nix package. That Python is the nixpkgs interpreter of the
+pinned patch, and a flake check holds the two equal.
+
+The chapter that states the general rule is
 `programming/project-bootstrap/03-local-dev-environment.md`, "Who owns each dependency".
 
 #### Scenario: A hook that prek can build
@@ -101,22 +125,24 @@ patch, held equal to it by a flake check. The chapter that states the general ru
 
 Verify: `d="$(mktemp -d)"; env -i HOME="$HOME" NIX_SSL_CERT_FILE="$NIX_SSL_CERT_FILE" PATH="$(dirname "$(command -v nix)"):$(dirname "$(command -v prek)"):$(dirname "$(command -v uv)"):/usr/bin" PREK_HOME="$d" PREK_UV_SOURCE=none nix develop --command prek prepare-hooks; rc=$?; chmod -R u+w "$d"; rm -rf "$d"; [ "$rc" -eq 0 ]`
 
-The verification rebuilds every hook environment, so it runs once for each change of `flake.nix` or
-`.pre-commit-config.yaml`, never on every check. `PREK_UV_SOURCE=none` stops prek from installing a uv of its own, so
-the python hooks prove the uv of the host
+The verification rebuilds every hook environment. It therefore runs once for each change of
+`flake.nix` or `.pre-commit-config.yaml`, never on every check. `PREK_UV_SOURCE=none` stops prek
+from installing a uv of its own, so the python hooks prove the uv of the host
 ([prek language support](https://prek.j178.dev/reference/language-support/)).
 
 ### `project-platform:the-host-supplies-the-hook-runner` — The host supplies the git hook runner
 
 The host MUST supply the git hook runner, `prek`, and `flake.nix` MUST NOT hold one. Git runs an
-installed hook from every shell, with or without the devshell, so the runner belongs beside git. A
-runner written in Python, placed in a devshell, also exports its own Python on `PYTHONPATH`, which
-shadows the packages of a uv project. `.pre-commit-config.yaml` names the oldest runner that the project accepts with
-`minimum_prek_version`. A line of a flake that installs the runner on a host carries
-`hook-runner-ok: <reason>`. The hook `no-hook-runner-in-flake`, which this repository publishes in
-`.pre-commit-hooks.yaml`, enforces the rule line by line in `flake.nix` and under `nix/`. It reads
-one line at a time, so it cannot see the runner among other items on one line of a `with pkgs;`
-list that spans several lines. The chapter that states the general rule is
+installed hook from every shell, with or without the devshell, so the runner belongs beside git. In
+a devshell, a runner written in Python also exports its own Python on `PYTHONPATH`. That Python
+shadows the packages of a uv project. `.pre-commit-config.yaml` names the oldest runner that the
+project accepts with `minimum_prek_version`.
+
+A line of a flake that installs the runner on a host carries `hook-runner-ok: <reason>`. The hook
+`no-hook-runner-in-flake`, which this repository publishes in `.pre-commit-hooks.yaml`, enforces
+the rule line by line in `flake.nix` and under `nix/`. It reads one line at a time. A `with pkgs;`
+list can span several lines and hold the runner among other items on one line. The hook cannot see
+the runner there. The chapter that states the general rule is
 `tools/nix/02-per-project-devshell.md`, "Git hooks".
 
 #### Scenario: A devshell lists the hook runner
@@ -129,33 +155,45 @@ Verify: `prek run no-hook-runner-in-flake --all-files`
 
 ### `project-platform:host-requirements-list-the-host-tools` — host-requirements.toml lists the host tools
 
-The project MUST list each host tool that its `justfile`, `Makefile`, git hooks, and scripts call
-once in `host-requirements.toml` at its root, and MUST check a tool with `exobrain host-check` where
-it uses one. `SPEC-cli.md` owns the format of the file and the behavior of the checker. `version` is
-a Cargo requirement with an explicit operator. A tool that enforces its own version from its own
-configuration, such as prek with `minimum_prek_version`, takes `version = "*"`, and the checker
-then checks only its presence. The file lists no tool that a manifest, `.pre-commit-config.yaml`,
-or the devshell owns.
+The project MUST list each host tool that these callers use, once, in `host-requirements.toml` at
+its root:
 
-A call site names the tools that it needs. A `justfile` checks the tools of every recipe once, in
-a top-level assignment such as `_host := shell("exobrain host-check git wt")`, and a recipe or a
-script that alone uses a tool checks it in its first line. A bare `exobrain host-check` checks every
-tool of the file, so it stands only where every recipe needs every listed tool. A `Makefile` checks
-in the first line of each dev target that needs the tool, such as `lint`, `test`, or `check`, and
-never in a `$(shell ...)` at parse time or in `all`, `install`, or a build target, because a package
-build runs the same file where `exobrain` is absent. A git hook needs no check, because prek names a
-missing executable. Nothing checks when a shell enters the folder, no check picks another tool or
-falls back, and where a tool is missing, the developer installs it. `README.md` links the file and
-repeats none of it. The hook `host-requirements`, which this repository publishes in
-`.pre-commit-hooks.yaml`, validates the file each time it changes.
+- its `justfile`
+- its `Makefile`
+- its git hooks
+- its scripts
+
+The project MUST check a tool with `exobrain host-check` where it uses one. `SPEC-cli.md` owns the
+format of the file and the behavior of the checker. `version` is a Cargo requirement with an
+explicit operator. A tool that enforces its own version from its own configuration takes
+`version = "*"`, such as prek with `minimum_prek_version`. The checker then checks only its
+presence. The file lists no tool that a manifest, `.pre-commit-config.yaml`, or the devshell owns.
+
+A call site names the tools that it needs. A `justfile` checks the tools of every recipe once, in a
+top-level assignment such as `_host := shell("exobrain host-check git wt")`. A recipe or a script
+that alone uses a tool checks it in its first line. A bare `exobrain host-check` checks every tool
+of the file, so it stands only where every recipe needs every listed tool.
+
+A `Makefile` checks in the first line of each dev target that needs the tool, such as `lint`,
+`test`, or `check`. A package build runs the same file where `exobrain` is absent. The `Makefile`
+therefore never checks in a `$(shell ...)` at parse time, or in `all`, `install`, or a build target.
+A git hook needs no check, because prek names a missing executable.
+
+Nothing checks when a shell enters the folder. No check picks another tool or falls back. Where a
+tool is missing, the developer installs it. `README.md` links the file and repeats none of it. The
+hook `host-requirements`, which this repository publishes in `.pre-commit-hooks.yaml`, validates
+the file each time it changes.
 
 A project without the exobrain-tech flake input checks natively in its `justfile` with `require()`
-and `semver_matches()`, which read the requirement strings unchanged. It cannot run the hook, and
-just halts on a malformed requirement at the first check that reads it. A project with no call site
-lists its tools with no `version`, because no check enforces one. This repository is such a
-project: its checker is its own build, which a clean clone lacks until `cargo build`. A shipped
-application is outside this rule: it checks the tools that it needs at runtime in its own code, at
-the start of a command, with the list held in that code. The chapter that states the general rule
+and `semver_matches()`. These functions read the requirement strings unchanged. Such a project
+cannot run the hook, and just halts on a malformed requirement at the first check that reads it.
+
+A project with no call site lists its tools with no `version`, because no check enforces one. This
+repository is such a project. Its checker is its own build, which a clean clone lacks until
+`cargo build`.
+
+A shipped application is outside this rule. It checks the tools that it needs at runtime in its own
+code, at the start of a command. That code holds the list. The chapter that states the general rule
 is `programming/project-bootstrap/03-local-dev-environment.md`, "Host requirements".
 
 #### Scenario: A recipe needs a tool that the host lacks
@@ -170,24 +208,26 @@ Verify: `cargo run -q -p exobrain -- host-check --parse-only`
 
 ### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 
-The project MUST run every check in its commit stage or its push stage, each check in exactly one of
-them, except `dist build`, which only CI runs. A fast check on the staged files runs at commit, and
-a costly check, such as a flake evaluation or the link check, runs at push. The push stage MUST NOT
-rerun a commit-stage hook. A branch reaches the trunk through `rk integrate` and a push from a
-checkout that ran both stages, so a change that passed its hooks is the change that lands. CI MUST
-hold only three kinds of workflow:
+The project MUST run every check in exactly one of its hook stages, the commit stage or the push
+stage. The one exception is `dist build`, which only CI runs. A fast check on the staged files runs
+at commit. A costly check, such as a flake evaluation or the link check, runs at push. The push
+stage MUST NOT rerun a commit-stage hook.
+
+A branch reaches the trunk through `rk integrate` and a push from a checkout that ran both stages.
+The change that lands is therefore the change that passed its hooks. CI MUST hold only three kinds
+of workflow:
 
 - The validation workflow, `ci.yml`. Every `run:` step of its job `test` is one `prek run` call of
-  one hook stage, alone on its line and bare or through `nix develop --command`, so a push that
-  passed its hooks passes `test`. A `uses:` step pinned by commit SHA installs prek. A hook skip
-  list goes in the step's `env:`.
+  one hook stage. The call stands alone on its line, bare or through `nix develop --command`. A push
+  that passed its hooks therefore passes `test`. A `uses:` step pinned by commit SHA installs prek.
+  A hook skip list goes in the step's `env:`.
 - Beside `test`, `ci.yml` MAY hold the `dist-plan` and `dist-build` jobs that `rk binding rust`
   serves, as `test` needs, and no other job. The `dist-plan` hook runs the same plan at push.
   `dist build` is the one check that only CI runs. It builds the release archives that users
-  download, and rk judges from the workflow alone that every release target builds before a
-  merge. The operator keeps this costly build out of the local hooks.
-- The release workflows, `release-plz.yml` and `release.yml`, which create tags, releases, and
-  artifacts and check nothing the hooks do not check.
+  download. From the workflow alone, rk judges that every release target builds before a merge.
+  The operator keeps this costly build out of the local hooks.
+- The release workflows, `release-plz.yml` and `release.yml`. They create tags, releases, and
+  artifacts, and they check nothing that the hooks do not check.
 - The pull-request checks, `pr-commits.yml`, which judge what only a pull request has. No push
   starts them.
 
@@ -204,13 +244,21 @@ Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 
-The project MUST exclude every file a tool generates from every hook that rewrites or judges it, in
-the tool's own configuration where the tool has one, and MUST keep it under the hooks that only read
-it. The generated files are `flake.lock` (nix), `.release-kit/manifest.json`,
-`.github/workflows/release-plz.yml`, and `.github/workflows/pr-commits.yml` (rk),
-`.spec-driven-docs/manifest.json` and `_docs/.markdownlint-cli2.jsonc` (sdd), `Cargo.lock`
-(cargo), `CHANGELOG.md` (release-plz), and `.github/workflows/release.yml` (cargo-dist). The chapter that states the general rule is
-`programming/project-bootstrap/04-quality-gates.md`, "Generated files".
+The project MUST exclude every file that a tool generates from every hook that rewrites or judges
+it. It MUST place that exclusion in the configuration of the tool, where the tool has one. The
+project MUST keep the file under the hooks that only read it. These are the generated files, each
+with its generator:
+
+- `flake.lock` (nix)
+- `.release-kit/manifest.json`, `.github/workflows/release-plz.yml`, and
+  `.github/workflows/pr-commits.yml` (rk)
+- `.spec-driven-docs/manifest.json` and `_docs/.markdownlint-cli2.jsonc` (sdd)
+- `Cargo.lock` (cargo)
+- `CHANGELOG.md` (release-plz)
+- `.github/workflows/release.yml` (cargo-dist)
+
+The chapter that states the general rule is `programming/project-bootstrap/04-quality-gates.md`,
+"Generated files".
 
 #### Scenario: sdd rewrites its manifest
 
@@ -224,14 +272,23 @@ Verify: `nix develop --command bash -c 'p="$(dprint output-file-paths)" || exit 
 ### `project-platform:a-flake-is-read-from-its-git-tree` — A flake reference reads the git tree
 
 When a command, a script, or a hook names a flake in a project working tree, it MUST read the git
-tree: `git+file://` with the root, with `?dir=` for a flake in a subfolder and `?shallow=1` where CI
-clones shallowly, or `.` from the CLI inside the repository. It MUST NOT name the tree as a `path:`
-reference or pass a bare path to `builtins.getFlake`, because either one copies every file of the
-folder into the store, ignored files included. A `path:` reference stays allowed for a `/nix/store`
-path, for a relative input inside a generated flake, and for a throwaway fixture folder, and such a
-line carries `nix-path-ok: <reason>`. The hook `no-path-flake-reference`, which this repository
-publishes in `.pre-commit-hooks.yaml`, enforces the rule line by line. It cannot follow a reference
-that a program assembles from parts. The chapter that states the general rule is
+tree. It reads the tree in one of two forms:
+
+- `git+file://` with the root, with `?dir=` for a flake in a subfolder and `?shallow=1` where CI
+  clones shallowly
+- `.` from the CLI inside the repository
+
+It MUST NOT name the tree as a `path:` reference or pass a bare path to `builtins.getFlake`. Either
+one copies every file of the folder into the store, ignored files included. A `path:` reference
+stays allowed in three cases:
+
+- a `/nix/store` path
+- a relative input inside a generated flake
+- a throwaway fixture folder
+
+Such a line carries `nix-path-ok: <reason>`. The hook `no-path-flake-reference`, which this
+repository publishes in `.pre-commit-hooks.yaml`, enforces the rule line by line. It cannot follow
+a reference that a program assembles from parts. The chapter that states the general rule is
 `languages/nix/05-tooling-gotchas-resources.md`, gotcha 1.
 
 #### Scenario: A hook evaluates its own flake

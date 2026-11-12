@@ -9,23 +9,43 @@
 
 use std::ffi::OsStr;
 use std::fmt::Write as _;
-use std::os::unix::fs::{MetadataExt as _, PermissionsExt as _};
+use std::os::unix::fs::MetadataExt as _;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
 use semver::Version;
 use sha2::{Digest as _, Sha256};
 
-/// The first executable file named `name` in the folders of `path_var`.
+/// The first file named `name` on `path_var` that the effective user can
+/// execute.
+///
+/// The lookup follows a shell. An empty folder entry
+/// is the working folder, and a candidate that is not a regular file or
+/// that the user cannot execute is skipped for a later one.
 #[must_use]
 pub fn which(name: &str, path_var: &OsStr) -> Option<PathBuf> {
     std::env::split_paths(path_var)
-        .filter(|dir| !dir.as_os_str().is_empty())
-        .map(|dir| dir.join(name))
-        .find(|candidate| {
-            std::fs::metadata(candidate)
-                .is_ok_and(|meta| meta.is_file() && meta.permissions().mode() & 0o111 != 0)
+        .map(|dir| {
+            if dir.as_os_str().is_empty() {
+                PathBuf::from(".")
+            } else {
+                dir
+            }
         })
+        .map(|dir| dir.join(name))
+        .find(|candidate| executable(candidate))
+}
+
+/// A regular file that the effective user may execute.
+fn executable(path: &Path) -> bool {
+    std::fs::metadata(path).is_ok_and(|meta| meta.is_file())
+        && rustix::fs::accessat(
+            rustix::fs::CWD,
+            path,
+            rustix::fs::Access::EXEC_OK,
+            rustix::fs::AtFlags::EACCESS,
+        )
+        .is_ok()
 }
 
 /// The first version in `output`: two or three dot-separated numbers that
