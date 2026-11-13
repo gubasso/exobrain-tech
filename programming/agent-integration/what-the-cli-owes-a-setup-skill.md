@@ -16,7 +16,8 @@ evidence is a step the tool computes.
   operator's decision, an upgrade, drift, current, or unreadable metadata. The skill's gate reads
   that one field. The rule that computes it is the one every landing verb applies, so the gate and
   the verbs can never disagree. A record newer than the binary reads no classification at all,
-  because an older binary cannot judge it and "upgrade" would say it can.
+  because an older binary cannot judge it and "upgrade" would say it can. Every other command
+  refuses in that state too, by [A version gate on every command](./a-version-gate-on-every-command.md#a-record-newer-than-the-binary).
 - A diagnostic, not a report, for a record that does not parse. Absence and breakage are different
   facts, and a report that called a broken record absent invites a landing over it.
 - The state an older release left on the host, by exact path, with whether it still binds a run. No

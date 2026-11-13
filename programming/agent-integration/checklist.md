@@ -76,8 +76,11 @@ Owner: [Skill security](./skill-security.md)
 - [ ] The installer writes only what it declared and removes only what it wrote.
 - [ ] A file the record does not claim stays, whoever wrote it.
 - [ ] Each file is written whole, and the record is written last.
+- [ ] A tool's own skills land at project scope, committed, with no version stamp, and no verb
+      writes them under the home.
 
-Owner: [Skill distribution](./skill-distribution.md)
+Owners: [Skill distribution](./skill-distribution.md) and
+[Skills follow the project pin](./skills-follow-the-project-pin.md)
 
 ## Durable knowledge
 
@@ -105,10 +108,21 @@ Owner: [Documentation and discovery](./documentation-and-discovery.md)
       completed, and says rerun is supported.
 - [ ] Cleanup is its own command, identifies the stage by its receipt, and refuses a symlink, a
       filesystem or home root, the project root, and any ancestor of it.
+- [ ] Every invocation carries a gate class, a test fails on one without a class, and the gate
+      follows the table of the gate chapter.
 
 Owners: [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md),
-[Disposable staging and direct landing](./disposable-staging-and-direct-landing.md), and
-[Versions and migration](./operator-selected-versions-and-agent-guided-migration.md)
+[Disposable staging and direct landing](./disposable-staging-and-direct-landing.md),
+[Versions and migration](./operator-selected-versions-and-agent-guided-migration.md), and
+[A version gate on every command](./a-version-gate-on-every-command.md)
+
+## Repository
+
+- [ ] The tool's own repository pins its previous release, and that release manages its landing.
+- [ ] The binary built from the tree runs only under test, and no payload source is a landing
+      destination.
+
+Owner: [A tool repository runs its previous release](./a-tool-repository-runs-its-previous-release.md)
 
 ## Routing and checks
 

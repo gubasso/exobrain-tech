@@ -1,7 +1,7 @@
 ---
 digest-of: programming/agent-integration
-last-synced: 2026-11-11
-token-estimate: 1900
+last-synced: 2026-11-13
+token-estimate: 2000
 ---
 
 # AGENTS
@@ -48,10 +48,9 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 ### Distribution
 
 - Two scopes: user, owned by the person; project, committed with the land it drives.
-- One authored package, linked or copied into each runtime's root; an embedding installer copies
-  it with shared content, writes only what it declared, and removes only what its record claims.
-- Each file is written whole and the record is written last, so a failed install leaves files the
-  record does not yet claim. Rerunning is the fix.
+- One authored package, linked or copied into each runtime's root; an embedding installer copies it with shared content, writes only what it declared, and removes only what its record claims.
+- Each file is written whole and the record is written last, so a failed install leaves files the record does not yet claim. Rerunning is the fix.
+- A tool's own skills land at project scope, committed and unstamped, at the version the project pins. The record holds the version, and the host keeps no copy.
 
 ### Evaluations
 
@@ -89,8 +88,9 @@ agent runs is `programming/cli-design/`. A fact about one agent runtime is that 
 
 ### Acquisition and versions
 
-- Manager against venue, crossed into one matrix: every pair renders or is manual with a closed
-  reason, one target runs one bump mechanism, and the pin's freshness loop is the tool's obligation.
+- Manager against venue, crossed into one matrix: every pair renders or is manual with a closed reason, one target runs one bump mechanism, and the pin's freshness loop is the tool's obligation.
+- Every invocation carries a gate class. A writing command refuses a record that differs from the binary, a read-only one warns when the binary is newer, and the gate never writes.
+- A tool's own repository pins its previous release. The binary built from the tree runs only under test.
 - Acquisition belongs to the project's manager, and landing fetches no other version. A setup skill
   provisions its own tool, and the repository records how, a host install included.
 - Evidence order: working tree, receipt, history, stage and its omissions, changelog, guidance,

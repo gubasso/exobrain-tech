@@ -68,6 +68,8 @@ A generated file carries no watermark. No version comment, no "do not edit" head
 number, no embedded hash. The receipt owns provenance, and a second copy inside the file is a second
 copy that goes stale and that a reader cannot distinguish from content.
 
+The skills that a tool lands follow the same rule. The record holds their version, and the skill files carry no stamp, as [Skills follow the project pin](./skills-follow-the-project-pin.md#the-record-holds-the-version) states.
+
 Markers are the one exception, and they are not provenance. A marker says where a region starts and
 ends, so the tool can replace the region without reading the rest. It names no version.
 

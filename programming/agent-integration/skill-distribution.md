@@ -50,6 +50,8 @@ installed under two scopes makes two entries under one name, and which entry ans
 the runtime's precedence rather than by the project. Install once, in the scope that owns the
 skill's lifetime.
 
+A tool that lands files into a project has one owner for its own skills: the landing of the project. The skills land at project scope, at the version that the project pins, and the host keeps no copy. [Skills follow the project pin](./skills-follow-the-project-pin.md) states the rules.
+
 ## What an installer owes
 
 An installer that writes a package into a user's home carries obligations the package itself does
@@ -92,6 +94,7 @@ exist.
 
 - [The four layers](./model.md) — why the playbook layer has a distribution question.
 - [Skills](./skills.md) — the package this chapter distributes.
+- [Skills follow the project pin](./skills-follow-the-project-pin.md) — where a tool's own skills land.
 
 ## The adapters
 
