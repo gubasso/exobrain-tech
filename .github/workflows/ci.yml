@@ -1,8 +1,8 @@
 # The validation workflow. Every step of the test job runs one hook stage, so
 # a push that passed its hooks passes test. The dist-build job is the one
 # check that only CI runs (project-platform:the-hooks-are-the-only-gate).
-# Its name is the workflow whose completion wakes the release gate in
-# release-plz.yml, and its job is the check that gate believes.
+# Its test job is the check that a release request needs before the merge
+# job of release-plz.yml merges it (setup.required_check).
 name: ci
 
 permissions:
