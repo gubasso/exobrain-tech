@@ -76,6 +76,8 @@ prerequisite and verifies it at entry.** Read-only or inert commands (`status`, 
 `doctor` itself, list/view verbs) have no such prerequisites and must **not** gate — gating them is
 its own bug (it makes the tool unusable exactly when you want to diagnose it).
 
+A tool that lands files into a project adds one case. A read-only command that reads the landed target checks the landed version against the binary. It warns when the binary is newer than the record, and it refuses when the record is missing or newer than the binary. The diagnostic commands (`status`, `version`, `help`, `doctor`) stay exempt. [A version gate on every command](../agent-integration/a-version-gate-on-every-command.md) states the classes and the table.
+
 Keep the guard cheap. It runs on every invocation of a hot command, so it should verify _presence
 and validity_, not do the expensive work itself (probe the token's expiry field; don't make a
 round-trip to mint a new one). When a check is genuinely expensive, prefer a cached result with a

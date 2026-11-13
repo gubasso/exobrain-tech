@@ -1,7 +1,7 @@
 ---
 digest-of: programming/cli-design
-last-synced: 2026-09-14
-token-estimate: 1470
+last-synced: 2026-11-13
+token-estimate: 1480
 ---
 
 # AGENTS
@@ -95,7 +95,7 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   per-command checks that drift.
 - Each check carries a stable ID (doubling as `err.kind`) and is classified hard (blocks, non-zero
   exit plus remediation) or soft (warn plus documented fallback).
-- Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) never gate.
+- Inert commands (`status`, `version`, `help`, `doctor`, list/view) never gate, except a read of a landed target, which checks the landed version.
 
 ### Naming and Docs (08)
 

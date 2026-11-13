@@ -127,6 +127,8 @@ The skill, its distribution, and the evals over it are checked in
 - [ ] Each subcommand runs its hard-prerequisite subset **at entry** and fails fast before any side
       effect.
 - [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) do **not** gate.
+- [ ] A read-only command that reads a landed target checks the landed version, and only the
+      diagnostic commands stay exempt.
 - [ ] Guards, `doctor`, and `init` share one probe set; refusals carry a stable exit code +
       remediation.
 
