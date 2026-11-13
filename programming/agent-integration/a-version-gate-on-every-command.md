@@ -93,7 +93,7 @@ Two parts of the gate are this convention's own policy, not a statement of any s
 
 The split joins two behaviors from the sources. cargo-dist, uv, ruff, and prek exit with an error when the version does not meet the requirement, and Terraform does the same for `required_version`. Prisma warns and lets the command run. The gate refuses where a command writes, and warns where it only reads.
 
-An older Terraform also refuses a state that a newer version wrote. That is a check of the state format, not of version equality, and this convention does not cite it as one.
+An older Terraform also refuses a state whose file format it does not support, such as a state that a newer version wrote in a newer format. That is a check of the state format, not of version equality, and this convention does not cite it as one.
 
 ## See also
 
@@ -115,4 +115,4 @@ An older Terraform also refuses a state that a newer version wrote. That is a ch
 - Nx, an overwrite of user content inside the block that Nx manages. Read 2026-11-13 at <https://github.com/nrwl/nx/issues/37181>.
 - Gradle, the wrapper: it "invokes a declared version of Gradle, downloading it beforehand if necessary." Read 2026-11-13 at <https://docs.gradle.org/current/userguide/gradle_wrapper.html>.
 - Bundler, the `version` setting: it defaults to `lockfile`, the version that `Gemfile.lock` records. Read 2026-11-13 at <https://guides.rubygems.org/command-reference/bundle-config/>.
-- Bundler 2.3: when the locked version is not installed, Bundler installs it and restarts with it. Read 2026-11-13 at <https://blog.rubygems.org/2022/01/23/bundler-v2-3>.
+- Bundler 2.3: when the locked version is not installed before `bundle install`, the running Bundler installs it and runs the command again with it. This needs RubyGems 3.3 or later. Read 2026-11-13 at <https://blog.rubygems.org/2022/01/23/bundler-v2-3>.
