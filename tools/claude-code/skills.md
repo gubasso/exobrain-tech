@@ -2,10 +2,7 @@
 
 Verified 2026-11-13 against <https://code.claude.com/docs/en/skills>.
 
-Claude Code's differences from the portable baseline in
-[agent-integration — Skills](../../programming/agent-integration/skills.md). The baseline is
-the conforming package the Agent Skills specification defines; everything below is this vendor's
-addition to it or exception from it.
+Claude Code's differences from the portable baseline in [agent-integration: Skills](../../programming/agent-integration/skills.md). The baseline is the conforming package the Agent Skills specification defines; everything below is this vendor's addition to it or exception from it.
 
 ## Discovery roots and precedence
 
@@ -23,9 +20,7 @@ Precedence on a name collision runs "Enterprise over personal, and personal over
 
 ## Fields beyond the specification
 
-The specification's `name`, `description`, `license`, `compatibility`, `metadata`, and the
-experimental `allowed-tools` are read as written. Claude Code adds the following, and a package that
-uses one is a package only Claude Code reads in full.
+The specification's `name`, `description`, `license`, `compatibility`, `metadata`, and the experimental `allowed-tools` are read as written. Claude Code adds the following, and a package that uses one is a package only Claude Code reads in full.
 
 | Field                            | What it does                                                                |
 | -------------------------------- | --------------------------------------------------------------------------- |
@@ -43,87 +38,55 @@ uses one is a package only Claude Code reads in full.
 
 ## Identity is derived from the path
 
-For a personal or project package the command name is the directory name, and frontmatter `name`
-sets the display label alone. A nested package that collides with a root one answers to its
-subdirectory path with `:` as the separator, as `/apps/web:deploy`. A plugin package is prefixed
-with the plugin's name. Name matching ignores case, spacing, and invisible characters.
+For a personal or project package the command name is the directory name, and frontmatter `name` sets the display label alone. A nested package that collides with a root one answers to its subdirectory path with `:` as the separator, as `/apps/web:deploy`. A plugin package is prefixed with the plugin's name. Name matching ignores case, spacing, and invisible characters.
 
 `synced` is reserved as a directory name.
 
 ## Activation and reload
 
-Descriptions sit in context every turn; the body loads only when the skill invokes, and stays in
-context for the rest of the session. The body is not re-read on a later turn, so it carries standing
-instructions rather than one-time steps.
+Descriptions sit in context every turn; the body loads only when the skill invokes, and stays in context for the rest of the session. The body is not re-read on a later turn, so it carries standing instructions rather than one-time steps.
 
-After compaction Claude Code re-attaches the most recent invocation of each skill and keeps the
-first 5,000 tokens of each, inside a combined budget of 25,000 tokens filled from the most recently
-invoked skill, so the most important instructions go near the top of `SKILL.md`. Read 2026-10-08 at
-<https://code.claude.com/docs/en/skills>.
+After compaction Claude Code re-attaches the most recent invocation of each skill and keeps the first 5,000 tokens of each, inside a combined budget of 25,000 tokens filled from the most recently invoked skill, so the most important instructions go near the top of `SKILL.md`. Read 2026-10-08 at <https://code.claude.com/docs/en/skills>.
 
-The listing truncates `description` plus `when_to_use` at 1,536 characters, which is wider than the
-specification's 1,024-character cap on `description` alone. The listing's own budget scales at 1% of
-the model's context window, read 2026-10-08 at the same page.
+The listing truncates `description` plus `when_to_use` at 1,536 characters, which is wider than the specification's 1,024-character cap on `description` alone. The listing's own budget scales at 1% of the model's context window, read 2026-10-08 at the same page.
 
-Changes under `~/.claude/skills/`, `.claude/skills/`, and any `--add-dir` path apply inside the
-running session. A plugin's hooks, agents, and MCP configuration need `/reload-plugins`.
+Changes under `~/.claude/skills/`, `.claude/skills/`, and any `--add-dir` path apply inside the running session. A plugin's hooks, agents, and MCP configuration need `/reload-plugins`.
 
 ## Authoring guidance
 
 The vendor's sizing and wording guidance, read 2026-10-08 at <https://code.claude.com/docs/en/skills>:
 
 - Keep `SKILL.md` under 500 lines and move detailed reference material to separate files.
-- "Once a skill loads, its content stays in context across turns, so every line is a recurring token
-  cost. State what to do rather than narrating how or why."
-- A rule that must hold every time moves into a hook, which runs on its event whether or not the
-  skill is followed. The skill's own `hooks` field keeps it with the package.
+- "Once a skill loads, its content stays in context across turns, so every line is a recurring token cost. State what to do rather than narrating how or why."
+- A rule that must hold every time moves into a hook, which runs on its event whether or not the skill is followed. The skill's own `hooks` field keeps it with the package.
 
-The skill authoring best practices, read 2026-10-08 at
-<https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices>, add the
-following for Claude's skills in general.
+The skill authoring best practices, read 2026-10-08 at <https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices>, add the following for Claude's skills in general.
 
-- The description is written in third person. `name` and `description` carry no XML tags, and
-  `name` carries neither "anthropic" nor "claude".
-- Every reference file links directly from `SKILL.md`, one level deep, because Claude "might use
-  commands like `head -100`" on a nested file. A reference file over 100 lines opens with a table of
-  contents.
+- The description is written in third person. `name` and `description` carry no XML tags, and `name` carries neither "anthropic" nor "claude".
+- Every reference file links directly from `SKILL.md`, one level deep, because Claude "might use commands like `head -100`" on a nested file. A reference file over 100 lines opens with a table of contents.
 
-The portable sources behind both are in
-[agent-integration — Skill format evidence](../../programming/agent-integration/skill-format-evidence.md).
+The portable sources behind both are in [agent-integration: Skill format evidence](../../programming/agent-integration/skill-format-evidence.md).
 
 ## The permission model
 
-`allowed-tools` pre-approves tools for the turn the skill invokes on, and the grant clears at the
-next message. It grants and never restricts. `disallowed-tools` removes tools for the same window.
-Both accept Bash rules, as `Bash(git add *)`.
+`allowed-tools` pre-approves tools for the turn the skill invokes on, and the grant clears at the next message. It grants and never restricts. `disallowed-tools` removes tools for the same window. Both accept Bash rules, as `Bash(git add *)`.
 
-Invocation itself is governed by permission rules over `Skill(<name>)`, which match the skill's own
-name, its aliases, and the unqualified form.
+Invocation itself is governed by permission rules over `Skill(<name>)`, which match the skill's own name, its aliases, and the unqualified form.
 
-The body may inject shell output before the model reads it, inline as `` !`command` `` or as a
-fenced `!` block. The setting `disableSkillShellExecution` turns that off, and a skill that depends
-on it has to keep working when the injected text comes back empty.
+The body may inject shell output before the model reads it, inline as `` !`command` `` or as a fenced `!` block. The setting `disableSkillShellExecution` turns that off, and a skill that depends on it has to keep working when the injected text comes back empty.
 
 ## String substitution
 
-`$ARGUMENTS`, `$ARGUMENTS[N]`, `$N`, and `$name` carry the invocation's arguments.
-`${CLAUDE_SKILL_DIR}` resolves to the directory holding `SKILL.md`, which is how a bundled script is
-named without depending on the working directory. `${CLAUDE_PROJECT_DIR}`, `${CLAUDE_SESSION_ID}`,
-and `${CLAUDE_EFFORT}` carry session state.
+`$ARGUMENTS`, `$ARGUMENTS[N]`, `$N`, and `$name` carry the invocation's arguments. `${CLAUDE_SKILL_DIR}` resolves to the directory holding `SKILL.md`, which is how a bundled script is named without depending on the working directory. `${CLAUDE_PROJECT_DIR}`, `${CLAUDE_SESSION_ID}`, and `${CLAUDE_EFFORT}` carry session state.
 
 ## Exceptions to the baseline
 
-- The specification requires `name` and `description`. Claude Code treats both as optional, falling
-  back to the directory name and to the first non-empty line of the body.
-- The specification derives identity from `name`, which must match the directory. Claude Code
-  derives the command from the path and uses `name` as a label.
-- Outside Claude Code, only `name`, `description`, `license`, `compatibility`, `metadata`, and
-  `allowed-tools` are read. A package that depends on any other field above is not portable.
+- The specification requires `name` and `description`. Claude Code treats both as optional, falling back to the directory name and to the first non-empty line of the body.
+- The specification derives identity from `name`, which must match the directory. Claude Code derives the command from the path and uses `name` as a label.
+- Outside Claude Code, only `name`, `description`, `license`, `compatibility`, `metadata`, and `allowed-tools` are read. A package that depends on any other field above is not portable.
 
 ## See also
 
-- [agent-integration — Skills](../../programming/agent-integration/skills.md) — the baseline
-  this adapter deviates from.
-- [agent-integration — Skill distribution](../../programming/agent-integration/skill-distribution.md) —
-  what the roots above are an instance of.
-- [memory-file-loading](./memory-file-loading.md) — the same vendor's instruction-file facts.
+- [agent-integration: Skills](../../programming/agent-integration/skills.md): the baseline this adapter deviates from.
+- [agent-integration: Skill distribution](../../programming/agent-integration/skill-distribution.md): what the roots above are an instance of.
+- [memory-file-loading](./memory-file-loading.md): the same vendor's instruction-file facts.

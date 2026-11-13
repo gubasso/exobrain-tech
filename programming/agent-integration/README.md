@@ -1,18 +1,12 @@
 # Agent Integration
 
-How a project is built so that a coding agent can discover it, operate it, and be trusted with it.
-The subject is the project's side of the relationship: the instruction file it carries, the actions
-it lets an agent take, the skills it ships, where those skills install, the documentation it makes
-discoverable, and how any of it is checked. The agent's own runtime is not the subject, and a fact
-about one vendor's runtime lives in that vendor's shelf as a dated adapter.
+How a project is built so that a coding agent can discover it, operate it, and be trusted with it. The subject is the project's side of the relationship: the instruction file it carries, the actions it lets an agent take, the skills it ships, where those skills install, the documentation it makes discoverable, and how any of it is checked. The agent's own runtime is not the subject, and a fact about one vendor's runtime lives in that vendor's shelf as a dated adapter.
 
-The mechanism an agent runs is usually a command-line tool, and designing one is
-[cli-design](../cli-design/README.md). This shelf is everything above the binary.
+The mechanism an agent runs is usually a command-line tool, and designing one is [cli-design](../cli-design/README.md). This shelf is everything above the binary.
 
 ## The four layers
 
-The shelf's spine is a model of what a project carries, in four layers. Each answers a different
-question, and the index follows it.
+The shelf's spine is a model of what a project carries, in four layers. Each answers a different question, and the index follows it.
 
 | Layer             | The question                            | Where it is stated                                                                                             |
 | ----------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -21,18 +15,11 @@ question, and the index follows it.
 | Durable knowledge | What does the agent read on demand?     | [Documentation and discovery](./documentation-and-discovery.md)                                                |
 | Governance        | What binds every session?               | [Instruction files](./instruction-files.md), [The authorization boundary](./authorization-boundary.md)         |
 
-[The four layers](./model.md) states the model itself: what each layer carries, what it
-never carries, who ships what, and the three boundary mistakes a design makes.
+[The four layers](./model.md) states the model itself: what each layer carries, what it never carries, who ships what, and the three boundary mistakes a design makes.
 
 ## The chapters
 
-Read the chapters in the order of the table below. The model comes first. Then come the layers and
-their evaluation, from the instruction file to the documentation an agent reads on demand.
-The landing chapters follow, from tool acquisition to the router and gates, then the skills
-that follow the project pin, the version gate, and the tool's own repository, with their prior art
-and their reference implementations. Then come the skill chapters, from security and format to the
-setup skill and migration, with the evidence and the research beneath them. The worked examples
-and the checklist come last.
+Read the chapters in the order of the table below. The model comes first. Then come the layers and their evaluation, from the instruction file to the documentation an agent reads on demand. The landing chapters follow, from tool acquisition to the router and gates, then the skills that follow the project pin, the version gate, and the tool's own repository, with their prior art and their reference implementations. Then come the skill chapters, from security and format to the setup skill and migration, with the evidence and the research beneath them. The worked examples and the checklist come last.
 
 | Chapter                                                                                         | What it holds                                                                                                                                                   |
 | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,20 +57,13 @@ and the checklist come last.
 
 A project that does nothing else does these.
 
-- Ship a mechanism an agent can discover from the mechanism: complete help output, machine-readable
-  output on request, and stable exit codes.
-- Make every output a turn in the conversation. A silent success and a bare failure are both dead
-  ends.
-- Put the workflow in a skill and the conventions in the instruction file, and let each point at the
-  other rather than copying it.
+- Ship a mechanism an agent can discover from the mechanism: complete help output, machine-readable output on request, and stable exit codes.
+- Make every output a turn in the conversation. A silent success and a bare failure are both dead ends.
+- Put the workflow in a skill and the conventions in the instruction file, and let each point at the other rather than copying it.
 - State the [authorization boundary](./authorization-boundary.md). An agent takes an action only where the request names it, and a request to change code authorizes the file changes alone.
-- Check the agent's use of the tool, not only the tool. One prompt, ten samples, and a rate you
-  watch over time.
-- Let the project pin the tool through the manager it already runs, and ship the loop that moves
-  that pin, so no consumer sits at a release nobody moves.
+- Check the agent's use of the tool, not only the tool. One prompt, ten samples, and a rate you watch over time.
+- Let the project pin the tool through the manager it already runs, and ship the loop that moves that pin, so no consumer sits at a release nobody moves.
 
 ## What this shelf is not
 
-It is not a survey of agent runtimes, and it names no vendor as the way. It is not a place for one
-person's configuration, which belongs in the vault. And it is not a home for another product's
-documentation: a project that ships a land documents its own skills, and this shelf states why.
+It is not a survey of agent runtimes, and it names no vendor as the way. It is not a place for one person's configuration, which belongs in the vault. And it is not a home for another product's documentation: a project that ships a land documents its own skills, and this shelf states why.

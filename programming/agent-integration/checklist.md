@@ -1,12 +1,10 @@
 # Checklist
 
-Walk this before shipping. Each section names the chapter that owns its rules, and restates none of
-them. An item that fails sends you to the owner, not to this page.
+Walk this before shipping. Each section names the chapter that owns its rules, and restates none of them. An item that fails sends you to the owner, not to this page.
 
 ## Governance
 
-- [ ] The root instruction file is hand-authored rules and routing, and it points rather than
-      restates.
+- [ ] The root instruction file is hand-authored rules and routing, and it points rather than restates.
 - [ ] A rule that binds one subtree lives in that subtree's file, reached by a plain pointer.
 - [ ] A per-directory digest is generated, carries frontmatter, and states no rule of its own.
 - [ ] The file is short enough to be read rather than skimmed.
@@ -17,11 +15,9 @@ Owner: [Instruction files](./instruction-files.md)
 
 - [ ] The directory name and the frontmatter `name` match, and `name` and `description` are present.
 - [ ] No frontmatter field the target runtime rejects, and no angle bracket anywhere in it.
-- [ ] The description states what the skill produces, the phrasings a person types, and the boundary
-      against a near sibling.
+- [ ] The description states what the skill produces, the phrasings a person types, and the boundary against a near sibling.
 - [ ] Every paragraph of the body survives the deletion test.
-- [ ] Every reference pointer carries the condition for reading it, and the package is one level
-      deep.
+- [ ] Every reference pointer carries the condition for reading it, and the package is one level deep.
 - [ ] Every deterministic routine past a trivial one-liner is a script, and judgment stayed prose.
 - [ ] Each script runs without a terminal, bounds its output, and returns a distinct exit code.
 - [ ] Every tool dependency is declared, checked, and fails legibly.
@@ -30,19 +26,13 @@ Owner: [Skills](./skills.md)
 
 ## Skill format and size
 
-- [ ] The package holds `SKILL.md` and `references/` alone, and what skills share is copied in from
-      one source.
-- [ ] `SKILL.md` links every reference directly, each link with its condition, and no reference
-      links another.
-- [ ] The sections run pre-flight, general rules, gate, tasks, post-flight, after one opening
-      paragraph.
-- [ ] Each instruction is one imperative action with its exact command, and no word is in capitals
-      for emphasis.
-- [ ] Every size is counted in characters: a body within 12,000, a reference within 32,000, and a
-      reference over 8,000 opening with its sections.
+- [ ] The package holds `SKILL.md` and `references/` alone, and what skills share is copied in from one source.
+- [ ] `SKILL.md` links every reference directly, each link with its condition, and no reference links another.
+- [ ] The sections run pre-flight, general rules, gate, tasks, post-flight, after one opening paragraph.
+- [ ] Each instruction is one imperative action with its exact command, and no word is in capitals for emphasis.
+- [ ] Every size is counted in characters: a body within 12,000, a reference within 32,000, and a reference over 8,000 opening with its sections.
 
-Owners: [Skill format](./skill-format.md) and
-[Skill size budget](./skill-size-budget.md)
+Owners: [Skill format](./skill-format.md) and [Skill size budget](./skill-size-budget.md)
 
 ## Setup skill
 
@@ -50,14 +40,10 @@ Owners: [Skill format](./skill-format.md) and
 - [ ] The gate reads the tool's classification, proposes the tasks, and waits for the operator.
 - [ ] The skill provisions its own tool, and the repository records how, a host install included.
 - [ ] Every deterministic step is a verb of the tool, and the skill reads its machine output.
-- [ ] A migration archives the predecessor first, snapshots what no history holds, and keeps a
-      registry.
-- [ ] The skill starts, integrates, and prunes no branch, and lands no rule that only shapes the
-      workflow.
+- [ ] A migration archives the predecessor first, snapshots what no history holds, and keeps a registry.
+- [ ] The skill starts, integrates, and prunes no branch, and lands no rule that only shapes the workflow.
 
-Owners: [Setup skill skeleton](./setup-skill-skeleton.md),
-[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md), and
-[Migrating from an archive](./migrating-from-an-archive.md)
+Owners: [Setup skill skeleton](./setup-skill-skeleton.md), [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md), and [Migrating from an archive](./migrating-from-an-archive.md)
 
 ## Safety
 
@@ -76,11 +62,9 @@ Owner: [Skill security](./skill-security.md)
 - [ ] The installer writes only what it declared and removes only what it wrote.
 - [ ] A file the record does not claim stays, whoever wrote it.
 - [ ] Each file is written whole, and the record is written last.
-- [ ] A tool's own skills land at project scope, committed, with no version stamp, and no verb
-      writes them under the home.
+- [ ] A tool's own skills land at project scope, committed, with no version stamp, and no verb writes them under the home.
 
-Owners: [Skill distribution](./skill-distribution.md) and
-[Skills follow the project pin](./skills-follow-the-project-pin.md)
+Owners: [Skill distribution](./skill-distribution.md) and [Skills follow the project pin](./skills-follow-the-project-pin.md)
 
 ## Durable knowledge
 
@@ -94,33 +78,23 @@ Owner: [Documentation and discovery](./documentation-and-discovery.md)
 
 ## Landing
 
-- [ ] Acquisition belongs to the project's manager, and landing installs, fetches, and decodes
-      nothing.
-- [ ] The candidate is computed from the executable's own sources, the resolved configuration, and
-      the observed capabilities, and from nothing else.
-- [ ] Production reads no staged byte. Deleting every staged artifact but the receipt changes
-      nothing a landing writes.
+- [ ] Acquisition belongs to the project's manager, and landing installs, fetches, and decodes nothing.
+- [ ] The candidate is computed from the executable's own sources, the resolved configuration, and the observed capabilities, and from nothing else.
+- [ ] Production reads no staged byte. Deleting every staged artifact but the receipt changes nothing a landing writes.
 - [ ] Every path and collision is validated before the first write.
 - [ ] An unattributed whole file is refused rather than overwritten.
 - [ ] A retired destination is reported and released, never deleted.
 - [ ] The central receipt is written last.
-- [ ] The failure text promises a whole-file boundary and no transaction, names the paths observed
-      completed, and says rerun is supported.
-- [ ] Cleanup is its own command, identifies the stage by its receipt, and refuses a symlink, a
-      filesystem or home root, the project root, and any ancestor of it.
-- [ ] Every invocation carries a gate class, a test fails on one without a class, and the gate
-      follows the table of the gate chapter.
+- [ ] The failure text promises a whole-file boundary and no transaction, names the paths observed completed, and says rerun is supported.
+- [ ] Cleanup is its own command, identifies the stage by its receipt, and refuses a symlink, a filesystem or home root, the project root, and any ancestor of it.
+- [ ] Every invocation carries a gate class, a test fails on one without a class, and the gate follows the table of the gate chapter.
 
-Owners: [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md),
-[Disposable staging and direct landing](./disposable-staging-and-direct-landing.md),
-[Versions and migration](./operator-selected-versions-and-agent-guided-migration.md), and
-[A version gate on every command](./a-version-gate-on-every-command.md)
+Owners: [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md), [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md), [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md), and [A version gate on every command](./a-version-gate-on-every-command.md)
 
 ## Repository
 
 - [ ] The tool's own repository pins its previous release, and that release manages its landing.
-- [ ] The binary built from the tree runs only under test, and no payload source is a landing
-      destination.
+- [ ] The binary built from the tree runs only under test, and no payload source is a landing destination.
 
 Owner: [A tool repository runs its previous release](./a-tool-repository-runs-its-previous-release.md)
 

@@ -1,7 +1,6 @@
 # Skill Distribution
 
-A skill package is discovered by an agent because it sits in a root that agent scans. Where those
-roots are is a vendor fact; how a project keeps one package reachable from several of them is not.
+A skill package is discovered by an agent because it sits in a root that agent scans. Where those roots are is a vendor fact; how a project keeps one package reachable from several of them is not.
 
 ## The two scopes
 
@@ -12,14 +11,11 @@ Every runtime that reads skills distinguishes two scopes, whatever it calls them
 | User    | Skills that follow one person across every project | The person, through whatever installs them          |
 | Project | Skills that operate this project's own land        | The project, in its own tree, under version control |
 
-A project-scoped package is committed with the project it drives, so a clone carries it and a
-reviewer sees it change. A user-scoped package is not the project's business, and a project that
-writes into a user's scope has taken a decision that was not its own.
+A project-scoped package is committed with the project it drives, so a clone carries it and a reviewer sees it change. A user-scoped package is not the project's business, and a project that writes into a user's scope has taken a decision that was not its own.
 
 ## One source, many agents
 
-Two runtimes scan different roots for the same package format. Keeping one copy per runtime means
-keeping several copies in step, which nobody does for long.
+Two runtimes scan different roots for the same package format. Keeping one copy per runtime means keeping several copies in step, which nobody does for long.
 
 The durable arrangement is one canonical directory plus a link from each root that scans for it.
 
@@ -28,81 +24,49 @@ ln -s "$HOME/code/skills/dispatch-messages" "$HOME/.<runtime-a>/skills/dispatch-
 ln -s "$HOME/code/skills/dispatch-messages" ".<runtime-b>/skills/dispatch-messages"
 ```
 
-A runtime that follows a symbolic link while scanning serves the package from the canonical
-directory, and the canonical directory is the only place an edit lands. Whether a given runtime
-follows links is a vendor fact, dated in that vendor's adapter.
+A runtime that follows a symbolic link while scanning serves the package from the canonical directory, and the canonical directory is the only place an edit lands. Whether a given runtime follows links is a vendor fact, dated in that vendor's adapter.
 
-A tool that installs its own skills does the same job with copies. Every installer the research in
-[Skill format research](./skill-format-research.md#installing-a-skill-package) read installs
-a skill as one whole directory, with its own `references/`, and none reads a supporting file from
-outside it. Those that serve several runtime roots either copy the directory into each root or link
-each root to one canonical copy, and the links fail in ways the copies do not: a root no link
-reaches cannot see the skill, an update that forgets the install mode turns copies back into links,
-and rebuilding a lost link means rerunning the install over the canonical store. An installer that
-embeds the packages copies them, and it copies what two skills share into each package from one
-authored source, so a fix still lands in one file. That last step is an inference from what the
-installers do, not a statement any of them makes.
+A tool that installs its own skills does the same job with copies. Every installer the research in [Skill format research](./skill-format-research.md#installing-a-skill-package) read installs a skill as one whole directory, with its own `references/`, and none reads a supporting file from outside it. Those that serve several runtime roots either copy the directory into each root or link each root to one canonical copy, and the links fail in ways the copies do not: a root no link reaches cannot see the skill, an update that forgets the install mode turns copies back into links, and rebuilding a lost link means rerunning the install over the canonical store. An installer that embeds the packages copies them, and it copies what two skills share into each package from one authored source, so a fix still lands in one file. That last step is an inference from what the installers do, not a statement any of them makes.
 
 ## One name, one owner
 
-A skill's identity is its name, and an agent resolves a name across scopes. The same package
-installed under two scopes makes two entries under one name, and which entry answers is decided by
-the runtime's precedence rather than by the project. Install once, in the scope that owns the
-skill's lifetime.
+A skill's identity is its name, and an agent resolves a name across scopes. The same package installed under two scopes makes two entries under one name, and which entry answers is decided by the runtime's precedence rather than by the project. Install once, in the scope that owns the skill's lifetime.
 
 A tool that lands files into a project has one owner for its own skills: the landing of the project. The skills land at project scope, at the version that the project pins, and the host keeps no copy. [Skills follow the project pin](./skills-follow-the-project-pin.md) states the rules.
 
 ## What an installer owes
 
-An installer that writes a package into a user's home carries obligations the package itself does
-not:
+An installer that writes a package into a user's home carries obligations the package itself does not:
 
 - It writes only where it declared it would write, and it says so before it writes.
-- It removes what it wrote, and nothing beside it. A package the user edited is the user's, and an
-  uninstall that discards it destroys work the installer never owned.
-- It reports what it did, in a form a later run can read back, so an install is a fact rather than a
-  memory.
+- It removes what it wrote, and nothing beside it. A package the user edited is the user's, and an uninstall that discards it destroys work the installer never owned.
+- It reports what it did, in a form a later run can read back, so an install is a fact rather than a memory.
 
 ## The receipt makes those obligations keepable
 
-A skill installer is a tool writing files into somebody else's tree, so it carries the same record
-the landing chapters describe. The shape below is that record, narrowed to skills.
+A skill installer is a tool writing files into somebody else's tree, so it carries the same record the landing chapters describe. The shape below is that record, narrowed to skills.
 
-One package is authored once. What reaches each runtime's root is a materialization of it: the same
-content, at a path that runtime scans. The authored copy is what an edit lands in, and a fix reaches
-every runtime because there is one place to fix.
+One package is authored once. What reaches each runtime's root is a materialization of it: the same content, at a path that runtime scans. The authored copy is what an edit lands in, and a fix reaches every runtime because there is one place to fix.
 
-One installed skill name has one owner. A second installer writing a package under a name the record
-already attributes is a collision, and it is reported rather than resolved, for the reason
-[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) gives.
+One installed skill name has one owner. A second installer writing a package under a name the record already attributes is a collision, and it is reported rather than resolved, for the reason [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) gives.
 
-An upgrade and a removal both read the record. An upgrade replaces what the record attributes and
-leaves everything else. A removal takes what the record attributes and stops. A file the record does
-not claim stays, whoever put it there and however much it looks like something the installer would
-have written.
+An upgrade and a removal both read the record. An upgrade replaces what the record attributes and leaves everything else. A removal takes what the record attributes and stops. A file the record does not claim stays, whoever put it there and however much it looks like something the installer would have written.
 
-Each file is written whole, so a runtime scanning mid-install sees the old package or the new one
-rather than a half-written `SKILL.md`. The record is written last, which leaves a failed install as
-files the record does not yet claim. Rerunning is the fix, and it is safe: the same package is
-computed again and the files already correct are already correct.
+Each file is written whole, so a runtime scanning mid-install sees the old package or the new one rather than a half-written `SKILL.md`. The record is written last, which leaves a failed install as files the record does not yet claim. Rerunning is the fix, and it is safe: the same package is computed again and the files already correct are already correct.
 
-Where those roots are is a vendor fact. Each runtime's adapter carries its own, dated, and the
-adapters are linked below. This chapter states what an installer does with a root, never which ones
-exist.
+Where those roots are is a vendor fact. Each runtime's adapter carries its own, dated, and the adapters are linked below. This chapter states what an installer does with a root, never which ones exist.
 
 ## See also
 
-- [The four layers](./model.md) — why the playbook layer has a distribution question.
-- [Skills](./skills.md) — the package this chapter distributes.
-- [Skills follow the project pin](./skills-follow-the-project-pin.md) — where a tool's own skills land.
+- [The four layers](./model.md): why the playbook layer has a distribution question.
+- [Skills](./skills.md): the package this chapter distributes.
+- [Skills follow the project pin](./skills-follow-the-project-pin.md): where a tool's own skills land.
 
 ## The adapters
 
-Where each runtime scans, in what order it resolves a name, and whether it reads a root another
-runtime owns. Dated, from each runtime's own documentation. No adapter states a rule this chapter
-lacks, and this chapter derives nothing from what the current set happens to have in common.
+Where each runtime scans, in what order it resolves a name, and whether it reads a root another runtime owns. Dated, from each runtime's own documentation. No adapter states a rule this chapter lacks, and this chapter derives nothing from what the current set happens to have in common.
 
-- [tools/claude-code — skills](../../tools/claude-code/skills.md)
-- [tools/codex — skills](../../tools/codex/skills.md)
-- [tools/gemini-cli — skills](../../tools/gemini-cli/skills.md)
-- [tools/opencode — skills](../../tools/opencode/skills.md)
+- [tools/claude-code: skills](../../tools/claude-code/skills.md)
+- [tools/codex: skills](../../tools/codex/skills.md)
+- [tools/gemini-cli: skills](../../tools/gemini-cli/skills.md)
+- [tools/opencode: skills](../../tools/opencode/skills.md)
