@@ -1,6 +1,6 @@
 # Claude Code skills adapter
 
-Verified 2026-09-14 against <https://code.claude.com/docs/en/skills>.
+Verified 2026-11-13 against <https://code.claude.com/docs/en/skills>.
 
 Claude Code's differences from the portable baseline in
 [agent-integration — Skills](../../programming/agent-integration/skills.md). The baseline is
@@ -17,10 +17,9 @@ addition to it or exception from it.
 | Nested     | `<subdir>/.claude/skills/<name>/SKILL.md`                  | On first file access inside that subdirectory      |
 | Additional | `.claude/skills/<name>/SKILL.md` under an `--add-dir` path | At session start, for that session only            |
 | Plugin     | `<plugin>/skills/<name>/SKILL.md`                          | When the plugin loads                              |
+| Account    | Skills enabled for the claude.ai account                   | In a session signed in with that account           |
 
-Precedence on a name collision runs enterprise, then personal, then project, and any of those over a
-bundled skill. A project-root package wins over a nested one, and both stay loaded because the
-nested one answers to a qualified name.
+Precedence on a name collision runs "Enterprise over personal, and personal over project", so a personal copy answers before the project copy. A skill at any of those roots replaces a bundled command of the same name, but not its aliases. A project-root package wins over a nested one, and both stay loaded because the nested one answers to a qualified name. A skill in an added directory and a plugin skill also stay loaded under a prefixed name.
 
 ## Fields beyond the specification
 

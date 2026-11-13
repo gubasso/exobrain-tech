@@ -1,6 +1,6 @@
 # Codex skills adapter
 
-Verified 2026-09-14 against <https://learn.chatgpt.com/docs/build-skills>.
+Verified 2026-11-13 against <https://learn.chatgpt.com/docs/build-skills>.
 
 Codex's differences from the portable baseline in
 [agent-integration — Skills](../../programming/agent-integration/skills.md).
@@ -14,9 +14,7 @@ Codex's differences from the portable baseline in
 | Admin      | `/etc/codex/skills`                                                              |
 | System     | The skills bundled with Codex                                                    |
 
-Repository scope wins over user, user over admin, admin over system. Two skills that share a name
-are not merged and both stay available, which is the opposite of the resolution most runtimes
-perform, so a name collision here surfaces as a choice the model makes rather than as one entry.
+The documentation states no precedence between these scopes. Two skills that share a name are not merged, and "both can appear in skill selectors". A name collision here surfaces as two entries, not as one entry that a precedence picks. Codex detects a change to a skill, and the documentation says to restart Codex when an update does not appear.
 
 Codex reads the standard `.agents/skills` root and no root of its own, so a package placed there is
 reachable from any runtime that also reads it.
