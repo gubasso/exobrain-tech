@@ -30,11 +30,14 @@ jobs:
           persist-credentials: false
       # The hook runner is a host tool, so the job installs it like the host
       # does, at the version of the host pin
-      # (project-platform:the-host-supplies-the-hook-runner).
+      # (project-platform:the-host-supplies-the-hook-runner). The checksum is
+      # the release's x86_64-unknown-linux-gnu archive, which the bundled table
+      # of the action predates (https://github.com/j178/prek-action#inputs).
       - uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
         with:
           install-only: true
-          prek-version: "0.5.7"
+          prek-version: "0.5.10"
+          sha256: "5c832a9ccd0855b7c054320d8921d90165a37459d3ac175923bdf121ff1aa9b1"
       - uses: DeterminateSystems/nix-installer-action@v19
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       # The commit stage first, then the costly checks of the push stage.
