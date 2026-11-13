@@ -1,7 +1,7 @@
 {
   "schema": "rk.setup-proof/1",
-  "rk_version": "0.9.8",
-  "verified_at": "2026-11-11T17:15:19Z",
+  "rk_version": "0.9.15",
+  "verified_at": "2026-11-13T15:52:44Z",
   "subject": {
     "target": {
       "bot_app_id": "",
@@ -16,7 +16,6 @@
       "release_lines": "false",
       "repo": "gubasso/exobrain-tech",
       "required_check": "test",
-      "required_workflow": "ci",
       "retired_branches": "[\"main\",\"develop\"]",
       "safety_ruleset": "master-safety",
       "tag_ruleset": "release-tags",
@@ -30,7 +29,7 @@
         "proves": "the package is publishable with no credentials, and carries the reporting policy and none of release-kit's own files where the binding can list it",
         "prerequisites": [],
         "stance": "not-applicable",
-        "reason": "the crate publishes to no registry, so nothing is packaged"
+        "reason": "the release publishes to no registry, so nothing is packaged"
       },
       {
         "name": "default-branch",
@@ -108,11 +107,9 @@
         "stance": "applicable"
       },
       {
-        "name": "auto-merge",
-        "proves": "a request may merge itself once its required checks pass",
-        "prerequisites": [
-          "default-branch"
-        ],
+        "name": "merge-on-order",
+        "proves": "no release request stands armed to merge itself",
+        "prerequisites": [],
         "stance": "applicable"
       },
       {
@@ -130,7 +127,7 @@
       }
     ]
   },
-  "subject_digest": "78918dbda653aeaf0da6f466890d57f816b0755ce66f505a23b598db3996ccb7",
+  "subject_digest": "23553a34e242e926659960756ffe37d937c2d241c7df5313b601653068173426",
   "steps": [
     {
       "name": "package-check",
@@ -181,7 +178,7 @@
       "state": "skipped"
     },
     {
-      "name": "auto-merge",
+      "name": "merge-on-order",
       "state": "satisfied"
     },
     {

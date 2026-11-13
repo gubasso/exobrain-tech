@@ -1,6 +1,6 @@
 {
   "schema_version": 12,
-  "rk_version": "0.9.12",
+  "rk_version": "0.9.15",
   "origin": "init",
   "landed_at": "2026-11-10T03:24:48Z",
   "profile": {
@@ -32,30 +32,29 @@
     "repo": "gubasso/exobrain-tech",
     "security_contact": "",
     "security_response": "best-effort",
-    "required_check": "test",
-    "required_workflow": "ci"
+    "required_check": "test"
   },
   "files": [
     {
       "destination": ".github/workflows/pr-commits.yml",
       "kind": "rendered",
-      "sha256": "c05088594a3f0671a4d0f8a528a4b8986608dc868214203752cca3a12cac5034"
+      "sha256": "84b06f68ce8f26eaf5e7c6dbed3ea68f6d2644c146efce8b78b5cf7187e4f48e"
     },
     {
       "destination": ".github/workflows/release-plz.yml",
       "kind": "rendered",
-      "sha256": "73c3fa1d41997082d8a471fd92753f6b304d7354f2cb422a097d1f8100ff2d33"
+      "sha256": "aaf9ea5953c688ef9db5bee45de838ab07352ece2d2341d9840f1368767b9109"
     },
     {
       "destination": ".pre-commit-config.yaml",
       "kind": "rendered",
-      "sha256": "83551b7f87994cb8cc15aff7be48d2688eac330df67c8b509045692601b35419",
+      "sha256": "b31798454eaaffce9e8788b482c6231f20f6c80b69a04386c7e43ccf94a62f80",
       "placement": "region"
     },
     {
       "destination": "AGENTS.md",
       "kind": "rendered",
-      "sha256": "15c454420e999029c05d3bd9a906634c380296e229b331af8f09164054d088c8",
+      "sha256": "084228c63398f26992d31766b505540cfd97592cd793fda22d891fe1196563b3",
       "placement": "region"
     },
     {

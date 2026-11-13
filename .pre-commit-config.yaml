@@ -12,8 +12,10 @@
 #       pre-commit  : fast, local, deterministic.
 #       pre-push    : slower, network-aware (link check, flake evaluation).
 #       commit-msg  : Conventional Commits shape.
-#     The two stages together run every check, each check in one stage, and
-#     CI only mirrors them (`project-platform:the-hooks-are-the-only-gate`).
+#       pre-merge-commit : the commit-stage checks again, on the change that
+#                     `rk integrate` squashes onto the trunk.
+#     The commit and push stages together run every check, each check in one
+#     stage, and CI only mirrors them (`project-platform:the-hooks-are-the-only-gate`).
 #     The push stage does not rerun the commit stage.
 #   - Generated files follow their generator. Every hook that rewrites or
 #     judges excludes them, in the tool's own configuration where it has one,
@@ -75,33 +77,35 @@
 # The oldest prek that runs this file; an older one stops with an error
 # (https://prek.j178.dev/reference/configuration/).
 minimum_prek_version: "0.5.7"
-default_install_hook_types: [pre-commit, commit-msg, pre-push]
+default_install_hook_types: [pre-commit, commit-msg, pre-push, pre-merge-commit]
 # The node hooks run on the devShell nodejs. Under `system`, prek takes a node
 # that it finds and downloads none
 # (https://prek.j178.dev/reference/language-support/), and a clean-machine
 # run on 2026-11-11 with prek 0.5.7 took the devShell nodejs.
 default_language_version:
   node: system
-# A hook with no `stages:` runs at commit only. A remote hook whose manifest
-# declares its own `stages:` ignores this line, so each such hook below carries
-# an explicit `stages: [pre-commit]` (pre-commit-hooks v6.0.0 and typos declare
-# pre-push too).
-default_stages: [pre-commit]
+# A hook with no `stages:` runs at commit and at the integration gate. A remote
+# hook whose manifest declares its own `stages:` ignores this line, so each such
+# hook below carries an explicit `stages: [pre-commit, pre-merge-commit]`
+# (pre-commit-hooks v6.0.0 and typos declare pre-push too).
+default_stages: [pre-commit, pre-merge-commit]
 
 repos:
 # BEGIN release-kit
-# The release convention's hooks. Install every stage they run at, with
-# the hook runner on PATH, prek or pre-commit, which take the same flags:
-# prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
+# The release convention's hooks. Install every stage they run at with
+# the hook manager this project uses, for example:
+# prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push --hook-type pre-merge-commit
 # A CI sweep needs no SKIP here: no hook in this block refuses a trunk
 # checkout. Set one where this project classifies a check of its own
 # local-only, naming that hook's id.
-# rk integrate runs this project's pre-integrate suite as
-# `prek run --hook-stage manual --all-files`, or as `pre-commit run` with
-# the same arguments where prek is not on PATH. Assign to the manual
-# stage every check that must pass before work reaches the trunk, and have
-# continuous integration invoke the same stages: a check that runs on one
-# side of the boundary alone guards one side alone.
+# rk integrate runs this clone's pre-merge-commit hook through git, on the
+# change the integration squashes, and refuses where none is installed.
+# Tag pre-merge-commit on every check that must pass before work reaches
+# the trunk, and add it to default_stages where this file sets them. Have
+# continuous integration invoke the same checks: a check that runs on one
+# side of the boundary alone guards one side alone. prek runs each nested
+# .pre-commit-config.yaml as a project of its own, so a project that runs
+# prek lists a directory of fixtures in a root .prekignore.
   - repo: local
     hooks:
       - id: rk-no-hand-authored-tag
@@ -116,7 +120,7 @@ repos:
         language: system
         pass_filenames: false
         entry: rk status --check --target .
-        files: '^(\.github/workflows/|\.gitlab-ci\.yml$|\.gitlab/ci/|AGENTS\.md$|\.release-kit/|\.pre-commit-config\.yaml$|release-plz\.toml$|dist-workspace\.toml$|release-please-config\.json$|cliff\.toml$|\.release-please-manifest\.json$|VERSION$)'
+        files: '^(\.github/workflows/|\.gitlab-ci\.yml$|\.gitlab/ci/|AGENTS\.md$|\.release-kit/|\.pre-commit-config\.yaml$|release-plz\.toml$|dist-workspace\.toml$|cliff\.toml$|VERSION$)'
 # END release-kit
   # --- Housekeeping (auto-fix where possible) ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -126,22 +130,22 @@ repos:
       # the header. They have no configuration of their own.
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]   # keep two-space hard breaks
-        stages: [pre-commit]
+        stages: [pre-commit, pre-merge-commit]
         exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml)$'
       - id: end-of-file-fixer
-        stages: [pre-commit]
+        stages: [pre-commit, pre-merge-commit]
         exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml)$'
       - id: mixed-line-ending
         args: [--fix=lf]
         exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml)$'
       - id: check-added-large-files
         args: ['--maxkb=16384']
-        stages: [pre-commit]
+        stages: [pre-commit, pre-merge-commit]
       - id: check-case-conflict
       - id: check-merge-conflict
         args: ['--assume-in-merge']
       - id: destroyed-symlinks
-        stages: [pre-commit]
+        stages: [pre-commit, pre-merge-commit]
       - id: check-yaml
       - id: check-toml
       - id: detect-private-key
@@ -203,7 +207,7 @@ repos:
         types_or: [markdown, json]
         files: '\.(md|json|jsonc)$'
         pass_filenames: true
-        stages: [pre-commit]
+        stages: [pre-commit, pre-merge-commit]
 
   # --- Table of contents ---
   #
@@ -368,7 +372,7 @@ repos:
       # applies that list to the files pre-commit passes.
       - id: typos
         args: [--force-exclude]
-        stages: [pre-commit]
+        stages: [pre-commit, pre-merge-commit]
 
   # --- Secrets (fast, local) ---
   - repo: https://github.com/sirwart/ripsecrets

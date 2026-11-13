@@ -17,7 +17,7 @@ mode = "automatic" # P: automatic, external, or none
 driver = "rust" # P: the technology that states the version and takes the bot; automatic alone
 style = "trunk" # P: trunk or lines; automatic alone
 line_prefix = "release/" # P: release-line branch prefix, rendered into the release triggers; automatic alone
-registry = "none" # P: crates-io or none, where the crate publishes, rust driver alone
+registry = "none" # P: where the release publishes, crates-io or none for rust, pypi or none for python
 
 [git]
 trunk = "master" # P: the one permanent branch, rendered into every artifact naming it
@@ -32,8 +32,7 @@ scorecard = false # P: opt-in OpenSSF Scorecard workflow, github only
 code_scanning = "off" # P: opt-in code scanning provider: codeql, semgrep, or off
 workflow_guards = false # P: opt-in workflow guards: the agent and commit policy lines, the glossary, the workflow hooks, merge-cleanup, and branch-reminder
 [setup]
-required_check = "test" # P: the check the release gate believes, and the check the trunk ruleset requires under forge integration
-required_workflow = "ci" # P: the workflow name whose completion wakes the release gate under local integration; GitHub only
+required_check = "test" # P: the check the trunk ruleset requires before a release request merges
 retired_branches = ["main", "develop"] # N: long-lived branches retired by the trunk
 release_lines = false # N: true runs protect-release-lines in a full apply
 excluded_steps = {} # N: step = why this target does not run it; `rk setup check` reports it and does not judge it
