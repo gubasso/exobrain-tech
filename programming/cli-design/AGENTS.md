@@ -95,7 +95,7 @@ Language-specific implementations live in `languages/<lang>/cli-spec/`.
   per-command checks that drift.
 - Each check carries a stable ID (doubling as `err.kind`) and is classified hard (blocks, non-zero
   exit plus remediation) or soft (warn plus documented fallback).
-- Inert commands (`status`, `version`, `help`, `doctor`, list/view) never gate, except a read of a landed target, which checks the landed version.
+- The diagnostic commands (`status`, `version`, `help`, `doctor`) never gate. A command that reads a landed target, a list or view command included, takes a version-gate class.
 
 ### Naming and Docs (08)
 

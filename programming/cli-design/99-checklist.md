@@ -126,9 +126,8 @@ The skill, its distribution, and the evals over it are checked in
 - [ ] Every check has a stable ID and is classified **hard** (blocks) or **soft** (warn + fallback).
 - [ ] Each subcommand runs its hard-prerequisite subset **at entry** and fails fast before any side
       effect.
-- [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) do **not** gate.
-- [ ] A read-only command that reads a landed target checks the landed version, and only the
-      diagnostic commands stay exempt.
+- [ ] The diagnostic commands (`status`, `version`, `help`, `doctor`) do not gate.
+- [ ] A command that reads a landed target, a list or view command included, takes its gate class from [A version gate on every command](../agent-integration/a-version-gate-on-every-command.md#every-invocation-carries-one-class).
 - [ ] Guards, `doctor`, and `init` share one probe set; refusals carry a stable exit code +
       remediation.
 

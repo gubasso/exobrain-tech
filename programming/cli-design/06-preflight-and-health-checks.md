@@ -71,12 +71,9 @@ Fix: pigeon auth login        # then re-run
 # nothing was sent; exit code marks an unmet prerequisite
 ```
 
-The rule: **a command that genuinely depends on a readiness condition treats it as a hard
-prerequisite and verifies it at entry.** Read-only or inert commands (`status`, `version`, `help`,
-`doctor` itself, list/view verbs) have no such prerequisites and must **not** gate — gating them is
-its own bug (it makes the tool unusable exactly when you want to diagnose it).
+The rule: a command that genuinely depends on a readiness condition treats it as a hard prerequisite and verifies it at entry. The diagnostic commands (`status`, `version`, `help`, `doctor` itself) have no such prerequisites and must not gate. Gating them is its own bug, because it makes the tool unusable exactly when you want to diagnose it. A list or view command gates only on what it reads.
 
-A tool that lands files into a project adds one case. A read-only command that reads the landed target checks the landed version against the binary. It warns when the binary is newer than the record, and it refuses when the record is missing or newer than the binary. The diagnostic commands (`status`, `version`, `help`, `doctor`) stay exempt. [A version gate on every command](../agent-integration/a-version-gate-on-every-command.md) states the classes and the table.
+A tool that lands files into a project adds one case. A read-only command that reads the landed target, a list or view command included, checks the landed version against the binary. It warns when the binary is newer than the record, and it refuses when the record is missing or newer than the binary. The diagnostic commands (`status`, `version`, `help`, `doctor`) stay exempt. [A version gate on every command](../agent-integration/a-version-gate-on-every-command.md) states the classes and the table.
 
 Keep the guard cheap. It runs on every invocation of a hot command, so it should verify _presence
 and validity_, not do the expensive work itself (probe the token's expiry field; don't make a
@@ -184,7 +181,8 @@ catalog, per-command subsets, no drift.
 - [ ] Each check is classified **hard** (blocks) or **soft** (warns + fallback) in the catalog.
 - [ ] Each subcommand runs its hard-prerequisite subset **at entry** and refuses before any side
       effect.
-- [ ] Read-only/inert commands (`status`, `version`, `help`, `doctor`, list/view) do **not** gate.
+- [ ] The diagnostic commands (`status`, `version`, `help`, `doctor`) do not gate.
+- [ ] A command that reads a landed target, a list or view command included, takes its gate class from [A version gate on every command](../agent-integration/a-version-gate-on-every-command.md#every-invocation-carries-one-class).
 - [ ] Guards, `doctor`, and `init` share **one** probe set — no independent per-command checks.
 - [ ] A refusal carries a **specific stable exit code** and the check's **remediation string**
       verbatim.
