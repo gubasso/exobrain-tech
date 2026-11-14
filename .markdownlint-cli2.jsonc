@@ -94,6 +94,9 @@
     ".trash/",
     "draft*",
     // Written by release-plz (project-platform:hooks-exclude-generated-files).
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    // The agent skills that rk and sdd land byte for byte.
+    ".claude/skills/**",
+    ".agents/skills/**"
   ]
 }

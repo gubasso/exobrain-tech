@@ -71,6 +71,7 @@ Non-negotiable: the filesystem owns its own state, and no document indexes it. F
 <!-- END release-kit -->
 
 <!-- BEGIN spec-driven-docs docs -->
+
 ## Documentation
 
 - Load the affected specs before editing governed content: `_docs/specs/SPEC-<domain>.md`. <!-- markdownlint-disable-line MD013 -->
@@ -81,4 +82,5 @@ Non-negotiable: the filesystem owns its own state, and no document indexes it. F
 - For a question about this method or about operating `sdd`, run `sdd docs` and read only the topic it names. <!-- markdownlint-disable-line MD013 -->
 - Run `sdd verify` before handoff. <!-- markdownlint-disable-line MD013 -->
 - Keep adopted specs, the tracking registry, and local integration instance-owned. <!-- markdownlint-disable-line MD013 -->
+
 <!-- END spec-driven-docs docs -->

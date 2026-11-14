@@ -15,8 +15,10 @@
     # Freshness is the manager's own verb: nix flake update spec-driven-docs,
     # with the tag moved to match, followed by sdd upgrade.
     spec-driven-docs = {
-      url = "github:gubasso/spec-driven-docs/v0.17.0";
+      url = "github:gubasso/spec-driven-docs/v0.18.0";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.spec-driven-docs.follows = "";
+      inputs.release-kit.follows = "release-kit";
     };
     # The release-kit convention's own binary, `rk`. The workflow hooks of the
     # release-kit block call it by name, and `rk integrate` lands a branch on
@@ -24,8 +26,10 @@
     # `rk self-depend sync --apply`, run from a shell, moves the tag and the
     # lock together.
     release-kit = {
-      url = "github:gubasso/release-kit/v0.9.15";
+      url = "github:gubasso/release-kit/v0.10.0";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.release-kit.follows = "";
+      inputs.spec-driven-docs.follows = "spec-driven-docs";
     };
   };
 

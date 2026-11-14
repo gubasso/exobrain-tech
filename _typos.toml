@@ -8,7 +8,8 @@
 # .release-kit/manifest.json is rk's, and the sdd manifest and the docs
 # markdownlint configuration are sdd's, Cargo.lock is cargo's, CHANGELOG.md is
 # release-plz's, the release-plz and pr-commits workflows are rk's, and the
-# release workflow is cargo-dist's.
+# release workflow is cargo-dist's, and the agent skills under .claude/skills
+# and .agents/skills are rk's and sdd's.
 [files]
 extend-exclude = [
   "flake.lock",
@@ -20,6 +21,8 @@ extend-exclude = [
   ".github/workflows/release-plz.yml",
   ".github/workflows/pr-commits.yml",
   ".github/workflows/release.yml",
+  ".claude/skills",
+  ".agents/skills",
 ]
 
 [default.extend-words]

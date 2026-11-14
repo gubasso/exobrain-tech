@@ -12,9 +12,10 @@
 # the reason `no-named-method.sh` keeps its names in a file: a URL spelled here
 # would make the gate fail on its own definition.
 #
-# The projection is not a reference. The vendored payload and the managed lint
-# configuration at the documentation root are excluded whole -- each is
-# canon-written provenance rather than prose this repository authors -- and the
+# The projection is not a reference. The vendored payload, the managed lint
+# configuration at the documentation root, and the agent skills that the tools
+# land under `.claude/skills/` and `.agents/skills/` are excluded whole -- each
+# is canon-written provenance rather than prose this repository authors -- and the
 # forms that name it from outside are filtered from the residue: the
 # `.`-prefixed path, the `-verify` hook id, and the managed-block markers.
 # `_docs/decisions/` is exempt because a record states its own moment and is
@@ -35,7 +36,8 @@ status=0
 stray=$(git grep -In -F -e "$name" -- \
   ":(exclude)$home" ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
   ':(exclude)flake.nix' ':(exclude)flake.lock' ':(exclude)CHANGELOG.md' \
-  ":(exclude).$name" ':(exclude)_docs/.markdownlint-cli2.jsonc' |
+  ":(exclude).$name" ':(exclude)_docs/.markdownlint-cli2.jsonc' \
+  ':(exclude).claude/skills' ':(exclude).agents/skills' |
   sed -e "s/\.$name/PROJECTION/g" \
     -e "s/$name-verify/PROJECTION/g" \
     -e "s/urn:$name:/PROJECTION/g" \
@@ -50,7 +52,8 @@ stray=$(git grep -In -F -e "$name" -- \
 
 pinned=$(git grep -In -F -e "$url/" -- \
   ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
-  ":(exclude).$name" ':(exclude)CHANGELOG.md') || true
+  ":(exclude).$name" ':(exclude)CHANGELOG.md' \
+  ':(exclude).claude/skills' ':(exclude).agents/skills') || true
 [ -z "$pinned" ] || {
   echo "FAIL $rule: an upstream link carries a version or a deep path"
   echo "$pinned"
