@@ -95,8 +95,8 @@
     "draft*",
     // Written by release-plz (project-platform:hooks-exclude-generated-files).
     "CHANGELOG.md",
-    // The agent skills that rk and sdd land byte for byte.
-    ".claude/skills/**",
-    ".agents/skills/**"
+    // The agent skill packages that rk and sdd land byte for byte.
+    ".claude/skills/{rk-setup,rk-release,sdd-setup,sdd-write-docs}/**",
+    ".agents/skills/{rk-setup,rk-release,sdd-setup,sdd-write-docs}/**"
   ]
 }

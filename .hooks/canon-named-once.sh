@@ -14,7 +14,8 @@
 #
 # The projection is not a reference. The vendored payload, the managed lint
 # configuration at the documentation root, and the agent skills that the tools
-# land under `.claude/skills/` and `.agents/skills/` are excluded whole -- each
+# land under `.claude/skills/` and `.agents/skills/` (rk-setup, rk-release,
+# sdd-setup, sdd-write-docs) are excluded whole -- each
 # is canon-written provenance rather than prose this repository authors -- and the
 # forms that name it from outside are filtered from the residue: the
 # `.`-prefixed path, the `-verify` hook id, and the managed-block markers.
@@ -29,6 +30,14 @@ name=${url##*/}
 rule=knowledge-base-boundary:the-canon-is-named-once
 home=AGENTS.md
 status=0
+# The pathspecs that leave out the landed skill packages, as positional
+# parameters because POSIX sh has no arrays.
+set --
+for root in .claude/skills .agents/skills; do
+  for pkg in rk-setup rk-release sdd-setup sdd-write-docs; do
+    set -- "$@" ":(exclude)$root/$pkg"
+  done
+done
 
 # `flake.nix` and `flake.lock` name the project as a pinned tool input, which is
 # a tool dependency rather than a reference to a source
@@ -37,7 +46,7 @@ stray=$(git grep -In -F -e "$name" -- \
   ":(exclude)$home" ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
   ':(exclude)flake.nix' ':(exclude)flake.lock' ':(exclude)CHANGELOG.md' \
   ":(exclude).$name" ':(exclude)_docs/.markdownlint-cli2.jsonc' \
-  ':(exclude).claude/skills' ':(exclude).agents/skills' |
+  "$@" |
   sed -e "s/\.$name/PROJECTION/g" \
     -e "s/$name-verify/PROJECTION/g" \
     -e "s/urn:$name:/PROJECTION/g" \
@@ -53,7 +62,7 @@ stray=$(git grep -In -F -e "$name" -- \
 pinned=$(git grep -In -F -e "$url/" -- \
   ':(exclude)_docs/decisions' ':(exclude).hooks/upstream-canon.txt' \
   ":(exclude).$name" ':(exclude)CHANGELOG.md' \
-  ':(exclude).claude/skills' ':(exclude).agents/skills') || true
+  "$@") || true
 [ -z "$pinned" ] || {
   echo "FAIL $rule: an upstream link carries a version or a deep path"
   echo "$pinned"

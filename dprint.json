@@ -22,9 +22,15 @@
     "_docs/.markdownlint-cli2.jsonc",
     // Written by release-plz (project-platform:hooks-exclude-generated-files).
     "CHANGELOG.md",
-    // The agent skills that rk and sdd land byte for byte (project-platform:hooks-exclude-generated-files).
-    ".claude/skills",
-    ".agents/skills",
+    // The agent skill packages that rk and sdd land byte for byte (project-platform:hooks-exclude-generated-files).
+    ".claude/skills/rk-setup",
+    ".claude/skills/rk-release",
+    ".claude/skills/sdd-setup",
+    ".claude/skills/sdd-write-docs",
+    ".agents/skills/rk-setup",
+    ".agents/skills/rk-release",
+    ".agents/skills/sdd-setup",
+    ".agents/skills/sdd-write-docs",
     // Shipped by sdd and kept byte-equal to its copy, so no formatter reshapes them.
     "_docs/specs/SPEC-budget-debt.md",
     "_docs/specs/SPEC-comparison-docs.md",

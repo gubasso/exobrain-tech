@@ -29,9 +29,11 @@
 #       .github/workflows/release-plz.yml rk
 #       .github/workflows/pr-commits.yml  rk
 #       .github/workflows/release.yml     cargo-dist
-#       .claude/skills/, .agents/skills/  rk and sdd, which land the agent skills
+#       .claude/skills/, .agents/skills/  rk and sdd, which land the agent skill
+#                                         packages rk-setup, rk-release,
+#                                         sdd-setup, and sdd-write-docs
 #     Each Markdown form or wording gate below also skips CHANGELOG.md and the
-#     two skill roots, and
+#     the landed skill packages, and
 #     the two wording scripts leave it out of their git grep. The file does
 #     not exist before the first release, and check-useless-excludes refuses
 #     an exclude that matches nothing, so a hook with no other exclude skips
@@ -133,13 +135,13 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]   # keep two-space hard breaks
         stages: [pre-commit, pre-merge-commit]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml|\.(claude|agents)/skills/.+)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/.+)$'
       - id: end-of-file-fixer
         stages: [pre-commit, pre-merge-commit]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml|\.(claude|agents)/skills/.+)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/.+)$'
       - id: mixed-line-ending
         args: [--fix=lf]
-        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml|\.(claude|agents)/skills/.+)$'
+        exclude: '^(flake\.lock|\.spec-driven-docs/manifest\.json|\.release-kit/manifest\.json|_docs/\.markdownlint-cli2\.jsonc|Cargo\.lock|CHANGELOG\.md|\.github/workflows/(release-plz|pr-commits|release)\.yml|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/.+)$'
       - id: check-added-large-files
         args: ['--maxkb=16384']
         stages: [pre-commit, pre-merge-commit]
@@ -223,7 +225,7 @@ repos:
         # -c: don't gate on TOC list coherence (free-form notes may diverge).
         # -p: write in place. --skip-lines 1: don't TOC the H1 title.
         args: [-p, -c, --skip-lines, '1', github]
-        exclude: '^(_docs/specs/SPEC-(budget-debt|comparison-docs|decision-records|docs-format|docs-foundations|docs-specs|guides|instance|known-issues|spec-to-code|tracking|writing-policy|writing-style)\.md|CHANGELOG\.md|\.(claude|agents)/skills/.+)$'
+        exclude: '^(_docs/specs/SPEC-(budget-debt|comparison-docs|decision-records|docs-format|docs-foundations|docs-specs|guides|instance|known-issues|spec-to-code|tracking|writing-policy|writing-style)\.md|CHANGELOG\.md|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/.+)$'
 
   # --- Markdown lint (style gate + ordered-list renumber autofix) ---
   #
@@ -253,14 +255,14 @@ repos:
         types: [markdown]
         entry: '\]\((?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/)[^)/\s:]+\.[A-Za-z0-9]+(?:#[^)]*)?\)'
         # Skips release-plz's CHANGELOG.md and the landed skills, as the header says.
-        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/)'
+        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/)'
       - id: no-bare-relative-link-defs
         name: markdown link definitions must be explicit (./, ../, or a path)
         language: pygrep
         types: [markdown]
         entry: '^\s*\[[^\]]+\]:\s+(?!https?://|ftp://|mailto:|tel:|/|#|\.\.?/|<)[^\s/:#]+\.[A-Za-z0-9]+'
         # Skips release-plz's CHANGELOG.md and the landed skills, as the header says.
-        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/)'
+        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/)'
 
   # --- No document indexes the filesystem (ADR-filesystem-owns-disk-state; pre-commit, local) ---
   #
@@ -285,14 +287,14 @@ repos:
         types: [markdown]
         entry: '^source-files:'
         # Skips release-plz's CHANGELOG.md and the landed skills, as the header says.
-        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/)'
+        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/)'
       - id: no-source-map-section
         name: no topic-to-filename source map section
         language: pygrep
         types: [markdown]
         entry: '(?i)^#{1,6}[ \t]+source[ \t]+map[ \t]*$'
         # Skips release-plz's CHANGELOG.md and the landed skills, as the header says.
-        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/)'
+        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/)'
 
 
   # Instance policy: this retired name is specific to this knowledge base. The
@@ -319,7 +321,7 @@ repos:
         types: [markdown]
         entry: .hooks/guide-recipe-shape.sh
         # Skips release-plz's CHANGELOG.md and the landed skills, as the header says.
-        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/)'
+        files: '^(?!CHANGELOG\.md$|\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/)'
 
   # Instance policy: this repository is an instance of the documentation canon,
   # so every mention of it is an upstream dependency reference, declared once.

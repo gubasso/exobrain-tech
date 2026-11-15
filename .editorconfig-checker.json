@@ -9,6 +9,6 @@
     "^\\.github/workflows/release-plz\\.yml$",
     "^\\.github/workflows/pr-commits\\.yml$",
     "^\\.github/workflows/release\\.yml$",
-    "^\\.(claude|agents)/skills/"
+    "^\\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/"
   ]
 }
