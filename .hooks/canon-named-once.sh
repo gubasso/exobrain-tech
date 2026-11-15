@@ -15,10 +15,10 @@
 # The projection is not a reference. The vendored payload, the managed lint
 # configuration at the documentation root, and the agent skills that the tools
 # land under `.claude/skills/` and `.agents/skills/` (rk-setup, rk-release,
-# sdd-setup, sdd-write-docs) are excluded whole -- each
-# is canon-written provenance rather than prose this repository authors -- and the
-# forms that name it from outside are filtered from the residue: the
-# `.`-prefixed path, the `-verify` hook id, and the managed-block markers.
+# sdd-setup, sdd-write-docs) are excluded whole -- each is canon-written
+# provenance rather than prose this repository authors -- and the forms that
+# name it from outside are filtered from the residue: the `.`-prefixed path,
+# the `-verify` hook id, and the managed-block markers.
 # `_docs/decisions/` is exempt because a record states its own moment and is
 # never edited to describe the present.
 #
