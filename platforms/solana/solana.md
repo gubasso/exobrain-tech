@@ -19,7 +19,7 @@
 
 - https://solana.com/developers
 
-- https://solanacookbook.com/
+- https://solana.com/developers/cookbook
 
 - https://www.anchor-lang.com/
 
