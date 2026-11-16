@@ -33,7 +33,7 @@ The landing record holds the version of the tool that wrote the skills. It lists
 The record then answers three questions for the skills, as it does for every landed file:
 
 - Drift: a skill file whose digest differs from the record is an edited file.
-- Retirement: a skill that the release no longer ships is a destination that the release retires.
+- Retirement: a skill file that the release no longer ships is retired, and deleted, where its digest matches the record. An edited one is dropped and stays.
 - The upgrade prompt: a record older than the binary names `upgrade`.
 
 The Agent Skills specification defines no top-level `version` field. Its example puts a version under `metadata`, a free map for properties that a client defines. A tool that lands skills leaves that key out, because the record already holds the version.

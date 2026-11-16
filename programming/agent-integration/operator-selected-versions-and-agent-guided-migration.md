@@ -75,8 +75,8 @@ runs them.
   is rarely written down beside it.
 - Prepare prerequisites the new version expects, before landing rather than during it.
 - Resolve the collisions the stage reported, one at a time, with the evidence attached.
-- Decide what happens to a retired destination. The tool released it and deleted nothing; whether
-  the file still earns its place is a project question.
+- Decide what happens to a dropped destination. The tool left it on disk and in the project's
+  hands. Whether the file still earns its place is a project question.
 - Adapt the project's own documentation where the landing changes what it describes.
 - Invoke the production landing. The tool renders fresh, and the agent does not copy the stage.
 - Read the real diff, not the predicted one.

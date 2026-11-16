@@ -1,6 +1,6 @@
 ---
 digest-of: programming/agent-integration
-last-synced: 2026-11-13
+last-synced: 2026-11-16
 token-estimate: 2000
 ---
 
@@ -51,7 +51,7 @@ How a project is built to be discovered, operated, and trusted by a coding agent
 - One configuration, typed by domain in an open set, one owner per answer. Precedence: flag, configuration, record, observation, default. The record is source-free; an edited answer stays pending until a landing records it. Availability is per capability at its dimensions.
 - A candidate is desired state for one invocation, from the executable's own sources, the resolved configuration, and the observed capabilities. The receipt is attributed installed state, and an older receipt schema is bounded record-reading.
 - Three ownership classes: a generated file the tool replaces, a seeded file the project owns after creation, a marked region inside a project-owned file. Provenance lives in the record.
-- Missing provenance reduces certainty and grants nothing. An unattributed whole file is never overwritten. A retired destination is reported and released, never deleted.
+- Missing provenance reduces certainty and grants nothing. An unattributed whole file is never overwritten. A file the candidate stops producing is retired, and deleted, only where its bytes match the receipt. Every other one is dropped and stays, owned by the project.
 
 ### Staging and landing
 

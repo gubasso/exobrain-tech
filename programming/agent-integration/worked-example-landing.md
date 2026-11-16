@@ -53,7 +53,7 @@ Staged 5 candidates, 1 omission, 1 collision.
 
   candidates   roost/housing.yml roost/feeding.yml roost/perches.log
                KEEPER.md roost/flight-hours.yml
-  omission     roost/seasonal.yml — retired, attributed by the receipt
+  omission     roost/seasonal.yml — retired, its bytes match the receipt
   collision    roost/flight-hours.yml — occupied, not attributed
 ```
 
@@ -72,8 +72,9 @@ it. Version control shows the keeper wrote that file by hand eight months ago, b
 existed, so the answer is to merge the keeper's entries into what the candidate produces and let
 the project decide which wins. A person approves that.
 
-`roost/seasonal.yml` is retired. The tool released the attribution and deleted nothing. The keeper
-still reads it every winter, so it stays, now as an ordinary project file.
+`roost/seasonal.yml` is retired. Its bytes match the receipt, so the landing deletes it, and the
+stage named it first. The new housing plan covers the winter roost, so the keeper loses nothing. Had
+the keeper edited the file, the tool would drop it instead, and it would stay as a project file.
 
 `roost/feeding.yml` is seeded and the project edited it. The new version expects one field the old
 schedule does not have. The tool preserves the file, and the agent adds the field, because the tuned
@@ -105,7 +106,7 @@ matched   roost/housing.yml
 preserved roost/feeding.yml
 preserved roost/perches.log
 replaced  KEEPER.md
-released  roost/seasonal.yml
+retired   roost/seasonal.yml
 receipt   .loft/receipt.json
 ```
 

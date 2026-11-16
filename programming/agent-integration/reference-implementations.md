@@ -38,11 +38,11 @@ The stage receipt names what the stage holds: the candidates with their destinat
 placement, and digest; the omissions with a reason; the collisions; the retired and the dropped
 destinations; and the reference material the stage exposes without landing.
 
-One outcome departs from [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md),
-which releases a retired destination and deletes nothing. Here, a whole rendered file that the
-release no longer produces, and whose bytes the receipt still vouches for, is `retired`: the
-landing removes it. Every other such destination is `dropped`: it stays on disk, and the project
-owns it.
+It implements the rule of [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing)
+with two outcomes. A whole rendered file that the release no longer produces, and whose bytes the
+receipt still vouches for, is `retired`, and the landing removes it. Every other such destination
+is `dropped`: it stays on disk, and the project owns it. `rk status --check` names an edited release
+workflow that stays.
 
 What it does not carry is as much of the map as what it does. There is no cross-release bundle, no
 stored executable plan, and no command that reconciles one release's output against another's. Both
@@ -107,6 +107,14 @@ The upstream canon this repository runs as a pinned tool, named and linked once 
 | Project skills       | `sdd init` and `sdd upgrade` write `sdd-setup` and `sdd-write-docs` into both roots |
 | Verification         | `sdd verify`                                                                        |
 | Cleanup              | `sdd stage clean`                                                                   |
+
+It departs from the rule of
+[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing)
+in two ways. An edited managed file that the release no longer lands is a conflict rather than a
+dropped file. The upgrade refuses until `sdd upgrade --replace` names it, and then it saves the
+bytes and removes the file. The landing also removes a vouched file only under
+`.spec-driven-docs/`, `.claude/skills/`, and `.agents/skills/`. Elsewhere the file stays on disk
+and leaves the record.
 
 Its migration moves a document corpus: the archive holds the old documents, and a group of decision
 records of the previous convention becomes one record whose considered options name each old

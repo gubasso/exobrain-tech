@@ -83,7 +83,7 @@ Owner: [Documentation and discovery](./documentation-and-discovery.md)
 - [ ] Production reads no staged byte. Deleting every staged artifact but the receipt changes nothing a landing writes.
 - [ ] Every path and collision is validated before the first write.
 - [ ] An unattributed whole file is refused rather than overwritten.
-- [ ] A retired destination is reported and released, never deleted.
+- [ ] A generated file the candidate stops producing is deleted only where its bytes match the receipt, and the preview and the stage name it first. Every other such destination is dropped and stays on disk.
 - [ ] The central receipt is written last.
 - [ ] The failure text promises a whole-file boundary and no transaction, names the paths observed completed, and says rerun is supported.
 - [ ] Cleanup is its own command, identifies the stage by its receipt, and refuses a symlink, a filesystem or home root, the project root, and any ancestor of it.

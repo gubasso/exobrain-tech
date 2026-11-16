@@ -75,14 +75,15 @@ made half its changes.
 
 Then, per destination:
 
-| Destination state                         | The write                                      |
-| ----------------------------------------- | ---------------------------------------------- |
-| Absent                                    | Create it                                      |
-| Attributed generated file, digest matches | Replace it                                     |
-| Attributed marked region                  | Replace the region, leave the rest of the file |
-| Seeded or state file the project owns     | Preserve it                                    |
-| Occupied, unattributed                    | Refuse, and write nothing there                |
-| Attributed, absent from the candidate     | Leave it, and release the attribution          |
+| Destination state                                        | The write                                      |
+| -------------------------------------------------------- | ---------------------------------------------- |
+| Absent                                                   | Create it                                      |
+| Attributed generated file, digest matches                | Replace it                                     |
+| Attributed marked region                                 | Replace the region, leave the rest of the file |
+| Seeded or state file the project owns                    | Preserve it                                    |
+| Occupied, unattributed                                   | Refuse, and write nothing there                |
+| Generated file absent from the candidate, digest matches | Delete it, which retires it                    |
+| Other attributed destination absent from the candidate   | Leave it to the project, which drops it        |
 
 The central receipt is written last. Until it is, the project holds new files the record does not
 claim, which is recoverable. The reverse, a record claiming files that were never written, is not.

@@ -60,27 +60,32 @@ The rule that follows is the sharp one: an unattributed whole file at a candidat
 
 Confidence can be recovered from outside the receipt. Version control history shows when a file arrived and in what shape. An agent reads that history, the project's own documentation, and the file itself, and reaches a judgment a person can review. What the tool does not do is fetch an older release of itself to manufacture the record it is missing.
 
-## Retirement releases a destination
+## A destination the candidate stops producing
 
-A destination the receipt attributes, and the current candidate no longer produces, is retired. The tool reports it and drops the attribution, which leaves the file in the project under the project's ownership.
+A destination the receipt attributes, and the current candidate no longer produces, leaves the receipt. What happens on disk depends on whether the bytes are still the tool's own.
 
-It does not delete the file. Automatic deletion needs a stronger contract than attribution alone: the receipt says the tool put the file there, and says nothing about whether anything has come to depend on it since. Reporting the retirement gives a person or an agent the decision with the evidence attached.
+A whole generated file whose bytes match the receipt digest is retired. The landing deletes it. The preview and the stage name each retired file before the landing runs.
+
+Every other such destination is dropped: an edited generated file, a seeded or state file, a marked region, and a file the project's state withholds. A dropped destination stays on disk, and the project owns it from that landing. A check reports a dropped file that still acts, such as an edited release workflow.
+
+The digest is the argument for the deletion. It proves that the bytes are the tool's own, and the earlier release reproduces them, so a deletion loses nothing. A file left in place can keep acting. A release workflow that a new release engine replaced still runs on every push, beside the engine.
 
 ## The cases that decide the design
 
 Each of these is a state the tool meets in practice, and the behavior is what the chapter above produces.
 
-| State                                         | What the tool does                                          |
-| --------------------------------------------- | ----------------------------------------------------------- |
-| Generated file, digest matches                | Replaces it                                                 |
-| Generated file, digest differs                | Reports the edit and leaves the file                        |
-| Seeded file, present and changed              | Leaves it, because the project owns it                      |
-| Attributed file, absent from disk             | Creates it again                                            |
-| Destination occupied, no attribution          | Reports the collision and writes nothing                    |
-| Marked region, markers absent or malformed    | Reports the file as unresolvable and leaves it              |
-| Attributed destination, absent from candidate | Reports the retirement and releases the file to the project |
+| State                                                | What the tool does                             |
+| ---------------------------------------------------- | ---------------------------------------------- |
+| Generated file, digest matches                       | Replaces it                                    |
+| Generated file, digest differs                       | Reports the edit and leaves the file           |
+| Seeded file, present and changed                     | Leaves it, because the project owns it         |
+| Attributed file, absent from disk                    | Creates it again                               |
+| Destination occupied, no attribution                 | Reports the collision and writes nothing       |
+| Marked region, markers absent or malformed           | Reports the file as unresolvable and leaves it |
+| Generated file absent from candidate, digest matches | Deletes it, which retires it                   |
+| Other attributed destination, absent from candidate  | Leaves it to the project, which drops it       |
 
-Two of these rows are the ones that carry the design. An unattributed collision is a refusal rather than a heuristic, and a retirement is a report rather than a deletion. Both trade a little convenience for the property that the tool never destroys something it cannot account for.
+Three of these rows carry the design. An unattributed collision is a refusal rather than a heuristic. A retirement deletes only bytes the receipt vouches for, and anything else is dropped. Each row keeps the property that the tool never destroys something it cannot account for.
 
 ## See also
 
