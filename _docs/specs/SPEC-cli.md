@@ -10,6 +10,8 @@
     - [Scenario: The guard runs outside git](#scenario-the-guard-runs-outside-git)
   - [`cli:store-guard-daily-runs-once-a-day` — The daily guard scans at most once a day](#clistore-guard-daily-runs-once-a-day--the-daily-guard-scans-at-most-once-a-day)
     - [Scenario: The first scan of the day fails](#scenario-the-first-scan-of-the-day-fails)
+  - [`cli:store-guard-daily-runs-prek-gc-once-a-week` — The daily guard runs prek cache gc once a week](#clistore-guard-daily-runs-prek-gc-once-a-week--the-daily-guard-runs-prek-cache-gc-once-a-week)
+    - [Scenario: A configuration moves its rev during a hook run](#scenario-a-configuration-moves-its-rev-during-a-hook-run)
   - [`cli:store-guard-stays-quiet-when-switched-off` — The daily guard stays off when switched off](#clistore-guard-stays-quiet-when-switched-off--the-daily-guard-stays-off-when-switched-off)
     - [Scenario: A CI runner exports an empty CI variable](#scenario-a-ci-runner-exports-an-empty-ci-variable)
   - [`cli:output-is-human-or-json` — Output is human text or one JSON object](#clioutput-is-human-or-json--output-is-human-text-or-one-json-object)
@@ -29,7 +31,7 @@
 
 ## Purpose
 
-These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules.
+These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also runs `prek cache gc` once a week, and this spec owns that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules.
 
 ## Requirements
 
@@ -103,9 +105,33 @@ The lock is an `O_EXCL` file beside the stamp that holds the owner's pid. A run 
 
 Verify: `cargo nextest run -E 'test(daily_runs_once_a_day)'`
 
+### `cli:store-guard-daily-runs-prek-gc-once-a-week` — The daily guard runs prek cache gc once a week
+
+After the daily scan of a checkout, `exobrain store-guard --daily` MUST take these steps in order:
+
+1. If `prek` is not on `PATH`, it stops without a message.
+2. It resolves the prek store with `prek cache dir`.
+3. It takes the lock of that store.
+4. If the weekly stamp of that store is less than 7 days old, it skips `prek cache gc`.
+5. Otherwise, it writes today's date to the weekly stamp atomically, and then runs `prek cache gc`.
+
+The weekly stamp and its lock belong to the prek store, not to a checkout. They are `${XDG_STATE_HOME:-$HOME/.local/state}/exobrain/store-guard/gc-<basename>-<digest16>.stamp` and the `.lock` beside it, and the digest is the SHA-256 of the store path. Every checkout on one store shares them, so two checkouts that run at once start one `gc` at most. The lock follows the rules of the daily lock. The daily stamp comes first, so the guard calls `prek` at most once a day per checkout.
+
+When `gc` frees space, the guard prints one line on stderr with the freed size. When `gc` frees nothing, the guard prints nothing. When `gc` fails, the guard prints the error on one line and still exits 0.
+
+On prek 0.5.7 to 0.5.11, `gc` can remove the files of a running hook. `prek run` holds the store lock only while it prepares and installs the hooks, and the hooks run outside the lock. `gc` keeps only the clones and environments that the configurations on disk pin at that moment. It also deletes the `scratch/` folder of the store, where a hook with a shell entry writes its script as it starts. If a configuration moves a `rev` while its hooks run, a `gc` in that window removes the clone and the environment of the old `rev`. The effect is one failed hook run. A rerun installs the new `rev` and passes, and nothing else is lost.
+
+#### Scenario: A configuration moves its rev during a hook run
+
+- GIVEN a prek hook run whose hook reads a file of its clone, and a configuration on disk that moves the `rev` of that repository during the run
+- WHEN the weekly `prek cache gc` runs before the hook reads the file
+- THEN `gc` removes the clone, and the hook run fails
+
+Verify: `cargo nextest run -E 'test(weekly_prek_gc)'`
+
 ### `cli:store-guard-stays-quiet-when-switched-off` — The daily guard stays off when switched off
 
-In either of these conditions, `store-guard --daily` MUST exit 0 without a scan and without a stamp:
+In either of these conditions, `store-guard --daily` MUST exit 0 without a scan, without `prek cache gc`, and without a stamp:
 
 - `EXOBRAIN_STORE_GUARD` is `0`.
 - One of `CI`, `GITHUB_ACTIONS`, `GITLAB_CI`, `BUILDKITE`, `CIRCLECI`, and `TF_BUILD` holds a value other than empty, `0`, or `false` in any case.

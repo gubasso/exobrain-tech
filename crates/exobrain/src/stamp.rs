@@ -1,7 +1,10 @@
-//! The daily stamp and the per-checkout lock of `store-guard --daily`.
+//! The stamps and locks of `store-guard --daily`.
 //!
-//! Both live under `${XDG_STATE_HOME:-$HOME/.local/state}/exobrain/store-guard/`,
-//! keyed by the checkout's base name and a digest of its canonical path.
+//! All live under `${XDG_STATE_HOME:-$HOME/.local/state}/exobrain/store-guard/`.
+//! The daily stamp and its lock are keyed by the checkout's base name and a
+//! digest of its canonical path. The weekly `prek cache gc` stamp and its
+//! lock are keyed by the resolved prek store instead, so every checkout that
+//! shares a store shares them.
 //! The lock follows release-kit's guard: an `O_EXCL` create holding the
 //! owner's pid, taken over when procfs shows the owner gone or, where
 //! procfs cannot judge, after a grace period.
@@ -47,6 +50,16 @@ pub fn key(checkout: &Path) -> String {
     format!("{base}-{hex}")
 }
 
+/// The key of one prek store: `gc-` and the key of its resolved path, so it
+/// never meets the key of a checkout of the same name.
+#[must_use]
+pub fn store_key(store: &Path) -> String {
+    format!("gc-{}", key(store))
+}
+
+/// The number of days between two runs of `prek cache gc`.
+pub const GC_INTERVAL_DAYS: i32 = 7;
+
 /// Today, as the local calendar date `YYYY-MM-DD`.
 #[must_use]
 pub fn today() -> String {
@@ -57,6 +70,25 @@ pub fn today() -> String {
 #[must_use]
 pub fn stamped_today(path: &Path) -> bool {
     fs::read_to_string(path).is_ok_and(|text| text.trim() == today())
+}
+
+/// Whether the weekly stamp at `path` is due: missing, unreadable, from the
+/// future, or at least [`GC_INTERVAL_DAYS`] days old.
+#[must_use]
+pub fn due_weekly(path: &Path) -> bool {
+    let Some(stamped) = fs::read_to_string(path)
+        .ok()
+        .and_then(|text| text.trim().parse::<jiff::civil::Date>().ok())
+    else {
+        return true;
+    };
+    let today = jiff::Zoned::now().date();
+    stamped
+        .until((jiff::Unit::Day, today))
+        .map_or(true, |span| {
+            let days = span.get_days();
+            !(0..GC_INTERVAL_DAYS).contains(&days)
+        })
 }
 
 /// Write today's date at `path` through a temporary file and a rename,
@@ -168,7 +200,7 @@ fn owner_gone(pid: Option<u64>, lock: &Path) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{Acquired, acquire, key};
+    use super::{Acquired, acquire, due_weekly, key, store_key};
 
     #[test]
     fn the_lock_is_exclusive_and_released_on_drop() {
@@ -196,5 +228,27 @@ mod tests {
         let (base, digest) = key.rsplit_once('-').unwrap();
         assert_eq!(base, "repo");
         assert_eq!(digest.len(), 16);
+    }
+
+    #[test]
+    fn the_weekly_stamp_is_due_after_seven_days() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("w.stamp");
+        assert!(due_weekly(&path), "a missing stamp is due");
+        let today = jiff::Zoned::now().date();
+        for (days, due) in [(0, false), (6, false), (7, true), (30, true), (-1, true)] {
+            let date = today.checked_sub(jiff::Span::new().days(days)).unwrap();
+            std::fs::write(&path, format!("{date}\n")).unwrap();
+            assert_eq!(due_weekly(&path), due, "{days} days ago");
+        }
+        std::fs::write(&path, "garbage\n").unwrap();
+        assert!(due_weekly(&path), "an unreadable stamp is due");
+    }
+
+    #[test]
+    fn the_store_key_differs_from_a_checkout_key() {
+        let store = std::path::Path::new("/srv/cache/prek");
+        assert_eq!(store_key(store), format!("gc-{}", key(store)));
+        assert_ne!(store_key(store), key(store));
     }
 }

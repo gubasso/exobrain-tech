@@ -1,15 +1,19 @@
 //! Shared plumbing for the integration suites.
 //!
 //! A `World` owns one scratch folder holding a faked store, a stub `nix`,
-//! a state root, and the git repositories a test builds. Every `exobrain`
-//! invocation it makes reaches only that folder: never the real
-//! `/nix/store`, the real `nix`, or the developer's state.
+//! a state root, a prek store, and the git repositories a test builds.
+//! Every `exobrain` invocation it makes reaches only that folder: never the
+//! real `/nix/store`, the real `nix`, the developer's prek store, or the
+//! developer's state. Its `PATH` holds only `git` and the base tools that
+//! the stubs call, and `prek` once a test adds one.
 
 // A helper that one integration binary does not call is still shared, and
 // a helper unwraps because a broken fixture should abort the test.
 #![allow(
     dead_code,
     clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
     reason = "shared test plumbing, where a broken fixture aborts the test"
 )]
 
@@ -56,6 +60,43 @@ done
 printf '}\n'
 "#;
 
+/// The stub `prek`: `cache dir` prints the store of the world, and
+/// `cache gc` logs each call beside itself, sleeps for `STUB_PREK_SLEEP`
+/// seconds, fails when `STUB_PREK_FAIL` is set, and prints `STUB_PREK_OUT`
+/// or a report that frees 12.5 MiB.
+const STUB_PREK: &str = r#"#!/bin/sh
+case "$1 $2" in
+"cache dir") echo "@STORE@" ;;
+"cache gc")
+    echo call >> "$(dirname "$0")/prek.log"
+    sleep "${STUB_PREK_SLEEP:-0}"
+    if [ -n "${STUB_PREK_FAIL:-}" ]; then echo "error: stub gc failure" >&2; exit 2; fi
+    printf '%s\n' "${STUB_PREK_OUT-Removed 1 repo, 2 hook envs (12.5MiB)}"
+    ;;
+*) echo "stub prek: unexpected $*" >&2; exit 3 ;;
+esac
+"#;
+
+/// The tools on the `PATH` of `exobrain`: `git`, and the base tools that
+/// the stubs call.
+const PATH_TOOLS: [&str; 4] = ["git", "dirname", "sleep", "cat"];
+
+/// The absolute path of `name` on the `PATH` of the test process.
+pub fn which(name: &str) -> Option<PathBuf> {
+    std::env::split_paths(&std::env::var_os("PATH")?)
+        .map(|dir| dir.join(name))
+        .find(|path| path.is_file())
+}
+
+/// Write an executable shell script at `path`.
+fn write_script(path: &Path, text: &str) {
+    std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    std::fs::write(path, text).unwrap();
+    let mut perms = std::fs::metadata(path).unwrap().permissions();
+    std::os::unix::fs::PermissionsExt::set_mode(&mut perms, 0o755);
+    std::fs::set_permissions(path, perms).unwrap();
+}
+
 /// A `git` invocation that acts on `dir` alone, with no inherited
 /// configuration and no hook variables.
 pub fn git(dir: &Path) -> std::process::Command {
@@ -83,6 +124,26 @@ pub fn run_git(dir: &Path, args: &[&str]) {
     );
 }
 
+/// A date `days` before today, as a stamp holds it.
+pub fn days_ago(days: i64) -> String {
+    let today = jiff::Zoned::now().date();
+    format!(
+        "{}\n",
+        today.checked_sub(jiff::Span::new().days(days)).unwrap()
+    )
+}
+
+/// Wait up to 30 seconds for `path` to exist.
+pub fn wait_for(path: &Path) {
+    for _ in 0..300 {
+        if path.exists() {
+            return;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
+    panic!("{} never appeared", path.display());
+}
+
 /// One scratch world.
 pub struct World {
     dir: tempfile::TempDir,
@@ -95,12 +156,11 @@ impl World {
         let world = Self { dir };
         std::fs::create_dir_all(world.store()).unwrap();
         std::fs::create_dir_all(world.root().join("home")).unwrap();
-        let stub = world.root().join("bin/nix");
-        std::fs::create_dir_all(stub.parent().unwrap()).unwrap();
-        std::fs::write(&stub, STUB_NIX).unwrap();
-        let mut perms = std::fs::metadata(&stub).unwrap().permissions();
-        std::os::unix::fs::PermissionsExt::set_mode(&mut perms, 0o755);
-        std::fs::set_permissions(&stub, perms).unwrap();
+        write_script(&world.root().join("bin/nix"), STUB_NIX);
+        for tool in PATH_TOOLS {
+            let target = which(tool).unwrap_or_else(|| panic!("{tool} is on PATH"));
+            world.link_tool(tool, &target);
+        }
         world
     }
 
@@ -117,6 +177,80 @@ impl World {
     /// The state root `XDG_STATE_HOME` points at.
     pub fn state(&self) -> PathBuf {
         self.root().join("state")
+    }
+
+    /// The only folder on the `PATH` of `exobrain`.
+    pub fn path_dir(&self) -> PathBuf {
+        self.root().join("path")
+    }
+
+    /// The prek store `PREK_HOME` points at.
+    pub fn prek_store(&self) -> PathBuf {
+        self.root().join("prek")
+    }
+
+    /// Put a wrapper named `name` that runs `target` on the `PATH` of
+    /// `exobrain`.
+    fn link_tool(&self, name: &str, target: &Path) {
+        write_script(
+            &self.path_dir().join(name),
+            &format!("#!/bin/sh\nexec '{}' \"$@\"\n", target.display()),
+        );
+    }
+
+    /// Put the stub `prek` on the `PATH` of `exobrain`.
+    pub fn stub_prek(&self) {
+        let text = STUB_PREK.replace("@STORE@", &self.prek_store().display().to_string());
+        write_script(&self.path_dir().join("prek"), &text);
+    }
+
+    /// Put the host's `prek` on the `PATH` of `exobrain`. prek is a host
+    /// tool of this repository, so a host without it fails the test.
+    pub fn real_prek(&self) -> PathBuf {
+        let prek = which("prek").expect("prek, a host tool of this repository, is on PATH");
+        self.link_tool("prek", &prek);
+        prek
+    }
+
+    /// How many times the stub `prek` ran `cache gc`.
+    pub fn gc_calls(&self) -> usize {
+        std::fs::read_to_string(self.path_dir().join("prek.log"))
+            .map_or(0, |log| log.lines().count())
+    }
+
+    /// The weekly `prek cache gc` stamps in the state folder.
+    pub fn gc_stamps(&self) -> Vec<PathBuf> {
+        self.stamps()
+            .into_iter()
+            .filter(|path| {
+                path.file_name()
+                    .unwrap()
+                    .to_string_lossy()
+                    .starts_with("gc-")
+            })
+            .collect()
+    }
+
+    /// The daily stamps of checkouts in the state folder.
+    pub fn daily_stamps(&self) -> Vec<PathBuf> {
+        self.stamps()
+            .into_iter()
+            .filter(|path| {
+                !path
+                    .file_name()
+                    .unwrap()
+                    .to_string_lossy()
+                    .starts_with("gc-")
+            })
+            .collect()
+    }
+
+    /// Clear the daily stamp of every checkout, so the next `--daily` run
+    /// reaches the weekly step on the same day.
+    pub fn clear_daily(&self) {
+        for stamp in self.daily_stamps() {
+            std::fs::remove_file(stamp).unwrap();
+        }
     }
 
     /// The folder the stamps and locks live in.
@@ -209,6 +343,11 @@ impl World {
             .env_remove("EXOBRAIN_STORE_GUARD")
             .env_remove("STUB_SLEEP")
             .env_remove("STUB_FAIL")
+            .env_remove("STUB_PREK_SLEEP")
+            .env_remove("STUB_PREK_FAIL")
+            .env_remove("STUB_PREK_OUT")
+            .env("PATH", self.path_dir())
+            .env("PREK_HOME", self.prek_store())
             .env("GIT_CONFIG_NOSYSTEM", "1")
             .env("GIT_CONFIG_GLOBAL", "/dev/null")
             .env("EXOBRAIN_STORE_DIR", self.store())

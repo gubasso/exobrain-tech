@@ -1,6 +1,11 @@
 //! `exobrain store-guard`: find the copies of this checkout in the Nix
 //! store, which a flake reference that does not read the git tree leaves
 //! behind.
+//!
+//! Its daily mode also runs `prek cache gc` once a week per prek store.
+
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
 use camino::Utf8PathBuf;
 use serde::Serialize;
@@ -118,7 +123,101 @@ fn daily(min_size: u64) {
         Ok(_) => {}
         Err(e) => output::note(&format!("exobrain store-guard: {e}")),
     }
+    prek_gc(&dir);
     drop(lock);
+}
+
+/// The weekly `prek cache gc`: silent without `prek` on `PATH`, at most one
+/// run every [`stamp::GC_INTERVAL_DAYS`] days and one at a time per prek
+/// store, one line with the freed size, and never a failure.
+fn prek_gc(dir: &Path) {
+    let store = match prek_store() {
+        Ok(Some(store)) => store,
+        Ok(None) => return,
+        Err(e) => {
+            output::note(&format!("exobrain store-guard: prek cache dir: {e}"));
+            return;
+        }
+    };
+    let key = stamp::store_key(&store);
+    let _lock = match stamp::acquire(&dir.join(format!("{key}.lock"))) {
+        Acquired::Held(lock) => lock,
+        Acquired::Contended => return,
+        Acquired::Unavailable(e) => {
+            output::note(&format!(
+                "exobrain store-guard: state folder {} is not writable ({e}); prek cache gc skipped",
+                dir.display()
+            ));
+            return;
+        }
+    };
+    let stamp_path = dir.join(format!("{key}.stamp"));
+    if !stamp::due_weekly(&stamp_path) {
+        return;
+    }
+    if let Err(e) = stamp::write_stamp(&stamp_path) {
+        output::note(&format!(
+            "exobrain store-guard: cannot write {} ({e}); prek cache gc skipped",
+            stamp_path.display()
+        ));
+        return;
+    }
+    match prek(&["cache", "gc"]) {
+        Ok(Some(stdout)) => {
+            if let Some(freed) = freed_size(&stdout) {
+                output::note(&format!(
+                    "exobrain store-guard: prek cache gc freed {freed} in {}",
+                    store.display()
+                ));
+            }
+        }
+        Ok(None) => {}
+        Err(e) => output::note(&format!("exobrain store-guard: prek cache gc: {e}")),
+    }
+}
+
+/// The store that `prek cache dir` resolves, or `None` without `prek` on
+/// `PATH`.
+fn prek_store() -> Result<Option<PathBuf>, String> {
+    Ok(prek(&["cache", "dir"])?
+        .map(|stdout| PathBuf::from(stdout.trim()))
+        .filter(|store| !store.as_os_str().is_empty()))
+}
+
+/// Run `prek` with `args` and return its stdout, or `None` when `prek` is
+/// not on `PATH`.
+fn prek(args: &[&str]) -> Result<Option<String>, String> {
+    let output = match Command::new("prek")
+        .args(args)
+        .env("PREK_COLOR", "never")
+        .output()
+    {
+        Ok(output) => output,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(e) => return Err(e.to_string()),
+    };
+    if output.status.success() {
+        return Ok(Some(String::from_utf8_lossy(&output.stdout).into_owned()));
+    }
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    let reason = stderr
+        .lines()
+        .map(str::trim)
+        .find(|line| !line.is_empty())
+        .map_or_else(|| output.status.to_string(), str::to_owned);
+    Err(reason)
+}
+
+/// The freed size of a `prek cache gc` report: the last parenthesized
+/// value of its `Removed ...` line, or `None` when it removed nothing.
+fn freed_size(stdout: &str) -> Option<&str> {
+    let line = stdout
+        .lines()
+        .map(str::trim)
+        .find(|line| line.starts_with("Removed "))?;
+    let open = line.rfind('(')?;
+    let close = line[open..].find(')')? + open;
+    Some(&line[open + 1..close]).filter(|size| !size.is_empty())
 }
 
 /// List, attribute, and measure the store copies of `checkout`.
@@ -160,4 +259,20 @@ pub fn scan(checkout: &Checkout, min_size: u64) -> Result<Report, Error> {
         unattributed,
         total_nar_size,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::freed_size;
+
+    #[test]
+    fn the_freed_size_comes_from_the_removed_line() {
+        assert_eq!(
+            freed_size("Removed 2 repos, 3 hook envs (123.4MiB)\n"),
+            Some("123.4MiB")
+        );
+        assert_eq!(freed_size("Nothing to clean\n"), None);
+        assert_eq!(freed_size(""), None);
+        assert_eq!(freed_size("Removed 1 repo\n"), None);
+    }
 }

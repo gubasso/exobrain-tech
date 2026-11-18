@@ -8,7 +8,7 @@ mod support;
 use std::path::Path;
 
 use predicates::str::contains;
-use support::{BIG, World, run_git};
+use support::{BIG, World, days_ago, run_git, wait_for};
 
 const REMOTE: &str = "https://github.com/u/repo.git";
 
@@ -337,6 +337,250 @@ fn daily_runs_once_a_day_and_skips_an_unwritable_state_folder() {
     assert_eq!(out.status.code(), Some(0));
     assert_eq!(stderr_of(&out).lines().count(), 1, "{}", stderr_of(&out));
     assert_eq!(world.nix_calls(), 0);
+}
+
+// cli:store-guard-daily-runs-prek-gc-once-a-week
+
+#[test]
+fn weekly_prek_gc_runs_when_the_stamp_is_older_than_seven_days() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    world.stub_prek();
+    let out = world.guard(&repo).arg("--daily").output().unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    let text = stderr_of(&out);
+    assert_eq!(text.lines().count(), 1, "{text}");
+    assert!(text.contains("prek cache gc freed 12.5MiB in"), "{text}");
+    assert!(
+        text.contains(&world.prek_store().display().to_string()),
+        "{text}"
+    );
+    assert_eq!(world.gc_calls(), 1, "a missing stamp runs gc");
+    let stamps = world.gc_stamps();
+    assert_eq!(stamps.len(), 1);
+    let today = exobrain::stamp::today();
+    assert_eq!(std::fs::read_to_string(&stamps[0]).unwrap().trim(), today);
+
+    world.clear_daily();
+    std::fs::write(&stamps[0], days_ago(8)).unwrap();
+    world.guard(&repo).arg("--daily").assert().code(0);
+    assert_eq!(world.gc_calls(), 2, "a stamp of eight days ago runs gc");
+    assert_eq!(std::fs::read_to_string(&stamps[0]).unwrap().trim(), today);
+}
+
+#[test]
+fn weekly_prek_gc_waits_seven_days_across_checkouts() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    let other = world.repo("other", None);
+    world.stub_prek();
+    world.guard(&repo).arg("--daily").assert().code(0);
+    assert_eq!(world.gc_calls(), 1);
+
+    // Another checkout on the same store shares the weekly stamp.
+    let out = world.guard(&other).arg("--daily").output().unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+    assert_eq!(
+        world.gc_calls(),
+        1,
+        "a second checkout the same day runs no gc"
+    );
+    assert_eq!(world.gc_stamps().len(), 1, "one weekly stamp per store");
+    assert_eq!(
+        world.daily_stamps().len(),
+        2,
+        "one daily stamp per checkout"
+    );
+
+    world.clear_daily();
+    std::fs::write(&world.gc_stamps()[0], days_ago(6)).unwrap();
+    world.guard(&repo).arg("--daily").assert().code(0);
+    assert_eq!(world.gc_calls(), 1, "a stamp of six days ago runs no gc");
+}
+
+#[test]
+fn weekly_prek_gc_skips_without_prek() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    let out = world.guard(&repo).arg("--daily").output().unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    assert!(
+        out.stdout.is_empty() && out.stderr.is_empty(),
+        "{}",
+        stderr_of(&out)
+    );
+    assert!(
+        world.gc_stamps().is_empty(),
+        "no prek writes no weekly stamp"
+    );
+}
+
+#[test]
+fn weekly_prek_gc_prints_nothing_when_it_frees_nothing() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    world.stub_prek();
+    let out = world
+        .guard(&repo)
+        .arg("--daily")
+        .env("STUB_PREK_OUT", "Nothing to clean")
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+    assert_eq!(world.gc_calls(), 1);
+}
+
+#[test]
+fn weekly_prek_gc_error_keeps_the_exit_code() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    world.plant_file("main", &gitdir_line(&repo.join(".git")), Some(BIG));
+    world.stub_prek();
+    let out = world
+        .guard(&repo)
+        .arg("--daily")
+        .env("STUB_PREK_FAIL", "1")
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    let text = stderr_of(&out);
+    assert_eq!(
+        text.lines().count(),
+        4,
+        "the copy warning and one gc line: {text}"
+    );
+    assert!(
+        text.contains("exobrain store-guard: prek cache gc: error: stub gc failure"),
+        "{text}"
+    );
+    assert_eq!(world.gc_stamps().len(), 1, "the stamp landed before gc");
+
+    world.clear_daily();
+    world.guard(&repo).arg("--daily").assert().code(0);
+    assert_eq!(world.gc_calls(), 1, "no second try within the week");
+}
+
+#[test]
+fn weekly_prek_gc_runs_once_across_concurrent_checkouts() {
+    let world = World::new();
+    let first_repo = world.repo("first", None);
+    let second_repo = world.repo("second", None);
+    world.stub_prek();
+    let spawn = |repo: &Path| {
+        world
+            .guard_std(repo)
+            .arg("--daily")
+            .env("STUB_PREK_SLEEP", "1")
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn()
+            .unwrap()
+    };
+    let (mut first, mut second) = (spawn(&first_repo), spawn(&second_repo));
+    assert!(first.wait().unwrap().success());
+    assert!(second.wait().unwrap().success());
+    assert_eq!(world.gc_calls(), 1);
+    assert_eq!(world.daily_stamps().len(), 2);
+}
+
+/// This test documents a race of prek that `SPEC-cli.md` records, against
+/// the host's prek. A hook runs outside the store lock, and `gc` keeps only
+/// what the configurations on disk pin. When the configuration moves its
+/// `rev` during a run, the weekly `gc` removes the clone that the running
+/// hook reads, and that hook run fails. If prek starts to keep the files
+/// of a running hook, this test fails, and the spec text changes with it.
+#[test]
+fn weekly_prek_gc_removes_the_clone_of_a_running_hook_whose_config_moved_its_rev() {
+    let world = World::new();
+    let prek = world.real_prek();
+    let sync = world.root().join("sync");
+    std::fs::create_dir_all(&sync).unwrap();
+
+    // A hook repository with a script hook, tagged v1 and v2.
+    let hooks = world.repo("hooks", None);
+    std::fs::write(
+        hooks.join(".pre-commit-hooks.yaml"),
+        "- id: slow\n  name: slow\n  entry: slow.sh\n  language: script\n  pass_filenames: false\n  always_run: true\n",
+    )
+    .unwrap();
+    let script = format!(
+        "#!/bin/sh\nd=$(dirname \"$0\")\n: > '{started}'\ni=0\nwhile [ ! -e '{go}' ] && [ $i -lt 300 ]; do sleep 0.1; i=$((i+1)); done\ncat \"$d/payload\"\n",
+        started = sync.join("started").display(),
+        go = sync.join("go").display(),
+    );
+    std::fs::write(hooks.join("slow.sh"), script).unwrap();
+    let mut perms = std::fs::metadata(hooks.join("slow.sh"))
+        .unwrap()
+        .permissions();
+    std::os::unix::fs::PermissionsExt::set_mode(&mut perms, 0o755);
+    std::fs::set_permissions(hooks.join("slow.sh"), perms).unwrap();
+    std::fs::write(hooks.join("payload"), "v1\n").unwrap();
+    run_git(&hooks, &["add", "-A"]);
+    run_git(&hooks, &["commit", "-q", "-m", "v1"]);
+    run_git(&hooks, &["tag", "v1"]);
+    std::fs::write(hooks.join("payload"), "v2\n").unwrap();
+    run_git(&hooks, &["commit", "-q", "-am", "v2"]);
+    run_git(&hooks, &["tag", "v2"]);
+
+    // A project that pins v1, and a hook run that waits inside the hook.
+    let project = world.repo("project", None);
+    let config = project.join(".pre-commit-config.yaml");
+    let pinned = |rev: &str| {
+        format!(
+            "repos:\n  - repo: {}\n    rev: {rev}\n    hooks:\n      - id: slow\n",
+            hooks.display()
+        )
+    };
+    std::fs::write(&config, pinned("v1")).unwrap();
+    run_git(&project, &["add", "-A"]);
+    // The run keeps the host's PATH for its hook, and none of the variables
+    // that git or an outer hook run exports.
+    let run = std::process::Command::new(&prek)
+        .args(["run", "--all-files"])
+        .current_dir(&project)
+        .env_clear()
+        .envs(std::env::vars_os().filter(|(name, _)| {
+            let name = name.to_string_lossy();
+            !name.starts_with("GIT_")
+                && !name.starts_with("PREK_")
+                && !name.starts_with("PRE_COMMIT")
+        }))
+        .env("PREK_HOME", world.prek_store())
+        .env("PREK_COLOR", "never")
+        .env("GIT_CONFIG_NOSYSTEM", "1")
+        .env("GIT_CONFIG_GLOBAL", "/dev/null")
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .unwrap();
+    wait_for(&sync.join("started"));
+    let clones: Vec<_> = std::fs::read_dir(world.prek_store().join("repos"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .collect();
+    assert_eq!(clones.len(), 1, "the run cloned v1");
+
+    // The configuration moves to v2 while the hook runs, and the weekly gc runs.
+    std::fs::write(&config, pinned("v2")).unwrap();
+    let guard = world.guard(&project).arg("--daily").output().unwrap();
+    assert_eq!(guard.status.code(), Some(0));
+    let text = stderr_of(&guard);
+    assert!(text.contains("prek cache gc freed"), "{text}");
+    assert!(
+        !clones[0].exists(),
+        "gc removed the clone of the running hook"
+    );
+
+    std::fs::write(sync.join("go"), "").unwrap();
+    let out = run.wait_with_output().unwrap();
+    let report = format!("{}{}", stdout_of(&out), stderr_of(&out));
+    assert!(!out.status.success(), "{report}");
+    assert!(
+        report.contains("payload: No such file or directory"),
+        "{report}"
+    );
 }
 
 // cli:store-guard-stays-quiet-when-switched-off
