@@ -22,3 +22,16 @@
   entry: exobrain host-check --parse-only
   pass_filenames: false
   files: '^host-requirements\.toml$'
+# The project names its sets in `args`, such as `[--set, common, --set, rust]`,
+# and prek appends them after the entry. prek expands `{hook_repo}` to the
+# clone of the tag that the `rev` of the entry pins, so the hook reads the sets
+# of that tag. prek 0.5.0 is the oldest that expands it, and pre-commit passes
+# it through as text. The host supplies `exobrain`.
+- id: hook-revisions
+  name: hook revisions follow the exobrain-tech tag
+  description: project-platform:hook-revisions-follow-the-exobrain-tech-tag
+  language: system
+  entry: exobrain hooks check --sets-dir {hook_repo}/programming/project-bootstrap/hook-sets .pre-commit-config.yaml
+  pass_filenames: false
+  files: '^\.pre-commit-config\.yaml$'
+  minimum_prek_version: "0.5.0"

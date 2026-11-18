@@ -454,6 +454,93 @@ out=$(try_hook "$req_hook" other.toml) ||
 printf '%s\n' "$out" | grep -q 'parses\.*(no files to check)Skipped$' ||
   fail "$req_hook did not skip a file outside its scope: $out"
 
+# --- hook-revisions -----------------------------------------------------------
+#
+# Published and run through a local twin, held equal past the cargo prefix as
+# host-requirements is, and the published hook runs the binary that the case
+# above put first on PATH. `prek try-repo` takes no hook `args`, and the hook
+# needs the `--set` arguments of a project, so each case runs `prek run` on a
+# config that pins a throwaway hook repository, with the entry and arguments
+# that a project uses. That repository holds the published manifest and the
+# sets at two tags: v1.0.0 as this tree holds them, and v1.1.0 with typos
+# moved. The project config that the hook reads names the exobrain-tech entry
+# and typos, as a project config does. prek keeps its clones under a PREK_HOME
+# of this run, so no throwaway tag reaches the store of the host.
+rev_hook=hook-revisions
+for key in entry files; do
+  published=$(field_of "$rev_hook" "$key" "$root/.pre-commit-hooks.yaml")
+  twin=$(field_of "$rev_hook" "$key" "$root/.pre-commit-config.yaml")
+  [ -n "$published" ] || fail "$rev_hook has no published $key"
+  [ "$key" = files ] || twin="exobrain ${twin#cargo run --quiet -p exobrain -- }"
+  [ "$published" = "$twin" ] ||
+    fail "$rev_hook: the published $key and the local twin differ"
+done
+rgit() {
+  git -c core.hooksPath=/dev/null -c commit.gpgSign=false -c tag.gpgSign=false \
+    -c user.name=test-gates -c user.email=test-gates@example.invalid "$@"
+}
+hr="$work/hook-revisions-repo"
+hr_common="$hr/programming/project-bootstrap/hook-sets/common.yaml"
+mkdir -p "$hr/programming/project-bootstrap"
+cp "$root/.pre-commit-hooks.yaml" "$hr/.pre-commit-hooks.yaml"
+cp -R "$root/programming/project-bootstrap/hook-sets" "$hr/programming/project-bootstrap/hook-sets"
+rgit -C "$hr" init -q
+rgit -C "$hr" add -A
+rgit -C "$hr" commit -qm "test: hold the sets"
+rgit -C "$hr" tag v1.0.0
+typos_rev=$(yq '.repos[] | select(.repo == "https://github.com/crate-ci/typos") | .rev' "$hr_common")
+[ -n "$typos_rev" ] || fail "$rev_hook: the common set pins no typos"
+yq -i '(.repos[] | select(.repo == "https://github.com/crate-ci/typos")).rev = "v9.0.0"' "$hr_common"
+rgit -C "$hr" commit -qam "test: move typos"
+rgit -C "$hr" tag v1.1.0
+# rev_case <name> <tag> <typos rev> builds a project at the tag that pins typos
+# at the rev, and runs the published hook on its config.
+rev_case() {
+  p="$work/hook-revisions-$1"
+  mkdir -p "$p"
+  rgit -C "$p" init -q
+  cat > "$p/.pre-commit-config.yaml" << EOF
+repos:
+  - repo: https://github.com/gubasso/exobrain-tech
+    rev: $2
+    hooks:
+      - id: hook-revisions
+        args: [--set, common, --set, rust]
+  - repo: https://github.com/crate-ci/typos
+    rev: $3
+    hooks:
+      - id: typos
+        args: [--write-changes]
+EOF
+  cat > "$p/run.yaml" << EOF
+repos:
+  - repo: $hr
+    rev: $2
+    hooks:
+      - id: hook-revisions
+        args: [--set, common, --set, rust]
+EOF
+  rgit -C "$p" add -A
+  cd "$p"
+  PREK_HOME="$work/prek-home" prek run -c run.yaml "$rev_hook" --files .pre-commit-config.yaml 2>&1
+}
+out=$(rev_case match v1.0.0 "$typos_rev") ||
+  fail "$rev_hook rejected a pin that matches its set: $out"
+printf '%s\n' "$out" | grep -q 'exobrain-tech tag\.*Passed$' ||
+  fail "$rev_hook did not pass a pin that matches its set: $out"
+# The rev of the newer tag, at the older tag: the tag of the entry selects the sets.
+if out=$(rev_case drift v1.0.0 v9.0.0); then
+  fail "$rev_hook accepted a drifted pin: $out"
+fi
+printf '%s\n' "$out" | grep -q "^- hook id: $rev_hook\$" ||
+  fail "$rev_hook did not run on a drifted pin: $out"
+printf '%s\n' "$out" | grep -qF 'https://github.com/crate-ci/typos' ||
+  fail "$rev_hook did not name the drifted repository: $out"
+out=$(rev_case newer v1.1.0 v9.0.0) ||
+  fail "$rev_hook rejected a project at a newer tag: $out"
+printf '%s\n' "$out" | grep -q 'exobrain-tech tag\.*Passed$' ||
+  fail "$rev_hook did not pass a project at a newer tag: $out"
+
 # --- hook-sets --------------------------------------------------------------
 #
 # The gate reads the set folder beside its own script, so each case copies the

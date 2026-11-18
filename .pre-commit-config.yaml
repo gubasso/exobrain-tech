@@ -55,7 +55,7 @@
 #   (https://prek.j178.dev/reference/language-support/).
 #
 # Tooling stack (and what each owns):
-#   - pre-commit-hooks : whitespace, line endings, basic safety.
+#   - prek built-ins   : whitespace, line endings, syntax, basic safety.
 #   - editorconfig-ec  : honor .editorconfig.
 #   - dprint           : canonical CommonMark/GFM formatter (autofix).
 #                        Devshell binary; config in `./dprint.json`.
@@ -91,7 +91,8 @@ default_language_version:
 # A hook with no `stages:` runs at commit and at the integration gate. A remote
 # hook whose manifest declares its own `stages:` ignores this line, so each such
 # hook below carries an explicit `stages: [pre-commit, pre-merge-commit]`
-# (pre-commit-hooks v6.0.0 and typos declare pre-push too).
+# (the built-ins copy the pre-push of their upstream manifest, and typos
+# declares pre-push too).
 default_stages: [pre-commit, pre-merge-commit]
 
 repos:
@@ -127,8 +128,12 @@ repos:
         files: '^(\.github/workflows/|\.gitlab-ci\.yml$|\.gitlab/ci/|AGENTS\.md$|\.release-kit/|\.pre-commit-config\.yaml$|release-plz\.toml$|dist-workspace\.toml$|cliff\.toml$|VERSION$)'
 # END release-kit
   # --- Housekeeping (auto-fix where possible) ---
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+  #
+  # prek runs these built-ins in its own binary: no clone, no environment, and
+  # no `rev`. They follow the common reference set of
+  # programming/project-bootstrap/hook-sets/, whose comments give the reason
+  # for each argument that keeps the upstream behavior.
+  - repo: builtin
     hooks:
       # The three fixers rewrite, so they skip the generated files listed in
       # the header. They have no configuration of their own.
@@ -151,21 +156,19 @@ repos:
       - id: destroyed-symlinks
         stages: [pre-commit, pre-merge-commit]
       - id: check-yaml
+        args: [--disallow-unknown-tags]
       - id: check-toml
       - id: detect-private-key
-
-  # --- JSON/JSONC syntax gate ---
-  #
-  # check-json5 parses JSON that is valid JSON5 — comments and trailing commas
-  # included — so it won't false-fail on the .jsonc / commented .json config a
-  # docs repo carries (e.g. .markdownlint-cli2.jsonc, dprint.json). It is the
-  # syntax gate only; canonical formatting/autofix is owned by the dprint json
-  # plugin below. (The stock pretty-format-json hook is deliberately not used:
-  # it rejects comments and can't format JSONC.)
-  - repo: https://gitlab.com/bmares/check-json5
-    rev: v1.0.1
-    hooks:
+      # The JSON/JSONC syntax gate. check-json5 parses JSON that is valid
+      # JSON5, comments and trailing commas included, so it passes the .jsonc
+      # and commented .json configuration of this repository, such as
+      # .markdownlint-cli2.jsonc and dprint.json. The built-in selects only
+      # .json5 files, so `types` resets the filter and `types_or` selects json,
+      # json5, and jsonc. The dprint json plugin below owns the layout, and the
+      # stock pretty-format-json refuses comments.
       - id: check-json5
+        types: [file]
+        types_or: [json, json5, jsonc]
 
   # --- EditorConfig ---
   #
@@ -176,7 +179,7 @@ repos:
   # than a second time beside it. `.editorconfig-checker.json` excludes the
   # generated files, so a run outside pre-commit skips them too.
   - repo: https://github.com/editorconfig-checker/editorconfig-checker
-    rev: v3.7.0
+    rev: v4.0.2
     hooks:
       - id: editorconfig-checker
         alias: ec
@@ -219,7 +222,7 @@ repos:
   # any markdown file. Files without the marker are left untouched.
   #
   - repo: https://github.com/frnmst/md-toc
-    rev: 9.0.0
+    rev: 9.1.0
     hooks:
       - id: md-toc
         # -c: don't gate on TOC list coherence (free-form notes may diverge).
@@ -360,7 +363,7 @@ repos:
   # pinned `rev`. Its wheel carries a prebuilt binary that links the standard
   # ELF loader, which the host supplies (nix-ld on a NixOS host).
   - repo: https://github.com/crate-ci/typos
-    rev: v1.47.2
+    rev: v1.52.2
     hooks:
       # Report-only: typos auto-fix silently rewrites deliberate identifiers /
       # error-kind strings and can break code when these hooks are layered into
@@ -424,7 +427,7 @@ repos:
   # The upstream hook, `language: python`, with its entry, its args
   # (--fixup --wip --commit-file), and its commit-msg stage.
   - repo: https://github.com/crate-ci/committed
-    rev: v1.1.11
+    rev: v1.1.12
     hooks:
       - id: committed
         stages: [commit-msg]
@@ -543,6 +546,27 @@ repos:
         entry: cargo run --quiet -p exobrain -- host-check --parse-only
         pass_filenames: false
         files: '^host-requirements\.toml$'
+
+  # --- The hook revisions follow the reference sets (system) ---
+  #
+  # The local twin of the hook that .pre-commit-hooks.yaml publishes
+  # (`project-platform:hook-revisions-follow-the-exobrain-tech-tag`). This
+  # repository holds the sets, so it pins each repository that it shares with
+  # the sets `common`, `rust`, and `nix` at the `rev` of the same commit. In a
+  # local hook, prek expands `{hook_repo}` to this checkout. The twin runs the
+  # exobrain of this checkout through cargo, for the reason of the twin above.
+  # .hooks/test-gates.sh holds the two entries equal past that cargo prefix,
+  # and runs the published hook over a matching, a drifted, and a newer pin.
+  - repo: local
+    hooks:
+      # owner: devshell (project-environment) exobrain is the program of this repository, which cargo builds from the checkout.
+      - id: hook-revisions
+        name: hook revisions follow the exobrain-tech tag
+        language: system
+        entry: cargo run --quiet -p exobrain -- hooks check --sets-dir {hook_repo}/programming/project-bootstrap/hook-sets .pre-commit-config.yaml
+        args: [--set, common, --set, rust, --set, nix]
+        pass_filenames: false
+        files: '^\.pre-commit-config\.yaml$'
 
   # --- The Rust workspace in crates/ ---
   #

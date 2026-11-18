@@ -16,6 +16,8 @@
 #   - no-path-flake-reference: a flake reference reads the git tree.
 #   - no-hook-runner-in-flake: a flake holds no git hook runner.
 #   - host-requirements: host-requirements.toml parses.
+#   - hook-revisions: the revisions of the named sets follow the tag. It
+#     needs prek 0.5.0 or newer, and the floor below covers it.
 
 # The oldest prek that reads this file. `repo: builtin` needs prek, and
 # pre-commit refuses such a config.

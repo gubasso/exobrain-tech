@@ -48,6 +48,8 @@ The exobrain-tech entry of a project enables the hook `hook-revisions` and names
 
 The hook compares the `rev` of each repository that appears both in the project configuration and in the named sets, at the tag that the entry pins, and fails on a difference. It reads no other field, so the project keeps its own `args`, `stages`, and `files`. The result depends only on the files of the commit, so two machines with different versions of the `exobrain` CLI agree, and CI agrees with the local hooks.
 
+The hook calls `exobrain hooks check --sets-dir {hook_repo}/programming/project-bootstrap/hook-sets .pre-commit-config.yaml`, and prek appends the `args` of the project. prek expands `{hook_repo}` to its clone of the tag that the entry pins ([prek internals](https://prek.j178.dev/0.5.7/internals/#referencing-files-from-the-hook-repository)). prek 0.5.0 is the oldest that expands it, so the hook states `minimum_prek_version: "0.5.0"`, and the floor `0.5.7` of the sets covers it. pre-commit passes the placeholder through as text, so the hook runs under prek only. The host supplies `exobrain` ([03 — Host requirements](./03-local-dev-environment.md#host-requirements)).
+
 Four commands of the `exobrain` CLI carry the rest of the convention:
 
 - `exobrain hooks sync --to <tag>` moves the exobrain-tech entry and every revision of the named sets in one commit. A project moves when it has work, on the branch of that work, so the drift across projects shrinks to the number of exobrain-tech releases in use.
