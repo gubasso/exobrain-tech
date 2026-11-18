@@ -16,10 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - *(cli/store-guard)* run prek cache gc once a week per prek store
 - *(exobrain/hooks)* hold hook revisions to the sets of a tag
 
-### Fixed
-
-- *(hooks)* class the grep and sed hooks as base-tool
-
 ### Other
 
 - *(cli/store-guard)* assert the prek gc race only on prek 0.5.7 to 0.5.11
