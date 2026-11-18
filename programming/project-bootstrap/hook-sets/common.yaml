@@ -203,8 +203,10 @@ repos:
   # project copies it from hook-sets/committed.toml. Where the release-kit
   # block holds the Conventional Commits grammar through
   # conventional-pre-commit, committed.toml sets `style = "none"` and keeps the
-  # line length and the period at the end of the subject, so two hooks never
-  # judge one property. committed does not judge the case of the subject.
+  # line length and the period at the end of the subject, so two hooks judge
+  # no property twice. The one exception: a project whose house style
+  # capitalizes the description keeps `style = "conventional"`, because only
+  # that style checks its case, and then both hooks judge the grammar.
   - repo: https://github.com/crate-ci/committed
     rev: v1.1.12
     hooks:

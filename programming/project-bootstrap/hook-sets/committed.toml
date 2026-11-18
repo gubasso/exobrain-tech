@@ -14,6 +14,10 @@ subject_length = 72
 
 # `false` turns off the rule that wants a capital letter, so
 # `build(hooks): x` passes. committed has no rule that wants a lowercase one.
+# Under `style = "none"`, committed cannot check the case of the description
+# after the colon. A project whose house style capitalizes it keeps
+# `style = "conventional"` with `subject_capitalized = true`, even beside
+# conventional-pre-commit.
 subject_capitalized = false
 subject_not_punctuated = true
 # The mood check is a heuristic, and it refuses good subjects.
