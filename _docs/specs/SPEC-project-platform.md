@@ -28,6 +28,8 @@
     - [Scenario: A project moves one revision alone](#scenario-a-project-moves-one-revision-alone)
   - [`project-platform:a-large-build-folder-gets-a-warning` — A large build folder gets a warning](#project-platforma-large-build-folder-gets-a-warning--a-large-build-folder-gets-a-warning)
     - [Scenario: A worktree restores its dependencies from the compile cache](#scenario-a-worktree-restores-its-dependencies-from-the-compile-cache)
+  - [`project-platform:a-rust-project-builds-through-the-host-compile-cache` — A Rust project builds through the compile cache of the host](#project-platforma-rust-project-builds-through-the-host-compile-cache--a-rust-project-builds-through-the-compile-cache-of-the-host)
+    - [Scenario: CI builds a Rust project](#scenario-ci-builds-a-rust-project)
 
 <!--TOC-->
 
@@ -277,3 +279,24 @@ A Rust project that follows this canon MUST run `exobrain store-guard --daily` f
 - THEN the guard prints nothing, because deleting the folder would free far less than 10 GB
 
 Verify: `cargo nextest run -E 'test(large_build_folder)'`
+
+### `project-platform:a-rust-project-builds-through-the-host-compile-cache` — A Rust project builds through the compile cache of the host
+
+A Rust project that follows this canon MUST build through kache, the compile cache that the host owns. These parts carry the rule:
+
+- The host installs one kache, writes its configuration, and runs its daemon as a user service. Two versions of kache never share one cache.
+- The project lists `kache` in `host-requirements.toml`.
+- The `.envrc` of the project sets `RUSTC_WRAPPER=kache` after `use flake`. The devshell and the host never set it, because CI enters the devshell without direnv and has no kache.
+- Each worktree keeps its own build folder. The worktrees of a project never share one, because cargo judges freshness by file times and can report the build of another worktree fresh.
+- The dev profile sets `debug = "line-tables-only"`, and `[profile.dev.package."*"]` sets `debug = false`. A build that needs a debugger passes `--config` for full debug information on one command.
+- The kache daemon and a weekly `kache clean --stale 14d --yes` of the host delete old build output in the background, and `project-platform:a-large-build-folder-gets-a-warning` warns about the rest.
+
+`programming/project-bootstrap/examples/rust.envrc` is the `.envrc` of such a project, and the shipped-scripts gate holds it (`knowledge-base-boundary:a-shipped-script-is-gated`). The chapter that states the convention is `programming/project-bootstrap/03-local-dev-environment.md`, "Rust builds".
+
+#### Scenario: CI builds a Rust project
+
+- GIVEN a Rust project whose `.envrc` sets `RUSTC_WRAPPER=kache`, and a CI runner without kache
+- WHEN CI enters the devshell with `nix develop --command` and runs `cargo build`
+- THEN cargo calls rustc directly, because the devshell sets no wrapper and CI reads no `.envrc`
+
+Verify: `just test-rust-envrc`

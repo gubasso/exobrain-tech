@@ -38,6 +38,7 @@ Each dependency of a project has exactly one owner: the most specific file that 
    - the standard ELF loader
    - the tools that carry credentials, such as `gh`, `glab`, `ssh`, and `aws`
    - the `exobrain` CLI of exobrain-tech, which checks the host tools and the hook revisions
+   - the compile cache of a Rust project, kache, with its configuration and its daemon, as [Rust builds](#rust-builds) says
 
 A project uses a host tool by name, as it uses `git`. It lists the tool once in `host-requirements.toml`, as [Host requirements](#host-requirements) says.
 
@@ -123,9 +124,49 @@ A shipped application is a separate scope. It checks the tools that it needs at 
 
 The rule is `project-platform:host-requirements-list-the-host-tools`.
 
+## Rust builds
+
+A Rust project builds through the compile cache [kache](https://github.com/kunobi-ninja/kache), which the host owns. The host configuration installs one kache, writes `~/.config/kache/config.toml`, and runs the kache daemon as a systemd user service. One version, one daemon, and one cache in `~/.cache/kache` serve every project, because kache changes its index format between versions and two versions must never share one cache. The project lists `kache` in `host-requirements.toml`, as it lists every host tool.
+
+The `.envrc` of the project sets `RUSTC_WRAPPER=kache` after `use flake`. Cargo then sends each rustc call through kache. The devshell does not set the variable, because CI enters the devshell without direnv and has no kache. CI therefore builds without the cache. A host setting would break every `cargo` call on a host without kache. [`examples/rust.envrc`](./examples/rust.envrc) is the whole file, with the two warnings of [Host requirements](#host-requirements) after the variable. `KACHE_DISABLED=1` runs one command without kache, for example `KACHE_DISABLED=1 cargo build`.
+
+On btrfs, kache restores a cached output as a copy-on-write clone, so the clone in `target/` and the cache entry share their disk blocks ([kache deduplication](https://github.com/kunobi-ninja/kache/blob/v2.1.1/docs/deduplication.mdx)). A new worktree therefore reuses the crates that another worktree or another project compiled. A trial on 2026-11-17 measured two worktrees of one project at 671 MiB of real disk with kache, and 1412 MiB without it. If the kache daemon is not running, the first build starts it ([kache daemon lifecycle](https://github.com/kunobi-ninja/kache/blob/v2.1.1/docs/daemon/lifecycle.mdx)).
+
+Each worktree keeps its own build folder, and the worktrees of a project never share one. Cargo names the crates of a project by their path inside the project and judges freshness by file times, so a shared folder can hand one worktree the build of another and report it fresh ([DocSpring on a shared build folder](https://docspring.com/blog/posts/rust-git-worktrees-shared-cargo-build/)). Checksum freshness is still unstable in cargo ([cargo unstable features](https://doc.rust-lang.org/cargo/reference/unstable.html), [cargo issue 17626](https://github.com/rust-lang/cargo/issues/17626)). DocSpring measured an extra worktree at 8.2 GB with its own folder and at 2.0 GB with kache ([DocSpring on kache](https://docspring.com/blog/posts/rust-git-worktrees-kache/)).
+
+The dev profile keeps line tables for the crates of the project and no debug information for the dependencies:
+
+```toml
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+```
+
+Line tables keep the file and the line of each frame in a backtrace. A debugger loses the variable values and the types. On exobrain-tech, this profile cut the output of `cargo test --no-run` from 514 MB to 269 MB, with the same build time ([cargo profiles](https://doc.rust-lang.org/cargo/reference/profiles.html)).
+
+If you need a debugger, build with full debug information for one command:
+
+```bash
+cargo test --config 'profile.dev.debug="full"' --config 'profile.dev.package."*".debug="full"'
+```
+
+Cargo reads no environment variable for a package override, so the command uses `--config` ([cargo configuration](https://doc.rust-lang.org/cargo/reference/config.html#profilenamepackagename)). The command rebuilds every crate. Its output stays in the build folder until the next cleanup.
+
+The rule is `project-platform:a-rust-project-builds-through-the-host-compile-cache`.
+
 ## Build output cleanup
 
-A Rust project keeps its compile output in the build folder of each worktree: `target/`, unless `CARGO_TARGET_DIR` or `build.target-dir` moves it. Cargo deletes none of that output by itself. `exobrain store-guard --daily`, which `.envrc` already runs, warns once a day when the build folder of the checkout holds more than 10 GB of its own data. The warning is one line with the folder, its size, and the command that cleans the folder:
+A Rust project keeps its compile output in the build folder of each worktree: `target/`, unless `CARGO_TARGET_DIR` or `build.target-dir` moves it. Cargo deletes none of that output by itself ([cargo issue 13136](https://github.com/rust-lang/cargo/issues/13136), [cargo issue 5026](https://github.com/rust-lang/cargo/issues/5026)). Two cleanups run in the background, outside the work of a person or an agent, and one warning asks a person or an agent to clean.
+
+At most once an hour, when the machine is quiet, the kache daemon deletes the idle incremental state, the build units that no build used for 30 days, and the build folders of deleted worktrees that no build used for a day. It skips a folder that a running command or program uses ([kache target cleanup](https://github.com/kunobi-ninja/kache/blob/v2.1.1/docs/getting-started/configuration.mdx)). Each week, a user timer of the host runs this command, which deletes the build folders that no build used for 14 days, and the build folders whose worktree is gone:
+
+```bash
+kache clean --stale 14d --yes
+```
+
+`exobrain store-guard --daily`, which `.envrc` already runs, warns once a day when the build folder of the checkout holds more than 10 GB of its own data. The warning is one line with the folder, its size, and the command that cleans the folder:
 
 ```bash
 cargo clean --target-dir <folder>

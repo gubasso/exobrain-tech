@@ -46,10 +46,19 @@ esac
 # The pathspecs stay quoted so the shell hands them to git untouched. Git reads
 # them with its own wildmatch, where `*` crosses a `/`, so one pattern per
 # bucket covers the whole subtree.
+#
+# A named `.envrc` example, such as `rust.envrc`, is a shell file too, and the
+# `glob` pathspecs take it. Their magic keeps `*` inside one path part, so
+# `[!.]` refuses a bare `.envrc`: a template folder that a reader copies whole
+# holds that file, and it carries no shell directive for shellcheck.
 shipped() {
   git ls-files -z -- \
     'data/*.sh' 'infra/*.sh' 'languages/*.sh' 'platforms/*.sh' \
-    'programming/*.sh' 'systems/*.sh' 'tools/*.sh' 'workflows/*.sh'
+    'programming/*.sh' 'systems/*.sh' 'tools/*.sh' 'workflows/*.sh' \
+    ':(glob)data/**/[!.]*.envrc' ':(glob)infra/**/[!.]*.envrc' \
+    ':(glob)languages/**/[!.]*.envrc' ':(glob)platforms/**/[!.]*.envrc' \
+    ':(glob)programming/**/[!.]*.envrc' ':(glob)systems/**/[!.]*.envrc' \
+    ':(glob)tools/**/[!.]*.envrc' ':(glob)workflows/**/[!.]*.envrc'
 }
 
 if [ -n "$fix" ]; then

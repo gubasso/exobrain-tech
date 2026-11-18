@@ -119,7 +119,7 @@ Verify: reviewer applies the placement test — is this about how the KB works, 
 
 ### `knowledge-base-boundary:a-shipped-script-is-gated` — A shipped shell script is linted and formatted
 
-Every `.sh` file in a library bucket MUST pass the lint and format gates this checkout runs, and those gates MUST run outside pre-commit as well.
+Every `.sh` file and every named `.envrc` example, such as `rust.envrc`, in a library bucket MUST pass the lint and format gates this checkout runs, and those gates MUST run outside pre-commit as well.
 
 #### Scenario: A bucket gains a script nobody checks
 

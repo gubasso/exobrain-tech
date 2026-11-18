@@ -235,6 +235,48 @@ printf '#!/usr/bin/env bash\ncat $1\n' > .hooks/not-shipped.sh
 git add -A
 accept "shipped-scripts" "$shipped"
 
+# A named `.envrc` example is a shell file of the library too. An unquoted
+# expansion in one fails the gate. A bare `.envrc` of a template folder carries
+# no shell directive, and the gate leaves it alone.
+mkdir -p programming/examples tools/templates
+printf '# shellcheck shell=bash\nuse flake\n' > tools/templates/.envrc
+git add -A
+accept "shipped-scripts" "$shipped"
+printf '# shellcheck shell=bash\nuse flake\ncat $1\n' > programming/examples/bad.envrc
+git add -A
+reject "shipped-scripts" "$shipped"
+git rm -q --cached programming/examples/bad.envrc
+rm programming/examples/bad.envrc
+
+# --- rust-envrc-example -------------------------------------------------------
+#
+# The gate judges the tree that its argument names. A copy of the chapter and
+# the example passes. An example that drops the wrapper line fails, and so does
+# a chapter that links a file that does not exist.
+rust_envrc=$root/.hooks/rust-envrc-example.sh
+r="$work/rust-envrc"
+rm -rf "$r"
+mkdir -p "$r/programming/project-bootstrap/examples"
+cp "$root/programming/project-bootstrap/03-local-dev-environment.md" \
+  "$r/programming/project-bootstrap/"
+cp "$root/programming/project-bootstrap/examples/rust.envrc" \
+  "$r/programming/project-bootstrap/examples/"
+for f in 00-bootstrap-model.md 01-repository-foundation.md 04-quality-gates.md; do
+  : > "$r/programming/project-bootstrap/$f"
+done
+mkdir -p "$r/tools/nix" "$r/languages/nix" "$r/languages/python/project-bootstrap-spec"
+: > "$r/tools/nix/02-per-project-devshell.md"
+: > "$r/languages/nix/05-tooling-gotchas-resources.md"
+: > "$r/languages/python/project-bootstrap-spec/00-toolchain-and-layout.md"
+accept "rust-envrc-example" "$rust_envrc" "$r"
+grep -v RUSTC_WRAPPER "$root/programming/project-bootstrap/examples/rust.envrc" \
+  > "$r/programming/project-bootstrap/examples/rust.envrc"
+reject "rust-envrc-example" "$rust_envrc" "$r"
+cp "$root/programming/project-bootstrap/examples/rust.envrc" \
+  "$r/programming/project-bootstrap/examples/"
+rm "$r/programming/project-bootstrap/04-quality-gates.md"
+reject "rust-envrc-example" "$rust_envrc" "$r"
+
 # --- no-path-flake-reference ------------------------------------------------
 #
 # The hook is published in .pre-commit-hooks.yaml and runs here through a local

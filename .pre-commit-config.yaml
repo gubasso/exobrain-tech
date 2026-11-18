@@ -458,6 +458,24 @@ repos:
         files: '^(\.hooks/|\.markdownlint/|\.spec-driven-docs/|\.pre-commit-config\.yaml$|\.pre-commit-hooks\.yaml$|justfile$)'
         pass_filenames: false
 
+  # --- The Rust .envrc example (pre-commit, local) ---
+  #
+  # Chapter 03 of project-bootstrap ships `examples/rust.envrc`
+  # (`project-platform:a-rust-project-builds-through-the-host-compile-cache`).
+  # The shipped-scripts gate lints and formats it. This gate runs it in a
+  # fixture Rust project with stub commands and holds each relative link of the
+  # chapter to an existing file. It runs only when the chapter, an example, or
+  # the gate changes.
+  - repo: local
+    hooks:
+      # owner: host (base-tool) a script of this repository that calls only bash, grep, sed, and the coreutils.
+      - id: rust-envrc-example
+        name: the Rust .envrc example runs as chapter 03 says
+        entry: .hooks/rust-envrc-example.sh
+        language: system
+        files: '^(programming/project-bootstrap/(03-local-dev-environment\.md|examples/)|\.hooks/rust-envrc-example\.sh$)'
+        pass_filenames: false
+
   # --- The reference hook sets (pre-commit, local) ---
   #
   # The sets of programming/project-bootstrap/hook-sets/ are prek

@@ -23,7 +23,7 @@ lint:
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
 # expected to copy and run. Every one of those is linted and formatted here.
-test: test-gates test-shipped-scripts test-one-system test-hook-sets test-skill-sources verify-instance test-crates
+test: test-gates test-shipped-scripts test-rust-envrc test-one-system test-hook-sets test-skill-sources verify-instance test-crates
 
 # Hold the reference hook sets to their rules, offline
 # (`project-platform:reference-hook-sets-hold-their-evidence`). The hook-sets
@@ -48,6 +48,13 @@ test-crates:
 # bucket's drop-in after editing it, without a hook run.
 test-shipped-scripts:
     nix develop --command .hooks/shipped-scripts.sh
+
+# Run the Rust `.envrc` example of chapter 03 in a fixture project with stub
+# commands, and hold each relative link of the chapter to an existing file
+# (`project-platform:a-rust-project-builds-through-the-host-compile-cache`).
+# The rust-envrc-example hook runs the same script.
+test-rust-envrc:
+    nix develop --command .hooks/rust-envrc-example.sh
 
 # Hold the flake's evaluated output set to the one supported system
 # (ADR-linux-is-the-only-supported-project-target).
