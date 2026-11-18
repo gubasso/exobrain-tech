@@ -2,12 +2,17 @@
 # (project-platform:host-requirements-list-the-host-tools). Every entry is
 # presence-only: the exobrain checker is this repository's own build, so no
 # recipe can call it before `cargo build`, and nothing here checks a version.
-# prek owns its version through minimum_prek_version in .pre-commit-config.yaml.
+# prek owns its version through minimum_prek_version in .pre-commit-config.yaml,
+# and the host configuration owns the one version of kache, which .envrc sets
+# as the rustc wrapper.
 schema = 1
 
 [tools.git]
 
 [tools.prek]
+version = "*"
+
+[tools.kache]
 version = "*"
 
 [tools.nix]

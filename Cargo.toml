@@ -25,6 +25,14 @@ wildcard_imports = "deny"
 exit = "deny"
 allow_attributes_without_reason = "deny"
 
+# Line tables for the crates of this workspace and no debug information for the
+# dependencies (project-platform:a-rust-project-builds-through-the-host-compile-cache).
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+
 [profile.release]
 lto = "thin"
 codegen-units = 1
