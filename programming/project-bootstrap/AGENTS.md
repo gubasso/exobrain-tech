@@ -1,7 +1,7 @@
 ---
 digest-of: programming/project-bootstrap
 last-synced: 2026-11-18
-token-estimate: 1100
+token-estimate: 1150
 ---
 
 # AGENTS
@@ -43,13 +43,13 @@ This tree is the source of truth for what a new project must have and in what or
   3. The devshell, for the toolchains, the task runner, and what no owner above can declare.
   4. The host, for the base tools, the git hook runner prek, the `exobrain` CLI, the ELF loader, and the credentialed tools.
 - The hook configuration owns a tool that only a hook uses, a linter or a type checker included. No devshell holds a hook runner. A flake holds no language library. Python uses uv. A hook that keeps `language: system` carries an `# owner:` comment with one of six classes.
-- prek is the only hook runner. A project copies the reference hook sets of its stacks from `hook-sets/`, and pins each repository that it shares with a set at the `rev` of its exobrain-tech tag. The hook `hook-revisions` checks the pins, and `exobrain hooks sync` moves them.
+- prek is the only hook runner. A project copies the reference hook sets of its stacks from `hook-sets/`, and pins each repository that it shares with a set at the `rev` of its exobrain-tech tag. The hook `hook-revisions` checks the pins, and `exobrain hooks sync` moves them. The skill `exobrain-hooks-setup`, which `exobrain skill show exobrain-hooks-setup` prints, sets a project up from the sets.
 - A project uses a host tool by name and lists it once in `host-requirements.toml`. An entry carries a Cargo version requirement where the project needs one, or `"*"` for a tool that checks its own version. A call site runs `exobrain host-check <tools>` where it needs them:
   - once at the top of a `justfile`
   - at the top of a recipe or script that alone uses a tool
   - in a dev target of a `Makefile`
 - Nothing checks on shell entry, and nothing falls back. The README links the file. A shipped application checks its runtime tools in its own code.
-- The commit stage runs the fast checks, and the push stage runs the costly ones. Together they run every CI check, and the push stage does not rerun the commit stage. CI repeats both stages in the devshell. A CI-only check needs a reason other than a long runtime. The project lists it with the report-only and scheduled jobs.
+- The commit stage runs the fast checks, and the push stage runs the costly ones. Together they run every CI check, and the push stage does not rerun the commit stage. CI repeats both stages in the devshell. A CI job that calls `exobrain` installs the CLI of the tag that the project pins. A CI-only check needs a reason other than a long runtime. The project lists it with the report-only and scheduled jobs.
 - A generator runs natively, and the project configures it only as its tool documents. Every hook that rewrites or judges a generated file excludes it in the tool's own configuration. A lock file and a release changelog are generated files. The reading hooks keep the file: the parser, the secret scan, and the link check. A file that a person edits after generation belongs to the project, and so does a marked region.
 
 ## Maintenance Notes

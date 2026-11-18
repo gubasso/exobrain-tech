@@ -57,6 +57,8 @@ Four commands of the `exobrain` CLI carry the rest of the convention:
 - `exobrain store-guard --daily`, which `.envrc` runs too, also runs `prek cache gc` at most once a week. prek then removes every clone and environment that no configuration on disk pins, so the environments of a tag go when the last project leaves it.
 - `exobrain hooks check` is what `hook-revisions` calls, with the set files of the tag that prek cloned.
 
+The skill `exobrain-hooks-setup` applies this convention to a project, and `exobrain skill show exobrain-hooks-setup` prints it. It picks the sets from the files of the project and reads them at the tag that the project pins. It moves the project from pre-commit to prek, writes or merges the configuration, and keeps each project choice with its reason in a comment. It swaps the hooks of `pre-commit/pre-commit-hooks` for the built-ins, enables `hook-revisions`, and takes the `exobrain` CLI from the host.
+
 The maintenance of the sets runs `prek update -c <set>.yaml` for each set, keeps each `rev` at a released version, since `prek update` takes a pre-release tag too, and refreshes the hook ids of each upstream manifest in `hook-sets/evidence/` with `.hooks/hook-sets-evidence.sh`. The gate of exobrain-tech holds each set to that evidence offline, and runs each built-in on a fixture that its upstream hook refuses.
 
 ### Who builds a hook environment
