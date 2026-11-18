@@ -585,4 +585,30 @@ hs_tree unknown-id
 yq -i '(.repos[] | select(.repo == "https://github.com/astro/deadnix") | .hooks[0].id) = "deadnix-gone"' "$hs/nix.yaml"
 reject "hook-sets (a hook id the manifest does not publish)" "$t/.hooks/hook-sets.sh"
 
+# --- skill-sources ----------------------------------------------------------
+#
+# The gate takes the root to check as its argument, so each case builds a
+# throwaway tree with one skill that names one source.
+ss_tree() {
+  t="$work/skill-sources-$1"
+  rm -rf "$t"
+  mkdir -p "$t/crates/exobrain/skills/demo" "$t/programming/project-bootstrap"
+  printf '# 04\n' > "$t/programming/project-bootstrap/04-quality-gates.md"
+}
+ss_tree pass
+printf 'Read `$EXOBRAIN_TECH/programming/project-bootstrap/04-quality-gates.md`.\n' \
+  > "$t/crates/exobrain/skills/demo/SKILL.md"
+accept "skill-sources" "$root/.hooks/skill-sources.sh" "$t"
+
+# A skill names a chapter that the tree no longer holds.
+ss_tree missing
+printf 'Read `$EXOBRAIN_TECH/programming/project-bootstrap/04-gates.md`.\n' \
+  > "$t/crates/exobrain/skills/demo/SKILL.md"
+reject "skill-sources (a skill names a missing source)" "$root/.hooks/skill-sources.sh" "$t"
+
+# No skill names a source, so the gate has nothing to check.
+ss_tree none
+printf 'Read the chapters.\n' > "$t/crates/exobrain/skills/demo/SKILL.md"
+reject "skill-sources (no skill names a source)" "$root/.hooks/skill-sources.sh" "$t"
+
 echo "test-gates: every gate failed when it should"

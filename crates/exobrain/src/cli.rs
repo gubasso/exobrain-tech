@@ -3,6 +3,7 @@
 
 pub mod hooks;
 pub mod host_check;
+pub mod skill;
 pub mod store_guard;
 
 use clap::{Parser, Subcommand};
@@ -23,6 +24,8 @@ pub enum Commands {
     HostCheck(host_check::HostCheckArgs),
     /// Hold the hook revisions of a project to its exobrain-tech tag.
     Hooks(hooks::HooksArgs),
+    /// Print the agent skills that the binary carries.
+    Skill(skill::SkillArgs),
     /// Find copies of this checkout in the Nix store.
     StoreGuard(store_guard::StoreGuardArgs),
 }

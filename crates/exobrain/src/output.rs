@@ -23,6 +23,11 @@ fn to_stdout(text: &str) {
     let _ = std::io::stdout().lock().write_all(text.as_bytes());
 }
 
+/// Write a result to stdout as it stands.
+pub fn result(text: &str) {
+    to_stdout(text);
+}
+
 /// Write one line to stderr.
 pub fn note(line: &str) {
     let _ = writeln!(std::io::stderr(), "{line}");

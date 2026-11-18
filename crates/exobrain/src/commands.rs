@@ -3,4 +3,5 @@
 
 pub mod hooks;
 pub mod host_check;
+pub mod skill;
 pub mod store_guard;

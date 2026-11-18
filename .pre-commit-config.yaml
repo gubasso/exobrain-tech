@@ -477,6 +477,22 @@ repos:
         files: '^(programming/project-bootstrap/hook-sets/|\.hooks/hook-sets\.sh$)'
         pass_filenames: false
 
+  # --- The sources that a skill of the CLI names (pre-commit, local) ---
+  #
+  # A skill under crates/exobrain/skills/ names each set and chapter it reads
+  # as `$EXOBRAIN_TECH/<path>` (`cli:skill-prints-the-embedded-skills`). The
+  # gate fails on each such path that this checkout does not hold. It runs when
+  # a skill, the tree it names, or the gate changes.
+  - repo: local
+    hooks:
+      # owner: host (no-hook-language) a script of this repository that calls only grep and sed.
+      - id: skill-sources
+        name: the sources a skill names exist
+        entry: .hooks/skill-sources.sh
+        language: system
+        files: '^(crates/exobrain/skills/|programming/|\.hooks/skill-sources\.sh$)'
+        pass_filenames: false
+
   # --- A flake holds no language library (pre-commit, pygrep) ---
   #
   # A Python, Node, or Perl package belongs to the manifest of its stack

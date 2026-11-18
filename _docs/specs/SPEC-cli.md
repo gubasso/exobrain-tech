@@ -16,6 +16,8 @@
     - [Scenario: A CI runner exports an empty CI variable](#scenario-a-ci-runner-exports-an-empty-ci-variable)
   - [`cli:output-is-human-or-json` — Output is human text or one JSON object](#clioutput-is-human-or-json--output-is-human-text-or-one-json-object)
     - [Scenario: A script reads the report](#scenario-a-script-reads-the-report)
+  - [`cli:skill-prints-the-embedded-skills` — skill prints the agent skills that the binary carries](#cliskill-prints-the-embedded-skills--skill-prints-the-agent-skills-that-the-binary-carries)
+    - [Scenario: A skill gains a reference file](#scenario-a-skill-gains-a-reference-file)
   - [`cli:host-check-validates-the-file` — host-check parses the file with a typed parser](#clihost-check-validates-the-file--host-check-parses-the-file-with-a-typed-parser)
     - [Scenario: A version has no operator](#scenario-a-version-has-no-operator)
   - [`cli:host-check-checks-the-named-tools` — host-check checks the tools a call names](#clihost-check-checks-the-named-tools--host-check-checks-the-tools-a-call-names)
@@ -31,7 +33,7 @@
 
 ## Purpose
 
-These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also runs `prek cache gc` once a week, and this spec owns that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules.
+These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also runs `prek cache gc` once a week, and this spec owns that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules. `skill` prints the agent skills that the binary carries, and this spec owns where a skill lives and how the binary serves it.
 
 ## Requirements
 
@@ -150,7 +152,7 @@ Verify: `cargo nextest run -E 'test(daily_stays_quiet_when_switched_off)'`
 
 ### `cli:output-is-human-or-json` — Output is human text or one JSON object
 
-The binary MUST print its result on stdout, as human text by default and as one JSON object under `--json`. It MUST print every diagnostic on stderr. `host-check` and `hooks` have no result, so they print nothing on stdout.
+The binary MUST print its result on stdout, as human text by default and as one JSON object under `--json`. It MUST print every diagnostic on stderr. `host-check` and `hooks` have no result, so they print nothing on stdout. The result of `skill` is a document or a list of names, which it prints as it stands, with no `--json`.
 
 The `store-guard` object holds these keys:
 
@@ -172,6 +174,23 @@ The `store-guard` object holds these keys:
 - THEN stdout parses as one object with exactly the documented keys, and the exit code is 1
 
 Verify: `cargo nextest run -E 'test(output_is_human_or_json)'`
+
+### `cli:skill-prints-the-embedded-skills` — skill prints the agent skills that the binary carries
+
+The binary MUST carry each skill of `crates/exobrain/skills/<name>/` and print it on request, in the form that `sdd skill` and `rk skill` use. A skill is a package folder: a `SKILL.md` with `name` and `description` frontmatter, and the files that it names, such as `references/<task>.md`. The binary embeds every file of the folder at compile time, so a project reads the skill of the CLI on its host with no checkout of exobrain-tech. The binary serves two commands:
+
+- `exobrain skill list` prints the name of each skill, one per line.
+- `exobrain skill show <name> [--file <path>]` prints the `SKILL.md` of the skill, or the file at `<path>` relative to its folder, byte for byte.
+
+An unknown name or path prints its reason on stderr, prints nothing on stdout, and exits 2. A skill names each set and chapter of exobrain-tech that it reads as `$EXOBRAIN_TECH/<path>`, and the hook `skill-sources` fails on each such path that the checkout does not hold. `exobrain-hooks-setup` sets up the git hooks of a project from the reference sets, as chapter 04 of `programming/project-bootstrap/` says.
+
+#### Scenario: A skill gains a reference file
+
+- GIVEN a skill folder that holds a new `references/<task>.md`, and a binary that does not embed it
+- WHEN the test suite runs `exobrain skill show <name> --file references/<task>.md`
+- THEN the command exits 2, and the test fails until the binary embeds the file
+
+Verify: `cargo nextest run -E 'test(skill_prints_the_embedded_skills)'`
 
 ### `cli:host-check-validates-the-file` — host-check parses the file with a typed parser
 

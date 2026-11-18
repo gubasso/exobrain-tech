@@ -23,13 +23,19 @@ lint:
 #
 # The library ships documents and, in a few buckets, a shell script a reader is
 # expected to copy and run. Every one of those is linted and formatted here.
-test: test-gates test-shipped-scripts test-one-system test-hook-sets verify-instance test-crates
+test: test-gates test-shipped-scripts test-one-system test-hook-sets test-skill-sources verify-instance test-crates
 
 # Hold the reference hook sets to their rules, offline
 # (`project-platform:reference-hook-sets-hold-their-evidence`). The hook-sets
 # hook runs the same script when a set changes.
 test-hook-sets:
     nix develop --command .hooks/hook-sets.sh
+
+# Hold each set and chapter of exobrain-tech that a skill of the CLI names to
+# an existing path (`cli:skill-prints-the-embedded-skills`). The skill-sources
+# hook runs the same script when a skill or the tree it names changes.
+test-skill-sources:
+    nix develop --command .hooks/skill-sources.sh
 
 # Run the test suite of the Rust workspace in crates/.
 test-crates:
