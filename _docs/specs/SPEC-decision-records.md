@@ -52,6 +52,8 @@ The author MUST NOT edit a decision record to describe a later design.
 
 Repairing a path the record names, where the file moved and the record's claim did not change, is not a revision.
 
+Joining the lines of a paragraph changes no word and is not a revision.
+
 #### Scenario: A rule the record established is later narrowed
 
 - GIVEN a merged record establishing a rule
@@ -94,4 +96,4 @@ No command decides these rules, or a command decides only part of each. A review
 
 | Rule                                     | Reviewer confirms                                                                                                            |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `decision-records:record-is-not-revised` | The change under review edits no accepted record to describe a later design. A repaired path or a typo fix is not a revision |
+| `decision-records:record-is-not-revised` | The change under review edits no accepted record to describe a later design. A repaired path, a typo fix, or a joined paragraph is not a revision |

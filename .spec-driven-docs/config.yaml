@@ -26,14 +26,21 @@ reserved: []
 
 # Per-gate filters. A gate not named here takes its registry default.
 gates:
-  # This project wraps its prose at 100 columns, and 40 of the 69 documents the
-  # gate would judge are decision records, whose lines cannot be rewritten at
-  # all. The rule stays stated in SPEC-docs-format.md, because the gate message
-  # cites it, and no path reaches the gate until the conversion is decided.
-  # Deciding it removes this entry.
+  # One paragraph takes one line in every document a person writes here: the
+  # whole documentation root, the eight library buckets, and the markdown at
+  # the repository root. The registry default skips a generated CHANGELOG.md.
   prose-stays-unwrapped:
-    exclude:
-      - '**'
+    include:
+      - '*.md'
+      - '_docs/**/*.md'
+      - 'programming/**/*.md'
+      - 'languages/**/*.md'
+      - 'systems/**/*.md'
+      - 'infra/**/*.md'
+      - 'tools/**/*.md'
+      - 'platforms/**/*.md'
+      - 'workflows/**/*.md'
+      - 'data/**/*.md'
 
   # Five library pages name the home directory of a service account, a
   # container user, or a placeholder the reader substitutes. None of them is

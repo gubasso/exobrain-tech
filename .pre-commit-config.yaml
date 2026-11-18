@@ -730,9 +730,9 @@ repos:
         name: 'prose lines stay unwrapped'
         entry: sdd gate prose-stays-unwrapped
         language: system
-        files: '^_docs/(?:specs|decisions|guides|reference|explanation)/(?:.*/)?[^/]*\.md$'
+        files: '^(?:[^/]*\.md|_docs/(?:.*/)?[^/]*\.md|programming/(?:.*/)?[^/]*\.md|languages/(?:.*/)?[^/]*\.md|systems/(?:.*/)?[^/]*\.md|infra/(?:.*/)?[^/]*\.md|tools/(?:.*/)?[^/]*\.md|platforms/(?:.*/)?[^/]*\.md|workflows/(?:.*/)?[^/]*\.md|data/(?:.*/)?[^/]*\.md)$'
         types: [markdown]
-        exclude: '^(?:(?:.*/)?CHANGELOG\.md|.*)$'
+        exclude: '^(?:.*/)?CHANGELOG\.md$'
       - id: spec-requirement-parts
         name: 'spec requirement parts'
         entry: sdd gate spec-requirement-parts
