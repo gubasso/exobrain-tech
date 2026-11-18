@@ -1,0 +1,5 @@
+repos:
+  - repo: https://github.com/bnjbvr/cargo-machete
+    rev: v0.10.1
+    hooks:
+      - id: cargo-machete

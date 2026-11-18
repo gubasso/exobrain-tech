@@ -29,7 +29,7 @@
 
 ## Purpose
 
-These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports.
+These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules.
 
 ## Requirements
 
@@ -122,7 +122,7 @@ Verify: `cargo nextest run -E 'test(daily_stays_quiet_when_switched_off)'`
 
 ### `cli:output-is-human-or-json` — Output is human text or one JSON object
 
-The binary MUST print its result on stdout, as human text by default and as one JSON object under `--json`. It MUST print every diagnostic on stderr. `host-check` has no result, so it prints nothing on stdout.
+The binary MUST print its result on stdout, as human text by default and as one JSON object under `--json`. It MUST print every diagnostic on stderr. `host-check` and `hooks` have no result, so they print nothing on stdout.
 
 The `store-guard` object holds these keys:
 

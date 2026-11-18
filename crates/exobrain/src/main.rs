@@ -25,6 +25,7 @@ fn main() -> ExitCode {
     };
     let result = match &cli.command {
         Commands::HostCheck(args) => commands::host_check::run(args),
+        Commands::Hooks(args) => commands::hooks::run(args),
         Commands::StoreGuard(args) => commands::store_guard::run(args),
     };
     match result {

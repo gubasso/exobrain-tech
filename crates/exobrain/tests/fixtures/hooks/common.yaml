@@ -1,0 +1,14 @@
+# The common set.
+repos:
+  - repo: builtin
+    hooks:
+      - id: check-yaml
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.52.2
+    hooks:
+      - id: typos
+        args: [--force-exclude]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks

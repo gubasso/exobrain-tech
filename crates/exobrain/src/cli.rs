@@ -1,6 +1,7 @@
 //! Command-line surface: clap derive types only, one module per
 //! subcommand's arguments. No behavior lives here.
 
+pub mod hooks;
 pub mod host_check;
 pub mod store_guard;
 
@@ -20,6 +21,8 @@ pub struct Cli {
 pub enum Commands {
     /// Check the host tools that host-requirements.toml lists.
     HostCheck(host_check::HostCheckArgs),
+    /// Hold the hook revisions of a project to its exobrain-tech tag.
+    Hooks(hooks::HooksArgs),
     /// Find copies of this checkout in the Nix store.
     StoreGuard(store_guard::StoreGuardArgs),
 }
