@@ -9,8 +9,7 @@
   <https://github.com/mason-org/mason-lspconfig.nvim> (the old `doc/server-mapping.md` was removed;
   mappings now live in `lua/mason-lspconfig/mappings/`)
 
-python environment:
-https://www.reddit.com/r/neovim/comments/14316t9/help_me_to_get_the_best_python_neovim_environment/
+python environment: https://www.reddit.com/r/neovim/comments/14316t9/help_me_to_get_the_best_python_neovim_environment/
 
 - https://github.com/stevearc/conform.nvim
 
@@ -18,8 +17,7 @@ https://www.reddit.com/r/neovim/comments/14316t9/help_me_to_get_the_best_python_
 
 - https://github.com/mfussenegger/nvim-lint
 
-  - An asynchronous linter plugin for Neovim complementary to the built-in Language Server Protocol
-    support.
+  - An asynchronous linter plugin for Neovim complementary to the built-in Language Server Protocol support.
 
 fold / unfold https://neovim.io/doc/user/fold.html https://neovim.io/doc/user/fold.html
 
@@ -159,8 +157,7 @@ Vim Snippets: https://github.com/honza/vim-snippets
 
 - To paste the content of a macro saved in `q` reg, for example:
 
-  - `i^R^Rq`: Press “i” to enter insert mode, then press CTRL-R twice, then press “q” to insert the
-    contents of the “q” register. What ought to come out looks like this:
+  - `i^R^Rq`: Press “i” to enter insert mode, then press CTRL-R twice, then press “q” to insert the contents of the “q” register. What ought to come out looks like this:
     - `^[`: literal escape
     - CTRL-R twice: insert that escape character code literally
   - or...
@@ -183,11 +180,9 @@ To perform search-replace in Vim easily, we can take advantage of quickfix and g
 Say I want to substitute "define" with "describe" everywhere:
 
 - :grep "define"
-- :cfdo %s/define/describe/g | update (see more in:
-  https://twitter.com/learnvim/status/1277635983153008641?s=09)
+- :cfdo %s/define/describe/g | update (see more in: https://twitter.com/learnvim/status/1277635983153008641?s=09)
 
-We can reassign Vim's `:grep` with other tool. I am a fan of ripgrep
-(https://github.com/BurntSushi/ripgrep). In my vimrc, do this:
+We can reassign Vim's `:grep` with other tool. I am a fan of ripgrep (https://github.com/BurntSushi/ripgrep). In my vimrc, do this:
 
 set grepprg=rg\\ --vimgrep\\ --smart-case\\ --follow
 
@@ -256,8 +251,7 @@ Explanation[^3]:
 :%s/.*/mv -i & &/g
 ```
 
-- Replaces every line in the document (say, "line"), and replaces it by "mv -i line line". `.*` is a
-  regex saying "any character, repeated any number of times". & means "what has been found".
+- Replaces every line in the document (say, "line"), and replaces it by "mv -i line line". `.*` is a regex saying "any character, repeated any number of times". & means "what has been found".
 
 ```text
 :%s/.JPEG$/.jpg/g
@@ -269,8 +263,7 @@ Explanation[^3]:
 :%!bash
 ```
 
-- sends the rename shell commands (that's why mv is prepended to each file name) to an external
-  shell for execution.
+- sends the rename shell commands (that's why mv is prepended to each file name) to an external shell for execution.
 
 ### Plugins to rename
 
@@ -361,8 +354,7 @@ vim.opt.hidden = true -- " allow [^13] 'E37: No write since last change (add ! t
 
 Built-in Neovim diff-mode
 
-If you just need a quick side-by-side comparison of any two files (tracked or untracked), Neovim’s
-native diff mode is the simplest:
+If you just need a quick side-by-side comparison of any two files (tracked or untracked), Neovim’s native diff mode is the simplest:
 
 1. Open the first file:
 

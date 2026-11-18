@@ -2,15 +2,9 @@
 
 **Core Architectural Difference**
 
-- **SelfHosted Gateway** is essentially a **single gateway container** (running on your VPS) + a
-  **client container** (on your home/server) that establish a **WireGuard tunnel** and auto-generate
-  an HTTP(S) reverse-proxy configuration. All inbound traffic to `*.yourdomain.com` hits the VPS,
-  then gets securely forwarded over WireGuard into your local Docker apps.
+- **SelfHosted Gateway** is essentially a **single gateway container** (running on your VPS) + a **client container** (on your home/server) that establish a **WireGuard tunnel** and auto-generate an HTTP(S) reverse-proxy configuration. All inbound traffic to `*.yourdomain.com` hits the VPS, then gets securely forwarded over WireGuard into your local Docker apps.
 
-- **NetBird (an overlay VPN)** spins up a **full mesh** of WireGuard peers. Every machine running
-  the NetBird agent joins an encrypted, peer-to-peer network, is assigned a private VPN IP (e.g.
-  `100.x.x.x`), and can talk to any other allowed peer directly—no centralized HTTP proxy at all
-  ([netbird.io][1], [docs.netbird.io][2]).
+- **NetBird (an overlay VPN)** spins up a **full mesh** of WireGuard peers. Every machine running the NetBird agent joins an encrypted, peer-to-peer network, is assigned a private VPN IP (e.g. `100.x.x.x`), and can talk to any other allowed peer directly—no centralized HTTP proxy at all ([netbird.io][1], [docs.netbird.io][2]).
 
 ---
 
@@ -33,31 +27,24 @@
 
 ### 🏠 SelfHosted Gateway
 
-- You’re **only** exposing one or a few **web-based** services (e.g. Nextcloud, Home Assistant,
-  internal dashboards).
+- You’re **only** exposing one or a few **web-based** services (e.g. Nextcloud, Home Assistant, internal dashboards).
 - Your ISP blocks/CGNATs inbound ports, and you want a **zero-port-forwarding** solution.
 - You’d rather not manage a full VPN mesh or deal with virtual IP addressing.
-- You want a super-lightweight, Docker-first setup: one container on a cheap VPS + one on your home
-  machine.
+- You want a super-lightweight, Docker-first setup: one container on a cheap VPS + one on your home machine.
 
 ### 🌐 NetBird (Overlay VPN)
 
-- You need **SSH**, **RDP**, **SMB**, database access, or any non-HTTP protocols across your
-  devices.
-- You’re connecting **multiple** devices (laptops, servers, containers, IoT) in different locations
-  into one flat, secure network.
+- You need **SSH**, **RDP**, **SMB**, database access, or any non-HTTP protocols across your devices.
+- You’re connecting **multiple** devices (laptops, servers, containers, IoT) in different locations into one flat, secure network.
 - You want **user authentication**, **ACLs**, **SSO/MFA**, group-based policies, and auditability.
-- You’re comfortable running a small “coordination” server (or using NetBird’s cloud) and installing
-  an agent on every peer.
+- You’re comfortable running a small “coordination” server (or using NetBird’s cloud) and installing an agent on every peer.
 
 ---
 
 **Bottom line**:
 
-- If your goal is **simple, secure external access** to a handful of web apps behind CGNAT—go with
-  **SelfHosted Gateway**.
-- If you need a **full-blown, zero-trust, multi-protocol mesh** network spanning dozens of
-  devices—go with **NetBird** (or another overlay VPN).
+- If your goal is **simple, secure external access** to a handful of web apps behind CGNAT—go with **SelfHosted Gateway**.
+- If you need a **full-blown, zero-trust, multi-protocol mesh** network spanning dozens of devices—go with **NetBird** (or another overlay VPN).
 
 [1]: https://netbird.io/connect "NetBird - Zero-Configuration Private Network"
 [2]: https://docs.netbird.io/ "Introduction to NetBird - NetBird Docs"

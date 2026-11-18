@@ -2,9 +2,7 @@
 
 > $nix $nix-flakes
 
-A flake is a standardized, reproducible project: a `flake.nix` (declares inputs + outputs) plus an
-auto-generated `flake.lock` (pins exact versions). Think `package.json` + `package-lock.json`, for
-Nix.
+A flake is a standardized, reproducible project: a `flake.nix` (declares inputs + outputs) plus an auto-generated `flake.lock` (pins exact versions). Think `package.json` + `package-lock.json`, for Nix.
 
 ## Minimal shape
 
@@ -31,8 +29,7 @@ inputs = {
 };
 ```
 
-- `.follows` = "make this input use the same sub-input we already have" — avoids two nixpkgs copies.
-  Add it for every input that carries its own nixpkgs.
+- `.follows` = "make this input use the same sub-input we already have" — avoids two nixpkgs copies. Add it for every input that carries its own nixpkgs.
 
 ## Outputs (the function)
 
@@ -40,13 +37,11 @@ inputs = {
 outputs = { self, nixpkgs, rust-overlay, flake-utils }: ...
 ```
 
-- Params are matched **by name** and come from the `inputs` keys, **plus `self`** (a reference to
-  this flake). You may rename inputs, but both places must match.
+- Params are matched **by name** and come from the `inputs` keys, **plus `self`** (a reference to this flake). You may rename inputs, but both places must match.
 
 ## The `eachDefaultSystem` pattern (per-arch boilerplate)
 
-Most outputs are keyed by system (`x86_64-linux`, `aarch64-darwin`, …). `flake-utils` generates them
-for you:
+Most outputs are keyed by system (`x86_64-linux`, `aarch64-darwin`, …). `flake-utils` generates them for you:
 
 ```nix
 outputs = { self, nixpkgs, rust-overlay, flake-utils }:
@@ -65,9 +60,7 @@ outputs = { self, nixpkgs, rust-overlay, flake-utils }:
     });
 ```
 
-Read it as: "one expression describing a set of outputs." Nothing runs top-to-bottom; `let` names
-sub-values, the `{ }` after `in` _is_ the value. `shellHook` is just a stored string that a later
-runtime phase executes.
+Read it as: "one expression describing a set of outputs." Nothing runs top-to-bottom; `let` names sub-values, the `{ }` after `in` _is_ the value. `shellHook` is just a stored string that a later runtime phase executes.
 
 ## Everyday commands
 

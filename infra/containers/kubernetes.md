@@ -116,10 +116,8 @@ To deploy a new version of our app.
 
 - `kubectl set image deployment/<depl_name> <image_in_cluster>=<image_recent_built>`
   - `<image_in_cluster>`: name of image inside cluster (check dashboard)
-  - `<image_recent_built>`: image from registry that was recent update/rebuilt (e.g.
-    academind/kub-first-app)
-    - only will update in cluster, if new image has a different `tag` (e.g.
-      academind/kub-first-app:v1)
+  - `<image_recent_built>`: image from registry that was recent update/rebuilt (e.g. academind/kub-first-app)
+    - only will update in cluster, if new image has a different `tag` (e.g. academind/kub-first-app:v1)
     - if same tag, will not update
 
 ---
@@ -137,8 +135,7 @@ deployment history:
 
 ---
 
-To rollback/undo some update in deployment, e.g. if requested to update an image, and image name/tag
-had a typo/didn't exist in registry.
+To rollback/undo some update in deployment, e.g. if requested to update an image, and image name/tag had a typo/didn't exist in registry.
 
 The process of update will be stuck.
 
@@ -158,8 +155,6 @@ To end this process with error:
 ## Resources
 
 - [Kubermatic](https://www.kubermatic.com/)
-  - Automate operations of thousands of Kubernetes clusters across multi-cloud, on-prem, and edge
-    environments with unparalleled density and resilience. Powered by Kubermatic Kubernetes
-    Platform.
+  - Automate operations of thousands of Kubernetes clusters across multi-cloud, on-prem, and edge environments with unparalleled density and resilience. Powered by Kubermatic Kubernetes Platform.
 - [Kubernetes YAML Generator - Powered by Octopus](https://k8syaml.com/)
 - [Helm Helm Chart: kubernetes k8s package manager](https://harness.io/blog/continuous-delivery/what-is-helm/)

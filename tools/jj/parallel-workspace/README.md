@@ -1,11 +1,8 @@
 # Working on a change in a parallel directory
 
-One repo, two working directories. `jj workspace add` gives a change its own directory and its own
-working-copy commit while the main directory keeps whatever it was holding, and both directories
-write into the same commit graph — which is why nothing is ever merged back between them.
+One repo, two working directories. `jj workspace add` gives a change its own directory and its own working-copy commit while the main directory keeps whatever it was holding, and both directories write into the same commit graph — which is why nothing is ever merged back between them.
 
-Both variants below run the same spine: add the workspace, edit, describe, rebase onto whatever
-moved, land, retire the workspace. They split on where the change has to arrive.
+Both variants below run the same spine: add the workspace, edit, describe, rebase onto whatever moved, land, retire the workspace. They split on where the change has to arrive.
 
 | The change must reach                   | Use                   | What carries it there               |
 | --------------------------------------- | --------------------- | ----------------------------------- |
@@ -36,10 +33,7 @@ moved, land, retire the workspace. They split on where the change has to arrive.
 
 ## Reference
 
-- [../one-directory/](../one-directory/) — the same change developed where you already stand, with
-  no second working copy and no directory to retire
-- [../workspaces-share-one-repo.md](../workspaces-share-one-repo.md) — why landing is a bookmark
-  move rather than a merge, how `<workspace>@` addresses another working copy, and what staleness is
-- [../what-names-a-change.md](../what-names-a-change.md) — the four names a change picks up along
-  the way, walked through one scenario with commit graphs and repo tables
+- [../one-directory/](../one-directory/) — the same change developed where you already stand, with no second working copy and no directory to retire
+- [../workspaces-share-one-repo.md](../workspaces-share-one-repo.md) — why landing is a bookmark move rather than a merge, how `<workspace>@` addresses another working copy, and what staleness is
+- [../what-names-a-change.md](../what-names-a-change.md) — the four names a change picks up along the way, walked through one scenario with commit graphs and repo tables
 - [../README.md](../README.md) — the rest of the jj notes, and the naming convention these use

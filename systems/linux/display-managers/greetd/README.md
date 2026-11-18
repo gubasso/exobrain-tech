@@ -2,8 +2,7 @@
 
 Minimal display manager with TUI greeter.
 
-**References:** [greetd](https://sr.ht/~kennylevinsen/greetd/),
-[tuigreet](https://github.com/apognu/tuigreet)
+**References:** [greetd](https://sr.ht/~kennylevinsen/greetd/), [tuigreet](https://github.com/apognu/tuigreet)
 
 ---
 
@@ -56,8 +55,7 @@ systemctl reboot
 
 ## PAM Integration (Keyring Auto-Unlock)
 
-greetd supports PAM modules for keyring auto-unlock. Add the appropriate module to
-`/etc/pam.d/greetd`:
+greetd supports PAM modules for keyring auto-unlock. Add the appropriate module to `/etc/pam.d/greetd`:
 
 **KWallet:**
 

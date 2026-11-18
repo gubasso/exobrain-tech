@@ -8,8 +8,7 @@ token-estimate: 250
 
 ## Scope
 
-Container and devcontainer notes covering Docker, Podman, Kubernetes, libkrun, and related cleanup
-or troubleshooting material.
+Container and devcontainer notes covering Docker, Podman, Kubernetes, libkrun, and related cleanup or troubleshooting material.
 
 ## Key Points
 
@@ -17,8 +16,7 @@ or troubleshooting material.
 - **Podman**: Podman-first devcontainer workflow (Docker-compatible socket, `devcontainer` CLI).
 - **Kubernetes**: Container-orchestration reference material.
 - **Troubleshooting**: Docker/devcontainer cleanup guidance.
-- **microVM isolation** (libkrun / `crun --krun`) is documented in the sibling
-  `infra/sandbox-isolation-backends/` shelf.
+- **microVM isolation** (libkrun / `crun --krun`) is documented in the sibling `infra/sandbox-isolation-backends/` shelf.
 
 ## Maintenance Notes
 

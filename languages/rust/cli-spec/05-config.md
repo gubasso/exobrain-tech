@@ -1,9 +1,6 @@
 # 05 — Config (Rust)
 
-> Prerequisite:
-> [General principles — Config Precedence](../../../programming/cli-design/03-config-precedence.md)
-> for the `CLI > env > project > user > defaults` rule and XDG paths. This chapter is the Rust
-> implementation.
+> Prerequisite: [General principles — Config Precedence](../../../programming/cli-design/03-config-precedence.md) for the `CLI > env > project > user > defaults` rule and XDG paths. This chapter is the Rust implementation.
 
 ## Crate stack
 
@@ -17,9 +14,7 @@
 
 ## Rust-specific rules
 
-(The 5-layer precedence chain, provenance contract, and XDG path semantics are canonical in the
-[general chapter](../../../programming/cli-design/03-config-precedence.md). This file is the Rust
-implementation.)
+(The 5-layer precedence chain, provenance contract, and XDG path semantics are canonical in the [general chapter](../../../programming/cli-design/03-config-precedence.md). This file is the Rust implementation.)
 
 - One `Config` struct represents the resolved, merged config. **Immutable after construction.**
 - Use `figment` for the merge — its per-key provenance satisfies the general contract.
@@ -91,8 +86,7 @@ fn user_config_path() -> Option<PathBuf> {
 }
 ```
 
-`deny_unknown_fields` makes typos in TOML fail loudly — a developer who writes `timeut_secs` gets an
-error instead of a silently-ignored value.
+`deny_unknown_fields` makes typos in TOML fail loudly — a developer who writes `timeut_secs` gets an error instead of a silently-ignored value.
 
 ## Canonical-layer → Rust mapping
 
@@ -118,8 +112,7 @@ let cache_dir  = dirs.cache_dir();    // $XDG_CACHE_HOME/app
 let data_dir   = dirs.data_dir();     // $XDG_DATA_HOME/app
 ```
 
-The `state_dir()` call returns `None` on platforms without a distinct state dir (older Windows /
-macOS) — fall back to `data_dir()`.
+The `state_dir()` call returns `None` on platforms without a distinct state dir (older Windows / macOS) — fall back to `data_dir()`.
 
 ## CLI overrides via clap
 
@@ -136,21 +129,17 @@ pub struct GlobalArgs {
 }
 ```
 
-The `Serialize` impl on the args struct lets you feed it directly into figment's
-`Serialized::defaults` at the top of the merge chain. `skip_serializing_if` ensures `None` values
-don't override real config — only the flags the user passed are merged.
+The `Serialize` impl on the args struct lets you feed it directly into figment's `Serialized::defaults` at the top of the merge chain. `skip_serializing_if` ensures `None` values don't override real config — only the flags the user passed are merged.
 
 ## Why `figment` over `config-rs` or `confy`
 
-- `figment` tracks per-key source provenance — errors say _"`timeout_secs` from `./app.toml`
-  (line 12) was negative"_, not just _"invalid value"_.
+- `figment` tracks per-key source provenance — errors say _"`timeout_secs` from `./app.toml` (line 12) was negative"_, not just _"invalid value"_.
 - `config-rs` works but its error messages are vaguer.
 - `confy` can't layer multiple files; it's fine for tiny CLIs and nothing else.
 
 ## `--print-config`
 
-A debug subcommand that dumps the resolved value with source annotations is indispensable for
-support:
+A debug subcommand that dumps the resolved value with source annotations is indispensable for support:
 
 ```rust
 pub fn run(ctx: &AppContext) -> Result<(), AppError> {
@@ -164,12 +153,9 @@ For real source-tracking output, walk figment's `Metadata` directly.
 
 ## Anti-patterns specific to Rust
 
-- Storing `Config` in a `static`. Build it in `main`; thread `&Config` (or `Arc<Config>` on
-  `AppContext`) everywhere.
-- Mutating `Config` after construction. Make every field non-public and expose getters if you must —
-  but better: make the type `Clone` and reconstruct if you need a derived version.
-- Using `dirs` instead of `directories`. `dirs` is deprecated; the maintenance moved to
-  `directories`.
+- Storing `Config` in a `static`. Build it in `main`; thread `&Config` (or `Arc<Config>` on `AppContext`) everywhere.
+- Mutating `Config` after construction. Make every field non-public and expose getters if you must — but better: make the type `Clone` and reconstruct if you need a derived version.
+- Using `dirs` instead of `directories`. `dirs` is deprecated; the maintenance moved to `directories`.
 - Bringing in `serde_yaml`. The crate is unmaintained — prefer TOML, or use `serde_yaml_ng`.
 
 ## See also
@@ -180,6 +166,5 @@ For real source-tracking output, walk figment's `Metadata` directly.
 
 ## References
 
-- [`figment`](https://docs.rs/figment/) · [`directories`](https://docs.rs/directories/) ·
-  [`camino`](https://docs.rs/camino/)
+- [`figment`](https://docs.rs/figment/) · [`directories`](https://docs.rs/directories/) · [`camino`](https://docs.rs/camino/)
 - [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/index.html)

@@ -10,17 +10,14 @@
 
 - `FROM image:latest` → `[blocking]` "Pin to a specific tag/digest; latest drifts."
 - `FROM image` without tag → `[blocking]`.
-- Tag without digest in production → `[important]` "Tags can be re-pointed; pin digest for
-  reproducibility."
+- Tag without digest in production → `[important]` "Tags can be re-pointed; pin digest for reproducibility."
 
 ### Layer / size
 
-- `apt-get update && apt-get install ...` without `rm -rf /var/lib/apt/lists/*` in the same `RUN` →
-  `[important]` "Bloats image."
+- `apt-get update && apt-get install ...` without `rm -rf /var/lib/apt/lists/*` in the same `RUN` → `[important]` "Bloats image."
 - `RUN pip install` then no cleanup of `~/.cache/pip` → `[important]`.
 - Multiple `RUN` commands that should be one (each creates a layer) → `[suggestion]`.
-- COPY before dependency install (busts cache) → `[important]` "Copy lockfile first, install, then
-  copy source."
+- COPY before dependency install (busts cache) → `[important]` "Copy lockfile first, install, then copy source."
 
 ### User / permissions
 
@@ -36,14 +33,12 @@
 
 ### Multi-stage
 
-- Build artifacts copied between stages without explicit selection → `[important]`
-  "`COPY --from=builder /app/bin /usr/local/bin/` is explicit."
+- Build artifacts copied between stages without explicit selection → `[important]` "`COPY --from=builder /app/bin /usr/local/bin/` is explicit."
 - Final stage carrying the full builder toolchain → `[important]` "Use minimal runtime base."
 
 ### Common bugs
 
-- `WORKDIR` set with relative path after a `cd` (cd doesn't persist) → `[blocking]` "Use `WORKDIR`
-  directive."
+- `WORKDIR` set with relative path after a `cd` (cd doesn't persist) → `[blocking]` "Use `WORKDIR` directive."
 - `CMD` and `ENTRYPOINT` mixed forms (exec vs shell) → `[important]`.
 - `HEALTHCHECK` missing on a service container → `[suggestion]`.
 - `EXPOSE` lying about the actual port the app binds to → `[important]`.
@@ -52,8 +47,7 @@
 
 - Service without `restart` policy → `[suggestion]`.
 - Volume mount of host path that varies by user → `[important]` "Use named volumes."
-- `version: '2'` in new compose files → `[important]` "Use the schemaless form (v3.8+ doesn't need
-  version)."
+- `version: '2'` in new compose files → `[important]` "Use the schemaless form (v3.8+ doesn't need version)."
 
 ## See also
 

@@ -8,19 +8,14 @@ token-estimate: 350
 
 ## Scope
 
-JavaScript/TypeScript language notes, including code-review guides for JS, TS, React, and Svelte,
-plus general language and framework references.
+JavaScript/TypeScript language notes, including code-review guides for JS, TS, React, and Svelte, plus general language and framework references.
 
 ## Key Points
 
-- **Code review guide (JS)**: JavaScript-specific review heuristics for `.js`, `.mjs`, and `.cjs`
-  files.
-- **TypeScript review guide**: TS-specific heuristics (strict mode, type narrowing, any/unknown,
-  generics).
-- **React review guide**: React-specific heuristics (hooks rules, key prop, effect dependencies,
-  memo discipline).
-- **Svelte review guide**: Svelte-specific heuristics (reactivity, stores, lifecycle,
-  accessibility).
+- **Code review guide (JS)**: JavaScript-specific review heuristics for `.js`, `.mjs`, and `.cjs` files.
+- **TypeScript review guide**: TS-specific heuristics (strict mode, type narrowing, any/unknown, generics).
+- **React review guide**: React-specific heuristics (hooks rules, key prop, effect dependencies, memo discipline).
+- **Svelte review guide**: Svelte-specific heuristics (reactivity, stores, lifecycle, accessibility).
 - **General JS notes** (`javascript-js.md`): Utility patterns and snippets.
 - **TypeScript notes** (`typescript.md`): TypeScript-specific patterns and references.
 - **Node/npm** (`node-npm.md`): Node.js and npm package management notes.

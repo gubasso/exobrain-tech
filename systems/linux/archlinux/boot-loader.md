@@ -4,30 +4,23 @@
 
 1. **Mount or confirm the EFI System Partition (ESP) is mounted** at `/efi` (or `/boot/efi`).
 2. **Run `grub-install`** – with different flags depending on UEFI _vs._ legacy BIOS.
-3. **Add your kernel parameters** (`cryptdevice=… root=…`, plus anything like `quiet`) in
-   `/etc/default/grub`.
-4. \*\*Ensure the `encrypt` and `lvm2` hooks (and any others you need) are in
-   `/etc/mkinitcpio.conf`, then rebuild the initramfs.
+3. **Add your kernel parameters** (`cryptdevice=… root=…`, plus anything like `quiet`) in `/etc/default/grub`.
+4. \*\*Ensure the `encrypt` and `lvm2` hooks (and any others you need) are in `/etc/mkinitcpio.conf`, then rebuild the initramfs.
 5. **Generate `grub.cfg`** with `grub-mkconfig`.
-6. (Optional but wise) **Install the CPU microcode package** (`intel-ucode` or `amd-ucode`) and list
-   it as the _first_ `initrd` in the GRUB entry.
-7. **Reboot, enter your LUKS passphrase, and enjoy Arch.** ([Arch Linux Wiki][1],
-   [Arch Linux Wiki][1], [Arch Linux Wiki][1], [Arch Linux Wiki][2], [Arch Linux Wiki][3])
+6. (Optional but wise) **Install the CPU microcode package** (`intel-ucode` or `amd-ucode`) and list it as the _first_ `initrd` in the GRUB entry.
+7. **Reboot, enter your LUKS passphrase, and enjoy Arch.** ([Arch Linux Wiki][1], [Arch Linux Wiki][1], [Arch Linux Wiki][1], [Arch Linux Wiki][2], [Arch Linux Wiki][3])
 
 ---
 
 ## 1. Mount the ESP (UEFI machines only)
 
-When following the Installation Guide, after formatting your partitions you are instructed to mount
-the ESP directly at `/boot` inside the new system (`/mnt/boot` on the live medium):
+When following the Installation Guide, after formatting your partitions you are instructed to mount the ESP directly at `/boot` inside the new system (`/mnt/boot` on the live medium):
 
 ```bash
 mount /dev/<ESP-partition> /boot  # or /efi, or /boot/efi – pick one and be consistent
 ```
 
-The ESP must be mounted _inside the chroot_ before you run `grub-install`, because that command
-copies `grubx64.efi` into `$ESP/EFI/<ID>/` and writes a NVRAM entry via `efibootmgr`.
-([Arch Linux Wiki][1])
+The ESP must be mounted _inside the chroot_ before you run `grub-install`, because that command copies `grubx64.efi` into `$ESP/EFI/<ID>/` and writes a NVRAM entry via `efibootmgr`. ([Arch Linux Wiki][1])
 
 ---
 
@@ -41,8 +34,7 @@ grub-install --target=x86_64-efi \
              --bootloader-id=GRUB
 ```
 
-This copies the GRUB EFI binary to `$ESP/EFI/GRUB/` and creates the `GRUB` boot entry in firmware.
-([Arch Linux Wiki][1], [Arch Linux Wiki][1])
+This copies the GRUB EFI binary to `$ESP/EFI/GRUB/` and creates the `GRUB` boot entry in firmware. ([Arch Linux Wiki][1], [Arch Linux Wiki][1])
 
 ### • Legacy BIOS (MBR) systems
 
@@ -50,25 +42,21 @@ This copies the GRUB EFI binary to `$ESP/EFI/GRUB/` and creates the `GRUB` boot 
 grub-install --target=i386-pc /dev/sdX
 ```
 
-Replace `/dev/sdX` with the _entire_ disk (not a partition). ([Arch Linux Wiki][1],
-[Arch Linux Wiki][4])
+Replace `/dev/sdX` with the _entire_ disk (not a partition). ([Arch Linux Wiki][1], [Arch Linux Wiki][4])
 
-> **Tip:** If you are uncertain which firmware mode you booted in, use `ls /sys/firmware/efi` – an
-> existing directory means UEFI. Otherwise you are in BIOS/CSM mode.
+> **Tip:** If you are uncertain which firmware mode you booted in, use `ls /sys/firmware/efi` – an existing directory means UEFI. Otherwise you are in BIOS/CSM mode.
 
 ---
 
 ## 3. Add kernel parameters in **`/etc/default/grub`**
 
-Open the file and append the parameters to `GRUB_CMDLINE_LINUX_DEFAULT` —for everyday boots—or to
-`GRUB_CMDLINE_LINUX` if you also want them applied to fallback/rescue entries:
+Open the file and append the parameters to `GRUB_CMDLINE_LINUX_DEFAULT` —for everyday boots—or to `GRUB_CMDLINE_LINUX` if you also want them applied to fallback/rescue entries:
 
 ```bash
 GRUB_CMDLINE_LINUX_DEFAULT="quiet cryptdevice=UUID=<device-UUID>:cryptlvm root=/dev/MyVolGroup/root"
 ```
 
-After saving, these options will be injected into every menu entry when you regenerate `grub.cfg`
-(next step). ([Arch Linux Wiki][1], [Arch Linux Wiki][5])
+After saving, these options will be injected into every menu entry when you regenerate `grub.cfg` (next step). ([Arch Linux Wiki][1], [Arch Linux Wiki][5])
 
 ---
 
@@ -80,8 +68,7 @@ Edit `/etc/mkinitcpio.conf`:
 HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block encrypt lvm2 filesystems fsck)
 ```
 
-At minimum you need **`encrypt`** (to unlock LUKS) and **`lvm2`** (if root sits in an LVM LV). Then
-rebuild:
+At minimum you need **`encrypt`** (to unlock LUKS) and **`lvm2`** (if root sits in an LVM LV). Then rebuild:
 
 ```bash
 mkinitcpio -P        # or mkinitcpio -g /boot/initramfs-linux.img
@@ -97,8 +84,7 @@ mkinitcpio -P        # or mkinitcpio -g /boot/initramfs-linux.img
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-This scans `/etc/default/grub`, all installed kernels, microcode images, and creates a complete
-menu. Re-run it any time you change kernels or GRUB settings. ([Arch Linux Wiki][5])
+This scans `/etc/default/grub`, all installed kernels, microcode images, and creates a complete menu. Re-run it any time you change kernels or GRUB settings. ([Arch Linux Wiki][5])
 
 ---
 
@@ -111,9 +97,7 @@ pacman -S intel-ucode      # Intel
 pacman -S amd-ucode        # AMD
 ```
 
-`grub-mkconfig` will automatically prepend `/boot/intel-ucode.img` or `/boot/amd-ucode.img` as the
-first `initrd` line so the microcode loads before the main kernel. ([Arch Linux Wiki][3],
-[Arch Linux Wiki][7])
+`grub-mkconfig` will automatically prepend `/boot/intel-ucode.img` or `/boot/amd-ucode.img` as the first `initrd` line so the microcode loads before the main kernel. ([Arch Linux Wiki][3], [Arch Linux Wiki][7])
 
 ---
 
@@ -123,10 +107,7 @@ first `initrd` line so the microcode loads before the main kernel. ([Arch Linux 
 - Confirm that `/boot` (and `/efi` if separate) contain `grub` directories.
 - Exit the chroot, unmount, `reboot`.
 
-At the GRUB screen you should be prompted for the LUKS passphrase; afterward, the system should
-switch to your root LV and continue booting normally. If anything fails, use the fallback entry (it
-omits `autodetect`) or the live USB's _arch-chroot_ environment to fix typos in kernel parameters or
-hooks. ([Arch Linux Wiki][8])
+At the GRUB screen you should be prompted for the LUKS passphrase; afterward, the system should switch to your root LV and continue booting normally. If anything fails, use the fallback entry (it omits `autodetect`) or the live USB's _arch-chroot_ environment to fix typos in kernel parameters or hooks. ([Arch Linux Wiki][8])
 
 ---
 

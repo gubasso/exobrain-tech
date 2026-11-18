@@ -2,9 +2,7 @@
 
 > https://obsproject.com/
 
-Free, open-source software for screen recording and live streaming. Runs on Linux, macOS, and
-Windows. These notes focus on a Linux desktop workflow: hardware-accelerated recording, a
-studio-quality microphone filter chain, webcam effects, and manual plugin installation.
+Free, open-source software for screen recording and live streaming. Runs on Linux, macOS, and Windows. These notes focus on a Linux desktop workflow: hardware-accelerated recording, a studio-quality microphone filter chain, webcam effects, and manual plugin installation.
 
 ## Install (Linux)
 
@@ -14,8 +12,7 @@ studio-quality microphone filter chain, webcam effects, and manual plugin instal
   flatpak install flathub com.obsproject.Studio
   ```
 
-- **Native package** (distro repo) — e.g. `obs-studio` on Arch/openSUSE/Debian. Native builds pick
-  up system GStreamer/VA-API plugins directly, which the recording setup below relies on.
+- **Native package** (distro repo) — e.g. `obs-studio` on Arch/openSUSE/Debian. Native builds pick up system GStreamer/VA-API plugins directly, which the recording setup below relies on.
 
 User config, scenes, profiles, and manually-installed plugins live under:
 
@@ -25,11 +22,7 @@ User config, scenes, profiles, and manually-installed plugins live under:
 
 ## Recording & encoders
 
-For recording (as opposed to streaming), prefer a **hardware encoder** when your GPU has one — it
-offloads work from the CPU so gameplay/capture doesn't lag. On Linux the usual options are VA-API
-(Intel/AMD), NVENC (NVIDIA), and the CPU-based `x264`. `x264` gives the best quality-per-bitrate but
-is the heaviest on the CPU; hardware encoders trade a little quality for a much lighter load. Choose
-via **Settings → Output → Output Mode: Advanced → Recording**.
+For recording (as opposed to streaming), prefer a **hardware encoder** when your GPU has one — it offloads work from the CPU so gameplay/capture doesn't lag. On Linux the usual options are VA-API (Intel/AMD), NVENC (NVIDIA), and the CPU-based `x264`. `x264` gives the best quality-per-bitrate but is the heaviest on the CPU; hardware encoders trade a little quality for a much lighter load. Choose via **Settings → Output → Output Mode: Advanced → Recording**.
 
 ### VA-API via GStreamer (Intel/AMD)
 
@@ -39,52 +32,42 @@ Path from the LoftyPancake walkthrough (see References):
 2. **Video Encoder: GStreamer**.
 3. **Encoder type: VA-API**.
 
-For general "no-lag" recording settings, see the SlurpTech and Agent (low-end PC) guides in
-References.
+For general "no-lag" recording settings, see the SlurpTech and Agent (low-end PC) guides in References.
 
 ## Audio: mic filter chain
 
-Goal: make a cheap mic sound expensive. First set levels, then stack filters in order. Add filters
-under **Audio Mixer → (mic) → gear → Filters**. Filters process **top to bottom**, so order matters.
+Goal: make a cheap mic sound expensive. First set levels, then stack filters in order. Add filters under **Audio Mixer → (mic) → gear → Filters**. Filters process **top to bottom**, so order matters.
 
 **Level the input first:**
 
 - Raise the OBS mic volume toward max.
-- Adjust the **system** mic volume so that speaking normally lands in the **yellow** range on the
-  mic's audio-track meter.
-- To hear yourself: **Audio Mixer → Advanced Audio Properties → Audio Monitoring → Monitor and
-  Output**.
+- Adjust the **system** mic volume so that speaking normally lands in the **yellow** range on the mic's audio-track meter.
+- To hear yourself: **Audio Mixer → Advanced Audio Properties → Audio Monitoring → Monitor and Output**.
 
 **Then add the filter chain, in this order:**
 
-1. **Gain** — only if max system volume + max OBS volume still falls short of the yellow range. Add
-   just enough gain to reach it.
+1. **Gain** — only if max system volume + max OBS volume still falls short of the yellow range. Add just enough gain to reach it.
 2. **Noise Suppression** — method: **Speex**.
-3. **3-Band Equalizer** — reduce the **mid** a little (sounds more professional), optionally add a
-   touch to the **high**, then fine-tune the high. Toggle the filter on/off to compare raw vs.
-   adjusted.
+3. **3-Band Equalizer** — reduce the **mid** a little (sounds more professional), optionally add a touch to the **high**, then fine-tune the high. Toggle the filter on/off to compare raw vs. adjusted.
 4. **Expander** — quiets the mic when you're not talking (gates background hiss):
    - Ratio: **3**
    - Attack: **1 ms**
    - Release: **100 ms**
    - Threshold: start fully **left**.
-   - Speak as quietly as you would at your minimum volume; watch the mixer and raise **Output Gain**
-     to reach the yellow mark.
+   - Speak as quietly as you would at your minimum volume; watch the mixer and raise **Output Gain** to reach the yellow mark.
    - Then raise the **Threshold** to a low spot where your speech reliably opens the gate.
 5. **Compressor** — evens out loud vs. quiet passages:
    - Ratio: **3**
    - Threshold: start fully **right**.
    - Attack: **1 ms**
    - Release: **100 ms**
-   - Shout into the mic and lower the **Threshold** until the shout stops peaking — aim for the
-     shout to land around **-1 dB**.
+   - Shout into the mic and lower the **Threshold** until the shout stops peaking — aim for the shout to land around **-1 dB**.
 6. **Limiter** — hard ceiling to stop clipping:
    - Threshold: fully **right**, then one click down (about **-0.1 dB**).
 
 ### Monitoring / virtual mic
 
-Route processed mic audio into other apps (Discord, browser, etc.) using a PulseAudio virtual cable
-(see NapoleonWils0n in References):
+Route processed mic audio into other apps (Discord, browser, etc.) using a PulseAudio virtual cable (see NapoleonWils0n in References):
 
 1. **Settings → Audio → Advanced → Monitoring Device →** choose the virtual cable.
 2. Make sure the mic's monitoring is set to **Monitor and Output**.
@@ -134,8 +117,7 @@ Plugins can be dropped into `~/.config/obs-studio/plugins/` using this folder la
 
 ## Troubleshooting
 
-**Resizing a source cuts off its shadow/glow.** Don't use `Alt`+drag to resize the camera — it clips
-the shadow. Instead:
+**Resizing a source cuts off its shadow/glow.** Don't use `Alt`+drag to resize the camera — it clips the shadow. Instead:
 
 - Add a **Crop/Pad** filter and put it at the **top** (first) of the filter chain.
 - Positive numbers crop the borders; use it to change the effective camera size.
@@ -165,8 +147,6 @@ the shadow. Instead:
 
 **Effects & masks**
 
-- [ANIMATED Masks Using Nothing But OBS Studio! — nutty](https://www.youtube.com/watch?v=btzlExdrsg4)
-  · [Advanced Masks resource](https://obsproject.com/forum/resources/advanced-masks.1856/)
-- [DROP SHADOWS Using Only OBS Studio! (Also Outlines & Glows) — nutty](https://www.youtube.com/watch?v=dsVQ_LnUQNM)
-  · [Stroke Glow Shadow resource](https://obsproject.com/forum/resources/stroke-glow-shadow.1800/)
+- [ANIMATED Masks Using Nothing But OBS Studio! — nutty](https://www.youtube.com/watch?v=btzlExdrsg4) · [Advanced Masks resource](https://obsproject.com/forum/resources/advanced-masks.1856/)
+- [DROP SHADOWS Using Only OBS Studio! (Also Outlines & Glows) — nutty](https://www.youtube.com/watch?v=dsVQ_LnUQNM) · [Stroke Glow Shadow resource](https://obsproject.com/forum/resources/stroke-glow-shadow.1800/)
 - [How to Make Circle Webcam in OBS Studio — Northern Viking Everyday](https://www.youtube.com/watch?v=LgrDeVKXQII)

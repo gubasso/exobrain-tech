@@ -18,8 +18,7 @@ Make your KDE Sweet! - NH Soft - <https://www.youtube.com/watch?v=PyyxQYkloLo>
 
 1. In your browser, go to **fonts.google.com**.
 2. Search for **“Inter”** and click **“Get Font”** to download the ZIP.
-3. In Dolphin (or your file manager), navigate to **Downloads**, **right-click** the ZIP, and
-   **Extract**.
+3. In Dolphin (or your file manager), navigate to **Downloads**, **right-click** the ZIP, and **Extract**.
 4. Inside the folder, **double-click** the regular (non-variable) font file and click **“Install.”**
 
 ## 4. Set Your New Font as the Default

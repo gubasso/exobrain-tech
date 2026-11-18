@@ -1,14 +1,10 @@
 # RPM spec file guide
 
-A practical reference for writing and maintaining `.spec` files for RPM-based distributions
-(openSUSE, Fedora, RHEL, and derivatives). Covers section roles, the most useful macros,
-multi-Python flavor patterns, conditional builds, and the tags that are obsolete in modern RPM.
+A practical reference for writing and maintaining `.spec` files for RPM-based distributions (openSUSE, Fedora, RHEL, and derivatives). Covers section roles, the most useful macros, multi-Python flavor patterns, conditional builds, and the tags that are obsolete in modern RPM.
 
 ## What a spec file is
 
-A spec file defines how a package is built: its build/runtime dependencies, build steps, and which
-files end up in the resulting RPM. Look at any well-maintained upstream package for a worked example
-covering subpackages, patches, systemd macros, and `%pyproject_wheel`.
+A spec file defines how a package is built: its build/runtime dependencies, build steps, and which files end up in the resulting RPM. Look at any well-maintained upstream package for a worked example covering subpackages, patches, systemd macros, and `%pyproject_wheel`.
 
 ## Sections
 
@@ -21,8 +17,7 @@ covering subpackages, patches, systemd macros, and `%pyproject_wheel`.
 | `%files`         | List of files that go into the final RPM                    |
 | `%changelog`     | Package change history                                      |
 
-Each `%token` is a macro. Plain shell commands work in any section — macros are optional
-conveniences that adapt to distro/arch defaults.
+Each `%token` is a macro. Plain shell commands work in any section — macros are optional conveniences that adapt to distro/arch defaults.
 
 ## Evaluating macros
 
@@ -48,8 +43,7 @@ Quote the expression when it contains spaces.
 | `%{_datadir}` | `/usr/share`               | Arch-independent data               |
 | `%{_mandir}`  | `/usr/share/man`           | Man pages                           |
 
-**Rule**: use the most specific macro. `%{_libdir}` is correct for libraries (handles 32 vs 64 bit).
-Don't blindly replace `%{_usr}` with `%{_libdir}` — only library paths should use `%{_libdir}`.
+**Rule**: use the most specific macro. `%{_libdir}` is correct for libraries (handles 32 vs 64 bit). Don't blindly replace `%{_usr}` with `%{_libdir}` — only library paths should use `%{_libdir}`.
 
 Example — prefer specific macros:
 
@@ -66,22 +60,19 @@ Example — prefer specific macros:
 
 ## Python `%{_sitelibdir}` pattern
 
-For multi-flavor Python packages (`%{pythons}` = `python311`, `python312`, …), define a dynamic
-site-lib macro:
+For multi-flavor Python packages (`%{pythons}` = `python311`, `python312`, …), define a dynamic site-lib macro:
 
 ```spec
 %global _sitelibdir %{%{pythons}_sitelib}
 ```
 
-This re-expands to the right per-flavor path (`%{python311_sitelib}`, `%{python312_sitelib}`, …).
-The generic `%python_sitelib` only resolves to the _primary_ Python flavor.
+This re-expands to the right per-flavor path (`%{python311_sitelib}`, `%{python312_sitelib}`, …). The generic `%python_sitelib` only resolves to the _primary_ Python flavor.
 
 ## Conditional builds
 
 ### Fallback when `%{pythons}` is undefined
 
-Older distributions (`<=` SLE 15 SP2 and all SLE 12) lack the `%{pythons}` macro. Provide a
-fallback:
+Older distributions (`<=` SLE 15 SP2 and all SLE 12) lack the `%{pythons}` macro. Provide a fallback:
 
 ```spec
 %if !0%{?pythons:1}
@@ -119,8 +110,7 @@ Keep conditionals minimal — the build system already handles the target matrix
 
 ### `BuildRoot:` — remove it
 
-The `BuildRoot:` tag is **obsolete** in modern RPM. `rpmbuild` defines its own buildroot via the
-`--buildroot` argument (which OBS always passes), so any value the spec sets is overridden.
+The `BuildRoot:` tag is **obsolete** in modern RPM. `rpmbuild` defines its own buildroot via the `--buildroot` argument (which OBS always passes), so any value the spec sets is overridden.
 
 ```spec
 # DELETE this line — it has no effect:
@@ -129,23 +119,19 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 
 Why it's safe to remove:
 
-- Fedora packaging guidelines deprecated the tag (Fedora 18+ no longer requires or honors it);
-  openSUSE follows the same convention.
+- Fedora packaging guidelines deprecated the tag (Fedora 18+ no longer requires or honors it); openSUSE follows the same convention.
 - OBS builds always pass `--buildroot` on the command line, overriding any spec-level value.
 - All current openSUSE releases (Tumbleweed, Leap 15.x) build cleanly without it.
 
-Continue using `%{buildroot}` in your `%install` section — that variable is still set by RPM's
-`--buildroot` option.
+Continue using `%{buildroot}` in your `%install` section — that variable is still set by RPM's `--buildroot` option.
 
 ### `Group:` — also obsolete
 
-Like `BuildRoot:`, the `Group:` tag is deprecated in Fedora 18+ and modern openSUSE. Safe to remove
-from new packages.
+Like `BuildRoot:`, the `Group:` tag is deprecated in Fedora 18+ and modern openSUSE. Safe to remove from new packages.
 
 ## See also
 
 - [RPM Packaging Guide](https://rpm-packaging-guide.github.io/) — upstream spec file reference.
 - [Fedora RPM Macros](https://docs.fedoraproject.org/en-US/packaging-guidelines/RPMMacros/)
 - [openSUSE Specfile guidelines](https://en.opensuse.org/openSUSE:Specfile_guidelines)
-- [`../../tools/osc-obs/`](../../../tools/osc-obs/README.md) — running spec files through the Open
-  Build Service with `osc`.
+- [`../../tools/osc-obs/`](../../../tools/osc-obs/README.md) — running spec files through the Open Build Service with `osc`.

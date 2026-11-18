@@ -35,8 +35,7 @@ onMount(() => {
 
 Using Jest for unit and integration tests.
 
-Inspired by Rust Tests organization/pattern:
-[The Rust Programming Language: Test Organization](https://doc.rust-lang.org/stable/book/ch11-03-test-organization.html)
+Inspired by Rust Tests organization/pattern: [The Rust Programming Language: Test Organization](https://doc.rust-lang.org/stable/book/ch11-03-test-organization.html)
 
 - Unit tests: saved as `*.test.js` side by side functions/files that are being tested.
 - Integration tests: saved at `myproject/tests` directory, side-by-side with `src` dir.
@@ -53,8 +52,7 @@ If want to serve a static web app in another URI (same domain, but not at root `
 - `projects.example.com/cadelab` (and not at `projects.example.com`): URI is `/cadelab`
 - `www.meuovo.com/mystaticapp`: URI is `/mystaticapp`
 
-Change the base path in all of these places to make `sapper export` work: (example with URI/Base
-path `cadelab`)
+Change the base path in all of these places to make `sapper export` work: (example with URI/Base path `cadelab`)
 
 ```text
 src/serve.js
@@ -121,8 +119,7 @@ package.json
     "export": "npm run build:tailwind && sapper export --legacy --basepath cadelab", // <-- add `--basepath cadelab`[^wd2]
 ```
 
-After that, to serve these files, map the webserver for the root directory, with `cadelab` directory
-in it.
+After that, to serve these files, map the webserver for the root directory, with `cadelab` directory in it.
 
 - file structure: `export/cadelab`
 - serve `export` dir

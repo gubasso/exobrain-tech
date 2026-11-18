@@ -1,7 +1,6 @@
 # GTK/Qt UI Coherence for X11 Window Managers
 
-Coherent UI setup for X11 window-manager sessions such as `dwm`, `bspwm`, `i3`, and similar minimal
-stacks where no desktop environment settings daemon is applying theme defaults for you.
+Coherent UI setup for X11 window-manager sessions such as `dwm`, `bspwm`, `i3`, and similar minimal stacks where no desktop environment settings daemon is applying theme defaults for you.
 
 This guide covers:
 
@@ -16,8 +15,7 @@ This guide uses a discover-then-persist workflow:
 2. Persist those values in your user configuration.
 3. Relogin to verify the session picks them up cleanly.
 
-Optional palette reference:
-[Purple City](colors/purple-city-dark-theme-color-system-specification.md)
+Optional palette reference: [Purple City](colors/purple-city-dark-theme-color-system-specification.md)
 
 ---
 
@@ -41,14 +39,12 @@ Optional palette reference:
 
 Without a full desktop environment, theming comes from multiple layers:
 
-- GTK settings files (`~/.config/gtk-3.0/settings.ini`, `~/.gtkrc-2.0`, and optionally GTK4
-  settings)
+- GTK settings files (`~/.config/gtk-3.0/settings.ini`, `~/.gtkrc-2.0`, and optionally GTK4 settings)
 - Qt platform theme plugin (`QT_QPA_PLATFORMTHEME` with `qt5ct` / `qt6ct`)
 - XSETTINGS (`xsettingsd`) for DPI, font, and rendering hints
 - XDG Desktop Portal backend selection for toolkit-neutral file chooser flows
 
-That split is normal on standalone X11 WM setups. The fix is to configure each layer deliberately
-and keep one canonical set of values.
+That split is normal on standalone X11 WM setups. The fix is to configure each layer deliberately and keep one canonical set of values.
 
 ---
 
@@ -135,8 +131,7 @@ journalctl --user -u xdg-desktop-portal -b --no-pager | tail -n 80
 
 ### 5.1 Theme selection rationale
 
-Purple City palette reference:
-[Purple City](colors/purple-city-dark-theme-color-system-specification.md)
+Purple City palette reference: [Purple City](colors/purple-city-dark-theme-color-system-specification.md)
 
 | Role         | Package               | Source | Value to set                |
 | ------------ | --------------------- | ------ | --------------------------- |
@@ -150,17 +145,12 @@ Purple City palette reference:
 
 - Polished Material Design GTK2/3/4 theme with a dedicated purple accent variant.
 - Available directly from `extra` — no AUR build required.
-- Stock dark backgrounds sit around `#303030` (grey), not matching the near-black `#010005` of
-  Purple City. For exact palette fidelity you would fork and patch the SCSS variables, but
-  out-of-the-box it is the closest purple-accented dark theme with maintained Arch packaging.
+- Stock dark backgrounds sit around `#303030` (grey), not matching the near-black `#010005` of Purple City. For exact palette fidelity you would fork and patch the SCSS variables, but out-of-the-box it is the closest purple-accented dark theme with maintained Arch packaging.
 
 **Alternatives considered:**
 
-- `Catppuccin-Mocha-Standard-Mauve-Dark` (`catppuccin-gtk-theme-mocha` AUR) — Mauve accent `#cba6f7`
-  is close to Purple City `#C89DEA`, but base background is blue-grey `#1e1e2e`, not purple-tinted.
-  Repo is archived.
-- `Sweet-Dark` (`sweet-gtk-theme-dark` AUR) — neon purple gradients, but blue-grey backgrounds and
-  reported GTK2/3 rendering bugs.
+- `Catppuccin-Mocha-Standard-Mauve-Dark` (`catppuccin-gtk-theme-mocha` AUR) — Mauve accent `#cba6f7` is close to Purple City `#C89DEA`, but base background is blue-grey `#1e1e2e`, not purple-tinted. Repo is archived.
+- `Sweet-Dark` (`sweet-gtk-theme-dark` AUR) — neon purple gradients, but blue-grey backgrounds and reported GTK2/3 rendering bugs.
 - `Adwaita-dark` — safe baseline but no purple accent at all.
 
 ### 5.2 Install packages
@@ -267,8 +257,7 @@ sed -n '1,200p' ~/.config/qt6ct/qt6ct.conf
 
 ## 8) `xsettingsd` Consistency Check
 
-Your X11 session should start `xsettingsd` from whichever entrypoint you use: `~/.xinitrc`, a
-display-manager session script, or a WM autostart hook.
+Your X11 session should start `xsettingsd` from whichever entrypoint you use: `~/.xinitrc`, a display-manager session script, or a WM autostart hook.
 
 Verify applied values:
 
@@ -293,9 +282,7 @@ ln -sf ~/.config/xsettingsd/xsettingsd.conf ~/.xsettingsd
 
 ## 9) Browser Upload/Save Dialog Behavior
 
-After portal configuration, most browsers should use the GTK-backed chooser path. If a
-Chromium-family browser still shows inconsistent dialogs, test forcing the portal path in whatever
-launcher or environment wrapper starts the browser:
+After portal configuration, most browsers should use the GTK-backed chooser path. If a Chromium-family browser still shows inconsistent dialogs, test forcing the portal path in whatever launcher or environment wrapper starts the browser:
 
 ```bash
 export GTK_USE_PORTAL=1
@@ -307,8 +294,7 @@ Restart the browser fully and test upload/save again.
 
 ## 10) Optional Palette Workflow with `gpick`
 
-Use `gpick` to sample colors from wallpapers or UI surfaces, then map them back to a constrained
-palette instead of inventing per-app accents.
+Use `gpick` to sample colors from wallpapers or UI surfaces, then map them back to a constrained palette instead of inventing per-app accents.
 
 If you want a predefined palette, Purple City is documented here:
 
@@ -325,8 +311,7 @@ Recommended flow:
 
 ## 11) Persist User Configuration
 
-After you confirm the visuals, keep the relevant files under your normal user-configuration
-management:
+After you confirm the visuals, keep the relevant files under your normal user-configuration management:
 
 - `~/.config/gtk-3.0/settings.ini`
 - `~/.config/gtk-4.0/settings.ini`, if used
@@ -336,8 +321,7 @@ management:
 - `~/.config/xdg-desktop-portal/portals.conf`
 - `~/.config/environment.d/60-qt-platform-theme.conf`
 
-If your browser launcher environment needs `GTK_USE_PORTAL=1`, persist that with the same mechanism
-you use for application launchers or session environment files.
+If your browser launcher environment needs `GTK_USE_PORTAL=1`, persist that with the same mechanism you use for application launchers or session environment files.
 
 ---
 

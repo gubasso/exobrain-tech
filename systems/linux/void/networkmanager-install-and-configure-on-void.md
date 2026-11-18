@@ -1,7 +1,6 @@
 # NetworkManager: Install and Configure on Void
 
-`nmtui` is just a front-end; it needs the **NetworkManager daemon** to be up first. On a fresh Void
-install that usually just means you haven’t enabled the runit service yet.
+`nmtui` is just a front-end; it needs the **NetworkManager daemon** to be up first. On a fresh Void install that usually just means you haven’t enabled the runit service yet.
 
 ---
 
@@ -43,8 +42,7 @@ sudo ln -s /etc/sv/polkitd  /var/service
 sudo sv up dbus polkitd
 ```
 
-If you use Wi-Fi, also enable `wpa_supplicant` (NetworkManager will start its own instance, but the
-service provides the binary):
+If you use Wi-Fi, also enable `wpa_supplicant` (NetworkManager will start its own instance, but the service provides the binary):
 
 ```sh
 sudo ln -s /etc/sv/wpa_supplicant /var/service
@@ -73,8 +71,7 @@ You should now get the menu instead of “could not contact NetworkManager”.
 
 ### 6. (Optional) make the change stick after reboot
 
-Because you created the symlinks under `/var/service`, runit will auto-start them on every boot, so
-you’re all set.
+Because you created the symlinks under `/var/service`, runit will auto-start them on every boot, so you’re all set.
 
 ---
 
@@ -82,8 +79,6 @@ you’re all set.
 
 - **Check logs** – `sudo tail -f /var/log/NetworkManager`
 - **Confirm D-Bus is alive** – `busctl` should return without error.
-- **Wayland session** won’t affect `nmtui`, but if you later want a systray applet on Wayland you’ll
-  need a notification/indicator host (e.g. Waybar’s tray module).
+- **Wayland session** won’t affect `nmtui`, but if you later want a systray applet on Wayland you’ll need a notification/indicator host (e.g. Waybar’s tray module).
 
-Give those steps a whirl and let me know where it gets stuck—happy to dig further if something still
-misbehaves.
+Give those steps a whirl and let me know where it gets stuck—happy to dig further if something still misbehaves.

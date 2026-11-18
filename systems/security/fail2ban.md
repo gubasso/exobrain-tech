@@ -35,8 +35,7 @@ cd /etc/fail2ban
 sudo cp jail.conf jail.local
 ```
 
-If you changed the SSH default port (e.g. `Port 202`), edit the `[sshd]` section at
-`jail.local`[^1]:
+If you changed the SSH default port (e.g. `Port 202`), edit the `[sshd]` section at `jail.local`[^1]:
 
 **`/etc/fail2ban/jail.local`**
 

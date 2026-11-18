@@ -1,14 +1,8 @@
 # Start a workspace off the trunk while the main directory is busy
 
-Creates the second working directory parented on the trunk `master` while the main directory
-holds unfinished work on a different line, leaving that work untouched. Covers the start of the run
-only; landing is [main-target-remote/recipe.md](./main-target-remote/recipe.md) or
-[main-target-local/recipe.md](./main-target-local/recipe.md). Names carry a kind prefix while they
-are only names in this repo, per [README.md](../README.md).
+Creates the second working directory parented on the trunk `master` while the main directory holds unfinished work on a different line, leaving that work untouched. Covers the start of the run only; landing is [main-target-remote/recipe.md](./main-target-remote/recipe.md) or [main-target-local/recipe.md](./main-target-local/recipe.md). Names carry a kind prefix while they are only names in this repo, per [README.md](../README.md).
 
-The steps run one worked example end to end: a repo at `~/code/repo` whose working copy holds an
-edit on the change `feat: teach parser about arrays`, stacked on an earlier trunk commit, and a
-viewport fix started from `master@origin` in `../wkspc-feat-y/`.
+The steps run one worked example end to end: a repo at `~/code/repo` whose working copy holds an edit on the change `feat: teach parser about arrays`, stacked on an earlier trunk commit, and a viewport fix started from `master@origin` in `../wkspc-feat-y/`.
 
 ## The whole run
 
@@ -69,12 +63,10 @@ jj bookmark set bkmrk-feat-y
 
 3. Create the workspace parented on `master@origin`.
 
-   - `-r` sets the parents of the new working-copy commit. Without it they are the parents of this
-     directory's `@` — the line you are not building on.
+   - `-r` sets the parents of the new working-copy commit. Without it they are the parents of this directory's `@` — the line you are not building on.
    - `-r 'trunk()'` reaches the same commit wherever jj set that alias at clone time.
    - Keep the destination a sibling: a nested one makes a repo inside one.
-   - Do not add `--ignore-working-copy`. It creates the directory and registers the workspace, then
-     fails, leaving a commit on `root()` and a directory holding no files:
+   - Do not add `--ignore-working-copy`. It creates the directory and registers the workspace, then fails, leaving a commit on `root()` and a directory holding no files:
 
      ```text
      Created workspace in "../wkspc-feat-y"
@@ -82,8 +74,7 @@ jj bookmark set bkmrk-feat-y
      Hint: Don't use --ignore-working-copy.
      ```
 
-     Recover with `jj workspace forget wkspc-feat-y && rm -rf ../wkspc-feat-y`, then rerun without
-     the flag.
+     Recover with `jj workspace forget wkspc-feat-y && rm -rf ../wkspc-feat-y`, then rerun without the flag.
 
    ```sh
    jj workspace add -r master@origin ../wkspc-feat-y
@@ -98,8 +89,7 @@ jj bookmark set bkmrk-feat-y
 
 4. Confirm the main directory stands where step 2 left it.
 
-   The command of step 3 snapshotted `src/lexer.rs` into this directory's own `@`, which is what
-   every jj command does and moves no file on disk.
+   The command of step 3 snapshotted `src/lexer.rs` into this directory's own `@`, which is what every jj command does and moves no file on disk.
 
    ```sh
    jj st
@@ -124,8 +114,7 @@ jj bookmark set bkmrk-feat-y
    Parent commit (@-): tnoqnksp 16c35ce8 master | chore: release 1.4.1
    ```
 
-6. Read across any ref plain `git` wrote in the main directory, which a jj-only workspace never
-   syncs on its own, per [workspaces-share-one-repo.md](../workspaces-share-one-repo.md).
+6. Read across any ref plain `git` wrote in the main directory, which a jj-only workspace never syncs on its own, per [workspaces-share-one-repo.md](../workspaces-share-one-repo.md).
 
    Run it here and not in the main directory, where a colocated workspace declines the work.
 

@@ -15,18 +15,12 @@ This repository is a public technical knowledge base. The KB is the library, the
 
 ## Uncategorized Notes
 
-- [workflows/general-notes.md](workflows/general-notes.md) - staging area for uncategorized general
-  notes and link collections from the original main index of the KB. Promote each entry into the
-  right bucket when it matures.
+- [workflows/general-notes.md](workflows/general-notes.md) - staging area for uncategorized general notes and link collections from the original main index of the KB. Promote each entry into the right bucket when it matures.
 
 ## Host requirements
 
-The devshell of `flake.nix` supplies every other tool. [`host-requirements.toml`](./host-requirements.toml)
-lists each host tool that a recipe, a hook, or a script calls. The host also supplies the coreutils
-and the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`. On NixOS, nix-ld supplies the loader.
+The devshell of `flake.nix` supplies every other tool. [`host-requirements.toml`](./host-requirements.toml) lists each host tool that a recipe, a hook, or a script calls. The host also supplies the coreutils and the standard ELF loader, `/lib64/ld-linux-x86-64.so.2`. On NixOS, nix-ld supplies the loader.
 
 ## License
 
-The [Creative Commons Attribution 4.0 International](LICENSE) license (CC BY 4.0) covers the
-knowledge content. The [MIT License](LICENSE-MIT) covers the software under `crates/`. Copyright
-2026 Gustavo Basso.
+The [Creative Commons Attribution 4.0 International](LICENSE) license (CC BY 4.0) covers the knowledge content. The [MIT License](LICENSE-MIT) covers the software under `crates/`. Copyright 2026 Gustavo Basso.

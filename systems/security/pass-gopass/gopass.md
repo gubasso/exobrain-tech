@@ -1,8 +1,6 @@
 ## Gopass
 
-This step-by-step guide is designed to help you get started with **gopass**, a Git-based password
-manager. You'll find everything from the initial setup to best practices for organization and
-sharing.
+This step-by-step guide is designed to help you get started with **gopass**, a Git-based password manager. You'll find everything from the initial setup to best practices for organization and sharing.
 
 ---
 
@@ -10,8 +8,7 @@ sharing.
 
 - Git installed and configured.
 - An SSH key configured for accessing remote repositories.
-- `gopass` installed (see
-  [official installation guide](https://github.com/gopasspw/gopass#installation)).
+- `gopass` installed (see [official installation guide](https://github.com/gopasspw/gopass#installation)).
 
 ---
 
@@ -64,8 +61,7 @@ gopass init
 gopass init --store my-company
 ```
 
-> ⚠️ **Attention:** After initializing a new or existing store, navigate into its Git repository and
-> run:
+> ⚠️ **Attention:** After initializing a new or existing store, navigate into its Git repository and run:
 >
 > ```bash
 > git config --local --unset core.sshCommand
@@ -157,8 +153,7 @@ Customize generated passwords with flags:
 gopass generate --length 16 --symbols "!@#$%" example.com/service
 ```
 
-See the
-[character restrictions documentation](https://github.com/gopasspw/gopass/blob/master/docs/features.md#restricting-the-characters-in-generated-passwords).
+See the [character restrictions documentation](https://github.com/gopasspw/gopass/blob/master/docs/features.md#restricting-the-characters-in-generated-passwords).
 
 ---
 
@@ -217,5 +212,4 @@ For more formats, see the [pass-import tool](https://github.com/roddhjav/pass-im
   - [Batch bootstrapping](https://github.com/gopasspw/gopass/blob/master/docs/setup.md#batch-bootstrapping)
   - [Team usage cheatsheet](https://woile.github.io/gopass-cheat-sheet/)
 
-- **Official documentation**:
-  [https://github.com/gopasspw/gopass](https://github.com/gopasspw/gopass)
+- **Official documentation**: [https://github.com/gopasspw/gopass](https://github.com/gopasspw/gopass)

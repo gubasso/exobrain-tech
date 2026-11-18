@@ -2,8 +2,7 @@
 
 ## Context and Problem Statement
 
-`exobrain-tech` needs public technical knowledge without mixing content with
-repo-governance rules. Contributors need a small, stable documentation method.
+`exobrain-tech` needs public technical knowledge without mixing content with repo-governance rules. Contributors need a small, stable documentation method.
 
 ## Considered Options
 
@@ -13,9 +12,7 @@ repo-governance rules. Contributors need a small, stable documentation method.
 
 ## Decision Outcome
 
-Chosen option: **use the docs-design method**. Core KB content remains
-free-form, while `_docs/` carries Diátaxis governance, lean ADRs, guides,
-reference, and explanations.
+Chosen option: **use the docs-design method**. Core KB content remains free-form, while `_docs/` carries Diátaxis governance, lean ADRs, guides, reference, and explanations.
 
 ## Consequences
 
@@ -25,5 +22,4 @@ reference, and explanations.
 
 ## Status
 
-Superseded by
-[ADR-spec-driven-docs-is-the-documentation-method](./ADR-spec-driven-docs-is-the-documentation-method.md).
+Superseded by [ADR-spec-driven-docs-is-the-documentation-method](./ADR-spec-driven-docs-is-the-documentation-method.md).

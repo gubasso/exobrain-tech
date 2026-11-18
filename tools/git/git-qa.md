@@ -6,18 +6,11 @@ I am at master branch and run: git fetch origin feat/auth:feat/auth
 
 ---
 
-The command you ran (`git fetch origin feat/auth:feat/auth`) fetches the `feat/auth` branch from the
-remote repository (in this case, `origin`) and updates (or creates) a local branch called
-`feat/auth` to match the remote one. Here’s a breakdown of the command:
+The command you ran (`git fetch origin feat/auth:feat/auth`) fetches the `feat/auth` branch from the remote repository (in this case, `origin`) and updates (or creates) a local branch called `feat/auth` to match the remote one. Here’s a breakdown of the command:
 
-- `git fetch`: Fetches changes from the remote repository without modifying your working directory
-  or active branch.
+- `git fetch`: Fetches changes from the remote repository without modifying your working directory or active branch.
 - `origin`: Refers to the remote repository, which by default is often named `origin`.
-- `feat/auth:feat/auth`: The syntax `remote_branch:local_branch`. This means you are fetching the
-  `feat/auth` branch from `origin` and updating or creating a local branch called `feat/auth`. Since
-  you're currently on the `master` branch, this will not affect your current branch. The fetched
-  branch will be available in your local repository but won't be checked out or merged into `master`
-  unless you explicitly switch to it or merge it.
+- `feat/auth:feat/auth`: The syntax `remote_branch:local_branch`. This means you are fetching the `feat/auth` branch from `origin` and updating or creating a local branch called `feat/auth`. Since you're currently on the `master` branch, this will not affect your current branch. The fetched branch will be available in your local repository but won't be checked out or merged into `master` unless you explicitly switch to it or merge it.
 
 To check out the branch you just fetched:
 
@@ -25,8 +18,7 @@ To check out the branch you just fetched:
 git checkout feat/auth
 ```
 
-Merging it into `master` locally is not how work reaches the trunk — the branch lands through a
-squash-merged pull request. Fetching it like this is for reading or reviewing it.
+Merging it into `master` locally is not how work reaches the trunk — the branch lands through a squash-merged pull request. Fetching it like this is for reading or reviewing it.
 
 ## Get the diff from the start of a branch
 
@@ -38,11 +30,9 @@ git diff $(git merge-base --fork-point <branch_name>)..<branch_name>
 
 Here's how it works:
 
-1. `git merge-base --fork-point <branch_name>`: This finds the point where the branch diverged from
-   its upstream (i.e., where the branch started).
+1. `git merge-base --fork-point <branch_name>`: This finds the point where the branch diverged from its upstream (i.e., where the branch started).
 
-2. `git diff <starting_point>..<branch_name>`: This command then shows the difference between the
-   starting point (where the branch started) and the current state of the branch.
+2. `git diff <starting_point>..<branch_name>`: This command then shows the difference between the starting point (where the branch started) and the current state of the branch.
 
 If you're already on the branch, you can simplify it to:
 
@@ -58,8 +48,7 @@ Let me know if you need further clarification or assistance!
 
 To revert a single file to a previous commit in Git, follow these steps:
 
-1. **Identify the commit** you want to revert to: You need to find the commit hash for the commit
-   where the file was in the state you want to revert to. You can use:
+1. **Identify the commit** you want to revert to: You need to find the commit hash for the commit where the file was in the state you want to revert to. You can use:
 
 ```bash
 git log -- [file_name]
@@ -67,15 +56,13 @@ git log -- [file_name]
 
 This will show the history of that specific file, and you can find the commit hash from here.
 
-1. **Checkout the file from the specific commit** : Once you have the commit hash, you can checkout
-   the file from that commit using:
+1. **Checkout the file from the specific commit** : Once you have the commit hash, you can checkout the file from that commit using:
 
 ```bash
 git checkout [commit_hash] -- [file_name]
 ```
 
-This command will replace your working directory's version of the file with the version from the
-specified commit. However, it won't automatically stage the file.
+This command will replace your working directory's version of the file with the version from the specified commit. However, it won't automatically stage the file.
 
 1. **Stage the file** : If you want to commit this change, you'll need to stage it:
 
@@ -100,8 +87,7 @@ git commit -m "Revert [file_name] to a previous version from [commit_hash]"
 
 ## how do I git commit without running pre-commit hook
 
-If you want to skip the `pre-commit` hook when making a Git commit, you can bypass the `pre-commit`
-hooks using the `--no-verify` option.To commit without running `pre-commit` hooks:
+If you want to skip the `pre-commit` hook when making a Git commit, you can bypass the `pre-commit` hooks using the `--no-verify` option.To commit without running `pre-commit` hooks:
 
 ```bash
 git commit --no-verify -m "Your commit message"
@@ -109,11 +95,9 @@ git commit --no-verify -m "Your commit message"
 
 ### Explanation
 
-- The `--no-verify` option tells Git to skip all the verification hooks, including `pre-commit`,
-  `pre-push`, and others, allowing you to commit without triggering any of the hooks.
+- The `--no-verify` option tells Git to skip all the verification hooks, including `pre-commit`, `pre-push`, and others, allowing you to commit without triggering any of the hooks.
 
-This is useful when you know that the changes are okay, or you're temporarily bypassing the checks
-(e.g., fixing them later or in case of urgency).
+This is useful when you know that the changes are okay, or you're temporarily bypassing the checks (e.g., fixing them later or in case of urgency).
 
 ### Example
 

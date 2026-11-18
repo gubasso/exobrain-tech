@@ -121,8 +121,7 @@ Rofi does NOT read Xresources by default. You must explicitly enable auto-detect
 | `dpi: 0`  | Auto-detect from X11 screen size (i3/GTK style) |
 | `dpi: 1`  | Auto-detect from monitor rofi is on (Qt5 style) |
 
-**Recommendation:** Use `dpi: 1` for multi-monitor setups - adapts to whichever monitor rofi appears
-on. This is the [maintainer's recommendation](https://github.com/davatorium/rofi/discussions/1573).
+**Recommendation:** Use `dpi: 1` for multi-monitor setups - adapts to whichever monitor rofi appears on. This is the [maintainer's recommendation](https://github.com/davatorium/rofi/discussions/1573).
 
 ```css
 configuration {
@@ -147,8 +146,7 @@ rofi -show drun -dpi 1
 | bspwm     | No (doesn't render fonts)          |
 | Terminals | Usually yes                        |
 
-For Xresources to take effect on apps that use it, load with `xrdb -merge ~/.Xresources` in
-`~/.xinitrc` before starting bspwm.
+For Xresources to take effect on apps that use it, load with `xrdb -merge ~/.Xresources` in `~/.xinitrc` before starting bspwm.
 
 ---
 

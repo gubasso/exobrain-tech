@@ -2,8 +2,7 @@
 
 > $nix $nix-flakes
 
-The standard outputs Nix understands. Most are keyed by system; `.default` is used when you omit
-`#name`.
+The standard outputs Nix understands. Most are keyed by system; `.default` is used when you omit `#name`.
 
 | Output                       | What                                 | Invoked by                            |
 | ---------------------------- | ------------------------------------ | ------------------------------------- |
@@ -19,8 +18,7 @@ The standard outputs Nix understands. Most are keyed by system; `.default` is us
 | `templates.<name>`           | Project scaffold                     | `nix flake init -t <flake>#name`      |
 | `lib`                        | Pure functions you expose            | `theirflake.lib.foo`                  |
 
-> `nixosConfigurations` and `homeConfigurations` are **NOT** per-system — the system is baked inside
-> them.
+> `nixosConfigurations` and `homeConfigurations` are **NOT** per-system — the system is baked inside them.
 
 ## A real `packages.default` (Rust example)
 

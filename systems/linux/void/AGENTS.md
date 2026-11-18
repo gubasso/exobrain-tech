@@ -8,8 +8,7 @@ token-estimate: 250
 
 ## Scope
 
-Void Linux setup and reference notes, including installation, package management, networking,
-environment loading, and NVIDIA-related configuration.
+Void Linux setup and reference notes, including installation, package management, networking, environment loading, and NVIDIA-related configuration.
 
 ## Key Points
 

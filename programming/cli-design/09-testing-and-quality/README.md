@@ -2,9 +2,7 @@
 
 > Part of the general [CLI design principles](../README.md).
 
-Testing strategy, per-language tooling, regression safeguards, and code quality gates. This chapter
-covers **what** to test, **how** to test it, what tools to use, and how to prevent regressions from
-both human and AI coding agents.
+Testing strategy, per-language tooling, regression safeguards, and code quality gates. This chapter covers **what** to test, **how** to test it, what tools to use, and how to prevent regressions from both human and AI coding agents.
 
 ## Chapters
 
@@ -15,8 +13,7 @@ both human and AI coding agents.
 | [Regression safeguards](./regression-safeguards.md) | "How do I prevent AI agents (and humans) from introducing regressions? What's the verification workflow?" |
 | [Code quality tools](./code-quality-tools.md)       | "Which tools enforce complexity limits, catch unused deps, track binary size, and guard architecture?"    |
 
-Read in this order: strategy first (principles), then tools (implementation), then safeguards
-(workflow), then quality tools (structural gates).
+Read in this order: strategy first (principles), then tools (implementation), then safeguards (workflow), then quality tools (structural gates).
 
 ## When you need this chapter
 
@@ -31,8 +28,7 @@ Read in this order: strategy first (principles), then tools (implementation), th
 - [General CLI design index](../README.md)
 - [00 — Architecture](../00-architecture.md) — where `tests/`, `support/`, and `snapshots/` sit.
 - [04 — Coding Style](../04-coding-style-rust-zig.md) — strict lints, module size caps.
-- [agent-integration — Evaluations](../../agent-integration/evaluations.md) — the hazards of
-  a test an agent wrote, and why an eval is a separate signal.
+- [agent-integration — Evaluations](../../agent-integration/evaluations.md) — the hazards of a test an agent wrote, and why an eval is a separate signal.
 - [99 — Checklist](../99-checklist.md) — testing and quality sections.
 - Language-specific guides:
   - [`rust/cli-spec/06-testing-and-quality/`](../../../languages/rust/cli-spec/06-testing-and-quality/)

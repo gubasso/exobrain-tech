@@ -1,14 +1,10 @@
 # Worked Example
 
-One project across all four layers. The domain is deliberately absurd, so the shape stays visible
-and no real-world detail competes with it.
+One project across all four layers. The domain is deliberately absurd, so the shape stays visible and no real-world detail competes with it.
 
 ## The domain
 
-`pigeon` dispatches messages by carrier pigeon. A roost is a bird's home base, named `roost-N`. A
-flock is the set of roosts reachable for dispatch. A message is one outbound dispatch, named
-`MSG-<hash>`, and it moves through `queued`, then `in-flight`, then one of `delivered`, `lost`, or
-`returned`.
+`pigeon` dispatches messages by carrier pigeon. A roost is a bird's home base, named `roost-N`. A flock is the set of roosts reachable for dispatch. A message is one outbound dispatch, named `MSG-<hash>`, and it moves through `queued`, then `in-flight`, then one of `delivered`, `lost`, or `returned`.
 
 ## Mechanism: the command tree
 
@@ -25,8 +21,7 @@ pigeon
     └── list | add | remove | view
 ```
 
-Every read command takes `--json`, `dispatch` takes `--dry-run`, and `verify` is what the skill's
-validation loop calls.
+Every read command takes `--json`, `dispatch` takes `--dry-run`, and `verify` is what the skill's validation loop calls.
 
 ## Mechanism: help that answers in one call
 
@@ -108,8 +103,7 @@ The machine-output says the same thing in fields.
 }
 ```
 
-A success document carries the same `schema_version` and a `next_commands` list. The list is a hint
-the agent may ignore, not an instruction.
+A success document carries the same `schema_version` and a `next_commands` list. The list is a hint the agent may ignore, not an instruction.
 
 ## Playbook: the skill package
 
@@ -126,8 +120,7 @@ dispatch-messages/
     └── dispatch.md.tmpl
 ```
 
-The body of `SKILL.md` is a table of contents with judgment in it. Its shape, and the frontmatter
-that triggers it, are in [Skills](./skills.md); what this project adds is the workflow.
+The body of `SKILL.md` is a table of contents with judgment in it. Its shape, and the frontmatter that triggers it, are in [Skills](./skills.md); what this project adds is the workflow.
 
 ```markdown
 ## Dispatch a single message
@@ -181,11 +174,9 @@ checks:
       delivered.
 ```
 
-Ten samples, and the pass rate over time is the regression signal. See
-[Evaluations](./evaluations.md) for what that rate means and when it becomes a gate.
+Ten samples, and the pass rate over time is the regression signal. See [Evaluations](./evaluations.md) for what that rate means and when it becomes a gate.
 
 ## See also
 
-- [Worked example: landing](./worked-example-landing.md) — the same shelf applied to a tool
-  that writes files into other projects.
+- [Worked example: landing](./worked-example-landing.md) — the same shelf applied to a tool that writes files into other projects.
 - [Checklist](./checklist.md) — what to walk before shipping.

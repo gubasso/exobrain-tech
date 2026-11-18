@@ -8,16 +8,14 @@ token-estimate: 150
 
 ## Scope
 
-Zig development workflow notes, including AnyZig installation and workflow references plus the
-project-local ZLS setup guide.
+Zig development workflow notes, including AnyZig installation and workflow references plus the project-local ZLS setup guide.
 
 ## Key Points
 
 - **AnyZig install**: setup and installation notes.
 - **AnyZig workflow**: workflow-oriented usage notes.
 - **ZLS**: project-specific ZLS setup guidance.
-- **Troubleshooting**: resolving the `NetworkUnreachable` error when AnyZig downloads from
-  ziglang.org.
+- **Troubleshooting**: resolving the `NetworkUnreachable` error when AnyZig downloads from ziglang.org.
 
 ## Maintenance Notes
 

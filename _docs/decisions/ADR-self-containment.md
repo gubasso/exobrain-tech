@@ -23,6 +23,4 @@ Chosen option: **keep all load-bearing knowledge in-repo** — the repository is
 
 Accepted
 
-Amended by [ADR-a-flake-pinned-tool-input-is-a-tool-dependency](./ADR-a-flake-pinned-tool-input-is-a-tool-dependency.md) — a public,
-lock-pinned tool input is a tool dependency of the same class as `shellcheck`, not the external
-dependency this rule bars.
+Amended by [ADR-a-flake-pinned-tool-input-is-a-tool-dependency](./ADR-a-flake-pinned-tool-input-is-a-tool-dependency.md) — a public, lock-pinned tool input is a tool dependency of the same class as `shellcheck`, not the external dependency this rule bars.

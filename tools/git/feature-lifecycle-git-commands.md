@@ -1,7 +1,6 @@
 # Feature Lifecycle — Git Commands
 
-Pure git commands implementing the feature lifecycle described in
-[feature-lifecycle](./feature-lifecycle.md).
+Pure git commands implementing the feature lifecycle described in [feature-lifecycle](./feature-lifecycle.md).
 
 Uses `git clone --reference` to create isolated work-clones (feature directories) for each feature.
 
@@ -10,18 +9,15 @@ Uses `git clone --reference` to create isolated work-clones (feature directories
 ## Conventions
 
 - Main repo: `~/Projects/org/repo`
-- Work-clone: `~/Projects/org/repo.<issue>-<slug>` (e.g., `repo.42-add-auth-module`) — a
-  `git clone --reference` of the main repo, sharing its object store
+- Work-clone: `~/Projects/org/repo.<issue>-<slug>` (e.g., `repo.42-add-auth-module`) — a `git clone --reference` of the main repo, sharing its object store
 - Trunk: `master` — the only permanent branch, and the repository default
-- Short-lived branch: `<issue>-<slug>` (e.g., `42-add-auth-module`), or `<type>/<slug>` where no
-  issue mints the name
+- Short-lived branch: `<issue>-<slug>` (e.g., `42-add-auth-module`), or `<type>/<slug>` where no issue mints the name
 
 ---
 
 ## Creating a Work-Clone
 
-Clone from the remote using the main repo as an alternates store. This avoids duplicating objects on
-disk. The issue must exist first — the forge CLI creates the branch and owns the branch name.
+Clone from the remote using the main repo as an alternates store. This avoids duplicating objects on disk. The issue must exist first — the forge CLI creates the branch and owns the branch name.
 
 ```bash
 git clone --reference ~/Projects/org/repo \
@@ -55,9 +51,7 @@ git fetch origin "$BRANCH"
 git checkout "$BRANCH"
 ```
 
-On GitHub, `gh issue develop` creates the branch on the remote and links it in the issue's
-Development sidebar. The branch name is determined by GitHub. On GitLab, there is no `issue develop`
-equivalent; create the branch manually and link via `glab mr create --related-issue` later.
+On GitHub, `gh issue develop` creates the branch on the remote and links it in the issue's Development sidebar. The branch name is determined by GitHub. On GitLab, there is no `issue develop` equivalent; create the branch manually and link via `glab mr create --related-issue` later.
 
 ### From a new issue
 
@@ -122,9 +116,7 @@ git -C ~/Projects/org/repo stash drop
 
 ## Sync
 
-Push the feature branch to origin and set up tracking. If the branch was created via
-`gh issue develop`, the remote branch already exists; `git push -u` sets the local tracking
-reference.
+Push the feature branch to origin and set up tracking. If the branch was created via `gh issue develop`, the remote branch already exists; `git push -u` sets the local tracking reference.
 
 ```bash
 git push -u origin 42-add-auth-module
@@ -159,8 +151,7 @@ gh pr create --base master --head 42-add-auth-module
 glab mr create --target-branch master --source-branch 42-add-auth-module
 ```
 
-Add `--draft` for a draft PR or MR. The request lands by squash merge, so its title becomes the
-trunk's commit message.
+Add `--draft` for a draft PR or MR. The request lands by squash merge, so its title becomes the trunk's commit message.
 
 ---
 
@@ -235,16 +226,11 @@ CLEANUP:
 
 ## Appendix — Local Merge
 
-This is not a landing route for a trunk that has a forge. A change reaches such a trunk through a
-pull request carrying the passing check, so a forge that is merely unreachable is waited out: the
-work stays on its branch, and the request is opened when the forge comes back.
+This is not a landing route for a trunk that has a forge. A change reaches such a trunk through a pull request carrying the passing check, so a forge that is merely unreachable is waited out: the work stays on its branch, and the request is opened when the forge comes back.
 
-What follows applies to a repository that has no forge at all, where no pull request exists to carry
-the review. `--squash` stages the branch's result without recording a merge, and the commit you then
-write is the one commit the trunk takes — the same shape a forge's squash button produces.
+What follows applies to a repository that has no forge at all, where no pull request exists to carry the review. `--squash` stages the branch's result without recording a merge, and the commit you then write is the one commit the trunk takes — the same shape a forge's squash button produces.
 
-Because the work-clone is a separate clone, either fetch from origin after pushing or add it as a
-temporary remote.
+Because the work-clone is a separate clone, either fetch from origin after pushing or add it as a temporary remote.
 
 **Option A — fetch from origin after pushing from the work-clone:**
 

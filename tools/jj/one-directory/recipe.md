@@ -1,14 +1,8 @@
 # Work on a change in the directory you are already in
 
-Develops a change in the working directory you already have, with no second working copy and no
-branch checked out, and lands it on the trunk `master` at the remote. jj keeps every
-unnamed line of work as its own head, so a change needs a bookmark only in the step before it
-leaves the repo. Giving a change its own directory instead is
-[../parallel-workspace/](../parallel-workspace/). Sparse checkouts and conflict resolution are out
-of scope.
+Develops a change in the working directory you already have, with no second working copy and no branch checked out, and lands it on the trunk `master` at the remote. jj keeps every unnamed line of work as its own head, so a change needs a bookmark only in the step before it leaves the repo. Giving a change its own directory instead is [../parallel-workspace/](../parallel-workspace/). Sparse checkouts and conflict resolution are out of scope.
 
-The steps run one worked example end to end: a repo at `~/code/repo`, one edit to
-`src/parser.rs`, landed as the branch `feat-x`.
+The steps run one worked example end to end: a repo at `~/code/repo`, one edit to `src/parser.rs`, landed as the branch `feat-x`.
 
 ## The whole run
 
@@ -25,8 +19,7 @@ jj git push --bookmark feat-x
 jj git fetch && jj new master@origin
 ```
 
-`qpvuntsm` is the change id `jj describe` printed. The steps below run these one at a time, with
-what each prints and where the run forks.
+`qpvuntsm` is the change id `jj describe` printed. The steps below run these one at a time, with what each prints and where the run forks.
 
 ## Prerequisites
 
@@ -55,8 +48,7 @@ what each prints and where the run forks.
 
 2. Start the change on that tip.
 
-   `jj new <rev>` puts you on a new empty commit whose parent is `<rev>`; it never stands you on
-   `<rev>` itself.
+   `jj new <rev>` puts you on a new empty commit whose parent is `<rev>`; it never stands you on `<rev>` itself.
 
    ```sh
    jj new master@origin
@@ -75,8 +67,7 @@ what each prints and where the run forks.
 
 4. Describe the change once you know what it did.
 
-   Note the change id `qpvuntsm`: it survives every rewrite below and is how you address this
-   change for the rest of the run.
+   Note the change id `qpvuntsm`: it survives every rewrite below and is how you address this change for the rest of the run.
 
    ```sh
    jj describe -m "feat: teach parser about arrays"
@@ -89,9 +80,7 @@ what each prints and where the run forks.
 5. Start the next commit, so this one stops being the working copy.
 
    - Stacking on top of the change: `jj new` with no argument.
-   - Starting something unrelated: `jj new master@origin`, which parks this change as a head of
-     its own and opens a second line in the same directory. Coming back to either is
-     [./switching-changes-in-place.md](./switching-changes-in-place.md).
+   - Starting something unrelated: `jj new master@origin`, which parks this change as a head of its own and opens a second line in the same directory. Coming back to either is [./switching-changes-in-place.md](./switching-changes-in-place.md).
 
    ```sh
    jj new
@@ -118,8 +107,7 @@ what each prints and where the run forks.
 
 7. Name the change with a bookmark, in the step before it leaves the repo.
 
-   The branch takes the bookmark's name character for character, so the name is written once, in
-   its final form, and carries no teaching prefix.
+   The branch takes the bookmark's name character for character, so the name is written once, in its final form, and carries no teaching prefix.
 
    ```sh
    jj bookmark set feat-x -r qpvuntsm
@@ -129,8 +117,7 @@ what each prints and where the run forks.
    Created 1 bookmarks pointing to qpvuntsm 7c21ef60 feat-x | feat: teach parser about arrays
    ```
 
-8. Push the bookmark `feat-x`, creating the branch of that name on the remote. A newly created
-   remote bookmark is marked as tracked.
+8. Push the bookmark `feat-x`, creating the branch of that name on the remote. A newly created remote bookmark is marked as tracked.
 
    ```sh
    jj git push --bookmark feat-x
@@ -143,15 +130,12 @@ what each prints and where the run forks.
 
 9. Land the work on `master` by the route review calls for.
 
-   - [../parallel-workspace/main-target-remote/land-through-a-pull-request.md](../parallel-workspace/main-target-remote/land-through-a-pull-request.md)
-     — the remote merges the branch, and a fetch brings the position back
-   - [../parallel-workspace/main-target-remote/land-by-moving-the-bookmark.md](../parallel-workspace/main-target-remote/land-by-moving-the-bookmark.md)
-     — no review, so you move `master` yourself and push it
+   - [../parallel-workspace/main-target-remote/land-through-a-pull-request.md](../parallel-workspace/main-target-remote/land-through-a-pull-request.md) — the remote merges the branch, and a fetch brings the position back
+   - [../parallel-workspace/main-target-remote/land-by-moving-the-bookmark.md](../parallel-workspace/main-target-remote/land-by-moving-the-bookmark.md) — no review, so you move `master` yourself and push it
 
 10. Start the next change on top of the landed work.
 
-    Either route moves a name alone, and a working copy never follows a name, so this directory
-    lacks the landed position until you move it.
+    Either route moves a name alone, and a working copy never follows a name, so this directory lacks the landed position until you move it.
 
     ```sh
     jj git fetch && jj new master@origin
@@ -178,10 +162,8 @@ what each prints and where the run forks.
 
 ## Reference
 
-- [./switching-changes-in-place.md](./switching-changes-in-place.md) — parking a change and coming
-  back to it, and what `jj new` and `jj edit` cost here
-- [../parallel-workspace/main-target-remote/recipe.md](../parallel-workspace/main-target-remote/recipe.md)
-  — the same landing from a second directory
+- [./switching-changes-in-place.md](./switching-changes-in-place.md) — parking a change and coming back to it, and what `jj new` and `jj edit` cost here
+- [../parallel-workspace/main-target-remote/recipe.md](../parallel-workspace/main-target-remote/recipe.md) — the same landing from a second directory
 - [../what-names-a-change.md](../what-names-a-change.md) — the names a change carries
 - [Working with GitHub](https://docs.jj-vcs.dev/latest/github/) — the upstream single-directory routes
 - [Bookmarks](https://docs.jj-vcs.dev/latest/bookmarks/) — tracking and push safety checks

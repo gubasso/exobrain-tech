@@ -4,10 +4,8 @@ Single source of truth for how `exobrain-tech` works. `README.md` indexes the co
 
 ## Glossary
 
-- `MONOREPO` — this public KB plus the private `../exobrain-tech-vault`, one logical knowledge base
-  whose cross-references are in-repo, never external (ADR-self-containment).
-- `$EXOBRAIN_TECH` and `$EXOBRAIN_TECH_VAULT` — checkouts of the public KB and the private vault,
-  which docs and scripts point into as `$EXOBRAIN_TECH/<path>` and `$EXOBRAIN_TECH_VAULT/<path>`.
+- `MONOREPO` — this public KB plus the private `../exobrain-tech-vault`, one logical knowledge base whose cross-references are in-repo, never external (ADR-self-containment).
+- `$EXOBRAIN_TECH` and `$EXOBRAIN_TECH_VAULT` — checkouts of the public KB and the private vault, which docs and scripts point into as `$EXOBRAIN_TECH/<path>` and `$EXOBRAIN_TECH_VAULT/<path>`.
 
 ## What the product is
 
@@ -33,17 +31,12 @@ Non-negotiable: a stated rule is applied, not re-raised. Where this file, the me
 
 - Keep each fact in one source of truth and cross-link instead of duplicating.
 - Drafts live in `.draft/`; promotion means rewriting into the right zone, not moving a file.
-- `README.md` and every `AGENTS.md` are indexes or digests, not rule dumps. This root digest stays
-  plain and frontmatter-free; per-directory digests carry frontmatter.
-- Record an external-system bug in `_docs/reference/known-issues/` as `KI-<slug>.md`; that slug is
-  the case id a suppression names, and the record carries the condition that retires it.
+- `README.md` and every `AGENTS.md` are indexes or digests, not rule dumps. This root digest stays plain and frontmatter-free; per-directory digests carry frontmatter.
+- Record an external-system bug in `_docs/reference/known-issues/` as `KI-<slug>.md`; that slug is the case id a suppression names, and the record carries the condition that retires it.
 - Every fenced code block needs a language specifier; use `text` when none applies.
-- Lean markdown: headings, lists, tables, fences, inline code, links, no bold or italic
-  (ADR-emphasis-is-authoring-guidance-not-a-gate).
+- Lean markdown: headings, lists, tables, fences, inline code, links, no bold or italic (ADR-emphasis-is-authoring-guidance-not-a-gate).
 - Every size budget in `_docs/specs/SPEC-docs-format.md` is gated. Over budget, a document splits.
-- A guide is a recipe, not an essay: prerequisites, then ordered steps, each one imperative action
-  with its command and its check. `_docs/specs/SPEC-kb-authoring.md` owns this library's guide
-  rules, and `SPEC-kb-authoring/TEMPLATE-guide.md` beside it is the skeleton.
+- A guide is a recipe, not an essay: prerequisites, then ordered steps, each one imperative action with its command and its check. `_docs/specs/SPEC-kb-authoring.md` owns this library's guide rules, and `SPEC-kb-authoring/TEMPLATE-guide.md` beside it is the skeleton.
 
 ## Executable artifacts and tools
 

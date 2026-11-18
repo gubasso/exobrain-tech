@@ -30,13 +30,11 @@ Follow these steps to forward incoming mail for your custom address into your Gm
 
 1. Sign in (or sign up) at [Cloudflare](https://dash.cloudflare.com/).
 2. Click **Add site**, enter your domain (e.g., `yourdomain.com`), and select the **Free** plan.
-3. Review existing DNS records. Disable proxying (grey cloud) for any records that should not pass
-   through Cloudflare.
+3. Review existing DNS records. Disable proxying (grey cloud) for any records that should not pass through Cloudflare.
 
 ### Update Name Servers at Your Registrar
 
-1. In Cloudflare's dashboard, note the two nameservers (e.g., `abby.ns.cloudflare.com` and
-   `bob.ns.cloudflare.com`).
+1. In Cloudflare's dashboard, note the two nameservers (e.g., `abby.ns.cloudflare.com` and `bob.ns.cloudflare.com`).
 2. Log in to your domain registrar (e.g., Name.com, GoDaddy).
 3. Replace the current NS records with the Cloudflare nameservers.
 4. Save changes and wait for DNS propagation (usually 5–15 minutes, but it can take up to 24 hours).
@@ -70,8 +68,7 @@ Follow these steps to forward incoming mail for your custom address into your Gm
 
 ## Sending Emails
 
-To send from your custom domain, we’ll use Brevo as the SMTP relay. Its older accounts and
-documentation carry the name SendinBlue.
+To send from your custom domain, we’ll use Brevo as the SMTP relay. Its older accounts and documentation carry the name SendinBlue.
 
 ### Domain Setup at Brevo
 
@@ -91,8 +88,7 @@ documentation carry the name SendinBlue.
 
 1. In Gmail, go to **Settings** → **Accounts and Import**.
 2. Under **Send mail as**, click **Add another email address**.
-3. Enter your full custom address (e.g., `hello@yourdomain.com`) and keep **Treat as an alias**
-   checked.
+3. Enter your full custom address (e.g., `hello@yourdomain.com`) and keep **Treat as an alias** checked.
 4. Click **Next** and enter Brevo’s SMTP settings:
    - **SMTP server**: as provided by Brevo
    - **Port**: as provided by Brevo
@@ -102,14 +98,10 @@ documentation carry the name SendinBlue.
 
 ### Finalize Settings and Test
 
-1. In Gmail **Settings** → **Accounts and Import**, set your custom address as **Default** for
-   sending.
-2. Under **When replying to a message**, choose **Reply from the same address the message was sent
-   to**.
+1. In Gmail **Settings** → **Accounts and Import**, set your custom address as **Default** for sending.
+2. Under **When replying to a message**, choose **Reply from the same address the message was sent to**.
 3. Add your custom address to your Google Account as an **Alternative email**:
-   - Go to **Manage your Google Account** → **Personal info** → **Contact info** → **Email** →
-     **Alternate emails**.
+   - Go to **Manage your Google Account** → **Personal info** → **Contact info** → **Email** → **Alternate emails**.
    - Or search for "Email (personal info)"
    - Add and verify following Google’s prompts.
-4. Test your configuration using [Mail-Tester](https://www.mail-tester.com/) to ensure proper
-   delivery and spam score.
+4. Test your configuration using [Mail-Tester](https://www.mail-tester.com/) to ensure proper delivery and spam score.

@@ -1,7 +1,6 @@
 # Git Rebase Workflow
 
-A step-by-step guide for keeping a linear history on a trunk, using rebase. The branching model
-this runs is [trunk-based development](../../workflows/trunk-based-development.md).
+A step-by-step guide for keeping a linear history on a trunk, using rebase. The branching model this runs is [trunk-based development](../../workflows/trunk-based-development.md).
 
 ---
 
@@ -17,8 +16,7 @@ master          ← the trunk: the only permanent branch, always releasable
 ### Rules
 
 - `master` is the trunk and the only shared branch — never rebase it.
-- `feat/*`, `fix/*`, `chore/*` are short-lived personal branches — rebase freely, and delete them at
-  the merge.
+- `feat/*`, `fix/*`, `chore/*` are short-lived personal branches — rebase freely, and delete them at the merge.
 - Every commit on `master` compiles, passes tests, and can be released.
 - The trunk is written through squash-merged pull requests only, so one pull request is one commit.
 
@@ -195,8 +193,7 @@ Done:
 
 ### 6. Resolve conflicts (if any)
 
-If a replayed commit touches the same lines that changed on `master`, git stops and asks you to
-resolve.
+If a replayed commit touches the same lines that changed on `master`, git stops and asks you to resolve.
 
 ```bash
 # Git tells you which file conflicts
@@ -223,8 +220,7 @@ git rebase --abort        # undo everything, go back to before rebase
 
 ### 7. Force-push your rebased branch
 
-Rebase rewrites commit hashes (F became F', H became H'). The remote still has the old hashes, so a
-normal push is rejected.
+Rebase rewrites commit hashes (F became F', H became H'). The remote still has the old hashes, so a normal push is rejected.
 
 ```bash
 git push origin feat/auth --force-with-lease
@@ -233,23 +229,19 @@ git push origin feat/auth --force-with-lease
 Why `--force-with-lease` instead of `--force`:
 
 - `--force` overwrites the remote unconditionally
-- `--force-with-lease` checks that nobody else pushed to your branch since your last fetch — if they
-  did, it fails safely instead of destroying their work
+- `--force-with-lease` checks that nobody else pushed to your branch since your last fetch — if they did, it fails safely instead of destroying their work
 
 ### 8. Open a Pull Request
 
 Open a PR from `feat/auth` → `master` on GitHub/GitLab.
 
-At this point your PR shows a clean diff against the latest `master` with no merge commits and no
-conflicts.
+At this point your PR shows a clean diff against the latest `master` with no merge commits and no conflicts.
 
 Code review happens here.
 
 ### 9. Squash-merge onto the trunk
 
-After approval and a green check, merge from the forge with squash as the merge method. The whole
-branch lands as one commit, and the pull request's title becomes that commit's message — which is
-why the title, not the branch name, is the line that follows the commit convention.
+After approval and a green check, merge from the forge with squash as the merge method. The whole branch lands as one commit, and the pull request's title becomes that commit's message — which is why the title, not the branch name, is the line that follows the commit convention.
 
 Result:
 
@@ -258,8 +250,7 @@ master:  A --- B --- C --- D --- E --- I
                                        └─ the branch, as one commit
 ```
 
-The trunk takes no direct push, so there is no local `git merge` step here. Rebasing in step 5 is
-what made this squash a clean fast-forward of one commit.
+The trunk takes no direct push, so there is no local `git merge` step here. Rebasing in step 5 is what made this squash a clean fast-forward of one commit.
 
 ### 10. Delete the branch
 
@@ -271,23 +262,19 @@ git pull origin master
 git branch -D feat/auth
 ```
 
-`-D` rather than `-d`: after a squash merge the branch's own commits are not ancestors of the trunk,
-so git does not consider it merged and `-d` refuses it.
+`-D` rather than `-d`: after a squash merge the branch's own commits are not ancestors of the trunk, so git does not consider it merged and `-d` refuses it.
 
 ---
 
 ## Releasing
 
-A release ships the trunk's tip; nothing merges down to a second permanent branch. The two release
-styles, and when an older line earns a `release/<major>.<minor>` branch, are in
-[trunk-based development](../../workflows/trunk-based-development.md).
+A release ships the trunk's tip; nothing merges down to a second permanent branch. The two release styles, and when an older line earns a `release/<major>.<minor>` branch, are in [trunk-based development](../../workflows/trunk-based-development.md).
 
 ---
 
 ## Conflict Scenario — Full Example
 
-You're working on `feat/auth`. A teammate lands `fix/login-bug` on `master`, touching the same file
-you edited.
+You're working on `feat/auth`. A teammate lands `fix/login-bug` on `master`, touching the same file you edited.
 
 ```text
 master:         A --- B --- C --- D (teammate's fix, touches auth.py)
@@ -337,8 +324,7 @@ git push origin feat/auth --force-with-lease
 
 ## Multiple Rebases
 
-A branch that lives more than a few hours is rebased more than once. Each time the trunk moves
-forward:
+A branch that lives more than a few hours is rebased more than once. Each time the trunk moves forward:
 
 ```bash
 git fetch origin
@@ -347,8 +333,7 @@ git rebase origin/master
 git push origin feat/auth --force-with-lease
 ```
 
-Rebase at least daily. A branch that needs more than that is a branch that should have been
-smaller.
+Rebase at least daily. A branch that needs more than that is a branch that should have been smaller.
 
 ---
 
@@ -385,17 +370,13 @@ CLEANUP:
 
 ## Common Mistakes
 
-**Rebasing the trunk:** Never `git rebase` on `master`. Everyone pulls from it, and rebase rewrites
-history, which breaks every other local copy.
+**Rebasing the trunk:** Never `git rebase` on `master`. Everyone pulls from it, and rebase rewrites history, which breaks every other local copy.
 
-**Forgetting to fetch before rebase:** Always `git fetch origin` first. Without it you rebase onto
-your local (stale) copy of the trunk, not the actual latest.
+**Forgetting to fetch before rebase:** Always `git fetch origin` first. Without it you rebase onto your local (stale) copy of the trunk, not the actual latest.
 
-**Using `--force` instead of `--force-with-lease`:** `--force` blindly overwrites.
-`--force-with-lease` checks first. Always use `--force-with-lease`.
+**Using `--force` instead of `--force-with-lease`:** `--force` blindly overwrites. `--force-with-lease` checks first. Always use `--force-with-lease`.
 
-**Rebasing with uncommitted changes:** Stash or commit before rebasing. Rebase won't start with a
-dirty working tree.
+**Rebasing with uncommitted changes:** Stash or commit before rebasing. Rebase won't start with a dirty working tree.
 
 ```bash
 git stash
@@ -403,21 +384,15 @@ git rebase origin/master
 git stash pop
 ```
 
-**Panicking during conflict resolution:** `git rebase --abort` always takes you back to exactly
-where you were before the rebase. No damage done. Use it freely.
+**Panicking during conflict resolution:** `git rebase --abort` always takes you back to exactly where you were before the rebase. No damage done. Use it freely.
 
 ---
 
 ## Syncing a Fork from Upstream
 
-The workflow above assumes a single shared repository. When you work against a **fork** of an
-upstream project, the mainline branch is not integrated locally — instead it mirrors the upstream
-project and is only ever fast-forwarded. Feature branches are still rebased on top of it exactly as
-above.
+The workflow above assumes a single shared repository. When you work against a **fork** of an upstream project, the mainline branch is not integrated locally — instead it mirrors the upstream project and is only ever fast-forwarded. Feature branches are still rebased on top of it exactly as above.
 
-Here `master` is not your trunk to write — it mirrors the upstream project's default branch, kept
-byte-for-byte identical to `upstream/master` and never diverged locally. Your work lives on branches
-rebased on top of it and reaches the upstream project through a pull request.
+Here `master` is not your trunk to write — it mirrors the upstream project's default branch, kept byte-for-byte identical to `upstream/master` and never diverged locally. Your work lives on branches rebased on top of it and reaches the upstream project through a pull request.
 
 ### Remotes & branches
 
@@ -480,9 +455,7 @@ origin/master:     A─B─C
 feat/export:           └─f1─f2   (based on C)
 ```
 
-**Step A — Sync master (fast-forward only).** `git merge --ff-only upstream/master` slides the
-`master` pointer forward. If local `master` has diverged (has commits not in upstream), the command
-**fails** — this protects the rule that `master` stays identical to upstream.
+**Step A — Sync master (fast-forward only).** `git merge --ff-only upstream/master` slides the `master` pointer forward. If local `master` has diverged (has commits not in upstream), the command **fails** — this protects the rule that `master` stays identical to upstream.
 
 ```text
 upstream/master:   A─B─C─D─E
@@ -491,8 +464,7 @@ origin/master:     A─B─C─D─E   (after git push)
 feat/export:           └─f1─f2   (still on old C)
 ```
 
-**Step B — Rebase feature onto master.** `git rebase master` replays `f1` and `f2` on top of `E`,
-producing new commits `f1'` and `f2'` (same diffs, new SHAs).
+**Step B — Rebase feature onto master.** `git rebase master` replays `f1` and `f2` on top of `E`, producing new commits `f1'` and `f2'` (same diffs, new SHAs).
 
 ```text
 upstream/master:   A─B─C─D─E
@@ -500,8 +472,7 @@ local master:      A─B─C─D─E
 feat/export:                  └─f1'─f2'
 ```
 
-**Step C — Clean up commits (interactive rebase).** Before pushing, squash or reorder commits so the
-branch tells a clean story:
+**Step C — Clean up commits (interactive rebase).** Before pushing, squash or reorder commits so the branch tells a clean story:
 
 ```bash
 git rebase -i master     # opens editor with all commits since master
@@ -510,9 +481,7 @@ git rebase -i HEAD~3     # alternatively, edit only the last 3 commits
 
 Common actions in the editor: `pick`, `squash` / `s`, `fixup` / `f`, `reword` / `r`, `drop` / `d`.
 
-**Step D — Push the rebased branch.** Since the commit history was rewritten (new SHAs), a regular
-push is rejected if the branch was already pushed. `--force-with-lease` overwrites the remote **only
-if** nobody else pushed to it in the meantime — safer than `--force`.
+**Step D — Push the rebased branch.** Since the commit history was rewritten (new SHAs), a regular push is rejected if the branch was already pushed. `--force-with-lease` overwrites the remote **only if** nobody else pushed to it in the meantime — safer than `--force`.
 
 ```text
 origin/feat/export:           └─f1'─f2'
@@ -552,19 +521,15 @@ git reset --hard upstream/master  # restore master to upstream state exactly
 
 ## Stacked Branches with `git rebase --onto`
 
-If `feat/b` is based on `feat/a` (not on `master`), and you rebase `feat/a`, use `--onto` to
-re-root `feat/b`:
+If `feat/b` is based on `feat/a` (not on `master`), and you rebase `feat/a`, use `--onto` to re-root `feat/b`:
 
 ```bash
 git rebase --onto master old-feat-a-tip feat/b
 ```
 
-Where `old-feat-a-tip` is the SHA of the last commit of `feat/a` _before_ it was rebased. Without
-`--onto`, `feat/b` will still point to the old `feat/a` commits.
+Where `old-feat-a-tip` is the SHA of the last commit of `feat/a` _before_ it was rebased. Without `--onto`, `feat/b` will still point to the old `feat/a` commits.
 
-Stacking is a cost, not a feature: two branches that must land in order keep work off the trunk for
-longer than one short-lived branch should live. Prefer splitting the work so each piece lands on its
-own.
+Stacking is a cost, not a feature: two branches that must land in order keep work off the trunk for longer than one short-lived branch should live. Prefer splitting the work so each piece lands on its own.
 
 ---
 
@@ -575,7 +540,6 @@ own.
 | master is behind upstream (no local commits) | Fast-forwards. Same result.   | Fast-forwards. Same result.               |
 | master has diverged (local commits exist)    | **Refuses.** Nothing changes. | Replays local commits on top of upstream. |
 
-Always use `--ff-only` on master — you never want local commits there. Use `rebase` on feature
-branches to keep history linear.
+Always use `--ff-only` on master — you never want local commits there. Use `rebase` on feature branches to keep history linear.
 </content>
 </invoke>

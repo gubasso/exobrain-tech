@@ -1,7 +1,6 @@
 # Pydantic: model validators
 
-In **Pydantic v2** , when you use `@model_validator(mode="after")`, the validator’s signature varies
-depending on whether it’s defined as:
+In **Pydantic v2** , when you use `@model_validator(mode="after")`, the validator’s signature varies depending on whether it’s defined as:
 
 - An **instance method** (the first parameter is `self` → the _model instance_), or
 - A **class method** (the first parameter is `cls`, the second is the model instance).
@@ -70,7 +69,5 @@ class MyModel(BaseModel):
 ### Explanation (class method)
 
 - First param is `cls`, second param is the _model instance_ (`instance`).
-- We use a generic `T` (bound to `"MyModel"`) for correct type annotations, so mypy knows we return
-  the same type we received.
-- Rest of the logic is the same: set `instance.field1` from the dictionary if missing, and raise if
-  it remains `None`.
+- We use a generic `T` (bound to `"MyModel"`) for correct type annotations, so mypy knows we return the same type we received.
+- Rest of the logic is the same: set `instance.field1` from the dictionary if missing, and raise if it remains `None`.

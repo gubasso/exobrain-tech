@@ -1,7 +1,6 @@
 # Reinstall Arch Linux on Existing LUKS + LVM (UEFI + GRUB)
 
-Scope: reuse an existing LUKS container and LVM layout on an existing encrypted partition (no
-repartitioning, no new `luksFormat`, no new VG/LVs). Example layout:
+Scope: reuse an existing LUKS container and LVM layout on an existing encrypted partition (no repartitioning, no new `luksFormat`, no new VG/LVs). Example layout:
 
 ```text
 <disk>
@@ -21,8 +20,7 @@ Host-specific values for the `<hostname>` machine live in dotfiles `_docs/hosts/
 ## 0. Pre-install checklist
 
 1. Backup any important data from `/` (including `/home` if it lives on `<vg>-root`).
-2. Download the latest Arch ISO and write it to USB (see
-   [USB flash installation medium](https://wiki.archlinux.org/title/USB_flash_installation_medium)).
+2. Download the latest Arch ISO and write it to USB (see [USB flash installation medium](https://wiki.archlinux.org/title/USB_flash_installation_medium)).
 3. Ensure the firmware boots in UEFI mode (no Legacy/CSM).
 
 ---
@@ -37,8 +35,7 @@ Host-specific values for the `<hostname>` machine live in dotfiles `_docs/hosts/
    lsblk
    ```
 
-3. Connect to the network (via `iwctl`, `wifi-menu` wrapper, or wired) as described in the Arch
-   installation guide. ([Arch Wiki][1])
+3. Connect to the network (via `iwctl`, `wifi-menu` wrapper, or wired) as described in the Arch installation guide. ([Arch Wiki][1])
 
 ---
 
@@ -59,8 +56,7 @@ Host-specific values for the `<hostname>` machine live in dotfiles `_docs/hosts/
    lvdisplay    # optional, to confirm <vg>-root and <vg>-swap
    ```
 
-   LVM activation and the `lvm2` tooling requirement match the "Install Arch Linux on LVM" guidance.
-   ([Arch Wiki][2])
+   LVM activation and the `lvm2` tooling requirement match the "Install Arch Linux on LVM" guidance. ([Arch Wiki][2])
 
 3. Confirm layout:
 
@@ -74,8 +70,7 @@ Host-specific values for the `<hostname>` machine live in dotfiles `_docs/hosts/
 
 ## 3. Recreate filesystems (keep encryption + LVM)
 
-1. Recreate `/boot` (EFI system partition, FAT32 as per UEFI recommendations):
-   ([linuxconfig.org][3])
+1. Recreate `/boot` (EFI system partition, FAT32 as per UEFI recommendations): ([linuxconfig.org][3])
 
    ```bash
    mkfs.fat -F32 /dev/<efi-partition>
@@ -128,8 +123,7 @@ pacstrap -K /mnt base linux linux-firmware lvm2 cryptsetup grub efibootmgr netwo
 ```
 
 - `-K` initializes a new keyring in the target.
-- `lvm2` is required so mkinitcpio can include the `lvm2` hook from inside the chroot.
-  ([Arch Wiki][2])
+- `lvm2` is required so mkinitcpio can include the `lvm2` hook from inside the chroot. ([Arch Wiki][2])
 
 ---
 
@@ -187,8 +181,7 @@ Inside the chroot:
    ```
 
    - Later on:
-     - "US International with AltGr dead keys": quotes/tilde/apostrophe behave normally, and only
-       become dead keys when you press Right-Alt/AltGr with them
+     - "US International with AltGr dead keys": quotes/tilde/apostrophe behave normally, and only become dead keys when you press Right-Alt/AltGr with them
      - [US AltGr-International Keymap for Arch Linux TTY (Wayland/KDE Independent)](./keymap-us-altgr-intl.md)
 
 5. Root password
@@ -203,12 +196,9 @@ These steps follow the structure of the official installation guide. ([Arch Wiki
 
 ## 8. Configure initramfs (mkinitcpio) for encrypted LVM root
 
-1. Ensure `lvm2` and `cryptsetup` are installed inside the chroot (already done with `pacstrap`
-   above). ([Arch Wiki][2])
+1. Ensure `lvm2` and `cryptsetup` are installed inside the chroot (already done with `pacstrap` above). ([Arch Wiki][2])
 
-2. Edit `/etc/mkinitcpio.conf` and set a **systemd-based** hooks line suitable for an encrypted root
-   plus LVM, based on the upstream mkinitcpio template and current guidance for mkinitcpio ≥ v40:
-   ([GitHub][6])
+2. Edit `/etc/mkinitcpio.conf` and set a **systemd-based** hooks line suitable for an encrypted root plus LVM, based on the upstream mkinitcpio template and current guidance for mkinitcpio ≥ v40: ([GitHub][6])
 
    ```bash
    nano /etc/mkinitcpio.conf
@@ -221,8 +211,7 @@ These steps follow the structure of the official installation guide. ([Arch Wiki
    ```
 
    - `sd-encrypt` handles unlocking the LUKS root.
-   - `lvm2` must appear **before** `filesystems` to ensure LVs are available when the root
-     filesystem is mounted. ([Arch Wiki][2])
+   - `lvm2` must appear **before** `filesystems` to ensure LVs are available when the root filesystem is mounted. ([Arch Wiki][2])
 
 3. Regenerate initramfs:
 
@@ -258,10 +247,8 @@ These steps follow the structure of the official installation guide. ([Arch Wiki
    GRUB_CMDLINE_LINUX="cryptdevice=UUID=<luks-uuid>:<luks-mapper-name> root=/dev/<vg>/root"
    ```
 
-   - `cryptdevice=UUID=…:<luks-mapper-name>` tells the initramfs which encrypted device to unlock
-     and what mapped name (`/dev/mapper/<luks-mapper-name>`) to use. ([wiki.parabola.nu][7])
-   - `root=/dev/<vg>/root` points to the decrypted LVM logical volume that holds the root
-     filesystem, matching the form described for LVM-backed encrypted roots. ([Arch Wiki][8])
+   - `cryptdevice=UUID=…:<luks-mapper-name>` tells the initramfs which encrypted device to unlock and what mapped name (`/dev/mapper/<luks-mapper-name>`) to use. ([wiki.parabola.nu][7])
+   - `root=/dev/<vg>/root` points to the decrypted LVM logical volume that holds the root filesystem, matching the form described for LVM-backed encrypted roots. ([Arch Wiki][8])
 
 3. Install GRUB for UEFI:
 
@@ -275,8 +262,7 @@ These steps follow the structure of the official installation guide. ([Arch Wiki
    grub-mkconfig -o /boot/grub/grub.cfg
    ```
 
-   This flow matches current UEFI + GRUB install practices documented in recent Arch installation
-   and LVM guides. ([linuxconfig.org][3])
+   This flow matches current UEFI + GRUB install practices documented in recent Arch installation and LVM guides. ([linuxconfig.org][3])
 
 ---
 
@@ -306,9 +292,7 @@ These steps follow the structure of the official installation guide. ([Arch Wiki
 On next boot:
 
 - The initramfs/systemd early boot will prompt for the LUKS passphrase on `/dev/<luks-partition>`.
-- After unlocking, LVM will activate `<vg>-root`; the kernel will mount `root=/dev/<vg>/root` and
-  continue into your fresh Arch system, using the same encrypted LUKS + LVM structure you had
-  before.
+- After unlocking, LVM will activate `<vg>-root`; the kernel will mount `root=/dev/<vg>/root` and continue into your fresh Arch system, using the same encrypted LUKS + LVM structure you had before.
 
 - [Postinstall](./postinstall.md)
 

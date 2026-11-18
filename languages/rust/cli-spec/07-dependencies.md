@@ -1,41 +1,21 @@
 # 07 — Dependencies (Rust)
 
-> Prerequisite: the canonical principles each crate implements live in
-> [`cli-design/`](../../../programming/cli-design/) — specifically
-> [`01-logging-and-output`](../../../programming/cli-design/01-logging-and-output.md) (`tracing`,
-> `tracing-subscriber`, `tracing-appender`),
-> [`02-error-messages`](../../../programming/cli-design/02-error-messages.md) (`thiserror`,
-> `anyhow`), [`03-config-precedence`](../../../programming/cli-design/03-config-precedence.md)
-> (`figment`, `directories`), and
-> [`08-testing-and-quality`](../../../programming/cli-design/09-testing-and-quality/testing-strategy.md)
-> (`assert_cmd`, `insta`, `tempfile`, `nextest`). This chapter is the curated default crate list
-> with one-line justifications. Facing-category consequences follow
-> [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+> Prerequisite: the canonical principles each crate implements live in [`cli-design/`](../../../programming/cli-design/) — specifically [`01-logging-and-output`](../../../programming/cli-design/01-logging-and-output.md) (`tracing`, `tracing-subscriber`, `tracing-appender`), [`02-error-messages`](../../../programming/cli-design/02-error-messages.md) (`thiserror`, `anyhow`), [`03-config-precedence`](../../../programming/cli-design/03-config-precedence.md) (`figment`, `directories`), and [`08-testing-and-quality`](../../../programming/cli-design/09-testing-and-quality/testing-strategy.md) (`assert_cmd`, `insta`, `tempfile`, `nextest`). This chapter is the curated default crate list with one-line justifications. Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 
-Opinionated default dependency list. Each entry has a one-line justification and a "skip if"
-condition. Pick deliberately; resist the urge to add "useful-looking" crates without a concrete
-need.
+Opinionated default dependency list. Each entry has a one-line justification and a "skip if" condition. Pick deliberately; resist the urge to add "useful-looking" crates without a concrete need.
 
 ## Adding dependencies
 
-**Manage every dependency through Cargo's CLI — never hand-edit dependency names, versions, or
-features in `Cargo.toml`.**
+**Manage every dependency through Cargo's CLI — never hand-edit dependency names, versions, or features in `Cargo.toml`.**
 
-- Add or change a crate with `cargo add <crate>` (e.g.
-  `cargo add clap --features derive,env,wrap_help`). `cargo add` fetches the latest
-  SemVer-compatible version, resolves the whole graph, writes the entry into `Cargo.toml`, and
-  updates `Cargo.lock` in one step.
+- Add or change a crate with `cargo add <crate>` (e.g. `cargo add clap --features derive,env,wrap_help`). `cargo add` fetches the latest SemVer-compatible version, resolves the whole graph, writes the entry into `Cargo.toml`, and updates `Cargo.lock` in one step.
 - Remove a crate with `cargo remove <crate>`.
 - Bump the lockfile with `cargo update` — deliberately, and read the changelog first.
-- Add a dev-dependency with `cargo add --dev <crate>`; add a feature to a crate you already depend
-  on with `cargo add <crate> --features <feat>`.
-- Do **not** type version strings or feature lists into `Cargo.toml` by hand. Hand-edits drift from
-  the resolver, skip the lockfile update, and pin stale versions. Agents and contributors change
-  dependencies only through these commands.
+- Add a dev-dependency with `cargo add --dev <crate>`; add a feature to a crate you already depend on with `cargo add <crate> --features <feat>`.
+- Do **not** type version strings or feature lists into `Cargo.toml` by hand. Hand-edits drift from the resolver, skip the lockfile update, and pin stale versions. Agents and contributors change dependencies only through these commands.
 - Commit `Cargo.lock` for binaries (not for libraries); `cargo add`/`cargo update` keep it in sync, and [the hooks that rewrite or judge exclude it](../../../programming/project-bootstrap/04-quality-gates.md#generated-files).
 
-The [pinning policy](#pinning-policy) below still governs the resulting entries: majors in
-`Cargo.toml`, exact versions in `Cargo.lock`.
+The [pinning policy](#pinning-policy) below still governs the resulting entries: majors in `Cargo.toml`, exact versions in `Cargo.lock`.
 
 ## Runtime defaults
 
@@ -61,9 +41,7 @@ Always:
 
 ## Human presentation
 
-These are concern-triggered additions for a human-facing CLI, not a bundle every application needs.
-Machine output and log sinks remain undecorated under the
-[canonical presentation policy](../../../programming/cli-design/01-logging-and-output.md#color).
+These are concern-triggered additions for a human-facing CLI, not a bundle every application needs. Machine output and log sinks remain undecorated under the [canonical presentation policy](../../../programming/cli-design/01-logging-and-output.md#color).
 
 ### Color layers
 
@@ -75,20 +53,9 @@ Machine output and log sinks remain undecorated under the
 | Resolved choice   | [`colorchoice`](https://docs.rs/colorchoice/)     | Carry the startup decision as `Auto`, `Always`, `AlwaysAnsi`, or `Never`; renderers do not decide again.          |
 | Ergonomic emitter | [`owo-colors`](https://docs.rs/owo-colors/)       | Optional `Display` syntax above `anstream`; keep its non-default `supports-colors` feature disabled.              |
 
-No crate supplies the complete recommended ladder for free. Resolve policy once at startup, make
-machine mode unconditional `Never`, and apply or strip escapes at the actual stream. Enabling
-`owo-colors`' `supports-colors` feature introduces a second detector with different rules.
-[`colorchoice-clap`](https://docs.rs/colorchoice-clap/) is a supporting addition for ordinary CLIs
-that expose `--color=auto|always|never`; a passthrough wrapper may have a product reason not to own
-that flag.
+No crate supplies the complete recommended ladder for free. Resolve policy once at startup, make machine mode unconditional `Never`, and apply or strip escapes at the actual stream. Enabling `owo-colors`' `supports-colors` feature introduces a second detector with different rules. [`colorchoice-clap`](https://docs.rs/colorchoice-clap/) is a supporting addition for ordinary CLIs that expose `--color=auto|always|never`; a passthrough wrapper may have a product reason not to own that flag.
 
-The default family is maintained by the rust-cli organization in the
-[`rust-cli/anstyle` repository](https://github.com/rust-cli/anstyle) under MIT or Apache-2.0. `clap`
-uses `anstyle` unconditionally in its
-[public `Styles` API](https://docs.rs/clap/latest/clap/builder/struct.Styles.html), and its default
-`color` feature brings `anstream`, so ordinary `clap` projects generally add direct edges rather
-than a new dependency subtree. This choice is governed by
-[ADR-use-anstyle-and-anstream-for-terminal-colour](./decisions/ADR-use-anstyle-and-anstream-for-terminal-colour.md).
+The default family is maintained by the rust-cli organization in the [`rust-cli/anstyle` repository](https://github.com/rust-cli/anstyle) under MIT or Apache-2.0. `clap` uses `anstyle` unconditionally in its [public `Styles` API](https://docs.rs/clap/latest/clap/builder/struct.Styles.html), and its default `color` feature brings `anstream`, so ordinary `clap` projects generally add direct edges rather than a new dependency subtree. This choice is governed by [ADR-use-anstyle-and-anstream-for-terminal-colour](./decisions/ADR-use-anstyle-and-anstream-for-terminal-colour.md).
 
 #### Color alternatives and avoid list
 
@@ -109,21 +76,13 @@ than a new dependency subtree. This choice is governed by
 | [`comfy-table`](https://github.com/Nukesor/comfy-table) | The table should auto-fit terminal width through its default TTY integration. | Version 8.0.0, released 2026-08-05, removed `TableComponent`, `modifiers`, `load_preset`, and `set_style` while the project describes itself as feature-frozen and [seeks a maintainer](https://github.com/Nukesor/comfy-table/issues/202). Revalidate before adoption. |
 | [`tabled`](https://github.com/zhiburt/tabled)           | The caller should own width and layout policy.                                | It performs no terminal detection: supply a width, commonly from [`terminal_size`](https://docs.rs/terminal_size/), and enable its non-default `ansi` feature for pre-colored cells.                                                                                    |
 
-Display width is not byte length or character count. Use
-[`unicode-width`](https://github.com/unicode-rs/unicode-width) for CJK, combining characters, and
-emoji; never size columns with `str::len()` or `.chars().count()`.
+Display width is not byte length or character count. Use [`unicode-width`](https://github.com/unicode-rs/unicode-width) for CJK, combining characters, and emoji; never size columns with `str::len()` or `.chars().count()`.
 
 ### Progress
 
-[`indicatif`](https://github.com/console-rs/indicatif) remains the default for progress and
-spinners. Its stderr draw target automatically hides when stderr is not a terminal or `TERM=dumb`.
-Normal `tracing` or `log` writes can corrupt an active bar; use
-[`tracing-indicatif`](https://github.com/emersonford/tracing-indicatif) when tracing and bars coexist,
-not the unhealthy [`indicatif-log-bridge`](https://docs.rs/indicatif-log-bridge/).
+[`indicatif`](https://github.com/console-rs/indicatif) remains the default for progress and spinners. Its stderr draw target automatically hides when stderr is not a terminal or `TERM=dumb`. Normal `tracing` or `log` writes can corrupt an active bar; use [`tracing-indicatif`](https://github.com/emersonford/tracing-indicatif) when tracing and bars coexist, not the unhealthy [`indicatif-log-bridge`](https://docs.rs/indicatif-log-bridge/).
 
-`indicatif` inherits `console`'s independent cached color policy: `NO_COLOR` handling is Unix-only,
-and `CLICOLOR_FORCE` can override it. Machine mode must explicitly hide or neutralize progress
-rather than trust that second policy.
+`indicatif` inherits `console`'s independent cached color policy: `NO_COLOR` handling is Unix-only, and `CLICOLOR_FORCE` can override it. Machine mode must explicitly hide or neutralize progress rather than trust that second policy.
 
 ### Prompts
 
@@ -142,11 +101,7 @@ Prompts go to stderr and must fail rather than appear in machine or non-interact
 | [`miette`](https://github.com/zkat/miette)                               | Diagnostics need codes, help, severity, cause chains, and optional spans. | For deterministic machine output force `MietteHandlerOpts::new().unicode(false).color(false)`; its fancy renderer otherwise has independent capability detectors. |
 | [`color-eyre`](https://github.com/eyre-rs/eyre)                          | Interactive report and panic presentation with spantraces is wanted.      | It [does not honor `NO_COLOR`](https://github.com/eyre-rs/eyre/issues/236) and installs global report and panic hooks.                                            |
 
-`miette` and `color-eyre` both install global report hooks and must not be combined. The proposed
-`miette` migration remains only a proposal. [`human-panic`](https://github.com/rust-cli/human-panic)
-is a conditional user-friendly panic-report alternative, but it also owns a panic hook and cannot
-be stacked casually with `color-eyre`. Every pretty renderer must receive or obey the centralized
-machine/color choice.
+`miette` and `color-eyre` both install global report hooks and must not be combined. The proposed `miette` migration remains only a proposal. [`human-panic`](https://github.com/rust-cli/human-panic) is a conditional user-friendly panic-report alternative, but it also owns a panic hook and cannot be stacked casually with `color-eyre`. Every pretty renderer must receive or obey the centralized machine/color choice.
 
 ## Dev-dependencies
 
@@ -203,9 +158,7 @@ Deprecated, dead, or superseded:
 
 ## Cargo.toml skeleton
 
-Hand-author only the non-dependency tables — `[package]`, `[[bin]]`, `[profile.release]`. Everything
-under `[dependencies]`/`[dev-dependencies]` is installed with `cargo add` (see
-[Adding dependencies](#adding-dependencies)); never type crate versions in by hand.
+Hand-author only the non-dependency tables — `[package]`, `[[bin]]`, `[profile.release]`. Everything under `[dependencies]`/`[dev-dependencies]` is installed with `cargo add` (see [Adding dependencies](#adding-dependencies)); never type crate versions in by hand.
 
 ```toml
 [package]
@@ -227,8 +180,7 @@ codegen-units = 1
 strip         = "symbols"
 ```
 
-Install the default runtime stack — each command resolves the latest SemVer-compatible version,
-writes it into `[dependencies]`, and updates `Cargo.lock`:
+Install the default runtime stack — each command resolves the latest SemVer-compatible version, writes it into `[dependencies]`, and updates `Cargo.lock`:
 
 ```sh
 cargo add clap --features derive,env,wrap_help
@@ -258,9 +210,7 @@ cargo add --dev assert_cmd predicates tempfile
 cargo add --dev insta --features yaml
 ```
 
-The resolved `[dependencies]` block will look roughly like the following. **Illustrative only —
-install via `cargo add`; do not hand-copy these versions.** As of 2026-08, the verified core majors
-are `thiserror` 2, `toml` 1 (TOML spec 1.1), and `anstream` 1:
+The resolved `[dependencies]` block will look roughly like the following. **Illustrative only — install via `cargo add`; do not hand-copy these versions.** As of 2026-08, the verified core majors are `thiserror` 2, `toml` 1 (TOML spec 1.1), and `anstream` 1:
 
 ```toml
 [dependencies]
@@ -287,25 +237,21 @@ insta       = { version = "1", features = ["yaml"] }
 tempfile    = "3"
 ```
 
-Trim aggressively for very small CLIs (drop `tokio`, `figment`, `directories` if you don't need
-them). Add to taste from the conditional list above.
+Trim aggressively for very small CLIs (drop `tokio`, `figment`, `directories` if you don't need them). Add to taste from the conditional list above.
 
 ## Pinning policy
 
 - Pin to **major versions** in `Cargo.toml` (`"4"`, `"0.3"`). Let `Cargo.lock` pin exact versions.
 - Commit `Cargo.lock` for binaries. Don't for libraries.
 - Run `cargo update` deliberately, not as a default `just` task. Read the changelog.
-- Use `cargo deny` (configured in `deny.toml`) to enforce a license allowlist and ban yanked or
-  vulnerable versions.
+- Use `cargo deny` (configured in `deny.toml`) to enforce a license allowlist and ban yanked or vulnerable versions.
 
 ## Justification: figment over config-rs
 
 Both work. Pick figment because:
 
-- It tracks per-key source provenance. Errors say _"`timeout` in `./app.toml` (line 12) was
-  negative"_ instead of _"invalid config"_.
-- Its provider model maps cleanly onto our layered precedence (defaults → user → project → env →
-  CLI).
+- It tracks per-key source provenance. Errors say _"`timeout` in `./app.toml` (line 12) was negative"_ instead of _"invalid config"_.
+- Its provider model maps cleanly onto our layered precedence (defaults → user → project → env → CLI).
 - `config-rs` requires more glue for the same outcome and has noisier errors.
 
 If you're committed to `serde_path_to_error` and don't need source tracking, `config-rs` is fine.

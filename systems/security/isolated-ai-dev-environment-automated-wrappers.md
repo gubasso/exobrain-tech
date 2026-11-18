@@ -1,22 +1,14 @@
 # Isolated AI Dev Environment Automated Wrappers
 
-> Prerequisites: For the necessary background, see
-> [Isolated AI Dev Environment with `systemd-nspawn` (`dev-sandbox`)](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md)
+> Prerequisites: For the necessary background, see [Isolated AI Dev Environment with `systemd-nspawn` (`dev-sandbox`)](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md)
 
-Since writing the original
-[walkthrough](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md), I implemented three
-small wrapper scripts that automate the workflows described here. They cover three operational
-models (persistent machine, one-shot session, and per-project containers).
+Since writing the original [walkthrough](./isolated-ai-dev-environment-with-systemd-nspawn-dev-sandbox.md), I implemented three small wrapper scripts that automate the workflows described here. They cover three operational models (persistent machine, one-shot session, and per-project containers).
 
 **Scripts**
 
-- **`dev-sandbox`** — long-lived `systemd-nspawn` machine (persistent rootfs, multi-terminal attach)
-  Link: _https://github.com/gubasso/dotfiles/blob/master/bin/.local/bin/dev-sandbox_
-- **`dev-sandbox-oneshot`** — one-shot `systemd-nspawn` entry into an existing rootfs (single
-  session) Link:
-  _https://github.com/gubasso/dotfiles/blob/master/bin/.local/bin/dev-sandbox-oneshot_
-- **`dev-container`** — rootless Podman, per-project persistent containers (multi-terminal attach)
-  Link: _https://github.com/gubasso/dotfiles/blob/master/bin/.local/bin/dev-container_
+- **`dev-sandbox`** — long-lived `systemd-nspawn` machine (persistent rootfs, multi-terminal attach) Link: _https://github.com/gubasso/dotfiles/blob/master/bin/.local/bin/dev-sandbox_
+- **`dev-sandbox-oneshot`** — one-shot `systemd-nspawn` entry into an existing rootfs (single session) Link: _https://github.com/gubasso/dotfiles/blob/master/bin/.local/bin/dev-sandbox-oneshot_
+- **`dev-container`** — rootless Podman, per-project persistent containers (multi-terminal attach) Link: _https://github.com/gubasso/dotfiles/blob/master/bin/.local/bin/dev-container_
 
 ### Quick comparison
 

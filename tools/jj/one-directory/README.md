@@ -1,7 +1,6 @@
 # Working on a change in the directory you are in
 
-One repo, one working directory, no branch checked out. Every described change jj holds is a head
-of its own, so concurrent work needs no second directory and no bookmark until a change is pushed.
+One repo, one working directory, no branch checked out. Every described change jj holds is a head of its own, so concurrent work needs no second directory and no bookmark until a change is pushed.
 
 | Document                                                           | What it gets you                                                                                                 |
 | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |

@@ -1,17 +1,12 @@
 # Testing Tools
 
-Per-language tooling reference for the principles laid out in
-[09 — Testing Strategy](./testing-strategy.md). Pick from the matrix; copy the snippets at the
-bottom into the target project.
+Per-language tooling reference for the principles laid out in [09 — Testing Strategy](./testing-strategy.md). Pick from the matrix; copy the snippets at the bottom into the target project.
 
-This file is a directory, not a tutorial. Each tool's home page is one click away; the value here is
-the _selection_ and the _wiring_ (when to use what, what plays nicely with what, what to put in
-`pre-commit` vs CI vs nightly).
+This file is a directory, not a tutorial. Each tool's home page is one click away; the value here is the _selection_ and the _wiring_ (when to use what, what plays nicely with what, what to put in `pre-commit` vs CI vs nightly).
 
 ## Opinionated defaults — "if in doubt, start here"
 
-A new project of each shape is unlikely to go wrong starting with this stack. Replace any row when a
-real constraint pushes you off it; never start from "every team uses X" alone.
+A new project of each shape is unlikely to go wrong starting with this stack. Replace any row when a real constraint pushes you off it; never start from "every team uses X" alone.
 
 | Language            | Runner                    | Snapshot                | Property-based      | Mutation        | HTTP fake          |
 | ------------------- | ------------------------- | ----------------------- | ------------------- | --------------- | ------------------ |
@@ -21,9 +16,7 @@ real constraint pushes you off it; never start from "every team uses X" alone.
 | **Go**              | `go test ./...` (`-race`) | `goldie`                | `gopter` or `rapid` | `gremlins`      | `httpmock`         |
 | **Bash**            | `bats-core`               | `bats` `assert_output`  | n/a (table-driven)  | n/a             | `bats-mock`        |
 
-Cover the boundary at the architectural seams (file system stays real-but-sandboxed; HTTP gets a
-fake; clock and RNG get injected from `AppContext`). The rest of the matrix below is for when a
-project's needs grow past these defaults.
+Cover the boundary at the architectural seams (file system stays real-but-sandboxed; HTTP gets a fake; clock and RNG get injected from `AppContext`). The rest of the matrix below is for when a project's needs grow past these defaults.
 
 ## Tooling matrix
 
@@ -59,8 +52,7 @@ For testing the binary or runtime invocation of your CLI.
 | Go     | [`goldie`](https://github.com/sebdah/goldie), [`cupaloy`](https://github.com/bradleyjkemp/cupaloy)                   | `goldie` is the most popular; `-update` flag for refresh.             |
 | Bash   | `bats` `assert_output` against a checked-in golden file                                                              | Manual but trivial; commit golden files alongside the test.           |
 
-**Rule for every snapshot tool:** never auto-update in CI. Updates happen locally, with the diff
-reviewed line by line, and the PR includes both the code change and the snapshot change.
+**Rule for every snapshot tool:** never auto-update in CI. Updates happen locally, with the diff reviewed line by line, and the PR includes both the code change and the snapshot change.
 
 ### Property-based testing
 
@@ -72,10 +64,7 @@ reviewed line by line, and the PR includes both the code change and the snapshot
 | Go     | [`gopter`](https://github.com/leanovate/gopter), [`rapid`](https://github.com/flyingmutant/rapid)            |
 | Bash   | n/a — use a table-driven loop with hand-picked edge cases                                                    |
 
-`proptest` and `hypothesis` both shrink failing inputs to a minimal counterexample and persist
-failing seeds in a regression file — check that file into the repo so the regression is locked down.
-See [09 § Property-based testing](./testing-strategy.md#property-based-testing) for when to reach
-for it.
+`proptest` and `hypothesis` both shrink failing inputs to a minimal counterexample and persist failing seeds in a regression file — check that file into the repo so the regression is locked down. See [09 § Property-based testing](./testing-strategy.md#property-based-testing) for when to reach for it.
 
 ### Mutation testing
 
@@ -89,14 +78,11 @@ for it.
 | C/C++       | [`Mull`](https://mull.readthedocs.io/)                                                         | Clang plugin.                                                  |
 | Bash        | n/a                                                                                            |                                                                |
 
-**Rule:** run mutation testing as a scheduled CI job, which no push starts. Cap mutants so a run
-finishes in minutes. Track score per critical module; a drop is a regression in test quality even if
-all tests pass. See [09 § Mutation testing](./testing-strategy.md#mutation-testing-as-quality-gate).
+**Rule:** run mutation testing as a scheduled CI job, which no push starts. Cap mutants so a run finishes in minutes. Track score per critical module; a drop is a regression in test quality even if all tests pass. See [09 § Mutation testing](./testing-strategy.md#mutation-testing-as-quality-gate).
 
 ### Recording / HTTP fakes
 
-For the network-boundary tests where you want real wire-format behavior without hitting a live
-service.
+For the network-boundary tests where you want real wire-format behavior without hitting a live service.
 
 | Lang   | Tools                                                                                                                                                   | Notes                                                                                                |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -106,9 +92,7 @@ service.
 | Go     | [`httpmock`](https://github.com/jarcoal/httpmock), [`gock`](https://github.com/h2non/gock), [`httptest`](https://pkg.go.dev/net/http/httptest) (stdlib) | `httptest` is built-in; reach for `gock` for richer matchers.                                        |
 | Bash   | `bats-mock`, hand-rolled stub script on `PATH`                                                                                                          | A 5-line shell script that records `$@` to a tmpfile is enough for argv-contract tests.              |
 
-**Pattern:** "record once, replay forever" is the cheapest fake for HTTP. The recorded cassette goes
-into version control; refreshing requires intent (a deliberate re-record commit), so silent
-upstream-shape drift can't sneak into the suite.
+**Pattern:** "record once, replay forever" is the cheapest fake for HTTP. The recorded cassette goes into version control; refreshing requires intent (a deliberate re-record commit), so silent upstream-shape drift can't sneak into the suite.
 
 ### Contract testing
 
@@ -122,8 +106,7 @@ For services that talk to other services (honeycomb shape; rarely relevant to a 
 | Go     | [`pact-go`](https://github.com/pact-foundation/pact-go)                                                                                   |
 | Java   | [`pact-jvm`](https://github.com/pact-foundation/pact-jvm), [Spring Cloud Contract](https://github.com/spring-cloud/spring-cloud-contract) |
 
-Pact is the canonical consumer-driven contract framework. Out of scope for a single-binary CLI;
-relevant the moment your CLI talks to a service you also own.
+Pact is the canonical consumer-driven contract framework. Out of scope for a single-binary CLI; relevant the moment your CLI talks to a service you also own.
 
 ### Coverage
 
@@ -135,14 +118,11 @@ relevant the moment your CLI talks to a service you also own.
 | Go     | `go test -cover`, `go tool cover -html=cover.out`                                                                   |
 | Bash   | [`kcov`](http://simonkagstrom.github.io/kcov/), [`bashcov`](https://github.com/infertux/bashcov)                    |
 
-Coverage as a _floor_ against accidental regressions is fine; coverage as a _goal_ is the road to
-[the third-party-library testing anti-pattern](./testing-strategy.md#detecting-testing-the-third-party-library).
-Pair it with mutation testing for real signal.
+Coverage as a _floor_ against accidental regressions is fine; coverage as a _goal_ is the road to [the third-party-library testing anti-pattern](./testing-strategy.md#detecting-testing-the-third-party-library). Pair it with mutation testing for real signal.
 
 ## Pre-commit / CI tiering
 
-The principle from [09 § CI essentials](./testing-strategy.md#ci-essentials): each tier has a time
-budget; assign each test type to the tier whose budget it fits. CI repeats both hook stages.
+The principle from [09 § CI essentials](./testing-strategy.md#ci-essentials): each tier has a time budget; assign each test type to the tier whose budget it fits. CI repeats both hook stages.
 
 | Tier       | Time budget      | Tests run                                |
 | ---------- | ---------------- | ---------------------------------------- |
@@ -152,21 +132,11 @@ budget; assign each test type to the tier whose budget it fits. CI repeats both 
 
 ### Tuning test-runner output for CI + AI agents
 
-CI logs and agent-read transcripts both pay a token cost for noise that a human-in-the-terminal
-would skim past. Most test runners can be tuned along the same axes; the concrete keys differ per
-tool, but the pattern is uniform. See your runner's reference for the exact configuration mechanism
-(e.g. `[profile.X]` in nextest's `.config/nextest.toml`, `[tool.pytest.ini_options]` plus `-c` in
-pytest, `vitest.config.*` plus `--config`, jest's `--config`, `go test -tags`).
+CI logs and agent-read transcripts both pay a token cost for noise that a human-in-the-terminal would skim past. Most test runners can be tuned along the same axes; the concrete keys differ per tool, but the pattern is uniform. See your runner's reference for the exact configuration mechanism (e.g. `[profile.X]` in nextest's `.config/nextest.toml`, `[tool.pytest.ini_options]` plus `-c` in pytest, `vitest.config.*` plus `--config`, jest's `--config`, `go test -tags`).
 
-**Foot-gun — profiles/presets are dead config unless invoked explicitly.** Most runners load a
-_default_ profile/config and ignore the per-stage one until the invocation passes the right flag.
-Pattern: pre-commit, pre-push, and CI each invoke the runner with the matching
-`--profile`/`--config`/preset name. A workflow that runs the bare command silently falls back to
-defaults and ignores every retry, timeout, and output tweak you encoded for that stage. This is the
-single most common reason CI behaves nothing like the config that "should" be active.
+**Foot-gun — profiles/presets are dead config unless invoked explicitly.** Most runners load a _default_ profile/config and ignore the per-stage one until the invocation passes the right flag. Pattern: pre-commit, pre-push, and CI each invoke the runner with the matching `--profile`/`--config`/preset name. A workflow that runs the bare command silently falls back to defaults and ignores every retry, timeout, and output tweak you encoded for that stage. This is the single most common reason CI behaves nothing like the config that "should" be active.
 
-**Four output axes that govern token efficiency.** Every reasonable test runner exposes these, even
-if the keys are named differently:
+**Four output axes that govern token efficiency.** Every reasonable test runner exposes these, even if the keys are named differently:
 
 | Axis                                    | Token-efficient value                                        | Why                                                                                                                    |
 | --------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
@@ -175,34 +145,20 @@ if the keys are named differently:
 | Captured stdout/stderr of passing tests | **Never display**                                            | Passing tests' chatter is noise by definition.                                                                         |
 | Captured stdout/stderr of failing tests | **Always display**, ideally both inline AND in final summary | Agents triaging a failure find the output wherever they're looking.                                                    |
 
-**Progress bars in captured logs.** Most runners auto-suppress progress redraws when stdout is not a
-TTY (GitHub Actions et al. detect this correctly). Some CI systems emulate a TTY — when they do, the
-redraw stream bloats captured logs. Look for a `--no-progress` / `--reporter=dot` /
-`HIDE_PROGRESS=1`-style escape hatch and set it in CI env as belt-and-suspenders.
+**Progress bars in captured logs.** Most runners auto-suppress progress redraws when stdout is not a TTY (GitHub Actions et al. detect this correctly). Some CI systems emulate a TTY — when they do, the redraw stream bloats captured logs. Look for a `--no-progress` / `--reporter=dot` / `HIDE_PROGRESS=1`-style escape hatch and set it in CI env as belt-and-suspenders.
 
 **Layered presets by hook stage.** Pair the four output axes with the tier table above:
 
-- _pre-commit_ — fail-fast on, run unit only, quietest output (failure on a single test should kill
-  the run immediately).
-- _pre-push_ — fail-fast off, run unit + integration, still quiet (surface every regression, not
-  just the first).
-- _CI_ — fail-fast off, run everything, retries for known-flaky network tests, quietest output (logs
-  are read by humans and agents long after the run).
-- _interactive/ad-hoc_ — verbosity OK; this is the one tier where pass lines and progress bars carry
-  signal.
+- _pre-commit_ — fail-fast on, run unit only, quietest output (failure on a single test should kill the run immediately).
+- _pre-push_ — fail-fast off, run unit + integration, still quiet (surface every regression, not just the first).
+- _CI_ — fail-fast off, run everything, retries for known-flaky network tests, quietest output (logs are read by humans and agents long after the run).
+- _interactive/ad-hoc_ — verbosity OK; this is the one tier where pass lines and progress bars carry signal.
 
-**Machine-readable output for downstream parsers.** When an agent or dashboard consumes test
-results, prefer the runner's structured-output format (JUnit XML, TAP, JSON event streams like
-libtest-json) over scraping human text. Don't enable it prophylactically — adopt it the moment
-something downstream actually parses it.
+**Machine-readable output for downstream parsers.** When an agent or dashboard consumes test results, prefer the runner's structured-output format (JUnit XML, TAP, JSON event streams like libtest-json) over scraping human text. Don't enable it prophylactically — adopt it the moment something downstream actually parses it.
 
-**No first-class "AI mode" exists in any major runner** as of late 2025. The composition above is
-hand-rolled across tools. If a runner ever ships a `--quiet-for-agents` preset, prefer that to a
-hand-tuned profile.
+**No first-class "AI mode" exists in any major runner** as of late 2025. The composition above is hand-rolled across tools. If a runner ever ships a `--quiet-for-agents` preset, prefer that to a hand-tuned profile.
 
-For the concrete keys, profile names, and reference TOML in each language, see the per-language
-testing spec — Rust:
-[cli-spec § Test runner](../../../languages/rust/cli-spec/06-testing-and-quality/testing.md#test-runner).
+For the concrete keys, profile names, and reference TOML in each language, see the per-language testing spec — Rust: [cli-spec § Test runner](../../../languages/rust/cli-spec/06-testing-and-quality/testing.md#test-runner).
 
 ### `.pre-commit-config.yaml` — fast unit tests on every commit
 
@@ -266,14 +222,9 @@ repos:
         stages: [pre-commit]
 ```
 
-Match exactly one block to your project's language; delete the rest. Add a `pre-push` block with the
-integration suite — same shape, just `stages: [pre-push]` and the integration directory.
+Match exactly one block to your project's language; delete the rest. Add a `pre-push` block with the integration suite — same shape, just `stages: [pre-push]` and the integration directory.
 
-Each test runner keeps `language: system` because it runs in the environment of the project. The
-comment above each `- id:` line names the file that declares the tool and the class of the
-exception, as
-[04 — Quality gates](../../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)
-says.
+Each test runner keeps `language: system` because it runs in the environment of the project. The comment above each `- id:` line names the file that declares the tool and the class of the exception, as [04 — Quality gates](../../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
 
 ### `pre-push` — integration tests
 
@@ -293,8 +244,7 @@ says.
 
 ### `Makefile` / `justfile` target for mutation testing
 
-A `make mutate` (or `just mutate`) entry point keeps the invocation discoverable and consistent. The
-target's command differs by language; the _interface_ is uniform.
+A `make mutate` (or `just mutate`) entry point keeps the invocation discoverable and consistent. The target's command differs by language; the _interface_ is uniform.
 
 ```makefile
 # Makefile
@@ -358,14 +308,11 @@ jobs:
           path: .mutmut-cache
 ```
 
-The `|| true` is intentional — surviving mutants are reported, not fatal. Treat the report as a
-quality metric to triage, not a gate. Once the score is stable on a critical module, you can promote
-that module to gated.
+The `|| true` is intentional — surviving mutants are reported, not fatal. Treat the report as a quality metric to triage, not a gate. Once the score is stable on a critical module, you can promote that module to gated.
 
 ### Test-isolation enforcement snippets
 
-For each language, a snippet that enforces the "no shared state, no global env, no real clock" rules
-from [09 § Test isolation](./testing-strategy.md#test-isolation--the-single-most-important-rule).
+For each language, a snippet that enforces the "no shared state, no global env, no real clock" rules from [09 § Test isolation](./testing-strategy.md#test-isolation--the-single-most-important-rule).
 
 **Python — `conftest.py`:**
 
@@ -431,9 +378,7 @@ teardown() {
 
 ## Tool selection by failure mode
 
-When the symptom is X, reach for tool Y. Pairing this with the heuristics in
-[09 § Detecting "testing the third-party library"](./testing-strategy.md#detecting-testing-the-third-party-library)
-covers the most common test-quality failures.
+When the symptom is X, reach for tool Y. Pairing this with the heuristics in [09 § Detecting "testing the third-party library"](./testing-strategy.md#detecting-testing-the-third-party-library) covers the most common test-quality failures.
 
 | Symptom                                                                              | Likely cause                                                                                        | Tool / pattern to reach for                                          |
 | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
@@ -449,8 +394,7 @@ covers the most common test-quality failures.
 
 ## References
 
-Per-tool documentation links are inline in the matrix above. For _why_ you'd reach for each tool
-category, see the cross-references back to [09 — Testing Strategy](./testing-strategy.md):
+Per-tool documentation links are inline in the matrix above. For _why_ you'd reach for each tool category, see the cross-references back to [09 — Testing Strategy](./testing-strategy.md):
 
 - [§ Non-negotiable principles](./testing-strategy.md#non-negotiable-principles)
 - [§ Test-shape models](./testing-strategy.md#test-shape-models--pyramid-vs-trophy-vs-honeycomb)

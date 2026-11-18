@@ -29,12 +29,7 @@ print("Output from last process : " + (p2.communicate()[0]).decode())
 ## General
 
 - project environment / runtime
-  - The Python interpreter is provisioned by the project's **Nix flake devShell** (canonical
-    per-project environment manager). uv handles dependencies inside it, see
-    [toolchain and layout](./project-bootstrap-spec/00-toolchain-and-layout.md). A project that
-    already uses [Poetry](./python-poetry.md) keeps it as its one manager. See
-    [development-tools-workflow](../../workflows/development-tools-workflow.md) and
-    [nix](../../tools/nix/README.md).
+  - The Python interpreter is provisioned by the project's **Nix flake devShell** (canonical per-project environment manager). uv handles dependencies inside it, see [toolchain and layout](./project-bootstrap-spec/00-toolchain-and-layout.md). A project that already uses [Poetry](./python-poetry.md) keeps it as its one manager. See [development-tools-workflow](../../workflows/development-tools-workflow.md) and [nix](../../tools/nix/README.md).
 
 - python types
 
@@ -141,14 +136,12 @@ helloworld/
 
 ---
 
-- `__init__.py`: is not required anymore (3.3+), but needed for compatibility issues (as for correct
-  use of `pytest`)[^3][^4]
+- `__init__.py`: is not required anymore (3.3+), but needed for compatibility issues (as for correct use of `pytest`)[^3][^4]
 
 ## Modules / Imports
 
 - About python modules/import[^2][^1]
-  - Absolute / Relative paths to imports:
-    https://realpython.com/absolute-vs-relative-python-imports/
+  - Absolute / Relative paths to imports: https://realpython.com/absolute-vs-relative-python-imports/
 
 [How to load all modules in a folder?](https://stackoverflow.com/questions/1057431/how-to-load-all-modules-in-a-folder)
 

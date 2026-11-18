@@ -92,12 +92,9 @@ zypper dup --from packman --allow-vendor-change
 
 Use Zypper to Refresh Repositories:
 
-Run the command zypper refresh --gpg-auto-import-keys. This command will refresh all repositories
-and automatically import any new GPG keys without prompting for user confirmation. This is a
-convenient way to ensure that all necessary keys are updated and trusted.
+Run the command zypper refresh --gpg-auto-import-keys. This command will refresh all repositories and automatically import any new GPG keys without prompting for user confirmation. This is a convenient way to ensure that all necessary keys are updated and trusted.
 
-NVIDIA drivers that work with dkms (NVIDIA's modules will be automatically recompiled for each new
-kernel update):
+NVIDIA drivers that work with dkms (NVIDIA's modules will be automatically recompiled for each new kernel update):
 
 ```sh
 zypper ar -f https://download.opensuse.org/\
@@ -112,8 +109,7 @@ zypper in dkms-nvidia
 
 - zypper: opensuse zypper package manager (install from rpm too, as fedora)[^opsu2]
   - --non-interactive means that the command is run without asking anything
-  - `sudo zypper rm --clean-deps PACKAGE_NAME` automatically want to remove any packages that become
-    unneeded
+  - `sudo zypper rm --clean-deps PACKAGE_NAME` automatically want to remove any packages that become unneeded
 
 **AFTER INSTALL:**[^opsu1]
 
@@ -124,10 +120,8 @@ things to do after install opensuse
    `sudo zypper ref && sudo zypper up`
 
 2. Add Community Repositories: opensuse site, additional packages repositories
-   - Packman (install it) <https://en.opensuse.org/Additional_package_repositories#Packman>
-     `sudo zypper ar -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_$releasever/' packman`
-   - After adding packman repository be sure to switch system package to those in packman as a mix
-     of both can cause a variety of issues.
+   - Packman (install it) <https://en.opensuse.org/Additional_package_repositories#Packman> `sudo zypper ar -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_$releasever/' packman`
+   - After adding packman repository be sure to switch system package to those in packman as a mix of both can cause a variety of issues.
      - `sudo zypper dup --from packman --allow-vendor-change`
 3. Install build essentials (`make`, etc...)
 

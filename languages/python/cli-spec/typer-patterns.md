@@ -1,10 +1,8 @@
 # Typer / Click Patterns (Python)
 
-> Prerequisite: [General CLI principles](../../../programming/cli-design/) for architecture,
-> logging, errors, config, coding style. This file is the Python-with-Typer implementation guide.
+> Prerequisite: [General CLI principles](../../../programming/cli-design/) for architecture, logging, errors, config, coding style. This file is the Python-with-Typer implementation guide.
 
-Practical Typer/Click patterns: typed CLI option declarations, Pydantic validators, multi-value
-parsing.
+Practical Typer/Click patterns: typed CLI option declarations, Pydantic validators, multi-value parsing.
 
 ## Path option
 

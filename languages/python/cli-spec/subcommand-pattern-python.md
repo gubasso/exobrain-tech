@@ -1,16 +1,10 @@
 # Subcommand Pattern (Python)
 
-> Prerequisite:
-> [General principles — Architecture](../../../programming/cli-design/00-architecture.md) for the
-> four-edit rule, parse-shape vs runtime-shape, and service extraction. Parameter-level Typer
-> details live in [Typer / Click Patterns](./typer-patterns.md).
+> Prerequisite: [General principles — Architecture](../../../programming/cli-design/00-architecture.md) for the four-edit rule, parse-shape vs runtime-shape, and service extraction. Parameter-level Typer details live in [Typer / Click Patterns](./typer-patterns.md).
 
 ## The four responsibilities (Python + Typer)
 
-Rust has a literal four-edit rule because parser registration and dispatch usually land in separate
-files. Python with Typer keeps the same four responsibilities, but steps 2 and 4 often collapse into
-one module or callback: the same function that Typer registers may also build the request and call
-the handler.
+Rust has a literal four-edit rule because parser registration and dispatch usually land in separate files. Python with Typer keeps the same four responsibilities, but steps 2 and 4 often collapse into one module or callback: the same function that Typer registers may also build the request and call the handler.
 
 For a new `widget` subcommand, the responsibilities are:
 
@@ -19,8 +13,7 @@ For a new `widget` subcommand, the responsibilities are:
 3. **`commands/widget.py`** — runtime handler, a free `run(ctx, request)` function.
 4. **Root dispatch/wrapper** — call the handler from the Typer callback or command body.
 
-The important invariant is not the number of touched files. It is that parser shape, registration,
-runtime projection, and command execution remain separate responsibilities.
+The important invariant is not the number of touched files. It is that parser shape, registration, runtime projection, and command execution remain separate responsibilities.
 
 ## File-by-file skeleton
 
@@ -82,10 +75,8 @@ Rules:
 
 - One file per subcommand or subcommand group.
 - Typer owns parse-shape: options, arguments, names, short help, and parser-level coercion.
-- No business logic, no direct I/O, and no service calls except the final handoff to the command
-  handler.
-- Keep deeper parameter recipes in [Typer / Click Patterns](./typer-patterns.md), not in every
-  subcommand chapter.
+- No business logic, no direct I/O, and no service calls except the final handoff to the command handler.
+- Keep deeper parameter recipes in [Typer / Click Patterns](./typer-patterns.md), not in every subcommand chapter.
 
 ### 2. `cli/__init__.py` or `cli/app.py` (register the command)
 
@@ -104,9 +95,7 @@ app = typer.Typer(
 app.add_typer(widget.app, name="widget")
 ```
 
-Use a sub-`Typer` when a command has subcommands of its own or enough options to deserve a dedicated
-file. For a simple top-level verb, `@app.command` in the root app module is fine as long as the same
-parse-shape and handler boundaries remain intact.
+Use a sub-`Typer` when a command has subcommands of its own or enough options to deserve a dedicated file. For a simple top-level verb, `@app.command` in the root app module is fine as long as the same parse-shape and handler boundaries remain intact.
 
 ### 3. `commands/widget.py` (handler)
 
@@ -194,23 +183,17 @@ def doctor(ctx: typer.Context) -> None:
     run_with_error_boundary(lambda: doctor_command.run(app_ctx))
 ```
 
-If the project uses `click.get_current_context().obj`, keep that lookup at the CLI boundary. Do not
-let service or domain code reach back into Click globals.
+If the project uses `click.get_current_context().obj`, keep that lookup at the CLI boundary. Do not let service or domain code reach back into Click globals.
 
 ## Parse-shape → runtime-shape, in Python
 
-See
-[General — parse-shape vs runtime-shape](../../../programming/cli-design/00-architecture.md#parse-shape-vs-runtime-shape).
-The Python-specific mapping is:
+See [General — parse-shape vs runtime-shape](../../../programming/cli-design/00-architecture.md#parse-shape-vs-runtime-shape). The Python-specific mapping is:
 
-- Typer params are parser-friendly: `str`, `Path`, `list[str]`, `bool`, optional values, and parser
-  callbacks.
-- Pydantic request models are runtime-friendly: normalized IDs, validated combinations, frozen
-  request objects, and domain-facing names.
+- Typer params are parser-friendly: `str`, `Path`, `list[str]`, `bool`, optional values, and parser callbacks.
+- Pydantic request models are runtime-friendly: normalized IDs, validated combinations, frozen request objects, and domain-facing names.
 - The projection lives beside the command handler, not inside domain or adapter code.
 
-For path options, callbacks, `RootModel`, and multi-value parsing, use
-[Typer / Click Patterns](./typer-patterns.md) instead of repeating those parameter-level mechanics.
+For path options, callbacks, `RootModel`, and multi-value parsing, use [Typer / Click Patterns](./typer-patterns.md) instead of repeating those parameter-level mechanics.
 
 ## Handler signature convention
 
@@ -221,55 +204,38 @@ def run(ctx: AppContext, request: WidgetRequest) -> None:
     ...
 ```
 
-Handlers return `None` on success and raise typed `AppError` subclasses on failure. They do not
-return process exit codes and do not call `sys.exit`; the boundary described in
-[Error Handling (Python)](./error-handling-python.md) owns that mapping.
+Handlers return `None` on success and raise typed `AppError` subclasses on failure. They do not return process exit codes and do not call `sys.exit`; the boundary described in [Error Handling (Python)](./error-handling-python.md) owns that mapping.
 
 ## When to extract a service
 
-See
-[General — When to extract a service](../../../programming/cli-design/00-architecture.md#when-to-extract-a-service).
-Python has no special override: keep single-use orchestration in `commands/<name>.py`. Extract a
-service only when another command needs the same orchestration, the pure core deserves isolated
-tests, or the handler grows past the readable-command boundary.
+See [General — When to extract a service](../../../programming/cli-design/00-architecture.md#when-to-extract-a-service). Python has no special override: keep single-use orchestration in `commands/<name>.py`. Extract a service only when another command needs the same orchestration, the pure core deserves isolated tests, or the handler grows past the readable-command boundary.
 
 ## Python-specific anti-patterns
 
 - **Giant `cli.py`** — every parser and handler in one file. Split parse-shape by subcommand.
 - **Handler method on the parser object** — couples Typer's parse-shape to runtime execution.
-- **Pydantic model doing I/O** — validators normalize and reject values; adapters talk to external
-  systems.
+- **Pydantic model doing I/O** — validators normalize and reject values; adapters talk to external systems.
 - **Auto-discovered command registry** — useful for plugin systems, excessive for ordinary apps.
-- **Direct `print` / `typer.echo` from commands** — machine-facing output belongs behind a
-  structured output boundary; human-facing output belongs behind `ui/`.
+- **Direct `print` / `typer.echo` from commands** — machine-facing output belongs behind a structured output boundary; human-facing output belongs behind `ui/`.
 
 ## Help rendering with Typer / Click
 
-> Prerequisite:
-> [General — `--help` is generated, not authored](../../../programming/cli-design/08-naming-and-docs.md#--help-is-generated-not-authored).
-> Typer and Click own usage, option, and subcommand tables.
+> Prerequisite: [General — `--help` is generated, not authored](../../../programming/cli-design/08-naming-and-docs.md#--help-is-generated-not-authored). Typer and Click own usage, option, and subcommand tables.
 
 Use parser metadata for generated help:
 
 - `help=` gives a short parser-owned description for commands, arguments, and options.
-- `rich_help_panel=` groups related options for human-facing help without changing the parser
-  contract.
-- `epilog` or `context_settings` can carry narrative addenda such as examples or environment
-  variables.
+- `rich_help_panel=` groups related options for human-facing help without changing the parser contract.
+- `epilog` or `context_settings` can carry narrative addenda such as examples or environment variables.
 
-Do not hand-author usage lines, flag tables, or subcommand lists. They drift. When the parser owns
-the structure, `--help`, shell completion, and generated documentation remain consistent.
+Do not hand-author usage lines, flag tables, or subcommand lists. They drift. When the parser owns the structure, `--help`, shell completion, and generated documentation remain consistent.
 
-For machine-facing CLIs, keep generated `help`, `--json`, `doctor`, `init`, completion, and man-page
-surfaces terse, parseable, and self-documenting for agents. Human addenda belong behind explicit
-human-UX surfaces or long-form help.
+For machine-facing CLIs, keep generated `help`, `--json`, `doctor`, `init`, completion, and man-page surfaces terse, parseable, and self-documenting for agents. Human addenda belong behind explicit human-UX surfaces or long-form help.
 
 ## Rules
 
-- Keep one parse-shape file under `cli/<name>.py` and one runtime handler under
-  `commands/<name>.py`.
-- Treat the Rust four-edit rule as four responsibilities; Typer may combine registration and
-  dispatch in one callback.
+- Keep one parse-shape file under `cli/<name>.py` and one runtime handler under `commands/<name>.py`.
+- Treat the Rust four-edit rule as four responsibilities; Typer may combine registration and dispatch in one callback.
 - Project Typer params into a Pydantic v2 request model before calling services.
 - Use a free `run(ctx, request)` handler and raise typed `AppError` subclasses.
 - Let Typer and Click generate help structure; author only short descriptions and narrative addenda.

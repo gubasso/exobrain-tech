@@ -28,8 +28,7 @@ Run commands in parallel (rust cli programs)
 
 ## Processes
 
-running process ctrl+z process running and paused in background bg (check background process) disown
-(disown process from shell and it keeps running in background)
+running process ctrl+z process running and paused in background bg (check background process) disown (disown process from shell and it keeps running in background)
 
 **find process running in background**
 
@@ -129,8 +128,7 @@ sudo systemctl status sshd
 
 ---
 
-https://explainshell.com/ : write down a command-line to see the help text that matches each
-argument
+https://explainshell.com/ : write down a command-line to see the help text that matches each argument
 
 Shell (bash, zsh..) command `set -C`
 
@@ -221,16 +219,12 @@ find . -type f -exec sh -c 'file "{}" | grep -q "text"' \; -print0 | xargs -0 -I
 - `find .` starts the search in the current directory (`.`).
 - `-name "*.md"` looks for files ending with the `.md` extension.
 - `-type f` ensures that only files (not directories) are considered.
-- `-print0` outputs the file names followed by a null character instead of a newline. This is useful
-  to handle filenames with spaces or newlines correctly.
-- `xargs -0 cat` takes the null-terminated file names from `find` and uses `cat` to output their
-  contents. The `-0` option tells `xargs` to expect input items terminated by a null character,
-  matching `-print0` from `find`.
+- `-print0` outputs the file names followed by a null character instead of a newline. This is useful to handle filenames with spaces or newlines correctly.
+- `xargs -0 cat` takes the null-terminated file names from `find` and uses `cat` to output their contents. The `-0` option tells `xargs` to expect input items terminated by a null character, matching `-print0` from `find`.
 
 ## Loop
 
-How can I loop over the output of a shell command?
-https://stackoverflow.com/questions/35927760/how-can-i-loop-over-the-output-of-a-shell-command
+How can I loop over the output of a shell command? https://stackoverflow.com/questions/35927760/how-can-i-loop-over-the-output-of-a-shell-command
 
 ```text
 pgrep -af python | while read -r line ; do
@@ -266,22 +260,18 @@ file_with_ext="${full##*/}"
 file_no_ext="${file_with_ext%.*}"
 ```
 
-Nice tutorial:
-[Introduction to Bash Shell Parameter Expansions](https://linuxconfig.org/introduction-to-bash-shell-parameter-expansions)
+Nice tutorial: [Introduction to Bash Shell Parameter Expansions](https://linuxconfig.org/introduction-to-bash-shell-parameter-expansions)
 
 Nice summary table:[Bash Parameter Expansion](https://linuxhint.com/bash_parameter_expansion/)
 
-Other nice ways to
-[Extract filename and extension in Bash](https://stackoverflow.com/questions/965053/extract-filename-and-extension-in-bash)
+Other nice ways to [Extract filename and extension in Bash](https://stackoverflow.com/questions/965053/extract-filename-and-extension-in-bash)
 
 ```text
 variable_to_be_expanded="/my/eggs/lala.txt"
 echo "${variable_to_be_expanded}"
 ```
 
-Bash includes the POSIX pattern removal ‘%’, ‘#’, ‘%%’ and ‘##’ expansions to remove leading or
-trailing substrings from variable values (see
-[Shell Parameter Expansion](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)).
+Bash includes the POSIX pattern removal ‘%’, ‘#’, ‘%%’ and ‘##’ expansions to remove leading or trailing substrings from variable values (see [Shell Parameter Expansion](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)).
 
 ## Flags
 

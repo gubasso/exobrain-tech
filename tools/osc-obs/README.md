@@ -2,12 +2,9 @@
 
 > <https://openbuildservice.org/> · <https://en.opensuse.org/openSUSE:OSC>
 
-Running an OBS home or test project end-to-end with `osc`: authentication, project and package
-setup, link-based overlays, and the diagnose-and-recover loop for the build-system errors that
-cannot be inferred from prior context.
+Running an OBS home or test project end-to-end with `osc`: authentication, project and package setup, link-based overlays, and the diagnose-and-recover loop for the build-system errors that cannot be inferred from prior context.
 
-These notes are project-agnostic. A concrete project keeps its own applied companion — real project,
-package, and patch names, plus its incident log — in its own repository under `docs/`.
+These notes are project-agnostic. A concrete project keeps its own applied companion — real project, package, and patch names, plus its incident log — in its own repository under `docs/`.
 
 ## Doing
 
@@ -36,21 +33,14 @@ package, and patch names, plus its incident log — in its own repository under 
 
 ## Directories
 
-- [templates/](templates/README.md) — reusable project and package `_meta` XML for Tumbleweed, Leap,
-  and SLE targets, applied with `osc meta -F`, plus one real applied example.
-- [case-studies/](case-studies/) — one incident each, told end to end: goal, what went wrong, the
-  fix that landed, and the rule distilled. Read once to install the lesson; the topic notes above
-  are what you grep afterwards.
+- [templates/](templates/README.md) — reusable project and package `_meta` XML for Tumbleweed, Leap, and SLE targets, applied with `osc meta -F`, plus one real applied example.
+- [case-studies/](case-studies/) — one incident each, told end to end: goal, what went wrong, the fix that landed, and the rule distilled. Read once to install the lesson; the topic notes above are what you grep afterwards.
 
 ## Automating
 
-[runbook-template.md](./runbook-template.md) is the per-lane convergence runbook a Claude self-debug
-loop consumes. Its driver, log persistence, and budget guardrails live in
-[`../../workflows/claude-self-debug-loop.md`](../../workflows/claude-self-debug-loop.md).
+[runbook-template.md](./runbook-template.md) is the per-lane convergence runbook a Claude self-debug loop consumes. Its driver, log persistence, and budget guardrails live in [`../../workflows/claude-self-debug-loop.md`](../../workflows/claude-self-debug-loop.md).
 
 ## Companions
 
-- [`../../systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md)
-  — curated upstream URL index for OBS, `osc`, and packaging documentation.
-- [`../dctl.md`](../dctl.md) — the `dctl` CLI surface used when containers run through dctl rather
-  than vanilla remote-containers.
+- [`../../systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md) — curated upstream URL index for OBS, `osc`, and packaging documentation.
+- [`../dctl.md`](../dctl.md) — the `dctl` CLI surface used when containers run through dctl rather than vanilla remote-containers.

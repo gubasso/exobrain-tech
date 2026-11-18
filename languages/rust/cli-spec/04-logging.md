@@ -1,10 +1,6 @@
 # 04 — Logging (Rust)
 
-> Prerequisite:
-> [General principles — Logging & Output](../../../programming/cli-design/01-logging-and-output.md)
-> for the XDG default destination, LLM-token-friendly schema, and channel matrix. Facing-category
-> consequences follow
-> [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+> Prerequisite: [General principles — Logging & Output](../../../programming/cli-design/01-logging-and-output.md) for the XDG default destination, LLM-token-friendly schema, and channel matrix. Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 
 ## Crate stack
 
@@ -16,26 +12,17 @@ Always:
 | Subscriber install (bin only) | `tracing-subscriber` (`env-filter`, `fmt`) |
 | Non-blocking file sink        | `tracing-appender`                         |
 
-For human presentation, use `anstyle` as the style vocabulary and `anstream` as the one stream
-adapter and stripper. `owo-colors` is optional formatting ergonomics above that layer, with its
-`supports-colors` feature disabled. Tables, progress, prompts, diagnostics, and maintenance
-tradeoffs are selected in [07 — Dependencies](./07-dependencies.md#human-presentation); logging
-does not own a second presentation policy.
+For human presentation, use `anstyle` as the style vocabulary and `anstream` as the one stream adapter and stripper. `owo-colors` is optional formatting ergonomics above that layer, with its `supports-colors` feature disabled. Tables, progress, prompts, diagnostics, and maintenance tradeoffs are selected in [07 — Dependencies](./07-dependencies.md#human-presentation); logging does not own a second presentation policy.
 
 ## Rules
 
 - Libraries depend on `tracing` only. They emit events; they never install a subscriber.
 - The binary depends on `tracing-subscriber` and installs **exactly one subscriber** in `main`.
-- Honor `RUST_LOG`. Do not invent app-specific env vars like `APP_LOG` — users have muscle memory
-  for `RUST_LOG`.
+- Honor `RUST_LOG`. Do not invent app-specific env vars like `APP_LOG` — users have muscle memory for `RUST_LOG`.
 - The CLI exposes `-v` / `-vv` / `-vvv` for `info` / `debug` / `trace`. `RUST_LOG` overrides if set.
-- File destination by default: `$XDG_STATE_HOME/<app>/<app>.log` via
-  `directories::ProjectDirs::state_dir()`. Resolve the path in `main` before installing the
-  subscriber.
-- File-first logging is universal. Default `mirror_stderr` to `false` for machine-facing CLIs; for
-  human-facing CLIs, set it from `--log-stderr`, verbosity policy, or config.
-- JSON and file/log sinks are unconditional no-decoration modes. Set `.with_ansi(false)` rather
-  than relying on terminal detection or an environment override.
+- File destination by default: `$XDG_STATE_HOME/<app>/<app>.log` via `directories::ProjectDirs::state_dir()`. Resolve the path in `main` before installing the subscriber.
+- File-first logging is universal. Default `mirror_stderr` to `false` for machine-facing CLIs; for human-facing CLIs, set it from `--log-stderr`, verbosity policy, or config.
+- JSON and file/log sinks are unconditional no-decoration modes. Set `.with_ansi(false)` rather than relying on terminal detection or an environment override.
 
 ## `src/logging.rs`
 
@@ -94,16 +81,13 @@ pub fn init(verbosity: u8, log_file: &Path, mirror_stderr: bool) -> anyhow::Resu
 }
 ```
 
-Hold the returned `LogInit` for the lifetime of the program so the appender's background worker
-flushes on shutdown.
+Hold the returned `LogInit` for the lifetime of the program so the appender's background worker flushes on shutdown.
 
-The minimum level mapping is `error!`, `warn!`, `info!`, and `debug!`; `trace!` is optional for deep
-internals.
+The minimum level mapping is `error!`, `warn!`, `info!`, and `debug!`; `trace!` is optional for deep internals.
 
 ### Variant: human-readable text format
 
-For the file sink, prefer JSON (LLM-friendly). A minimal optional terminal mirror that implements
-only the published `NO_COLOR` activation rule is:
+For the file sink, prefer JSON (LLM-friendly). A minimal optional terminal mirror that implements only the published `NO_COLOR` activation rule is:
 
 ```rust
 fmt::layer()
@@ -112,10 +96,7 @@ fmt::layer()
     .with_target(false)
 ```
 
-`var_os` preserves non-UTF-8 values, and an empty value is inert. A full human-facing CLI must not
-reread policy here: derive `with_ansi` from the presentation choice already resolved at startup so
-`FORCE_COLOR`, machine mode, `TERM`, and the actual stderr target are not independently decided in
-the logging layer.
+`var_os` preserves non-UTF-8 values, and an empty value is inert. A full human-facing CLI must not reread policy here: derive `with_ansi` from the presentation choice already resolved at startup so `FORCE_COLOR`, machine mode, `TERM`, and the actual stderr target are not independently decided in the logging layer.
 
 ### File rotation
 
@@ -129,13 +110,11 @@ let appender = tracing_appender::rolling::Builder::new()
     .build(dir)?;
 ```
 
-For most CLIs, "never rotate but truncate at N MB" is enough — wire that with a one-shot truncation
-in `main` before installing.
+For most CLIs, "never rotate but truncate at N MB" is enough — wire that with a one-shot truncation in `main` before installing.
 
 ## What to log at each level
 
-- `error!` — the operation failed in a way the user needs to know about. Always paired with a
-  returned `Err`.
+- `error!` — the operation failed in a way the user needs to know about. Always paired with a returned `Err`.
 - `warn!` — recoverable problem; we proceeded but the user might care.
 - `info!` — high-level progress (e.g. "synced 12 widgets in 1.2s"). One per top-level operation.
 - `debug!` — call boundaries with arg summaries. Read by developers, not users.
@@ -151,31 +130,23 @@ let _span = tracing::info_span!("widget.sync", id = %id).entered();
 
 `AppContext` carries the root span; `commands/*` open child spans named `<command>.<phase>`.
 
-Prefer the **exit-only** emission style: open a span, do work, log a single `info` record on exit
-with `dur_ms` and `status`. Avoid emitting `enter` + `exit` pairs — they double token count for LLM
-consumers.
+Prefer the **exit-only** emission style: open a span, do work, log a single `info` record on exit with `dur_ms` and `status`. Avoid emitting `enter` + `exit` pairs — they double token count for LLM consumers.
 
 ## Anti-patterns specific to Rust
 
-- Calling `tracing_subscriber::fmt::init()` (the convenience installer) without an `EnvFilter`. It
-  ignores `RUST_LOG`.
+- Calling `tracing_subscriber::fmt::init()` (the convenience installer) without an `EnvFilter`. It ignores `RUST_LOG`.
 - Installing the subscriber inside a library. Libraries emit only.
 - Using `env_logger` or `log` directly. Both lack span support and structured fields.
-- Color in the JSON or file layer (`with_ansi(true)`). Machine and log sinks are unconditional
-  no-decoration modes; escapes bloat the output and confuse parsers.
-- Forgetting the `_guard` — the appender worker exits before the buffer flushes, and tail-end logs
-  disappear.
+- Color in the JSON or file layer (`with_ansi(true)`). Machine and log sinks are unconditional no-decoration modes; escapes bloat the output and confuse parsers.
+- Forgetting the `_guard` — the appender worker exits before the buffer flushes, and tail-end logs disappear.
 
 ## See also
 
 - [General principle — Logging & Output](../../../programming/cli-design/01-logging-and-output.md)
 - [05 — Config (Rust)](./05-config.md) — log destination resolution
-- [03 — Error Handling](./03-error-handling.md) — how errors flow into log records (`err.kind`,
-  `err.msg`)
+- [03 — Error Handling](./03-error-handling.md) — how errors flow into log records (`err.kind`, `err.msg`)
 
 ## References
 
-- [`tracing`](https://docs.rs/tracing/) ·
-  [`tracing-subscriber`](https://docs.rs/tracing-subscriber/) ·
-  [`tracing-appender`](https://docs.rs/tracing-appender/)
+- [`tracing`](https://docs.rs/tracing/) · [`tracing-subscriber`](https://docs.rs/tracing-subscriber/) · [`tracing-appender`](https://docs.rs/tracing-appender/)
 - [`directories::ProjectDirs::state_dir`](https://docs.rs/directories/) — XDG_STATE_HOME resolution

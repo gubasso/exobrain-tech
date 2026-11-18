@@ -1,8 +1,6 @@
 # The four names a change carries in jj
 
-A change worked on in a second directory ends up with four names that all tend to say the same
-word. This walks one through the
-[remote recipe](./parallel-workspace/main-target-remote/recipe.md).
+A change worked on in a second directory ends up with four names that all tend to say the same word. This walks one through the [remote recipe](./parallel-workspace/main-target-remote/recipe.md).
 
 | Name               | Written as         | Lives in                         | Answers                                        | Who sees it                |
 | ------------------ | ------------------ | -------------------------------- | ---------------------------------------------- | -------------------------- |
@@ -11,8 +9,7 @@ word. This walks one through the
 | commit description | quoted prose       | the commit object                | what did this change do                        | everyone, permanently      |
 | bookmark           | `bkmrk-feat-x`     | the repo's view, exported to git | which commit does the world fetch as this name | the remote and its readers |
 
-Prefixes are teaching labels lasting while a name is jj's alone; the bookmark is renamed to
-`feat-x` before the push. In the graphs `@` is the working copy you stand in, letters are change ids.
+Prefixes are teaching labels lasting while a name is jj's alone; the bookmark is renamed to `feat-x` before the push. In the graphs `@` is the working copy you stand in, letters are change ids.
 
 ## Starting point
 
@@ -27,8 +24,7 @@ REPO TABLES
   bookmarks:   master -> B    master@origin -> B
 ```
 
-Three of the four names already exist: the directory, the workspace `default@`, the bookmark
-`master`. `C` is empty and undescribed, so jj discards it once it is no longer checked out.
+Three of the four names already exist: the directory, the workspace `default@`, the bookmark `master`. `C` is empty and undescribed, so jj discards it once it is no longer checked out.
 
 ## Adding the workspace
 
@@ -51,14 +47,11 @@ REPO TABLES
   bookmarks:   master -> B           master@origin -> B
 ```
 
-One directory, one new row in the workspace table. The workspace name came from the directory
-basename; that is the only link between the two.
+One directory, one new row in the workspace table. The workspace name came from the directory basename; that is the only link between the two.
 
 ## Entering it, and editing
 
-`cd ../wkspc-feat-x && jj st` changes nothing in the repo: you moved, so `@` now resolves to `D`
-instead of `C`, and the revset `default@` names `C`. jj then snapshots on every command, rewriting
-`D` in place: same change id, new commit hash.
+`cd ../wkspc-feat-x && jj st` changes nothing in the repo: you moved, so `@` now resolves to `D` instead of `C`, and the revset `default@` names `C`. jj then snapshots on every command, rewriting `D` in place: same change id, new commit hash.
 
 ```text
 COMMIT GRAPH                            REPO TABLES
@@ -72,8 +65,7 @@ COMMIT GRAPH                            REPO TABLES
 jj describe -m "feat: teach parser about arrays"
 ```
 
-Rewrites `D` again, writing text into the commit object. The commit is now durable rather than
-discardable, and still nothing is shareable.
+Rewrites `D` again, writing text into the commit object. The commit is now durable rather than discardable, and still nothing is shareable.
 
 ## Setting the bookmark
 
@@ -81,9 +73,7 @@ discardable, and still nothing is shareable.
 jj bookmark set bkmrk-feat-x
 ```
 
-A bookmark is a reference: a name pointing at one commit id. A row appears in the bookmark table
-and the graph does not change — still only a row in this repo, which licenses the prefix. A
-colocated repo would export it to `.git`; this workspace has none, and nothing leaves until a push.
+A bookmark is a reference: a name pointing at one commit id. A row appears in the bookmark table and the graph does not change — still only a row in this repo, which licenses the prefix. A colocated repo would export it to `.git`; this workspace has none, and nothing leaves until a push.
 
 ```text
 COMMIT GRAPH                                       REPO TABLES
@@ -117,8 +107,7 @@ BEFORE                                   AFTER
 jj bookmark rename bkmrk-feat-x feat-x
 ```
 
-A branch takes the bookmark's name character for character, so the label comes off in the last
-step before the name leaves the repo. No commit moves, and the row now reads `feat-x -> D`.
+A branch takes the bookmark's name character for character, so the label comes off in the last step before the name leaves the repo. No commit moves, and the row now reads `feat-x -> D`.
 
 ## Pushing
 
@@ -136,10 +125,7 @@ REPO TABLES                              ORIGIN
               feat-x@origin -> D
 ```
 
-This is where the bookmark becomes a branch someone else can fetch, of that exact name, and the
-mapping runs both ways — a branch made in the backing git repo comes back as a bookmark, one line
-of work under two names. The `@origin` rows are jj's record of where origin stood at that moment;
-only fetch and push move them. The directory and workspace names did not travel.
+This is where the bookmark becomes a branch someone else can fetch, of that exact name, and the mapping runs both ways — a branch made in the backing git repo comes back as a bookmark, one line of work under two names. The `@origin` rows are jj's record of where origin stood at that moment; only fetch and push move them. The directory and workspace names did not travel.
 
 ## Landing and retiring
 
@@ -149,18 +135,11 @@ REPO TABLES
   bookmarks:   master -> D      feat-x -> D
 ```
 
-`jj bookmark set master -r feat-x` is one of the two landings, the one with no review in it: a
-local pointer move, no merge, because both directories always wrote into one repo, and the remote
-branch moves only when that bookmark is pushed.
-The move is the bookmark's alone, so `~/code/repo` still stands on `C` and its files still lack
-the change; `jj new master@origin` there puts it on a fresh `G` above `D`, and the empty `C` goes.
-`jj workspace forget wkspc-feat-x` drops the workspace row and touches no commit.
+`jj bookmark set master -r feat-x` is one of the two landings, the one with no review in it: a local pointer move, no merge, because both directories always wrote into one repo, and the remote branch moves only when that bookmark is pushed. The move is the bookmark's alone, so `~/code/repo` still stands on `C` and its files still lack the change; `jj new master@origin` there puts it on a fresh `G` above `D`, and the empty `C` goes. `jj workspace forget wkspc-feat-x` drops the workspace row and touches no commit.
 
 ## The rule that catches people
 
-A bookmark follows the change through any operation that rewrites a commit — `rebase`, `describe`,
-`squash`, an `abandon` upstream of it. It does not follow you onto a new commit: `jj new` starts a
-different change, and the bookmark stays where it was.
+A bookmark follows the change through any operation that rewrites a commit — `rebase`, `describe`, `squash`, an `abandon` upstream of it. It does not follow you onto a new commit: `jj new` starts a different change, and the bookmark stays where it was.
 
 ```text
 rewrite (same change)             new commit (different change)
@@ -169,15 +148,11 @@ rewrite (same change)             new commit (different change)
               on its own            ○  D   feat: parser...  feat-x
 ```
 
-`jj bookmark set feat-x` brings it forward: rewriting is this change revised, so the name comes
-along; `jj new` is a different change. Where a git branch advances on every commit, in jj
-publishing is a deliberate act.
+`jj bookmark set feat-x` brings it forward: rewriting is this change revised, so the name comes along; `jj new` is a different change. Where a git branch advances on every commit, in jj publishing is a deliberate act.
 
 ## What a bookmark is not
 
-A bookmark has no workspace component. It is one repo-wide reference — a name pointing at one
-commit id — readable and settable from any workspace, and it may point at a commit that nothing
-has checked out.
+A bookmark has no workspace component. It is one repo-wide reference — a name pointing at one commit id — readable and settable from any workspace, and it may point at a commit that nothing has checked out.
 
 The workspace table is its mirror image, which is why the two blur together:
 
@@ -189,8 +164,7 @@ The workspace table is its mirror image, which is why the two blur together:
                feat-x        -> D
 ```
 
-Both map a name to a commit. One is jj's bookkeeping about desks; the other is your published
-label. They looked coupled above only because the bookmark was set while standing on `D`.
+Both map a name to a commit. One is jj's bookkeeping about desks; the other is your published label. They looked coupled above only because the bookmark was set while standing on `D`.
 
 ## Reference
 

@@ -1,11 +1,9 @@
 # X11 monitor management with `arandr` + `autorandr`
 
-Use this workflow on X11 window managers when you want a visual way to arrange monitors and a
-repeatable way to save and restore layouts.
+Use this workflow on X11 window managers when you want a visual way to arrange monitors and a repeatable way to save and restore layouts.
 
 - `arandr`: GUI frontend for `xrandr`; use it to arrange outputs and test a layout
-- `autorandr`: profile manager for `xrandr`; use it to save known-good layouts and restore them on
-  dock/undock
+- `autorandr`: profile manager for `xrandr`; use it to save known-good layouts and restore them on dock/undock
 
 This is for X11 sessions. Wayland compositors have different monitor tooling.
 
@@ -31,8 +29,7 @@ Check output names first:
 xrandr --query
 ```
 
-Common examples are `eDP-1` for the laptop panel and `DP-*` or `HDMI-*` for external outputs, but
-always use the names reported by `xrandr`.
+Common examples are `eDP-1` for the laptop panel and `DP-*` or `HDMI-*` for external outputs, but always use the names reported by `xrandr`.
 
 Create a laptop-only profile:
 
@@ -93,14 +90,9 @@ Prefer native resolutions unless there is a concrete reason to scale or distort 
 
 ## Mixed-DPI scaling
 
-X11 has a single global DPI, so when a HiDPI laptop panel (e.g. 4K at 192 DPI) is paired with a
-lower-resolution external monitor (e.g. FHD), the external inherits the high DPI and everything
-renders too large.
+X11 has a single global DPI, so when a HiDPI laptop panel (e.g. 4K at 192 DPI) is paired with a lower-resolution external monitor (e.g. FHD), the external inherits the high DPI and everything renders too large.
 
-The fix is `xrandr --scale` on the external monitor. For example, `--scale 2x2` on a 1920x1080 panel
-renders at 3840x2160 virtual pixels and downscales to the physical resolution. With 192 DPI
-globally, the effective DPI on the scaled output becomes 96 — correct proportions. Integer downscale
-factors (2x2) stay sharp; non-integer factors may appear blurry.
+The fix is `xrandr --scale` on the external monitor. For example, `--scale 2x2` on a 1920x1080 panel renders at 3840x2160 virtual pixels and downscales to the physical resolution. With 192 DPI globally, the effective DPI on the scaled output becomes 96 — correct proportions. Integer downscale factors (2x2) stay sharp; non-integer factors may appear blurry.
 
 Example (4K laptop left, FHD external right):
 
@@ -112,12 +104,9 @@ xrandr \
 
 Key details:
 
-- `--pos` uses the **unscaled** coordinate space of neighboring outputs. The external starts at
-  x=3840 because eDP-1 is 3840 pixels wide at 1x1 scale.
-- The external's **virtual** size (3840x2160 after 2x2 scale) determines how much desktop space it
-  occupies, but positioning is relative to real pixels.
-- Save the result with `autorandr --save <profile> --force` so scaling persists across dock/undock
-  cycles.
+- `--pos` uses the **unscaled** coordinate space of neighboring outputs. The external starts at x=3840 because eDP-1 is 3840 pixels wide at 1x1 scale.
+- The external's **virtual** size (3840x2160 after 2x2 scale) determines how much desktop space it occupies, but positioning is relative to real pixels.
+- Save the result with `autorandr --save <profile> --force` so scaling persists across dock/undock cycles.
 
 ## Hooks
 
@@ -140,9 +129,7 @@ Typical uses:
 ./x11-arandr-autorandr-debug-report.sh
 ```
 
-This prints a labeled report for `xrandr`, `arandr`, `autorandr`, EDID, provider state, Xorg logs,
-kernel messages, and dock-related details. It also saves the same output to a timestamped file under
-`/tmp`, which is useful when feeding the report to an AI helper or bug report.
+This prints a labeled report for `xrandr`, `arandr`, `autorandr`, EDID, provider state, Xorg logs, kernel messages, and dock-related details. It also saves the same output to a timestamped file under `/tmp`, which is useful when feeding the report to an AI helper or bug report.
 
 - Wrong profile selected: run `xrandr --query` and confirm the real output names
 - Layout saves incorrectly: inspect `~/.config/autorandr/<profile>/config`

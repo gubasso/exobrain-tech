@@ -73,8 +73,7 @@ Edit `~/.config/bspwm/bspwmrc`:
 nvim ~/.config/bspwm/bspwmrc
 ```
 
-Verify sxhkd is started near the top of the file. The example config includes a simple `sxhkd &`,
-but use this pattern to prevent duplicates on reload:
+Verify sxhkd is started near the top of the file. The example config includes a simple `sxhkd &`, but use this pattern to prevent duplicates on reload:
 
 ```bash
 pgrep -x sxhkd > /dev/null || sxhkd &
@@ -109,8 +108,7 @@ setxkbmap -layout us -variant altgr-intl -option caps:swapescape
 exec bspwm
 ```
 
-**Note:** Xresources must be loaded _before_ starting bspwm for apps to inherit settings like
-`Xft.dpi`.
+**Note:** Xresources must be loaded _before_ starting bspwm for apps to inherit settings like `Xft.dpi`.
 
 **What belongs where:**
 

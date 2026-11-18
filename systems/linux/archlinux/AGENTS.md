@@ -8,8 +8,7 @@ token-estimate: 200
 
 ## Scope
 
-Arch Linux installation and post-installation notes, including boot loader, keymap, reinstall, and
-SSH agent guidance.
+Arch Linux installation and post-installation notes, including boot loader, keymap, reinstall, and SSH agent guidance.
 
 ## Key Points
 

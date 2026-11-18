@@ -2,26 +2,22 @@
 
 ## Goal
 
-Keep `KEYMAP=us` during the Arch installation, then—after your system is installed—switch the
-**Linux virtual console (TTY)** to a **US "AltGr International, nodeadkeys"** behavior:
+Keep `KEYMAP=us` during the Arch installation, then—after your system is installed—switch the **Linux virtual console (TTY)** to a **US "AltGr International, nodeadkeys"** behavior:
 
 - Normal `'`, `"`, `` ` ``, `~` type normally.
 - **Accents only activate when you use Right-Alt (AltGr)**, then the accent key, then the letter.
 
-Because the Linux console uses **kbd** keymaps (not XKB variants), this requires installing a
-**ready-made console keymap file** that implements the behavior.
+Because the Linux console uses **kbd** keymaps (not XKB variants), this requires installing a **ready-made console keymap file** that implements the behavior.
 
 ---
 
 ## Recommended ready-made console keymap (trusted community baseline)
 
-The most practical, widely reused solution in the Arch community is the **Max Klinger**-style
-console map commonly distributed as:
+The most practical, widely reused solution in the Arch community is the **Max Klinger**-style console map commonly distributed as:
 
 - `us-altgr-intl-nodeadkeys.map`
 
-It is specifically used to achieve your desired behavior on the **TTY** and avoid common pitfalls
-(notably broken Ctrl behavior) seen in naïve keymap edits.
+It is specifically used to achieve your desired behavior on the **TTY** and avoid common pitfalls (notably broken Ctrl behavior) seen in naïve keymap edits.
 
 ### Important download links (ready to use)
 
@@ -55,10 +51,7 @@ sudo curl -L \
   "https://raw.githubusercontent.com/ginkel/us-intl-altgr/main/us-altgr-intl-nodeadkeys.map"
 ```
 
-**Why `/usr/share/` instead of `/usr/local/`:** The `sd-vconsole` mkinitcpio hook only searches
-`/usr/share/kbd/keymaps/` when resolving keymaps and their `include` directives. Placing the keymap
-in `/usr/local/` causes "Failed to start Virtual Console Setup" at early boot because the hook can't
-find the keymap's dependencies (`qwerty-layout`, `linux-with-alt-and-altgr`, `compose.latin1`).
+**Why `/usr/share/` instead of `/usr/local/`:** The `sd-vconsole` mkinitcpio hook only searches `/usr/share/kbd/keymaps/` when resolving keymaps and their `include` directives. Placing the keymap in `/usr/local/` causes "Failed to start Virtual Console Setup" at early boot because the hook can't find the keymap's dependencies (`qwerty-layout`, `linux-with-alt-and-altgr`, `compose.latin1`).
 
 ### 3) Test immediately (no reboot)
 
@@ -107,8 +100,7 @@ makepkg -si
 
 ### 3) Configure vconsole
 
-Depending on where the package installs the map, you can typically use either a keymap name or a
-full path.
+Depending on where the package installs the map, you can typically use either a keymap name or a full path.
 
 Start by locating it:
 
@@ -133,15 +125,13 @@ sudo systemctl restart systemd-vconsole-setup.service
 
 ## Make it work at the early-boot LUKS passphrase prompt (recommended)
 
-If you want the same layout available during early boot (e.g., at `sd-encrypt`), rebuild initramfs
-after finalizing `/etc/vconsole.conf`:
+If you want the same layout available during early boot (e.g., at `sd-encrypt`), rebuild initramfs after finalizing `/etc/vconsole.conf`:
 
 ```bash
 sudo mkinitcpio -P
 ```
 
-The `sd-vconsole` hook reads `/etc/vconsole.conf`, finds the keymap in `/usr/share/kbd/keymaps/`,
-resolves all `include` directives, and copies everything into the initramfs automatically.
+The `sd-vconsole` hook reads `/etc/vconsole.conf`, finds the keymap in `/usr/share/kbd/keymaps/`, resolves all `include` directives, and copies everything into the initramfs automatically.
 
 ---
 
@@ -156,8 +146,7 @@ After applying the keymap, test on a TTY:
 - **AltGr + ~**, then `n` → `ñ`
 - **AltGr + "**, then `u` → `ü`
 
-(Exact sequences can vary slightly by map, but the defining feature is: accents require AltGr;
-punctuation does not become dead-key by default.)
+(Exact sequences can vary slightly by map, but the defining feature is: accents require AltGr; punctuation does not become dead-key by default.)
 
 ---
 

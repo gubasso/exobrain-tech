@@ -227,8 +227,7 @@ Or restart bspwm (`bspc wm -r`) — bspwmrc re-launches picom via its `pgrep` gu
 pgrep -x picom >/dev/null || picom --config ~/.config/picom/picom.conf &
 ```
 
-Because of the guard, picom must be killed first if it is already running. `bspc wm -r` alone will
-**not** restart picom.
+Because of the guard, picom must be killed first if it is already running. `bspc wm -r` alone will **not** restart picom.
 
 ---
 

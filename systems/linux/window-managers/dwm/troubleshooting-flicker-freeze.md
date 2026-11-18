@@ -4,8 +4,7 @@ Example stack: Arch Linux, `dwm`, `kitty`, `picom`, HiDPI, and Intel + NVIDIA hy
 
 ## Diagnostics collector
 
-Use a standardized diagnostics collector for post-crash evidence capture. In a local setup, keep the
-collector close to the system notes or dotfiles that describe the affected stack.
+Use a standardized diagnostics collector for post-crash evidence capture. In a local setup, keep the collector close to the system notes or dotfiles that describe the affected stack.
 
 Do not manually run ad-hoc command sets first if a local collector already exists.
 
@@ -20,10 +19,8 @@ path/to/dwm-flicker-crash-report.sh
 The script will:
 
 1. Print a sectioned report to stdout (paste-friendly)
-2. Automatically save the same report to a timestamped file (default
-   `/tmp/dwm-flicker-crash-report-*.txt`)
-3. Collect boot-scoped journal, kernel GPU faults, Xorg logs, coredumps, process/context snapshot,
-   and key config values
+2. Automatically save the same report to a timestamped file (default `/tmp/dwm-flicker-crash-report-*.txt`)
+3. Collect boot-scoped journal, kernel GPU faults, Xorg logs, coredumps, process/context snapshot, and key config values
 
 If needed, choose custom output path:
 
@@ -46,8 +43,7 @@ REPORT_OUT="$HOME/dwm-crash-report.txt" path/to/dwm-flicker-crash-report.sh
 
 ## Worked example: recurrent Xorg SIGABRT — no Xid, Intel/Mesa renderer
 
-**Pattern:** repeated coredumps with an identical stack. No NVIDIA Xid or DRM hang/reset. Active GL
-renderer is Mesa Intel Arc Graphics (MTL) via iris.
+**Pattern:** repeated coredumps with an identical stack. No NVIDIA Xid or DRM hang/reset. Active GL renderer is Mesa Intel Arc Graphics (MTL) via iris.
 
 **Crash path (from `coredumpctl info` backtrace):**
 
@@ -59,37 +55,27 @@ modesetting_drv.so +0x10b9b       #8  DDX internal call
 
 Other threads at crash time: Mesa gallium workers in `pthread_cond_wait` — idle, not faulting.
 
-**Interpretation:** The crash site is inside `modesetting_drv.so` (Intel Meteor Lake DDX), not picom
-directly. This is a compositor/client interaction crash, not a GPU driver fault. picom is an
-aggravating factor — its GLX backend + `use-damage=true` increases Damage event rate, which drives
-more `BlockHandler` calls into the modesetting driver where the fault occurs.
+**Interpretation:** The crash site is inside `modesetting_drv.so` (Intel Meteor Lake DDX), not picom directly. This is a compositor/client interaction crash, not a GPU driver fault. picom is an aggravating factor — its GLX backend + `use-damage=true` increases Damage event rate, which drives more `BlockHandler` calls into the modesetting driver where the fault occurs.
 
-**Baseline status:** After a complete `coredumpctl info` backtrace is captured via the standardized
-collector, the crash signature is locked — no need to re-prove the same stack.
+**Baseline status:** After a complete `coredumpctl info` backtrace is captured via the standardized collector, the crash signature is locked — no need to re-prove the same stack.
 
 ## Isolation experiments
 
-Each step is a **runtime-only experiment** — generate temp configs under `/tmp`, do not edit
-persistent configuration. One isolated condition per session, same stress workload each time. Run
-the crash report collector after each session (crash or not).
+Each step is a **runtime-only experiment** — generate temp configs under `/tmp`, do not edit persistent configuration. One isolated condition per session, same stress workload each time. Run the crash report collector after each session (crash or not).
 
 Ordered by mitigation speed (fast first):
 
 1. **No compositor** — `pkill picom` → 30 min heavy kitty output → run collector
    - If stable: compositor path confirmed as trigger
-2. **picom xrender fallback** — `picom --config /tmp/picom-test.conf` with `backend = "xrender"` +
-   `vsync = true` → same workload → collector
+2. **picom xrender fallback** — `picom --config /tmp/picom-test.conf` with `backend = "xrender"` + `vsync = true` → same workload → collector
    - If stable: treat as temporary mitigation, stop here
 3. **picom GLX no damage** — temp config with `use-damage = false` → workload → collector
    - Tests whether damage tracking specifically triggers the modesetting fault
-4. **picom GLX no sync fence** — temp config with `xrender-sync-fence = false` → workload →
-   collector
-5. **kitty software render** — `LIBGL_ALWAYS_SOFTWARE=1 kitty` (only if crash persists with picom
-   stopped)
+4. **picom GLX no sync fence** — temp config with `xrender-sync-fence = false` → workload → collector
+5. **kitty software render** — `LIBGL_ALWAYS_SOFTWARE=1 kitty` (only if crash persists with picom stopped)
 6. **kitty Mesa GLX** — `__GLX_VENDOR_LIBRARY_NAME=mesa kitty` (only if still inconclusive)
 
-`dwm`-level experiments (`dirty_bar`, `XSync`/`XFlush`, `resizehints`) are **out of scope** until
-compositor/terminal path is ruled out.
+`dwm`-level experiments (`dirty_bar`, `XSync`/`XFlush`, `resizehints`) are **out of scope** until compositor/terminal path is ruled out.
 
 ## Acceptance criteria
 

@@ -18,19 +18,14 @@
         tion, even if ssh has no local tty.
 ```
 
-The `-T` option for `ssh` tells it **not** to allocate a pseudo-TTY on the remote side. In other
-words:
+The `-T` option for `ssh` tells it **not** to allocate a pseudo-TTY on the remote side. In other words:
 
-- By default, when you run `ssh host`, SSH will try to give you an interactive terminal session
-  (allocating a “PTY”).
-- If you add `-T`, SSH will suppress that and just run whatever command (or subsystem) you’ve asked
-  for, without trying to hook up your terminal to it.
+- By default, when you run `ssh host`, SSH will try to give you an interactive terminal session (allocating a “PTY”).
+- If you add `-T`, SSH will suppress that and just run whatever command (or subsystem) you’ve asked for, without trying to hook up your terminal to it.
 
 Why it matters for things like Git:
 
-- Git’s SSH transport isn’t an interactive shell — it’s just a protocol exchange. If SSH tries to
-  allocate a PTY and the server won’t allow it (or you don’t need it), you’ll get warnings (or
-  slowdowns).
+- Git’s SSH transport isn’t an interactive shell — it’s just a protocol exchange. If SSH tries to allocate a PTY and the server won’t allow it (or you don’t need it), you’ll get warnings (or slowdowns).
 - Using `ssh -T git@github.com` cleanly skips the TTY step, so Git commands go straight through.
 
 Contrast:
@@ -38,8 +33,7 @@ Contrast:
 - `-t` forces allocation of a pseudo-TTY.
 - `-T` disables allocation of a pseudo-TTY.
 
-So anytime you’re using SSH purely as a pipe for a non-interactive service (like Git, rsync in
-daemon mode, or a remote command), `-T` is the “right” flag to use.
+So anytime you’re using SSH purely as a pipe for a non-interactive service (like Git, rsync in daemon mode, or a remote command), `-T` is the “right” flag to use.
 
 Here are some concrete scenarios where `ssh -T` (disable pseudo-TTY allocation) comes in handy:
 
@@ -62,8 +56,7 @@ hello example-user, this is git@git.example.com running gitolite3 3.6.12-1 (Debi
    ssh -T git@github.com
    ```
 
-   You’ll get a clean “Hi <username>! You’ve successfully authenticated…” response instead of any
-   shell prompt, since GitHub only speaks the Git protocol, not an interactive shell.
+   You’ll get a clean “Hi <username>! You’ve successfully authenticated…” response instead of any shell prompt, since GitHub only speaks the Git protocol, not an interactive shell.
 
 2. **Running a one-off remote command in a script**
 
@@ -100,6 +93,4 @@ hello example-user, this is git@git.example.com running gitolite3 3.6.12-1 (Debi
 
 ---
 
-In each of these cases, omitting `-T` could lead SSH to attempt a TTY allocation, which either fails
-(on servers that forbid PTYs) or prints unwanted warnings. Disabling the TTY keeps your data streams
-clean and your automation scripts predictable.
+In each of these cases, omitting `-T` could lead SSH to attempt a TTY allocation, which either fails (on servers that forbid PTYs) or prints unwanted warnings. Disabling the TTY keeps your data streams clean and your automation scripts predictable.

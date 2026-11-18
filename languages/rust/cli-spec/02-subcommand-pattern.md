@@ -1,15 +1,10 @@
 # 02 — Subcommand Pattern (Rust)
 
-> Prerequisite:
-> [General principles — Architecture](../../../programming/cli-design/00-architecture.md) (the
-> four-edit rule, parse-shape vs runtime-shape, when to extract a service). This chapter is the Rust
-> implementation using `clap`. Facing-category consequences follow
-> [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+> Prerequisite: [General principles — Architecture](../../../programming/cli-design/00-architecture.md) (the four-edit rule, parse-shape vs runtime-shape, when to extract a service). This chapter is the Rust implementation using `clap`. Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 
 ## The four files (Rust + clap)
 
-For the four-edit rule's rationale and anti-patterns, see the general chapter. In Rust with `clap`,
-the four files are:
+For the four-edit rule's rationale and anti-patterns, see the general chapter. In Rust with `clap`, the four files are:
 
 1. **`src/cli/widget.rs`** — parse-shape (clap struct).
 2. **`src/cli/mod.rs`** — register the variant in the `Commands` enum.
@@ -47,8 +42,7 @@ Rules:
 - One file per subcommand.
 - One `pub struct <Verb>Args` deriving `clap::Args`.
 - All arg-level docs go on fields as `///` comments — clap renders them in `--help`.
-- No `impl` blocks beyond what clap demands. The args-to-domain projection lives in
-  `commands/widget.rs`.
+- No `impl` blocks beyond what clap demands. The args-to-domain projection lives in `commands/widget.rs`.
 
 ### 2. `src/cli/mod.rs` (register the variant)
 
@@ -140,10 +134,8 @@ Rules:
 
 - Handler is a **free function** named `run`, not a method.
 - Signature: `pub fn run(ctx: &AppContext, args: <Verb>Args) -> Result<(), AppError>`.
-- The first thing `run` does is project `args` into a domain `Request` — this is where "parse, don't
-  validate" applies. After projection, downstream code never sees raw strings from clap.
-- `run` is sync. If it needs async, use `ctx.runtime.block_on(async { … })`. **Do not** build a new
-  tokio runtime per command.
+- The first thing `run` does is project `args` into a domain `Request` — this is where "parse, don't validate" applies. After projection, downstream code never sees raw strings from clap.
+- `run` is sync. If it needs async, use `ctx.runtime.block_on(async { … })`. **Do not** build a new tokio runtime per command.
 - Direct I/O is forbidden. Call into `services::*` or `adapters::*`.
 - Tests for the projection live inline in `mod tests`.
 
@@ -156,41 +148,30 @@ match cli.command {
 }
 ```
 
-Explicit `match`, one arm per subcommand. No macros. The `match` is exhaustive — clippy will yell if
-you forget an arm.
+Explicit `match`, one arm per subcommand. No macros. The `match` is exhaustive — clippy will yell if you forget an arm.
 
 ## Parse-shape → runtime-shape, in Rust
 
-See
-[General — parse-shape vs runtime-shape](../../../programming/cli-design/00-architecture.md#parse-shape-vs-runtime-shape).
-The Rust-specific mapping:
+See [General — parse-shape vs runtime-shape](../../../programming/cli-design/00-architecture.md#parse-shape-vs-runtime-shape). The Rust-specific mapping:
 
 - `WidgetArgs` is constrained by clap derive limitations (`String`, `Option<String>`, `bool`).
 - `Request` is constrained by the domain (newtypes, compiled `glob::Pattern`, validated enums).
-- The projection lives in `Request::from_cli` and calls things like `WidgetId::from_str` and
-  `glob::Pattern::new`.
+- The projection lives in `Request::from_cli` and calls things like `WidgetId::from_str` and `glob::Pattern::new`.
 
 ## When to extract a service
 
-See
-[General — When to extract a service](../../../programming/cli-design/00-architecture.md#when-to-extract-a-service).
-The triggers are language-agnostic; no Rust-specific overrides.
+See [General — When to extract a service](../../../programming/cli-design/00-architecture.md#when-to-extract-a-service). The triggers are language-agnostic; no Rust-specific overrides.
 
 ## Rust-specific anti-patterns
 
 Add these to the general anti-patterns:
 
-- **Runtime per command** — every `run` builds its own tokio runtime. See
-  `riptask/src/main.rs:95-159`. Build one runtime in `main`, share via `AppContext`.
-- **`Box<dyn Command>` registry** — feels clever, loses exhaustive-match safety on `Commands`,
-  breaks clap-derived help. Use the plain enum.
+- **Runtime per command** — every `run` builds its own tokio runtime. See `riptask/src/main.rs:95-159`. Build one runtime in `main`, share via `AppContext`.
+- **`Box<dyn Command>` registry** — feels clever, loses exhaustive-match safety on `Commands`, breaks clap-derived help. Use the plain enum.
 
 ## Help rendering with clap
 
-> Prerequisite:
-> [General — `--help` is generated, not authored](../../../programming/cli-design/08-naming-and-docs.md#--help-is-generated-not-authored).
-> The rule (parser owns the structure, hand-authored prose goes in the intro/epilog) is canonical.
-> This section is the clap-specific implementation.
+> Prerequisite: [General — `--help` is generated, not authored](../../../programming/cli-design/08-naming-and-docs.md#--help-is-generated-not-authored). The rule (parser owns the structure, hand-authored prose goes in the intro/epilog) is canonical. This section is the clap-specific implementation.
 
 ### Default recipe
 
@@ -210,21 +191,15 @@ Add these to the general anti-patterns:
 pub struct Cli { /* ... */ }
 ```
 
-`src/ui/help_extras.txt` is the **only** authored help file. It must not contain a flag table, a
-usage line, or a subcommand list — clap generates those from the derive structs. It contains only:
+`src/ui/help_extras.txt` is the **only** authored help file. It must not contain a flag table, a usage line, or a subcommand list — clap generates those from the derive structs. It contains only:
 
 - Passthrough semantics (`-- [<child args>]`, "unknown subcommands are forwarded to `<child>`").
 - Env vars the parser doesn't see (`<APP>_CHILD_BIN`, `<APP>_LOG_FILE`, `<APP>_CONFIG_PATH`).
 - Examples and `SEE ALSO`.
 
-When you add a new subcommand or flag, you touch the derive struct and clap's `--help` updates
-automatically. `help_extras.txt` rarely changes after the first cut.
+When you add a new subcommand or flag, you touch the derive struct and clap's `--help` updates automatically. `help_extras.txt` rarely changes after the first cut.
 
-For human-facing CLIs, the authored addendum can carry narrative examples and orientation. For
-machine-facing CLIs, keep generated `help`/usage, `doctor`, `init`, completion, and man surfaces
-terse, parseable, and self-documenting for agents. Use `clap_complete` for completions and
-`clap_mangen` for man pages; expose man-page text through a subcommand when agents need to read it
-from the CLI.
+For human-facing CLIs, the authored addendum can carry narrative examples and orientation. For machine-facing CLIs, keep generated `help`/usage, `doctor`, `init`, completion, and man surfaces terse, parseable, and self-documenting for agents. Use `clap_complete` for completions and `clap_mangen` for man pages; expose man-page text through a subcommand when agents need to read it from the CLI.
 
 ### The clap mechanisms (when to use which)
 
@@ -239,39 +214,25 @@ from the CLI.
 | `override_help = "..."`    | Replace clap's help entirely with a literal string                           | Almost never. See escalation tier below.                                     |
 | `disable_help_flag = true` | Turn off auto `--help` so you can wire your own                              | Only when pairing with a fully-custom `help` subcommand.                     |
 
-Default to `about` + `after_long_help = include_str!(...)`. Reach for the others only when that
-combination is genuinely insufficient.
+Default to `about` + `after_long_help = include_str!(...)`. Reach for the others only when that combination is genuinely insufficient.
 
 ### Escalation tiers
 
-1. **Tier 1 (default).** `about` + `after_long_help = include_str!("../ui/help_extras.txt")`. clap
-   owns USAGE / flags / subcommands; you own the narrative addendum.
-2. **Tier 2.** Add `help_template` if you need to reorder sections or hide one of clap's blocks.
-   Still clap-driven.
-3. **Tier 3 (rare).** `disable_help_flag = true` + a custom `help` subcommand that reads
-   `include_str!("../ui/help.txt")` and prints it through `Ui`. Justified only when you have
-   dynamically-discovered passthrough subcommands (cargo-plugin-style) clap can't enumerate, or
-   other narrative the parser fundamentally can't express. Document the choice in an ADR — every new
-   flag now has to be added in two places.
+1. **Tier 1 (default).** `about` + `after_long_help = include_str!("../ui/help_extras.txt")`. clap owns USAGE / flags / subcommands; you own the narrative addendum.
+2. **Tier 2.** Add `help_template` if you need to reorder sections or hide one of clap's blocks. Still clap-driven.
+3. **Tier 3 (rare).** `disable_help_flag = true` + a custom `help` subcommand that reads `include_str!("../ui/help.txt")` and prints it through `Ui`. Justified only when you have dynamically-discovered passthrough subcommands (cargo-plugin-style) clap can't enumerate, or other narrative the parser fundamentally can't express. Document the choice in an ADR — every new flag now has to be added in two places.
 
-`override_help` exists but is almost always the wrong call: it gives you Tier 3's maintenance cost
-without Tier 3's reason.
+`override_help` exists but is almost always the wrong call: it gives you Tier 3's maintenance cost without Tier 3's reason.
 
 ### Reconciling with the "no `println!` outside `ui/`" rule
 
-The rule in [09 — Coding Style §7](./09-coding-style.md#7-ci-lint-for-the-no-println-rule) governs
-**your** code's writes to stdout/stderr. clap's auto-generated help is the parser's output — it goes
-through `clap_builder::output::fmt` and is not subject to the lint. You don't need to route Tier 1
-help through `Ui`.
+The rule in [09 — Coding Style §7](./09-coding-style.md#7-ci-lint-for-the-no-println-rule) governs **your** code's writes to stdout/stderr. clap's auto-generated help is the parser's output — it goes through `clap_builder::output::fmt` and is not subject to the lint. You don't need to route Tier 1 help through `Ui`.
 
-For Tier 3 (custom `help` subcommand), the printing lives in `src/ui/help.rs` and calls
-`ctx.ui.print_help(...)`. That keeps the lint honest and centralizes formatting if you later add
-ANSI / pager support.
+For Tier 3 (custom `help` subcommand), the printing lives in `src/ui/help.rs` and calls `ctx.ui.print_help(...)`. That keeps the lint honest and centralizes formatting if you later add ANSI / pager support.
 
 ### Prior art — what each project picked, and why
 
-Each entry names the project, the file you can read, the tier they sit at, and the reason that
-escalation (or lack of it) is justified.
+Each entry names the project, the file you can read, the tier they sit at, and the reason that escalation (or lack of it) is justified.
 
 | Project                                                                                                   | Pattern                                                                | Where to read                                                                                                        | Why they chose it                                                                                                                                                                                                                                                                                                                                                     |
 | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -287,24 +248,17 @@ escalation (or lack of it) is justified.
 
 - [clap 4.x — `Command::after_help` / `after_long_help` / `long_about` / `before_help` / `help_template` / `override_help` / `disable_help_flag`](https://docs.rs/clap/latest/clap/struct.Command.html)
 - [clap derive tutorial](https://docs.rs/clap/latest/clap/_derive/_tutorial/)
-- [`clap-help` crate](https://github.com/Canop/clap-help) — drop-in renderer for richer
-  presentation.
+- [`clap-help` crate](https://github.com/Canop/clap-help) — drop-in renderer for richer presentation.
 - [clap discussion #3715 — disabling help flag and custom help](https://github.com/clap-rs/clap/discussions/3715)
 
 ### Reading the table
 
-- **Tier 1 covers the vast majority.** `cargo`, `jj`, `rustup`, and clap's own examples all sit
-  here. If your reason for escalating isn't on this list — different _renderer_ (uv, bacon) or
-  different _parser_ (ripgrep) — you almost certainly want Tier 1.
-- **Escalation reasons cluster into two buckets:** (a) presentation — colors, pagination, theming →
-  reach for `clap-help` first, then `disable_help_flag`; (b) parser-level constraints — startup
-  time, binary size, dynamic plugin discovery → ripgrep-style hand-rolling. Wrappers like
-  `codex-session` rarely hit either.
+- **Tier 1 covers the vast majority.** `cargo`, `jj`, `rustup`, and clap's own examples all sit here. If your reason for escalating isn't on this list — different _renderer_ (uv, bacon) or different _parser_ (ripgrep) — you almost certainly want Tier 1.
+- **Escalation reasons cluster into two buckets:** (a) presentation — colors, pagination, theming → reach for `clap-help` first, then `disable_help_flag`; (b) parser-level constraints — startup time, binary size, dynamic plugin discovery → ripgrep-style hand-rolling. Wrappers like `codex-session` rarely hit either.
 
 ## Variant: async handlers
 
-If most commands are async, the cleanest pattern is to keep `run` sync but have it block on an async
-body:
+If most commands are async, the cleanest pattern is to keep `run` sync but have it block on an async body:
 
 ```rust
 pub fn run(ctx: &AppContext, args: WidgetArgs) -> Result<(), AppError> {
@@ -317,7 +271,4 @@ pub fn run(ctx: &AppContext, args: WidgetArgs) -> Result<(), AppError> {
 }
 ```
 
-The shared runtime on `AppContext` is built once with
-`tokio::runtime::Builder::new_current_thread().enable_all().build()`. Multi-thread runtime is only
-justified if the workload genuinely benefits — for most CLIs, current-thread is faster (no
-work-stealing overhead, smaller binary).
+The shared runtime on `AppContext` is built once with `tokio::runtime::Builder::new_current_thread().enable_all().build()`. Multi-thread runtime is only justified if the workload genuinely benefits — for most CLIs, current-thread is faster (no work-stealing overhead, smaller binary).

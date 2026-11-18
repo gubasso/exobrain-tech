@@ -1,49 +1,28 @@
 # Disposable Staging and Direct Landing
 
-A person or an agent about to let a tool rewrite part of a project wants to see what it would write
-before it writes. This chapter states how to give them that without turning the preview into an
-input, which is the design mistake the whole pattern exists to avoid.
+A person or an agent about to let a tool rewrite part of a project wants to see what it would write before it writes. This chapter states how to give them that without turning the preview into an input, which is the design mistake the whole pattern exists to avoid.
 
 ## The order
 
 Five steps run inside each task that lands files, and the order is the content.
 
 1. Stage. Render the candidate to a stage. Nothing in the project changes.
-2. Compare. Read the stage against the working tree, one destination at a time, with its state, its
-   ownership, and its provenance, then the omissions, the collisions, and the version-matched
-   guidance.
+2. Compare. Read the stage against the working tree, one destination at a time, with its state, its ownership, and its provenance, then the omissions, the collisions, and the version-matched guidance.
 3. Prepare. Resolve what the comparison found, on the project's own terms, before anything lands.
 4. Land. Render the candidate again, into production. This is a fresh render, not a copy.
 5. Prove. Compare again: every destination the tool owns reads equal to the stage.
 
-Two more steps run once per run, in the setup skill's post-flight after its last task: verify with
-the tool's own judge and the project's checks, then clean the stage under explicit authorization.
-[Setup skill skeleton](./setup-skill-skeleton.md) states that split, and
-[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) the compare verb
-both comparisons read.
+Two more steps run once per run, in the setup skill's post-flight after its last task: verify with the tool's own judge and the project's checks, then clean the stage under explicit authorization. [Setup skill skeleton](./setup-skill-skeleton.md) states that split, and [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) the compare verb both comparisons read.
 
 ## Production never reads a staged byte
 
-This is the invariant everything else rests on. Production copies nothing the stage rendered: no
-staged byte, no staged plan, and no staged record of what the target held. What it may take from the
-stage is the operator's choices, which the stage receipt records once so nobody repeats them as
-flags. The landing refuses a receipt another release wrote or one for another target, then renders
-every byte again from those choices. Delete every staged artifact and keep only the receipt, and
-the landing produces exactly the same bytes.
+This is the invariant everything else rests on. Production copies nothing the stage rendered: no staged byte, no staged plan, and no staged record of what the target held. What it may take from the stage is the operator's choices, which the stage receipt records once so nobody repeats them as flags. The landing refuses a receipt another release wrote or one for another target, then renders every byte again from those choices. Delete every staged artifact and keep only the receipt, and the landing produces exactly the same bytes.
 
-Staging and production share a projection, not a result. Inside an implementation, one pure function
-computes the candidate from the three inputs, and both steps call it. What they do not share is
-serialized state passed from the first to the second.
+Staging and production share a projection, not a result. Inside an implementation, one pure function computes the candidate from the three inputs, and both steps call it. What they do not share is serialized state passed from the first to the second.
 
-The reason is what the alternative costs. A production step that consumes staged bytes has to answer
-a new question every time: is this stage still valid. The project may have moved, the configuration
-may have changed, the tool may have been upgraded. Answering it means fingerprints, validity
-windows, and revalidation rules, and an implementation that gets any of them slightly wrong writes
-stale content with full confidence. Rendering again asks none of those questions, and it costs one
-projection.
+The reason is what the alternative costs. A production step that consumes staged bytes has to answer a new question every time: is this stage still valid. The project may have moved, the configuration may have changed, the tool may have been upgraded. Answering it means fingerprints, validity windows, and revalidation rules, and an implementation that gets any of them slightly wrong writes stale content with full confidence. Rendering again asks none of those questions, and it costs one projection.
 
-The second reason is evidential. An agent comparing a stage against a production run learns what
-actually happened. An agent watching staged bytes get copied learns nothing it did not already know.
+The second reason is evidential. An agent comparing a stage against a production run learns what actually happened. An agent watching staged bytes get copied learns nothing it did not already know.
 
 ## What the stage holds
 
@@ -51,27 +30,19 @@ The stage is knowledge and evidence, and it is a directory nobody has to trust.
 
 - The candidate artifact tree, as the tool would write it.
 - A receipt explaining the stage: what produced it, from which inputs, and when.
-- The omissions and the conflicts: every destination the candidate did not produce, and every one it
-  could not claim.
+- The omissions and the conflicts: every destination the candidate did not produce, and every one it could not claim.
 - The changelog and the migration guidance for the installed version.
-- The version-matched reference material an agent reads to understand any of the above, per
-  [Documentation and discovery](./documentation-and-discovery.md).
+- The version-matched reference material an agent reads to understand any of the above, per [Documentation and discovery](./documentation-and-discovery.md).
 
-Project documentation the projection selected is an artifact and sits in the tree. The broader
-reference corpus is reference material and stays reference material: the stage exposes it so an
-agent can read it, and nothing lands it.
+Project documentation the projection selected is an artifact and sits in the tree. The broader reference corpus is reference material and stays reference material: the stage exposes it so an agent can read it, and nothing lands it.
 
-The stage persists through the prove step and the post-flight checks. It is evidence during
-verification, which is exactly when a person most wants to know what was supposed to happen.
+The stage persists through the prove step and the post-flight checks. It is evidence during verification, which is exactly when a person most wants to know what was supposed to happen.
 
 ## Landing by ownership
 
-Direct landing writes into the project, and every write is decided by the ownership classes in
-[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md).
+Direct landing writes into the project, and every write is decided by the ownership classes in [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md).
 
-Validate first. Resolve every destination path, check it stays inside the target, and classify every
-collision, before anything is written. A run that discovers a refusal halfway through has already
-made half its changes.
+Validate first. Resolve every destination path, check it stays inside the target, and classify every collision, before anything is written. A run that discovers a refusal halfway through has already made half its changes.
 
 Then, per destination:
 
@@ -85,38 +56,23 @@ Then, per destination:
 | Generated file absent from the candidate, digest matches | Delete it, which retires it                    |
 | Other attributed destination absent from the candidate   | Leave it to the project, which drops it        |
 
-The central receipt is written last. Until it is, the project holds new files the record does not
-claim, which is recoverable. The reverse, a record claiming files that were never written, is not.
+The central receipt is written last. Until it is, the project holds new files the record does not claim, which is recoverable. The reverse, a record claiming files that were never written, is not.
 
 ## What the failure behavior actually is
 
 A partial failure is possible and the chapter says so rather than promising it away.
 
-One lock per target prevents two landings overlapping. Replacing a file within its own directory
-gives the local filesystems an implementation supports a whole-file boundary: a reader sees the old
-content or the new one, never a half-written file. That is the guarantee, and it is the only one.
+One lock per target prevents two landings overlapping. Replacing a file within its own directory gives the local filesystems an implementation supports a whole-file boundary: a reader sees the old content or the new one, never a half-written file. That is the guarantee, and it is the only one.
 
-The set of writes is not transactional. There is no rollback and no all-or-nothing. A failure part
-way through can leave new whole files on disk beside a receipt that predates them. Where a rename
-may have completed on a filesystem that cannot confirm it, which is the case on some remote
-filesystems, the implementation re-observes the destination rather than assuming either outcome. The
-command reports the paths it observed completed, so the state is legible rather than guessed.
+The set of writes is not transactional. There is no rollback and no all-or-nothing. A failure part way through can leave new whole files on disk beside a receipt that predates them. Where a rename may have completed on a filesystem that cannot confirm it, which is the case on some remote filesystems, the implementation re-observes the destination rather than assuming either outcome. The command reports the paths it observed completed, so the state is legible rather than guessed.
 
-Recovery is version control. The destinations are files in a repository, the run is visible as a
-diff, and reverting is the project's own operation rather than the tool's. Rerunning after a fix is
-supported, and it is the normal response: the candidate is computed again from the same three
-inputs, and the destinations already correct are already correct.
+Recovery is version control. The destinations are files in a repository, the run is visible as a diff, and reverting is the project's own operation rather than the tool's. Rerunning after a fix is supported, and it is the normal response: the candidate is computed again from the same three inputs, and the destinations already correct are already correct.
 
 ## Cleanup is its own destructive command
 
-Removing a directory tree is the most dangerous thing in this lifecycle, so it is a separate command
-with its own authorization, never a flag on the landing step.
+Removing a directory tree is the most dangerous thing in this lifecycle, so it is a separate command with its own authorization, never a flag on the landing step.
 
-Before removing anything it establishes that the target is a stage this tool made: it reads the
-identifying receipt in the directory, and it resolves the root to a real path. It refuses a symlink,
-a filesystem root, a home directory, the project root, any ancestor of the project root, and any
-directory it cannot identify unambiguously. It holds the validated boundary through the removal, so
-a path that escapes mid-walk does not take the removal with it.
+Before removing anything it establishes that the target is a stage this tool made: it reads the identifying receipt in the directory, and it resolves the root to a real path. It refuses a symlink, a filesystem root, a home directory, the project root, any ancestor of the project root, and any directory it cannot identify unambiguously. It holds the validated boundary through the removal, so a path that escapes mid-walk does not take the removal with it.
 
 It removes exactly one stage, and only after the person or the agent authorized that stage by name.
 
@@ -124,30 +80,18 @@ It removes exactly one stage, and only after the person or the agent authorized 
 
 Applying the stage looks like a saving and is not.
 
-It creates a stale-input problem, which creates a validity protocol, which creates fingerprints and
-revalidation and a compatibility floor between the version that staged and the version that applies.
-None of that exists in a design that renders twice.
+It creates a stale-input problem, which creates a validity protocol, which creates fingerprints and revalidation and a compatibility floor between the version that staged and the version that applies. None of that exists in a design that renders twice.
 
-And it removes the evidence that made staging worth doing. The prove step compares what was
-predicted against what happened. Copy the prediction into place and there is nothing left to
-compare.
+And it removes the evidence that made staging worth doing. The prove step compares what was predicted against what happened. Copy the prediction into place and there is nothing left to compare.
 
 ## Portable properties, platform mechanisms
 
-A rule here states a property: bounded access to the stage, no link followed during a walk, a
-whole-file boundary on replacement. Those hold anywhere, and an implementation states which
-mechanism it uses and on which targets it proved it.
+A rule here states a property: bounded access to the stage, no link followed during a walk, a whole-file boundary on replacement. Those hold anywhere, and an implementation states which mechanism it uses and on which targets it proved it.
 
-An implementation that sets owner-only modes claims that for the targets it supports and for no
-others. A chapter that turned one implementation's platform into a universal requirement would be
-stating a mechanism as if it were the property, which is the confusion this section exists to
-prevent.
+An implementation that sets owner-only modes claims that for the targets it supports and for no others. A chapter that turned one implementation's platform into a universal requirement would be stating a mechanism as if it were the property, which is the confusion this section exists to prevent.
 
 ## See also
 
-- [Documentation and discovery](./documentation-and-discovery.md) — what the stage exposes
-  and what it does not land.
-- [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) — the candidate
-  both renders compute, and the record the last write updates.
-- [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) — the
-  judgment that runs between the two renders, and who owns the version underneath them.
+- [Documentation and discovery](./documentation-and-discovery.md) — what the stage exposes and what it does not land.
+- [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md) — the candidate both renders compute, and the record the last write updates.
+- [Versions and migration](./operator-selected-versions-and-agent-guided-migration.md) — the judgment that runs between the two renders, and who owns the version underneath them.

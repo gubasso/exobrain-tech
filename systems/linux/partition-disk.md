@@ -1,7 +1,6 @@
 # Partition Disk
 
-[Tip: Check that your NVMe drives and Advanced Format hard disk drives are using the optimal logical
-sector size before partitioning.][^2]
+[Tip: Check that your NVMe drives and Advanced Format hard disk drives are using the optimal logical sector size before partitioning.][^2]
 
 ## Example layout: UEFI/GPT - Full Disk Encryption (LVM on Luks)
 
@@ -67,8 +66,7 @@ Device      Size        Type
 
 ### Encrypted Volume Configuration
 
-- For Void Linux:
-  [Encrypted volume configuration](https://docs.voidlinux.org/installation/guides/fde.html#encrypted-volume-configuration)
+- For Void Linux: [Encrypted volume configuration](https://docs.voidlinux.org/installation/guides/fde.html#encrypted-volume-configuration)
 
 - For Arch Linux[^5]
 

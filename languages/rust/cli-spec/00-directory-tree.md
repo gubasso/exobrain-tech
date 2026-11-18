@@ -1,12 +1,6 @@
 # 00 — Directory Tree (Rust)
 
-> Prerequisite:
-> [General principles — Architecture](../../../programming/cli-design/00-architecture.md). That
-> chapter is canonical for directory roles, "does NOT belong here" rules, parse-shape vs
-> runtime-shape, the four-edit rule, and the `AppContext` pattern. This file translates the skeleton
-> to Rust file names, module conventions, and crate-stack choices. Facing-category consequences
-> follow
-> [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+> Prerequisite: [General principles — Architecture](../../../programming/cli-design/00-architecture.md). That chapter is canonical for directory roles, "does NOT belong here" rules, parse-shape vs runtime-shape, the four-edit rule, and the `AppContext` pattern. This file translates the skeleton to Rust file names, module conventions, and crate-stack choices. Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 
 ## Canonical tree
 
@@ -47,52 +41,40 @@ crate/
 
 ## Rust-specific concretizations
 
-For each directory's _role_ and "does NOT belong here" rule, defer to the
-[general principles directory roles](../../../programming/cli-design/00-architecture.md#directory-roles).
-The notes below are Rust-only deltas.
+For each directory's _role_ and "does NOT belong here" rule, defer to the [general principles directory roles](../../../programming/cli-design/00-architecture.md#directory-roles). The notes below are Rust-only deltas.
 
 ### `src/main.rs`
 
 - Size budget: ≤120 LOC.
 - The one tokio runtime constructor lives here; the resulting `Handle` goes onto `AppContext`.
-- Use `templates/src/main.rs.template` for human-facing CLIs and
-  `templates/src/main.rs.machine.template` for machine-facing CLIs.
+- Use `templates/src/main.rs.template` for human-facing CLIs and `templates/src/main.rs.machine.template` for machine-facing CLIs.
 
 ### `src/lib.rs`
 
-- Only create when a second crate (or integration tests that need internals) needs the surface. A
-  no-op `lib.rs` declaring private modules is dead weight; keep modules `mod` inside `main.rs`.
+- Only create when a second crate (or integration tests that need internals) needs the surface. A no-op `lib.rs` declaring private modules is dead weight; keep modules `mod` inside `main.rs`.
 
 ### `src/cli/`
 
-- Each subcommand `<name>` has exactly one file `cli/<name>.rs` with a single
-  `pub struct <Verb>Args` deriving `clap::Args`.
-- `mod.rs` exposes the root `Cli` (derives `clap::Parser`), the `Commands` enum (derives
-  `clap::Subcommand`), and any shared `GlobalArgs`.
+- Each subcommand `<name>` has exactly one file `cli/<name>.rs` with a single `pub struct <Verb>Args` deriving `clap::Args`.
+- `mod.rs` exposes the root `Cli` (derives `clap::Parser`), the `Commands` enum (derives `clap::Subcommand`), and any shared `GlobalArgs`.
 
 ### `src/commands/`
 
-- Signature: `pub fn run(ctx: &AppContext, args: <Verb>Args) -> Result<(), AppError>`. Free
-  function, not a method on the args struct. See
-  [`02-subcommand-pattern.md`](./02-subcommand-pattern.md).
+- Signature: `pub fn run(ctx: &AppContext, args: <Verb>Args) -> Result<(), AppError>`. Free function, not a method on the args struct. See [`02-subcommand-pattern.md`](./02-subcommand-pattern.md).
 
 ### `src/domain/`
 
-- A `#[derive(Serialize, Deserialize)]` on a domain struct is fine; calling
-  `serde_json::from_reader` is not — that goes to `adapters/`.
+- A `#[derive(Serialize, Deserialize)]` on a domain struct is fine; calling `serde_json::from_reader` is not — that goes to `adapters/`.
 - Forbidden in this module: `std::io`, `tokio`, `reqwest`, file/network readers.
 
 ### `src/services/`
 
-- A service is a free function or a struct with a single public `execute` method, taking adapter
-  traits as parameters so tests can swap fakes.
+- A service is a free function or a struct with a single public `execute` method, taking adapter traits as parameters so tests can swap fakes.
 
 ### `src/adapters/`
 
-- Each adapter file defines a trait (`GitBackend`, `Clock`, …) and a default implementation.
-  Services depend on the trait, not the impl.
-- Each adapter defines its own error enum; `AppError` aggregates them via `#[from]`. See
-  [`03-error-handling.md`](./03-error-handling.md).
+- Each adapter file defines a trait (`GitBackend`, `Clock`, …) and a default implementation. Services depend on the trait, not the impl.
+- Each adapter defines its own error enum; `AppError` aggregates them via `#[from]`. See [`03-error-handling.md`](./03-error-handling.md).
 
 ### `src/config/`
 
@@ -100,29 +82,21 @@ The notes below are Rust-only deltas.
 
 ### `src/context.rs`
 
-- Holds resolved `Config`, computed `Paths`, the shared `tokio::Runtime` handle, the tracing root
-  span, and either the `Ui` instance for human-facing CLIs or a structured-output/protocol facility
-  for machine-facing CLIs.
+- Holds resolved `Config`, computed `Paths`, the shared `tokio::Runtime` handle, the tracing root span, and either the `Ui` instance for human-facing CLIs or a structured-output/protocol facility for machine-facing CLIs.
 
 ### `src/error.rs`
 
-- `AppError` is a `thiserror` enum aggregating per-layer errors via `#[from]`. Includes
-  `impl AppError { pub fn exit_code(&self) -> u8 }`. See
-  [`03-error-handling.md`](./03-error-handling.md).
+- `AppError` is a `thiserror` enum aggregating per-layer errors via `#[from]`. Includes `impl AppError { pub fn exit_code(&self) -> u8 }`. See [`03-error-handling.md`](./03-error-handling.md).
 
 ### `src/logging.rs`
 
-- `pub fn init(verbosity: u8) -> anyhow::Result<()>` helper that installs `tracing-subscriber` with
-  `EnvFilter`. See [`04-logging.md`](./04-logging.md).
+- `pub fn init(verbosity: u8) -> anyhow::Result<()>` helper that installs `tracing-subscriber` with `EnvFilter`. See [`04-logging.md`](./04-logging.md).
 
 ### `src/ui/`
 
-- Human-facing CLIs use a single `Ui` struct with methods like `render_widget`, `confirm`, and
-  `progress`.
-- Machine-facing CLIs omit `src/ui/` unless they have explicit opt-in human-UX; default output lives
-  in `src/output/` or `src/protocol/`.
-- **No `println!` / `eprintln!` outside this module, the structured-output boundary, or `main.rs`**
-  — enforce as a CI lint (see [`09-coding-style.md`](./09-coding-style.md)).
+- Human-facing CLIs use a single `Ui` struct with methods like `render_widget`, `confirm`, and `progress`.
+- Machine-facing CLIs omit `src/ui/` unless they have explicit opt-in human-UX; default output lives in `src/output/` or `src/protocol/`.
+- **No `println!` / `eprintln!` outside this module, the structured-output boundary, or `main.rs`** — enforce as a CI lint (see [`09-coding-style.md`](./09-coding-style.md)).
 
 ### `src/util/`
 
@@ -130,8 +104,7 @@ The notes below are Rust-only deltas.
 
 ### `tests/`
 
-- One `tests/cmd_<name>.rs` per subcommand using `assert_cmd::Command::cargo_bin("<bin>")`. Pure
-  unit tests stay inline under `#[cfg(test)] mod tests` in their owning module.
+- One `tests/cmd_<name>.rs` per subcommand using `assert_cmd::Command::cargo_bin("<bin>")`. Pure unit tests stay inline under `#[cfg(test)] mod tests` in their owning module.
 
 ### `benches/`
 

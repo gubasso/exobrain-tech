@@ -4,8 +4,7 @@
 
 ## Installation and Setup
 
-1. the host provides uv, and uv provides the Python of the project, see
-   [nix: Python and uv in a devshell](./nix/02-per-project-devshell.md#python-and-uv-in-a-devshell)
+1. the host provides uv, and uv provides the Python of the project, see [nix: Python and uv in a devshell](./nix/02-per-project-devshell.md#python-and-uv-in-a-devshell)
 2. uv add dvc
 3. run with: `uv run dvc`
    - `alias dvc='uv run dvc'`
@@ -193,8 +192,7 @@ dvc add train.tsv
 
 - Large datasets versioning https://dvc.org/doc/start/data-management#large-datasets-versioning
   - cache:
-    - shared cache https://dvc.org/doc/user-guide/how-to/share-a-dvc-cache
-      -[Setting up an external cache](https://dvc.org/doc/user-guide/managing-external-data#setting-up-an-external-cache)
+    - shared cache https://dvc.org/doc/user-guide/how-to/share-a-dvc-cache -[Setting up an external cache](https://dvc.org/doc/user-guide/managing-external-data#setting-up-an-external-cache)
   - Managing External Data https://dvc.org/doc/user-guide/managing-external-data
     - remote storage Amazon S3, Wasabi...
 
@@ -235,8 +233,7 @@ Suppose there is a separate repo just for a dataset (data-registry repo):
                +----------------------+
 ```
 
-- A good way to organize DVC repositories into data registries is to use directories to group
-  similar data, e.g. `images/`, `natural-language/`, etc.
+- A good way to organize DVC repositories into data registries is to use directories to group similar data, e.g. `images/`, `natural-language/`, etc.
 
 ---
 
@@ -268,8 +265,7 @@ dvc import https://github.com/iterative/dataset-registry \
 ```
 
 - similar to: `dvc get` + `dvc add`
-- difference: `.dvc` files includes metadata to track changes in the source repository. This allows
-  you to bring in changes from the data source later using `dvc update`.
+- difference: `.dvc` files includes metadata to track changes in the source repository. This allows you to bring in changes from the data source later using `dvc update`.
 
 ### Remove / Stop tracking files
 
@@ -312,8 +308,7 @@ project's cache                  ++ | dvc pull |
 ```
 
 - `dvc pull` = `dvc fetch` + `dvc checkout`
-- `dvc fetch`: downloads all files and directories to `.dvc/cache` only (don't link files to
-  workspace)
+- `dvc fetch`: downloads all files and directories to `.dvc/cache` only (don't link files to workspace)
 - `dvc checkout`: sync `.dvc/cache` to workspace data files (e.g. `myproject/data`)
 
 ## References

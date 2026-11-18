@@ -1,7 +1,6 @@
 # Template — Guide
 
-Copy the block below to the bucket that owns the task. The shape is fixed and gated by
-`guide-recipe-shape`; [SPEC-kb-authoring](../SPEC-kb-authoring.md) owns the rules this template seeds.
+Copy the block below to the bucket that owns the task. The shape is fixed and gated by `guide-recipe-shape`; [SPEC-kb-authoring](../SPEC-kb-authoring.md) owns the rules this template seeds.
 
 ````markdown
 # <Task, as the reader would ask for it>
@@ -51,5 +50,4 @@ Checks before committing:
 - Each step is one action; a step with parts nests them rather than splitting into siblings.
 - Nothing in the steps assumes state no earlier step produced and no prerequisite names.
 - The last step tells the reader whether it worked.
-- Every explanation longer than a hazard, a decision, or an ordering note sits behind a link, in a
-  companion document that walks a scenario rather than argues one.
+- Every explanation longer than a hazard, a decision, or an ordering note sits behind a link, in a companion document that walks a scenario rather than argues one.

@@ -1,7 +1,6 @@
 # References
 
-Consolidated bibliography for this shelf. Each topic doc also carries its own inline citations; this
-file is the deduplicated superset, grouped by subject.
+Consolidated bibliography for this shelf. Each topic doc also carries its own inline citations; this file is the deduplicated superset, grouped by subject.
 
 ## Runtimes and VMMs
 

@@ -1,47 +1,32 @@
 # Skill Format Research
 
-The research beneath [Skill format evidence](./skill-format-evidence.md), [Skill format](./skill-format.md), and
-[Skill size budget](./skill-size-budget.md): context engineering, context windows, the papers, a measurement of
-which size unit predicts tokens, the tools that install skills, the conflicts, and what could not be
-verified. Every source was read 2026-10-08, except those under "Installing a skill package", read
-2026-10-09, and every source was read again as raw text on 2026-10-10. A date in parentheses is the
-publication date.
+The research beneath [Skill format evidence](./skill-format-evidence.md), [Skill format](./skill-format.md), and [Skill size budget](./skill-size-budget.md): context engineering, context windows, the papers, a measurement of which size unit predicts tokens, the tools that install skills, the conflicts, and what could not be verified. Every source was read 2026-10-08, except those under "Installing a skill package", read 2026-10-09, and every source was read again as raw text on 2026-10-10. A date in parentheses is the publication date.
 
 ## Context engineering
 
 Anthropic's post, at
 <https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents> (2025-09-29):
 
-- Good context engineering means "finding the smallest possible set of high-signal tokens that
-  maximize the likelihood of some desired outcome."
-- "Context, therefore, must be treated as a finite resource with diminishing marginal returns."
-  Degradation is "a performance gradient rather than a hard cliff".
-- The "right altitude" sits between hardcoded brittle logic and vague guidance that "fails to give
-  the LLM concrete signals", and "minimal does not necessarily mean short".
-- It warns against "a laundry list of edge cases" and prefers "diverse, canonical examples".
-  Just-in-time loading keeps "lightweight identifiers (file paths, stored queries, web links, etc.)"
-  and loads the content at runtime.
+- Good context engineering means "finding the smallest possible set of high-signal tokens that maximize the likelihood of some desired outcome."
+- "Context, therefore, must be treated as a finite resource with diminishing marginal returns." Degradation is "a performance gradient rather than a hard cliff".
+- The "right altitude" sits between hardcoded brittle logic and vague guidance that "fails to give the LLM concrete signals", and "minimal does not necessarily mean short".
+- It warns against "a laundry list of edge cases" and prefers "diverse, canonical examples". Just-in-time loading keeps "lightweight identifiers (file paths, stored queries, web links, etc.)" and loads the content at runtime.
 - "the exact formatting of prompts is likely becoming less important as models become more capable."
 
 ## Context windows
 
 - Claude, <https://platform.claude.com/docs/en/docs/about-claude/models/overview> and
   <https://platform.claude.com/docs/en/build-with-claude/context-windows>: every current model has a
-  1M-token window by default, and "more context isn't automatically better. As token count grows,
-  accuracy and recall degrade, a phenomenon known as context rot." Its pricing,
+  1M-token window by default, and "more context isn't automatically better. As token count grows, accuracy and recall degrade, a phenomenon known as context rot." Its pricing,
   <https://platform.claude.com/docs/en/about-claude/pricing>: "A 900k-token request is billed at the
   same per-token rate as a 9k-token request", for Claude 4.6 and later models except Haiku 5.5.
-- OpenAI, <https://developers.openai.com/api/docs/models>: current models list about 1.05M tokens,
-  and a prompt above 272K input tokens costs twice as much per input token, per
+- OpenAI, <https://developers.openai.com/api/docs/models>: current models list about 1.05M tokens, and a prompt above 272K input tokens costs twice as much per input token, per
   <https://developers.openai.com/api/docs/pricing>.
-- Google, <https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview>: 1,048,576 input
-  tokens, and a prompt above 200K tokens costs twice as much, per
+- Google, <https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview>: 1,048,576 input tokens, and a prompt above 200K tokens costs twice as much, per
   <https://ai.google.dev/gemini-api/docs/pricing>. The long-context page,
   <https://ai.google.dev/gemini-api/docs/long-context>: "if you don't need tokens to be passed to
   the model, it is best to avoid passing them."
-- The Claude Opus 4.6 announcement, <https://www.anthropic.com/news/claude-opus-4-6> (2026-02-05):
-  on an 8-needle retrieval test at 1M tokens, "Opus 4.6 scores 76%, whereas Sonnet 4.5 scores just
-  18.5%." Use of the full window varies widely between models.
+- The Claude Opus 4.6 announcement, <https://www.anthropic.com/news/claude-opus-4-6> (2026-02-05): on an 8-needle retrieval test at 1M tokens, "Opus 4.6 scores 76%, whereas Sonnet 4.5 scores just 18.5%." Use of the full window varies widely between models.
 
 ## Long-context degradation
 
@@ -89,26 +74,15 @@ Anthropic's post, at
 
 The vendors' rules of thumb:
 
-- Anthropic: the models overview states "1M tokens is roughly 555k words or 2.5M Unicode characters
-  on the current tokenizer (introduced with Claude Opus 4.7)", about 2.5 characters per token. The
-  glossary, <https://platform.claude.com/docs/en/about-claude/glossary>, gives the earlier tokenizer
-  "approximately 3.5 English characters" per token, and the newer one "approximately 30 percent more
-  tokens for the same text". Token counting,
+- Anthropic: the models overview states "1M tokens is roughly 555k words or 2.5M Unicode characters on the current tokenizer (introduced with Claude Opus 4.7)", about 2.5 characters per token. The glossary, <https://platform.claude.com/docs/en/about-claude/glossary>, gives the earlier tokenizer "approximately 3.5 English characters" per token, and the newer one "approximately 30 percent more tokens for the same text". Token counting,
   <https://platform.claude.com/docs/en/build-with-claude/token-counting>, is free.
-- Google, <https://ai.google.dev/gemini-api/docs/tokens>: "a token is equivalent to about 4
-  characters. 100 tokens is equal to about 60-80 English words."
+- Google, <https://ai.google.dev/gemini-api/docs/tokens>: "a token is equivalent to about 4 characters. 100 tokens is equal to about 60-80 English words."
 
-The research: Roberts, Han, and Albanie, <https://arxiv.org/abs/2601.11518> (2026-01-16), find
-"token counts are not a stable unit of length", with compression ratios differing by 20% to 50%
-between tokenizers, and by 100% for emoji and numbers, and call the common rule of 0.75 words per
-token "an oversimplification". Petrov et al., NeurIPS 2023, <https://arxiv.org/abs/2305.15425>, find
-the same text in different languages differs in token length "up to 15 times".
+The research: Roberts, Han, and Albanie, <https://arxiv.org/abs/2601.11518> (2026-01-16), find "token counts are not a stable unit of length", with compression ratios differing by 20% to 50% between tokenizers, and by 100% for emoji and numbers, and call the common rule of 0.75 words per token "an oversimplification". Petrov et al., NeurIPS 2023, <https://arxiv.org/abs/2305.15425>, find the same text in different languages differs in token length "up to 15 times".
 
 The measurement, run 2026-10-08:
 
-- Method: the `tiktoken` tokenizers `o200k_base` and `cl100k_base` ran over two corpora. One pooled
-  ratio per proxy predicted each file's token count, and the error is the per-file error of that
-  prediction. Claude's tokenizer is not public, so the figures come from OpenAI tokenizers.
+- Method: the `tiktoken` tokenizers `o200k_base` and `cl100k_base` ran over two corpora. One pooled ratio per proxy predicted each file's token count, and the error is the per-file error of that prediction. Claude's tokenizer is not public, so the figures come from OpenAI tokenizers.
 - Corpus 1: 145 Markdown files of one documentation project, written as unwrapped prose.
 - Corpus 2: 90 skill files from the skill collections installed on one host.
 
@@ -121,55 +95,29 @@ The measurement, run 2026-10-08:
 |                        | Words      | 0.971                   | 12%          | 21%                   | 27%         |
 |                        | Lines      | 0.71                    | 27%          | 70%                   | 118%        |
 
-Characters predict tokens best in both corpora. Tokens per line ranged from 6.5 to 34, so a 500-line
-cap allows anything from about 3,000 to about 17,000 tokens. The Markdown averaged about 4.4
-characters per token on these tokenizers. With Anthropic's stated 30% increase that is about 3.4,
-and Anthropic's own 2.5 characters per token is the conservative bound a character cap converted
-from tokens uses.
+Characters predict tokens best in both corpora. Tokens per line ranged from 6.5 to 34, so a 500-line cap allows anything from about 3,000 to about 17,000 tokens. The Markdown averaged about 4.4 characters per token on these tokenizers. With Anthropic's stated 30% increase that is about 3.4, and Anthropic's own 2.5 characters per token is the conservative bound a character cap converted from tokens uses.
 
 ## Installing a skill package
 
-The question these sources answer: where does a tool that installs its own skills put the content
-two skills share?
+The question these sources answer: where does a tool that installs its own skills put the content two skills share?
 
-The specification defines a skill as one directory holding at least `SKILL.md`, and it names no
-location two skills share.
+The specification defines a skill as one directory holding at least `SKILL.md`, and it names no location two skills share.
 
-The Atlassian TWG CLI, at <https://developer.atlassian.com/cloud/twg-cli/agents/skills/>, installs
-the skills that operate it. "It always writes the canonical skill bundle to `~/.agents/skills`", and
-where Claude Code is installed, "Claude Code receives a copy under `~/.claude/skills`". The copy is
-a copy, not a link. Each skill holds its own `.agents/skills/<skill>/references/`, "Detailed
-guidance loaded on demand", and the page shows no file shared outside a skill directory. "To repair
-or refresh skills manually, run: `twg skills install`."
+The Atlassian TWG CLI, at <https://developer.atlassian.com/cloud/twg-cli/agents/skills/>, installs the skills that operate it. "It always writes the canonical skill bundle to `~/.agents/skills`", and where Claude Code is installed, "Claude Code receives a copy under `~/.claude/skills`". The copy is a copy, not a link. Each skill holds its own `.agents/skills/<skill>/references/`, "Detailed guidance loaded on demand", and the page shows no file shared outside a skill directory. "To repair or refresh skills manually, run: `twg skills install`."
 
-`gh skill install`, at <https://cli.github.com/manual/gh_skill_install>, lands skills "at either
-project scope (inside the current git repository) or user scope (in your home directory, available
-everywhere)". At project scope, several agents "share the `.agents/skills` directory", and a skill
-bound for one destination from several hosts "is installed there only once". Local skills "are
-copied (not symlinked) with local-path tracking metadata injected into frontmatter", and that
-metadata "enables `gh skill update` to detect changes".
+`gh skill install`, at <https://cli.github.com/manual/gh_skill_install>, lands skills "at either project scope (inside the current git repository) or user scope (in your home directory, available everywhere)". At project scope, several agents "share the `.agents/skills` directory", and a skill bound for one destination from several hosts "is installed there only once". Local skills "are copied (not symlinked) with local-path tracking metadata injected into frontmatter", and that metadata "enables `gh skill update` to detect changes".
 
-The Vercel `skills` CLI, at <https://github.com/vercel-labs/skills>, keeps one canonical copy and
-links it into each agent's own root, and issue 1025 below names `~/.agents/skills` as the store of a
-global install. Symlink is the
-recommended mode, and `--copy` "creates independent copies for each agent", for where symlinks are
-not supported. Its issue tracker records what the links cost:
+The Vercel `skills` CLI, at <https://github.com/vercel-labs/skills>, keeps one canonical copy and links it into each agent's own root, and issue 1025 below names `~/.agents/skills` as the store of a global install. Symlink is the recommended mode, and `--copy` "creates independent copies for each agent", for where symlinks are not supported. Its issue tracker records what the links cost:
 
-- <https://github.com/vercel-labs/skills/issues/744>: the skill installs to `~/.agents/skills`, no
-  link reaches `~/.claude/skills`, and Claude Code cannot see it.
-- <https://github.com/vercel-labs/skills/issues/1199>: `update` turns copied skills back into links,
-  because the lock file does not record the install mode, and links do not travel across platforms.
-- <https://github.com/vercel-labs/skills/issues/1025>: a request for a command that rebuilds the
-  links, because rerunning the install over the canonical store is unsafe.
+- <https://github.com/vercel-labs/skills/issues/744>: the skill installs to `~/.agents/skills`, no link reaches `~/.claude/skills`, and Claude Code cannot see it.
+- <https://github.com/vercel-labs/skills/issues/1199>: `update` turns copied skills back into links, because the lock file does not record the install mode, and links do not travel across platforms.
+- <https://github.com/vercel-labs/skills/issues/1025>: a request for a command that rebuilds the links, because rerunning the install over the canonical store is unsafe.
 
 What the sources establish:
 
-1. Every tool installs a skill as one whole directory, and each directory carries its own
-   `references/`. No tool reads a supporting file from outside the skill directory.
-2. A tool that serves several agent roots either copies the directory into each root or links each
-   root to one canonical copy. The links fail in ways the copies do not.
-3. Inference, not stated by any source: a tool that writes the copies from one embedded source keeps
-   one authored file, so a fix still lands once.
+1. Every tool installs a skill as one whole directory, and each directory carries its own `references/`. No tool reads a supporting file from outside the skill directory.
+2. A tool that serves several agent roots either copies the directory into each root or links each root to one canonical copy. The links fail in ways the copies do not.
+3. Inference, not stated by any source: a tool that writes the copies from one embedded source keeps one authored file, so a fix still lands once.
 
 ## Where the sources conflict
 
@@ -183,18 +131,12 @@ What the sources establish:
 
 ## What the research could not verify
 
-- No primary source prescribes Markdown decision tables. Choosing them for closed choices rests on
-  reasoning, not on a source.
-- No primary source sets a size cap for one reference file beyond "focused" and "smaller". A
-  32,000-character cap follows the Codex 32 KiB limit for instruction files by analogy.
-- The OpenAI tokens-per-character help article returned HTTP 403 on 2026-10-08 and 2026-10-10, so
-  its rule was confirmed only through secondary quotes.
+- No primary source prescribes Markdown decision tables. Choosing them for closed choices rests on reasoning, not on a source.
+- No primary source sets a size cap for one reference file beyond "focused" and "smaller". A 32,000-character cap follows the Codex 32 KiB limit for instruction files by analogy.
+- The OpenAI tokens-per-character help article returned HTTP 403 on 2026-10-08 and 2026-10-10, so its rule was confirmed only through secondary quotes.
 
 ## See also
 
-- [Skill format evidence](./skill-format-evidence.md) — the specification and vendor
-  guidance these findings sit beneath.
-- [Skill distribution](./skill-distribution.md) — the scopes and roots the installers above
-  write into.
-- [Evaluations](./evaluations.md) — how a format choice is checked against agent behavior
-  rather than assumed.
+- [Skill format evidence](./skill-format-evidence.md) — the specification and vendor guidance these findings sit beneath.
+- [Skill distribution](./skill-distribution.md) — the scopes and roots the installers above write into.
+- [Evaluations](./evaluations.md) — how a format choice is checked against agent behavior rather than assumed.

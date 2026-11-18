@@ -1,7 +1,6 @@
 # General Notes
 
-> Uncategorized general notes and link collections carried over from the original KB main index.
-> Content here is a staging area; promote entries into the appropriate topic bucket as they mature.
+> Uncategorized general notes and link collections carried over from the original KB main index. Content here is a staging area; promote entries into the appropriate topic bucket as they mature.
 
 <!--TOC-->
 
@@ -29,9 +28,7 @@
   - Python-Eve
   - PostgREST
   - https://github.com/roapi/roapi
-    - ROAPI automatically spins up read-only APIs for static datasets without requiring you to write
-      a single line of code. It builds on top of Apache Arrow and Datafusion. The core of its design
-      can be boiled down to the following:
+    - ROAPI automatically spins up read-only APIs for static datasets without requiring you to write a single line of code. It builds on top of Apache Arrow and Datafusion. The core of its design can be boiled down to the following:
 
 - Fake API Data / Mock data:
 

@@ -18,41 +18,22 @@
 
 ## Companion subtree (canonical OBS/osc notes)
 
-- [`tools/osc-obs/`](../../../tools/osc-obs/README.md) — dedicated OBS/osc
-  subtree:
-  - [`setup-home-project-from-upstream.md`](../../../tools/osc-obs/setup-home-project-from-upstream.md)
-    — from-scratch home-project walkthrough (project meta, base import vs branch, satellite
-    `_link` + `<apply>`, branched providers, verification sequence).
-  - [`broken-state-link-drift.md`](../../../tools/osc-obs/broken-state-link-drift.md) — the `broken`
-    lane state (pre-build link-expansion failure), diagnostic recipe, and
-    `osc add`/`osc rm`/`osc ci` recovery.
-  - `auth-in-devcontainers.md` (path: `../../../tools/osc-obs/auth-in-devcontainers.md`) — auth / `oscrc` /
-    KWallet-free credential setup in devcontainers.
-  - [`common-mistakes-and-pitfalls.md`](../../../tools/osc-obs/common-mistakes-and-pitfalls.md) —
-    distilled lessons from real incidents (auth, workspace, CLI foot-guns, patch/link evolution,
-    diagnostic discipline).
-  - [`libexpat-source-naming.md`](../../../tools/osc-obs/libexpat-source-naming.md) — the
-    `libexpat1` binary RPM ships from source pkg `expat`; `osc branch` with target-rename trick;
-    cross-project version / CVE-2025-59375 patch matrix; why `SUSE:SLE-15-SP<n>:Update` beats
-    `openSUSE:Factory` for SLES overlay work.
-  - [`case-studies/`](../../../tools/osc-obs/case-studies/README.md) — narrative reflections on real
-    OBS home-project incidents (goal → mistakes → fix → rule distilled → happy path → final result).
-    Read once per topic to install the lesson; the topic notes above are the reference cards. Covers
-    `broken` link drift after a patch rename, and overriding a buildroot ABI by branching a SUSE
-    Update package into the home project.
+- [`tools/osc-obs/`](../../../tools/osc-obs/README.md) — dedicated OBS/osc subtree:
+  - [`setup-home-project-from-upstream.md`](../../../tools/osc-obs/setup-home-project-from-upstream.md) — from-scratch home-project walkthrough (project meta, base import vs branch, satellite `_link` + `<apply>`, branched providers, verification sequence).
+  - [`broken-state-link-drift.md`](../../../tools/osc-obs/broken-state-link-drift.md) — the `broken` lane state (pre-build link-expansion failure), diagnostic recipe, and `osc add`/`osc rm`/`osc ci` recovery.
+  - `auth-in-devcontainers.md` (path: `../../../tools/osc-obs/auth-in-devcontainers.md`) — auth / `oscrc` / KWallet-free credential setup in devcontainers.
+  - [`common-mistakes-and-pitfalls.md`](../../../tools/osc-obs/common-mistakes-and-pitfalls.md) — distilled lessons from real incidents (auth, workspace, CLI foot-guns, patch/link evolution, diagnostic discipline).
+  - [`libexpat-source-naming.md`](../../../tools/osc-obs/libexpat-source-naming.md) — the `libexpat1` binary RPM ships from source pkg `expat`; `osc branch` with target-rename trick; cross-project version / CVE-2025-59375 patch matrix; why `SUSE:SLE-15-SP<n>:Update` beats `openSUSE:Factory` for SLES overlay work.
+  - [`case-studies/`](../../../tools/osc-obs/case-studies/README.md) — narrative reflections on real OBS home-project incidents (goal → mistakes → fix → rule distilled → happy path → final result). Read once per topic to install the lesson; the topic notes above are the reference cards. Covers `broken` link drift after a patch rename, and overriding a buildroot ABI by branching a SUSE Update package into the home project.
 
 ## More upstream references
 
-- [openSUSE Packaging Portal](https://en.opensuse.org/Portal:Packaging) — comprehensive index of
-  packaging topics.
-- [openSUSE Python Packaging](https://en.opensuse.org/Portal:Packaging_Python) — Python-specific
-  packaging guidance.
-- [openSUSE Patch Guidelines](https://en.opensuse.org/openSUSE%3APackaging_Patches_guidelines) — how
-  to annotate and manage patches.
+- [openSUSE Packaging Portal](https://en.opensuse.org/Portal:Packaging) — comprehensive index of packaging topics.
+- [openSUSE Python Packaging](https://en.opensuse.org/Portal:Packaging_Python) — Python-specific packaging guidance.
+- [openSUSE Patch Guidelines](https://en.opensuse.org/openSUSE%3APackaging_Patches_guidelines) — how to annotate and manage patches.
 - [openSUSE Git Packaging Workflow](https://en.opensuse.org/openSUSE%3AGit_Packaging_Workflow).
 - [RPM Packaging Guide](https://rpm-packaging-guide.github.io/) — spec file syntax, macros.
-- [Fedora RPM Macros](https://docs.fedoraproject.org/en-US/packaging-guidelines/RPMMacros/) —
-  applies broadly to RPM-based distros.
+- [Fedora RPM Macros](https://docs.fedoraproject.org/en-US/packaging-guidelines/RPMMacros/) — applies broadly to RPM-based distros.
 - [Fedora — Staying Close to Upstream](https://docs.fedoraproject.org/en-US/package-maintainers/Staying_Close_to_Upstream_Projects/).
 - [OBS User Guide — `osc`, the Command Line Tool](https://openbuildservice.org/help/manuals/obs-user-guide/cha-obs-osc).
 - [OBS User Guide — Basic Workflow](https://openbuildservice.org/help/manuals/obs-user-guide/cha-obs-basicworkflow).
@@ -60,8 +41,7 @@
 - [OBS User Guide — SCM/CI Integration](https://openbuildservice.org/help/manuals/obs-user-guide/cha-obs-scm-ci-workflow-integration).
 - [OBS User Guide — `osc` Example Commands](https://openbuildservice.org/help/manuals/obs-user-guide/cha-obs-best-practices-oscexamples).
 - [OBS User Guide — Maintenance Support](https://openbuildservice.org/help/manuals/obs-user-guide/cha-obs-maintenance-setup).
-- [How to Modify a Package in OBS (quilt + osc)](https://documentation.suse.com/sbp/systems-management/html/SBP-Quilting-OSC/index.html)
-  — SUSE Best Practices walkthrough.
+- [How to Modify a Package in OBS (quilt + osc)](https://documentation.suse.com/sbp/systems-management/html/SBP-Quilting-OSC/index.html) — SUSE Best Practices walkthrough.
 
 ## Talks & videos
 
@@ -77,9 +57,7 @@ Sometimes, you will see the obs://DOMAIN/PROJECT notation. The obs:// schema is 
 
 > `osc`
 
-For the `osc` verb cheat sheet (branch / co / build / commit / sr / etc.), home-project setup,
-patch/link mechanics, build-state diagnostics, and metadata templates, see the dedicated subtree:
-**[`tools/osc-obs/`](../../../tools/osc-obs/README.md)**.
+For the `osc` verb cheat sheet (branch / co / build / commit / sr / etc.), home-project setup, patch/link mechanics, build-state diagnostics, and metadata templates, see the dedicated subtree: **[`tools/osc-obs/`](../../../tools/osc-obs/README.md)**.
 
 Upstream references:
 
@@ -99,6 +77,4 @@ The standard openSUSE contribution path, from a home project:
 5. Commit (`osc commit`) and wait for the OBS build to go green.
 6. Submit a request back to the origin project (`osc sr`).
 
-Detailed walkthroughs are in `tools/osc-obs/setup-home-project-from-upstream.md`
-(full home-project setup) and `tools/osc-obs/obs-github-coordination.md`
-(upstream-PR-vs-OBS-patch lifecycle).
+Detailed walkthroughs are in `tools/osc-obs/setup-home-project-from-upstream.md` (full home-project setup) and `tools/osc-obs/obs-github-coordination.md` (upstream-PR-vs-OBS-patch lifecycle).

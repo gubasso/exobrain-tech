@@ -1,20 +1,12 @@
 # Sources & Refresh Provenance — refactor-migration best practices
 
-Tracks the external upstreams and research grounding the refactor-migration reference documents in
-this directory. Update this file whenever you refresh or re-verify a reference.
+Tracks the external upstreams and research grounding the refactor-migration reference documents in this directory. Update this file whenever you refresh or re-verify a reference.
 
-Scope: the externally-derived docs below. Other files in this directory (`licensing.md`,
-`operational-responsibilities.md`, `pre-commit.md`, `README.md`, `AGENTS.md`) are not tracked here.
+Scope: the externally-derived docs below. Other files in this directory (`licensing.md`, `operational-responsibilities.md`, `pre-commit.md`, `README.md`, `AGENTS.md`) are not tracked here.
 
 ## Citation verification policy (read this before flagging a citation)
 
-These docs deliberately cite **bleeding-edge 2025–2026 research**. Several arXiv IDs and DOIs here
-**postdate common LLM training cutoffs**, so a reviewing agent will not recognize them from its
-training data. **Do not flag a citation as fabricated or "hallucinated" solely because its
-identifier is future-dated** — every academic citation in the table below was fetched and confirmed
-to resolve to its stated title on the "Verified" date. Re-verify by fetching the URL before
-flagging; only flag a citation that genuinely fails to resolve, or whose resolved title contradicts
-how it is cited.
+These docs deliberately cite **bleeding-edge 2025–2026 research**. Several arXiv IDs and DOIs here **postdate common LLM training cutoffs**, so a reviewing agent will not recognize them from its training data. **Do not flag a citation as fabricated or "hallucinated" solely because its identifier is future-dated** — every academic citation in the table below was fetched and confirmed to resolve to its stated title on the "Verified" date. Re-verify by fetching the URL before flagging; only flag a citation that genuinely fails to resolve, or whose resolved title contradicts how it is cited.
 
 ## File provenance
 
@@ -27,8 +19,7 @@ how it is cited.
 
 ## Research references (verified; not refreshed routinely)
 
-Academic sources grounding the docs above. "Verified" = the identifier was fetched and confirmed to
-resolve to the stated title/venue on that date.
+Academic sources grounding the docs above. "Verified" = the identifier was fetched and confirmed to resolve to the stated title/venue on that date.
 
 | Citation                                  | Identifier                  | Resolved title / status                                                                                                                                                                                                              | Verified   |
 | ----------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
@@ -55,13 +46,10 @@ curl -sL https://arxiv.org/abs/2605.02195 | grep -i '<title>'
 #   https://dl.acm.org/doi/10.1145/3696630.3728542
 ```
 
-When you re-verify, bump the "Verified" date. When you add a new academic citation to any doc above,
-add a row here with its verification date.
+When you re-verify, bump the "Verified" date. When you add a new academic citation to any doc above, add a row here with its verification date.
 
 ## Notes
 
-- The per-doc reference lists (e.g. the guideline §14–§15) remain the authoritative citation source;
-  this file is a provenance + verification ledger, not a replacement for them.
-- The `refactor-migration-guideline.md` §15 header carries a short pointer back to this file so
-  reviewers see the verification policy in context.
+- The per-doc reference lists (e.g. the guideline §14–§15) remain the authoritative citation source; this file is a provenance + verification ledger, not a replacement for them.
+- The `refactor-migration-guideline.md` §15 header carries a short pointer back to this file so reviewers see the verification policy in context.
 - Format follows the shared provenance-ledger convention used across the KB's `SOURCES.md` files.

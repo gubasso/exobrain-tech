@@ -1,14 +1,8 @@
 # Docker & Devcontainer Cleanup Guide
 
-Operator guide for reclaiming disk and removing legacy Docker/BuildKit/devcontainer state. Ordered
-from **inspect → safe cleanup → targeted dctl cleanup → aggressive reset**. Use the earliest step
-that solves your problem.
+Operator guide for reclaiming disk and removing legacy Docker/BuildKit/devcontainer state. Ordered from **inspect → safe cleanup → targeted dctl cleanup → aggressive reset**. Use the earliest step that solves your problem.
 
-> Quick mental model. Docker keeps five things that grow: **containers** (stopped or running),
-> **images** (tagged, untagged/dangling), **volumes** (named + anonymous), **networks** (ephemeral
-> per `docker compose` / devcontainer run), and the **BuildKit cache** (layer blobs + intermediate
-> stages). Each needs its own command to reclaim — `docker system prune` skips some of them by
-> default.
+> Quick mental model. Docker keeps five things that grow: **containers** (stopped or running), **images** (tagged, untagged/dangling), **volumes** (named + anonymous), **networks** (ephemeral per `docker compose` / devcontainer run), and the **BuildKit cache** (layer blobs + intermediate stages). Each needs its own command to reclaim — `docker system prune` skips some of them by default.
 
 ## 1. Inspect what you have
 
@@ -40,8 +34,7 @@ docker buildx du | head
 
 ## 2. Safe cleanup (non-destructive to running work)
 
-Each step is independent — run any subset. None of these touch running containers or tagged images
-you still use.
+Each step is independent — run any subset. None of these touch running containers or tagged images you still use.
 
 ```bash
 # Remove stopped containers
@@ -70,9 +63,7 @@ docker system df
 
 ## 3. Targeted dctl-aware cleanup
 
-`dctl` tags its images `devimg/<name>:latest` and labels its devcontainers with
-`devcontainer.local_folder=<workspace-path>`. Use these to clean up without touching other Docker
-work on the host.
+`dctl` tags its images `devimg/<name>:latest` and labels its devcontainers with `devcontainer.local_folder=<workspace-path>`. Use these to clean up without touching other Docker work on the host.
 
 ### 3.1 Devcontainer for the current workspace
 
@@ -82,8 +73,7 @@ dctl ws status    # see what's there
 dctl ws down      # remove the container for this workspace
 ```
 
-`dctl ws down` removes only the containers labeled with the current workspace path. It does not
-touch images, volumes, or other workspaces.
+`dctl ws down` removes only the containers labeled with the current workspace path. It does not touch images, volumes, or other workspaces.
 
 ### 3.2 All dctl-managed workspace containers (any workspace)
 
@@ -110,8 +100,7 @@ docker images --format '{{.Repository}}:{{.Tag}}' 'devimg/*' | xargs -r docker i
 
 ### 3.4 Post-migration: wipe the old Debian-based image chain
 
-After migrating the base image (Debian → openSUSE Leap 16.0, or any similar base change), the old
-layers stay cached and can eat tens of GB.
+After migrating the base image (Debian → openSUSE Leap 16.0, or any similar base change), the old layers stay cached and can eat tens of GB.
 
 ```bash
 # 1. Make sure no workspace is running against the old images:
@@ -140,9 +129,7 @@ Steps 2 + 5 are the main space-reclaimers after a base swap.
 
 ## 4. Aggressive reset (destroys everything Docker)
 
-Use only when you genuinely want a clean Docker state. **This stops and removes every container,
-image, volume, and cache on the host** — not just dctl's. Never run this on a host that hosts
-production workloads.
+Use only when you genuinely want a clean Docker state. **This stops and removes every container, image, volume, and cache on the host** — not just dctl's. Never run this on a host that hosts production workloads.
 
 ```bash
 # Stop and remove every container (running or not)
@@ -164,10 +151,7 @@ docker buildx prune --all -f
 docker system prune --all --volumes -f
 ```
 
-`docker system prune --all --volumes -f` is the closest single command, but it still leaves: (a)
-running containers, (b) named volumes not created by `docker volume create` but attached to a
-removed container (usually safe), (c) BuildKit cache older than the current builder — run
-`docker buildx prune --all -f` separately to guarantee it.
+`docker system prune --all --volumes -f` is the closest single command, but it still leaves: (a) running containers, (b) named volumes not created by `docker volume create` but attached to a removed container (usually safe), (c) BuildKit cache older than the current builder — run `docker buildx prune --all -f` separately to guarantee it.
 
 ### 4.1 Full Docker daemon reset (host-level, last resort)
 
@@ -183,8 +167,7 @@ This is destructive _and_ requires root. Prefer step 4 first.
 
 ## 5. Devcontainer-specific leftovers
 
-The `devcontainer` CLI (used by `dctl ws up`) caches feature installers and intermediate images.
-These usually get pruned by the above steps, but can linger.
+The `devcontainer` CLI (used by `dctl ws up`) caches feature installers and intermediate images. These usually get pruned by the above steps, but can linger.
 
 ```bash
 # Devcontainer CLI cache (feature layers, dev-container builds)
@@ -196,8 +179,7 @@ rm -rf ~/.cache/dctl/                   # dctl resolved state (safe — recomput
 find . -name '.devcontainer.build-*' -type d
 ```
 
-The `dctl` CLI keeps its own state under `~/.config/dctl/` (configuration — do **not** delete unless
-reinstalling) and `~/.cache/dctl/` (regenerable — safe to delete).
+The `dctl` CLI keeps its own state under `~/.config/dctl/` (configuration — do **not** delete unless reinstalling) and `~/.cache/dctl/` (regenerable — safe to delete).
 
 ## 6. Routine housekeeping
 
@@ -215,8 +197,7 @@ docker buildx prune --filter 'until=168h' -f   # keep one week of build cache
 # Skip `volume prune` in automation — too easy to lose devcontainer state.
 ```
 
-For a systemd timer instead of cron, model it after the existing `systemd/dctl-image-build.timer` in
-this repo.
+For a systemd timer instead of cron, model it after the existing `systemd/dctl-image-build.timer` in this repo.
 
 ## 7. Verify reclamation worked
 
@@ -231,16 +212,11 @@ docker system df
 docker system df
 ```
 
-The "RECLAIMABLE" column in `docker system df` should drop toward 0% for each row you targeted. If
-it doesn't, something still references those objects — rerun `docker ps -a` and
-`docker images --all` to find out what.
+The "RECLAIMABLE" column in `docker system df` should drop toward 0% for each row you targeted. If it doesn't, something still references those objects — rerun `docker ps -a` and `docker images --all` to find out what.
 
 ## 8. One-shot full wipe
 
-Single copy-pasteable block to remove **everything** dctl, Docker, and devcontainer-related on the
-host. Combines sections 2, 3, 4, 4.1, and 5 into one sequence. **Destroys every container, image,
-volume, network, BuildKit cache, and CLI state on the host** — not just dctl's. Never run on a host
-with production workloads.
+Single copy-pasteable block to remove **everything** dctl, Docker, and devcontainer-related on the host. Combines sections 2, 3, 4, 4.1, and 5 into one sequence. **Destroys every container, image, volume, network, BuildKit cache, and CLI state on the host** — not just dctl's. Never run on a host with production workloads.
 
 ```bash
 # 1. Stop and remove every container (running or not)
@@ -272,15 +248,13 @@ sudo rm -rf /var/lib/docker
 sudo systemctl start docker
 ```
 
-Verify with `docker system df` — every row should report 0B / 0% reclaimable. To rebuild
-dctl-managed images from scratch afterwards:
+Verify with `docker system df` — every row should report 0B / 0% reclaimable. To rebuild dctl-managed images from scratch afterwards:
 
 ```bash
 dctl image build --full-rebuild
 ```
 
-Step 8 is optional and only needed if the daemon itself is in a bad state. `~/.config/dctl/` is
-preserved — delete it manually only if reinstalling dctl from zero.
+Step 8 is optional and only needed if the daemon itself is in a bad state. `~/.config/dctl/` is preserved — delete it manually only if reinstalling dctl from zero.
 
 ## References
 

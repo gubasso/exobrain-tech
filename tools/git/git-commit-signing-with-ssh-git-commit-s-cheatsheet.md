@@ -14,8 +14,7 @@
 git commit -S
 ```
 
-- Local verification with `git log --show-signature` and `git verify-commit` should also work, which
-  requires `gpg.ssh.allowedSignersFile`.
+- Local verification with `git log --show-signature` and `git verify-commit` should also work, which requires `gpg.ssh.allowedSignersFile`.
 
 ---
 
@@ -58,8 +57,7 @@ user.signingkey=/path/to/your/public/ssh/key.pub
 gpg.ssh.allowedSignersFile=/home/user/.config/git/allowed_signers
 ```
 
-`commit.gpgsign` is intentionally unset. When unset, Git treats it as `false`, so commits are not
-signed automatically.
+`commit.gpgsign` is intentionally unset. When unset, Git treats it as `false`, so commits are not signed automatically.
 
 ---
 
@@ -173,8 +171,7 @@ echo "your-email@example.com namespaces=\"git\" $(cat ~/.ssh/id_ed25519.pub)" \
   > ~/.config/git/allowed_signers
 ```
 
-The `namespaces="git"` option scopes trust to git signing only, so the same key cannot be silently
-used to verify other SSH signatures (file signing, etc.). Drop it if you want broader trust.
+The `namespaces="git"` option scopes trust to git signing only, so the same key cannot be silently used to verify other SSH signatures (file signing, etc.). Drop it if you want broader trust.
 
 Example resulting line:
 
@@ -190,9 +187,7 @@ git config --global gpg.ssh.allowedSignersFile ~/.config/git/allowed_signers
 
 ### 6.3 Why an extra file?
 
-A `.pub` key file contains only `<type> <key> <comment>` and carries no identity. Git needs an
-explicit identity → key mapping to decide which signatures to trust. That mapping is the allowed
-signers file.
+A `.pub` key file contains only `<type> <key> <comment>` and carries no identity. Git needs an explicit identity → key mapping to decide which signatures to trust. That mapping is the allowed signers file.
 
 ### 6.4 Multiple keys / teammates
 
@@ -204,8 +199,7 @@ teammate@example.com    namespaces="git" ssh-ed25519 AAAA...
 personal@example.com    namespaces="git" ssh-ed25519 AAAA...
 ```
 
-For team workflows, a shared allowed signers file can be committed in the repo and configured per
-repository:
+For team workflows, a shared allowed signers file can be committed in the repo and configured per repository:
 
 ```bash
 git config --local gpg.ssh.allowedSignersFile .github/allowed_signers
@@ -261,8 +255,7 @@ Use local config when:
 - You only want signing configured for one repository.
 - Different repositories use different signing keys.
 - Work and personal GitHub accounts use different SSH keys.
-- You want a repository to override global signing behavior (for example, force auto-signing on with
-  `git config --local commit.gpgsign true`).
+- You want a repository to override global signing behavior (for example, force auto-signing on with `git config --local commit.gpgsign true`).
 
 ---
 
@@ -283,8 +276,7 @@ If global SSH signing is configured, this repository can still create signed com
 git commit -S -m "your commit message"
 ```
 
-The commit author identity comes from the local repository config, while the signing key comes from
-the global config unless overridden locally.
+The commit author identity comes from the local repository config, while the signing key comes from the global config unless overridden locally.
 
 Check the effective config:
 
@@ -312,8 +304,7 @@ Manual signing available with git commit -S
 Local verification works via allowed_signers
 ```
 
-For verification of commits made under a different email, that email must also appear in
-`allowed_signers`.
+For verification of commits made under a different email, that email must also appear in `allowed_signers`.
 
 ---
 
@@ -450,8 +441,7 @@ git commit -S -m "your commit message"
 
 ### `gpg.ssh.allowedSignersFile needs to be configured and exist`
 
-This is local verification, not signing. The commit may already be signed; Git just cannot verify
-it.
+This is local verification, not signing. The commit may already be signed; Git just cannot verify it.
 
 Confirm the commit is actually signed:
 
@@ -459,8 +449,7 @@ Confirm the commit is actually signed:
 git cat-file -p HEAD | grep -A1 '^gpgsig'
 ```
 
-If you see `BEGIN SSH SIGNATURE`, the commit is signed and you only need to configure the allowed
-signers file (see section 6).
+If you see `BEGIN SSH SIGNATURE`, the commit is signed and you only need to configure the allowed signers file (see section 6).
 
 ---
 
@@ -522,8 +511,7 @@ List candidate public keys and their fingerprints:
 for k in ~/.ssh/*.pub; do ssh-keygen -lf "$k"; done
 ```
 
-Add the matching key to `~/.config/git/allowed_signers` under the same email used as the commit
-author.
+Add the matching key to `~/.config/git/allowed_signers` under the same email used as the commit author.
 
 ---
 
@@ -566,8 +554,7 @@ Or locally:
 git config --local user.email "work@example.com"
 ```
 
-Also confirm your SSH public key was added as a GitHub **Signing Key**, not only as an
-**Authentication Key**.
+Also confirm your SSH public key was added as a GitHub **Signing Key**, not only as an **Authentication Key**.
 
 ---
 

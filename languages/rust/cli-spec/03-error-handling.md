@@ -1,12 +1,8 @@
 # 03 — Error Handling (Rust)
 
-> Prerequisite:
-> [General principles — Error Messages](../../../programming/cli-design/02-error-messages.md) for
-> the four-part anatomy (what/where/why/hint), stable `err.kind`, BSD sysexits, and audience matrix.
-> This chapter is the Rust implementation using `thiserror` + `anyhow`.
+> Prerequisite: [General principles — Error Messages](../../../programming/cli-design/02-error-messages.md) for the four-part anatomy (what/where/why/hint), stable `err.kind`, BSD sysexits, and audience matrix. This chapter is the Rust implementation using `thiserror` + `anyhow`.
 
-`thiserror` per layer for typed errors, `anyhow` only at the binary boundary, one top-level
-`AppError` enum with `exit_code()` mapped to BSD sysexits.
+`thiserror` per layer for typed errors, `anyhow` only at the binary boundary, one top-level `AppError` enum with `exit_code()` mapped to BSD sysexits.
 
 ## The layer table
 
@@ -20,17 +16,12 @@
 
 ## Why both `thiserror` and `anyhow`
 
-- `thiserror` builds **named, matchable** errors. Code that needs to react to a specific failure can
-  `match` on the variant.
-- `anyhow` is for **opaque, context-rich** errors at the application boundary — you don't care which
-  exact variant fired, you care about printing a useful chain to the user.
+- `thiserror` builds **named, matchable** errors. Code that needs to react to a specific failure can `match` on the variant.
+- `anyhow` is for **opaque, context-rich** errors at the application boundary — you don't care which exact variant fired, you care about printing a useful chain to the user.
 
-Inside the crate, every error has a name. At the boundary, you optionally lose the name in exchange
-for cheap `.context("while doing X")` chains.
+Inside the crate, every error has a name. At the boundary, you optionally lose the name in exchange for cheap `.context("while doing X")` chains.
 
-**Never** return `anyhow::Error` from a library crate or a public API. Inside a binary's `commands/`
-and `main`, it's fine — and the typed `AppError::Other(#[from] anyhow::Error)` variant lets you mix
-the two without ceremony.
+**Never** return `anyhow::Error` from a library crate or a public API. Inside a binary's `commands/` and `main`, it's fine — and the typed `AppError::Other(#[from] anyhow::Error)` variant lets you mix the two without ceremony.
 
 ## Skeleton: `src/error.rs`
 
@@ -105,26 +96,13 @@ The matrix test isn't optional. Treat exit codes as part of the user-facing API 
 
 ## BSD sysexits cheat sheet
 
-The full code/constant/when matrix lives in
-[`cli-design/02-error-messages.md#exit-codes--bsd-sysexits`](../../../programming/cli-design/02-error-messages.md#exit-codes--bsd-sysexits).
-Map every `AppError` variant onto a constant from that table.
+The full code/constant/when matrix lives in [`cli-design/02-error-messages.md#exit-codes--bsd-sysexits`](../../../programming/cli-design/02-error-messages.md#exit-codes--bsd-sysexits). Map every `AppError` variant onto a constant from that table.
 
 Don't use codes outside that set without writing them down. Shell scripts read your exit code.
 
-**Hand-roll the mapping; don't take the [`sysexits`](https://docs.rs/sysexits/) crate.** Its enum has
-sixteen variants — `0` and `64..=78` — with no arbitrary-`u8` variant and no `From<u8>`. The moment
-your program owns a code outside that range (a `--strict` mode's `1`, a wrapped child's `128+S`
-pass-through, a domain code like firecracker's signal range `148..=157`), the crate can express part
-of your taxonomy and not the rest, and ownership splits in two. One local enum keeps one source of
-truth. Firecracker and every project in the entry-point table below reached the same conclusion.
+**Hand-roll the mapping; don't take the [`sysexits`](https://docs.rs/sysexits/) crate.** Its enum has sixteen variants — `0` and `64..=78` — with no arbitrary-`u8` variant and no `From<u8>`. The moment your program owns a code outside that range (a `--strict` mode's `1`, a wrapped child's `128+S` pass-through, a domain code like firecracker's signal range `148..=157`), the crate can express part of your taxonomy and not the rest, and ownership splits in two. One local enum keeps one source of truth. Firecracker and every project in the entry-point table below reached the same conclusion.
 
-**Know that sysexits is deprecated upstream.** FreeBSD's own
-[`sysexits(3)`](https://man.freebsd.org/cgi/man.cgi?query=sysexits&sektion=3) now says the interface
-"has been deprecated and is retained only for compatibility. Its use is discouraged," and notes that
-the choice of an appropriate value is often ambiguous. None of the reference projects in chapter 10
-use sysexits values. This spec keeps them anyway — see ADR-keep-bsd-sysexits-despite-deprecation for why — but the honest consequence
-is that **the code is worth less than the message.** Given a fixed budget, spend it on the rendered
-diagnostic before spending it on refining the taxonomy.
+**Know that sysexits is deprecated upstream.** FreeBSD's own [`sysexits(3)`](https://man.freebsd.org/cgi/man.cgi?query=sysexits&sektion=3) now says the interface "has been deprecated and is retained only for compatibility. Its use is discouraged," and notes that the choice of an appropriate value is often ambiguous. None of the reference projects in chapter 10 use sysexits values. This spec keeps them anyway — see ADR-keep-bsd-sysexits-despite-deprecation for why — but the honest consequence is that **the code is worth less than the message.** Given a fixed budget, spend it on the rendered diagnostic before spending it on refining the taxonomy.
 
 ## Per-layer error type examples
 
@@ -180,14 +158,11 @@ pub enum WidgetServiceError {
 }
 ```
 
-Composes domain and adapter errors. **Do not** add `#[from]` arms for peer services (e.g.
-`OtherServiceError`) — recursive `#[from]` graphs cause ambiguous `?` inference and force you to
-disambiguate at call sites. Instead, lift shared infrastructure into adapters or domain.
+Composes domain and adapter errors. **Do not** add `#[from]` arms for peer services (e.g. `OtherServiceError`) — recursive `#[from]` graphs cause ambiguous `?` inference and force you to disambiguate at call sites. Instead, lift shared infrastructure into adapters or domain.
 
 ## The `Other(#[from] anyhow::Error)` arm
 
-Inside `commands/`, sometimes you want `.context("while loading user prefs")` on a one-off call
-without inventing a whole error variant. Add this arm to `AppError`:
+Inside `commands/`, sometimes you want `.context("while loading user prefs")` on a one-off call without inventing a whole error variant. Add this arm to `AppError`:
 
 ```rust
 #[error(transparent)]
@@ -206,34 +181,21 @@ This is `riptask`'s approach (`src/error.rs:48-49`) and it's a good escape hatch
 
 ## The process boundary: `main` delegates, `run` does the work
 
-`main` returns `ExitCode` and contains no logic. The fallible program is a separate function — call
-it `run`, `try_main`, or `dispatch` — and `main` is a five-to-ten-line adapter that renders the error
-once and classifies it once. This is a rule, not a preference. See ADR-main-delegates-to-run.
+`main` returns `ExitCode` and contains no logic. The fallible program is a separate function — call it `run`, `try_main`, or `dispatch` — and `main` is a five-to-ten-line adapter that renders the error once and classifies it once. This is a rule, not a preference. See ADR-main-delegates-to-run.
 
 ### Why the split is forced
 
 Three facts compose:
 
-1. `ExitCode` does not implement `Try`. The `?` operator is illegal anywhere in a function whose
-   return type is `ExitCode`. A `main` that holds the logic must `match` every fallible call.
-2. `fn main() -> Result<(), E>` compiles, but `impl<T: Termination, E: Debug> Termination for
-   Result<T, E>` prints `Error: {err:?}` and returns `ExitCode::FAILURE` — always `1`, always the
-   `Debug` rendering. It structurally cannot emit `64`, `70`, or `78`.
-3. So you can have `?`, or a plain `main`, or specific exit codes — any two. The split buys all
-   three.
+1. `ExitCode` does not implement `Try`. The `?` operator is illegal anywhere in a function whose return type is `ExitCode`. A `main` that holds the logic must `match` every fallible call.
+2. `fn main() -> Result<(), E>` compiles, but `impl<T: Termination, E: Debug> Termination for Result<T, E>` prints `Error: {err:?}` and returns `ExitCode::FAILURE` — always `1`, always the `Debug` rendering. It structurally cannot emit `64`, `70`, or `78`.
+3. So you can have `?`, or a plain `main`, or specific exit codes — any two. The split buys all three.
 
-Point 2 is the one people get wrong. `main() -> anyhow::Result<()>` is fine when "success versus
-generic failure" is the whole contract; it is the wrong top-level signature the moment a sysexits
-matrix exists. Verify against
-[`Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html) rather than assuming.
+Point 2 is the one people get wrong. `main() -> anyhow::Result<()>` is fine when "success versus generic failure" is the whole contract; it is the wrong top-level signature the moment a sysexits matrix exists. Verify against [`Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html) rather than assuming.
 
 ### `run` takes its inputs as parameters
 
-`main` owns the connection to process globals — `std::env::args_os()`, and any env read that has to
-happen before the config layer. Everything past `main` receives what it needs as arguments. A `run`
-that reaches out to `args_os()` itself cannot be called twice, cannot be called with synthetic
-input, and turns "the arguments were parsed and validated" into a convention rather than a fact of
-the signature.
+`main` owns the connection to process globals — `std::env::args_os()`, and any env read that has to happen before the config layer. Everything past `main` receives what it needs as arguments. A `run` that reaches out to `args_os()` itself cannot be called twice, cannot be called with synthetic input, and turns "the arguments were parsed and validated" into a convention rather than a fact of the signature.
 
 ```rust
 fn main() -> ExitCode {
@@ -247,26 +209,13 @@ fn main() -> ExitCode {
 fn run(config: &Config) -> Result<(), AppError> { ... }   // not callable until parsing succeeded
 ```
 
-The payoff is that the parser becomes a pure function of an iterator, so the whole argument grammar
-— missing flag, wrong order, relative path where an absolute one is required, trailing junk — is
-unit-testable without spawning a process. That is usually the only genuinely testable part of a thin
-binary.
+The payoff is that the parser becomes a pure function of an iterator, so the whole argument grammar — missing flag, wrong order, relative path where an absolute one is required, trailing junk — is unit-testable without spawning a process. That is usually the only genuinely testable part of a thin binary.
 
-ripgrep (`run(flags::parse())`), ruff (`run(Args::parse_from(args))`), and the Rust Book all do
-this; the Book lists "calling the command line parsing logic with the argument values" among the
-responsibilities that stay in `main`. With `clap` this falls out for free, since `Cli::parse()`
-handles its own failures and exits — so `main` gains no second error path. With a hand-written
-parser that returns `Result`, accept the one extra match arm in `main` rather than pushing the
-`argv` read down.
+ripgrep (`run(flags::parse())`), ruff (`run(Args::parse_from(args))`), and the Rust Book all do this; the Book lists "calling the command line parsing logic with the argument values" among the responsibilities that stay in `main`. With `clap` this falls out for free, since `Cli::parse()` handles its own failures and exits — so `main` gains no second error path. With a hand-written parser that returns `Result`, accept the one extra match arm in `main` rather than pushing the `argv` read down.
 
 ### `impl Termination` for your own type does not replace `run`
 
-`Termination` has been stable for user types since 1.61, and the release notes show a `GitBisectResult`
-enum doing exactly what an `exit_code()` mapping does. It is legitimate. It also does not remove the
-inner function, because `?` depends on `Try`, not on `Termination` — you end up with
-`fn main() -> Report { Report(run()) }` and the `match` relocated into `report()`. Rendering inside
-`report()` also hides a side effect in a conversion. Reach for it only when several binaries in one
-workspace share exactly the same reporting policy.
+`Termination` has been stable for user types since 1.61, and the release notes show a `GitBisectResult` enum doing exactly what an `exit_code()` mapping does. It is legitimate. It also does not remove the inner function, because `?` depends on `Try`, not on `Termination` — you end up with `fn main() -> Report { Report(run()) }` and the `match` relocated into `report()`. Rendering inside `report()` also hides a side effect in a conversion. Reach for it only when several binaries in one workspace share exactly the same reporting policy.
 
 ### The shape
 
@@ -297,15 +246,9 @@ fn eprint_error(e: &app_template::error::AppError) {
 }
 ```
 
-The chain walk surfaces `#[source]` and `#[from]` causes and remains the default. When a concrete
-need justifies a prettier renderer, choose from the
-[diagnostic comparison](./07-dependencies.md#diagnostics-and-panics). Pretty renderers must obey the
-centralized machine and color policy; do not assume a renderer's global hooks or detector does so.
+The chain walk surfaces `#[source]` and `#[from]` causes and remains the default. When a concrete need justifies a prettier renderer, choose from the [diagnostic comparison](./07-dependencies.md#diagnostics-and-panics). Pretty renderers must obey the centralized machine and color policy; do not assume a renderer's global hooks or detector does so.
 
-The split predates the exit-code argument: the Rust Book prescribes it for binary crates so the
-logic is testable and `main` is verifiable by inspection
-([ch12-03](https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html)).
-Exit codes are the second, independent reason.
+The split predates the exit-code argument: the Rust Book prescribes it for binary crates so the logic is testable and `main` is verifiable by inspection ([ch12-03](https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html)). Exit codes are the second, independent reason.
 
 ### What real projects do
 
@@ -322,35 +265,19 @@ Every widely-studied Rust binary splits. What varies is only the return types.
 | cloud-hypervisor | `()`                       | `Result<(), Error>`           | `thiserror` enum           | `0`/`1` via `process::exit`  |
 | rust-analyzer    | `anyhow::Result<ExitCode>` | same                          | `anyhow`                   | `0`, or std's `1` on failure |
 
-Two patterns fall out. Projects needing more than two codes all introduce a **named code type**
-rather than bare integer constants at call sites. And projects whose exit code carries no contract
-(rust-analyzer: an LSP server; a GUI app) can accept `Termination for Result`'s exit `1` — that
-option is unavailable the moment a matrix is documented.
+Two patterns fall out. Projects needing more than two codes all introduce a **named code type** rather than bare integer constants at call sites. And projects whose exit code carries no contract (rust-analyzer: an LSP server; a GUI app) can accept `Termination for Result`'s exit `1` — that option is unavailable the moment a matrix is documented.
 
-This spec's default is the firecracker/ruff shape: `main -> ExitCode`, inner `-> Result<_, AppError>`,
-one `exit_code()` mapping, rendering at the boundary. Prefer returning `ExitCode` over
-`std::process::exit`, which skips destructors on every stack — relevant whenever the program holds
-child processes, file sinks, or a `WorkerGuard`. Enable `clippy::exit = "deny"` to enforce it.
+This spec's default is the firecracker/ruff shape: `main -> ExitCode`, inner `-> Result<_, AppError>`, one `exit_code()` mapping, rendering at the boundary. Prefer returning `ExitCode` over `std::process::exit`, which skips destructors on every stack — relevant whenever the program holds child processes, file sinks, or a `WorkerGuard`. Enable `clippy::exit = "deny"` to enforce it.
 
 ## Binaries a service manager supervises
 
-A daemon started by systemd, launchd, or a supervisor tree is a third audience alongside human and
-machine-facing, and the rules invert.
+A daemon started by systemd, launchd, or a supervisor tree is a third audience alongside human and machine-facing, and the rules invert.
 
-**The exit code buys less than you think.** systemd's behaviour is a `0`-versus-nonzero decision plus
-whatever `SuccessExitStatus=`, `RestartPreventExitStatus=`, and `RestartForceExitStatus=` explicitly
-name. `64`, `70`, and `74` are behaviourally identical unless the unit lists them. Set those
-properties deliberately or accept that the codes are diagnostic breadcrumbs in `systemctl status`,
-not a control surface. `RestartPreventExitStatus=64 70` — never retry a usage error or an internal
-defect, do retry a transient I/O failure — is usually the useful pairing.
+**The exit code buys less than you think.** systemd's behaviour is a `0`-versus-nonzero decision plus whatever `SuccessExitStatus=`, `RestartPreventExitStatus=`, and `RestartForceExitStatus=` explicitly name. `64`, `70`, and `74` are behaviourally identical unless the unit lists them. Set those properties deliberately or accept that the codes are diagnostic breadcrumbs in `systemctl status`, not a control surface. `RestartPreventExitStatus=64 70` — never retry a usage error or an internal defect, do retry a transient I/O failure — is usually the useful pairing.
 
-**The message buys more.** The unit's `MainPID` has stderr wired to the journal, and that is the only
-place a failure can be explained. A supervised binary that classifies its error and prints nothing has
-built the less valuable half. Firecracker logs the error to its log face _and_ `eprintln!`s it before
-converting; copy that ordering — render, then classify.
+**The message buys more.** The unit's `MainPID` has stderr wired to the journal, and that is the only place a failure can be explained. A supervised binary that classifies its error and prints nothing has built the less valuable half. Firecracker logs the error to its log face _and_ `eprintln!`s it before converting; copy that ordering — render, then classify.
 
-**Do not erase the cause on the way out.** The typed error from the layer below is the whole account
-of what happened; a supervisor that collapses it to a category has nothing left to write.
+**Do not erase the cause on the way out.** The typed error from the layer below is the whole account of what happened; a supervisor that collapses it to a category has nothing left to write.
 
 ## Anti-patterns
 
@@ -362,20 +289,14 @@ of what happened; a supervisor that collapses it to a category has nothing left 
 | Classification at each call site            | Thirteen independent `map_err`s each pick a code, so nobody can audit which codes a command can return. One exhaustive `match` in `exit_code()` is compiler-checked. |
 | `u8` as the code type                       | Admits 256 values where the matrix admits ten. A closed enum makes an off-taxonomy code unconstructible.                                                             |
 
-The failure mode these share is silent drift: the code compiles, the tests pass, and the taxonomy in
-the README stops describing the binary.
+The failure mode these share is silent drift: the code compiles, the tests pass, and the taxonomy in the README stops describing the binary.
 
 ## Rules
 
 - `main` returns `ExitCode` and holds no logic. The fallible program is `run`. (ADR-main-delegates-to-run)
-- No `std::process::exit` — return the `ExitCode` so destructors run. Enforce with
-  `clippy::exit = "deny"`.
-- Render the error chain before classifying it. A binary that returns a code and prints nothing has
-  shipped the less useful half.
-- No `panic!`, `.unwrap()`, `.expect()` outside `main`, tests, build scripts, and `LazyLock`
-  initializers.
+- No `std::process::exit` — return the `ExitCode` so destructors run. Enforce with `clippy::exit = "deny"`.
+- Render the error chain before classifying it. A binary that returns a code and prints nothing has shipped the less useful half.
+- No `panic!`, `.unwrap()`, `.expect()` outside `main`, tests, build scripts, and `LazyLock` initializers.
 - No catch-all `_ => 1` in `exit_code()`. Map every variant explicitly.
 - Every public function returning `Result` documents the error variants it can produce.
-- Don't wrap `String` errors. If you find yourself reaching for `anyhow!("...")`, ask whether a
-  named variant would be clearer — for one-offs at the binary edge, `anyhow!` is fine; in libs, name
-  it.
+- Don't wrap `String` errors. If you find yourself reaching for `anyhow!("...")`, ask whether a named variant would be clearer — for one-offs at the binary edge, `anyhow!` is fine; in libs, name it.

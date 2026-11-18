@@ -8,8 +8,7 @@ token-estimate: 600
 
 ## Scope
 
-Testing principles, anti-pattern catalog, per-language tool matrix, and output templates for the
-`test-review` skill.
+Testing principles, anti-pattern catalog, per-language tool matrix, and output templates for the `test-review` skill.
 
 ## Key Points
 
@@ -40,15 +39,10 @@ Testing principles, anti-pattern catalog, per-language tool matrix, and output t
 ### Anti-Pattern Catalog (by severity)
 
 - **Critical** (TR-001-005): Third-party library testing.
-- **High** (TR-010-019): Shared tempdir, global env mutation, mocking filesystem, sleep in tests,
-  implicit collaborator, brittle exact-match, snapshot abuse, untested `--help`, monolithic
-  integration, no isolation primitive.
-- **Info** (TR-020-024): Over-DRY scenarios, implementation-named tests, missing golden/error/edge
-  classify, coverage-chasing, empty docstrings.
-- **Wrapper-specific** (TR-030-032): Subprocess mock as only subject, missing signal/exit-code
-  matrix, untested `--` sentinel.
-- **LLM-era** (TR-040-042): Alphabetical-method order, mock-everything, coverage without mutation
-  kill.
+- **High** (TR-010-019): Shared tempdir, global env mutation, mocking filesystem, sleep in tests, implicit collaborator, brittle exact-match, snapshot abuse, untested `--help`, monolithic integration, no isolation primitive.
+- **Info** (TR-020-024): Over-DRY scenarios, implementation-named tests, missing golden/error/edge classify, coverage-chasing, empty docstrings.
+- **Wrapper-specific** (TR-030-032): Subprocess mock as only subject, missing signal/exit-code matrix, untested `--` sentinel.
+- **LLM-era** (TR-040-042): Alphabetical-method order, mock-everything, coverage without mutation kill.
 
 ### Tool Matrix Defaults
 
@@ -70,7 +64,5 @@ Testing principles, anti-pattern catalog, per-language tool matrix, and output t
 
 ## Maintenance Notes
 
-- Canonical principles source is
-  `programming/cli-design/09-testing-and-quality/testing-strategy.md`; this directory carries
-  the embedded fallback and skill-specific artifacts.
+- Canonical principles source is `programming/cli-design/09-testing-and-quality/testing-strategy.md`; this directory carries the embedded fallback and skill-specific artifacts.
 - Tool matrix should be refreshed when major versions of testing tools release.

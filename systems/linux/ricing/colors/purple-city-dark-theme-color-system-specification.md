@@ -1,8 +1,6 @@
 # Purple City — Brand Guidelines / Visual Identity + Web Style Guide
 
-> **Version:** 2.0.0 **Purpose:** Single source of truth (SoT) for Purple City's visual identity and
-> web UI system. All derived artifacts (CSS variables, Tailwind config, JSON tokens, component
-> libraries) should be generated from the tokens and rules defined here.
+> **Version:** 2.0.0 **Purpose:** Single source of truth (SoT) for Purple City's visual identity and web UI system. All derived artifacts (CSS variables, Tailwind config, JSON tokens, component libraries) should be generated from the tokens and rules defined here.
 
 ---
 
@@ -23,9 +21,7 @@
 
 ### Summary
 
-**Purple City** is a neon-noir, cyberpunk design system built on deep violet darkness and saturated
-purple/magenta illumination. The UI should feel like a terminal-grade control surface inside a
-rain-slick metropolis: minimal chrome, precise highlights, deliberate glow.
+**Purple City** is a neon-noir, cyberpunk design system built on deep violet darkness and saturated purple/magenta illumination. The UI should feel like a terminal-grade control surface inside a rain-slick metropolis: minimal chrome, precise highlights, deliberate glow.
 
 **Logo / Mark:** Not provided in source image(s).
 
@@ -33,8 +29,7 @@ rain-slick metropolis: minimal chrome, precise highlights, deliberate glow.
 
 1. **Dark-first, glow-second** — darkness is the canvas; glow is the hierarchy cue.
 2. **Sparse emphasis** — use neon only where interaction or hierarchy requires it.
-3. **Atmosphere over ornament** — haze gradients, vignettes, subtle grain are allowed. Busy
-   decoration is not.
+3. **Atmosphere over ornament** — haze gradients, vignettes, subtle grain are allowed. Busy decoration is not.
 4. **Terminal credibility** — mono type, system-like labels, CRT-inspired effects.
 5. **High contrast, low noise** — bright accents on near-black; no visual clutter.
 
@@ -42,11 +37,9 @@ rain-slick metropolis: minimal chrome, precise highlights, deliberate glow.
 
 Crisp, technical, slightly mysterious. Prefer short verbs and system/status language.
 
-_Assumption (Med confidence):_ Microcopy favors system actions over playful phrasing (e.g.,
-"Authenticate", "Initialize", "Trace", "Access Denied").
+_Assumption (Med confidence):_ Microcopy favors system actions over playful phrasing (e.g., "Authenticate", "Initialize", "Trace", "Access Denied").
 
-**Do:** Use concise labels and status patterns ("ONLINE", "SYNCING", "FAILED"). Error copy should be
-direct and actionable.
+**Do:** Use concise labels and status patterns ("ONLINE", "SYNCING", "FAILED"). Error copy should be direct and actionable.
 
 **Don't:** Use casual exclamations or emoji that break the noir/terminal tone.
 
@@ -56,9 +49,7 @@ direct and actionable.
 
 ### 2.1 Extraction Notes
 
-Colors are reverse-engineered from the source image's dominant dark violets and neon signage
-highlights. Where semantic/utility colors are not present in the image, they are proposed and
-flagged.
+Colors are reverse-engineered from the source image's dominant dark violets and neon signage highlights. Where semantic/utility colors are not present in the image, they are proposed and flagged.
 
 ### 2.2 Raw Palette
 
@@ -79,8 +70,7 @@ flagged.
 
 ### 2.3 Semantic Colors
 
-_Assumption (Low confidence):_ Not present in source image. Proposed as high-chroma neon companions
-that read on the dark violet base.
+_Assumption (Low confidence):_ Not present in source image. Proposed as high-chroma neon companions that read on the dark violet base.
 
 | Role    | Token                       | HEX       | RGB          | HSL             |
 | ------- | --------------------------- | --------- | ------------ | --------------- |
@@ -91,8 +81,7 @@ that read on the dark violet base.
 
 ### 2.4 Role Mapping
 
-Product code should consume role tokens, not raw palette values, except for art-direction cases
-(gradients, illustrations).
+Product code should consume role tokens, not raw palette values, except for art-direction cases (gradients, illustrations).
 
 | Role                               | Token                            | Palette Reference           |
 | ---------------------------------- | -------------------------------- | --------------------------- |
@@ -118,11 +107,9 @@ Product code should consume role tokens, not raw palette values, except for art-
 | **Semantic error**                 | `color.semantic.error`           | `errorCrimsonPulse`         |
 | **Semantic info**                  | `color.semantic.info`            | `infoCyanTrace`             |
 
-**Do:** Use neon primarily for actions, focus, selection, and key status indicators. Keep most
-layouts grounded in surfaces + typography.
+**Do:** Use neon primarily for actions, focus, selection, and key status indicators. Keep most layouts grounded in surfaces + typography.
 
-**Don't:** Use neon as a general background fill across large areas — it flattens hierarchy and
-fatigues users.
+**Don't:** Use neon as a general background fill across large areas — it flattens hierarchy and fatigues users.
 
 ### 2.5 Gradients
 
@@ -173,8 +160,7 @@ Background: `neonPurple`, text: `purpleInk`.
 
 ### 3.2 Boundary Clarity Rule
 
-`darkOrchid` (#2D084C) on `purpleInk` (#030009) is intentionally low-contrast (aesthetic) but
-insufficient as the sole affordance for inputs/focusable elements.
+`darkOrchid` (#2D084C) on `purpleInk` (#030009) is intentionally low-contrast (aesthetic) but insufficient as the sole affordance for inputs/focusable elements.
 
 **Rule:** Interactive elements must always provide at least one of:
 
@@ -185,10 +171,8 @@ insufficient as the sole affordance for inputs/focusable elements.
 ### 3.3 General Rules
 
 - Focus indicators must meet 3:1 contrast against adjacent colors
-- Glow is decorative and must never be the sole indicator of state change — always pair with a solid
-  color or border change
-- Never use `text.muted` for essential/actionable content — reserve for timestamps, captions,
-  disabled labels
+- Glow is decorative and must never be the sole indicator of state change — always pair with a solid color or border change
+- Never use `text.muted` for essential/actionable content — reserve for timestamps, captions, disabled labels
 - Minimum font size: 12px (caption). Nothing smaller
 
 ---
@@ -255,8 +239,7 @@ Base: 16px. All sizes in px for the spec; implementations should convert to rem 
 | `spacing.7` |  48px |
 | `spacing.8` |  64px |
 
-**Defaults:** Component padding: `spacing.4` (16px). Card padding: `spacing.5` (24px). Section
-spacing: `spacing.7`–`spacing.8` (48–64px).
+**Defaults:** Component padding: `spacing.4` (16px). Card padding: `spacing.5` (24px). Section spacing: `spacing.7`–`spacing.8` (48–64px).
 
 ### 5.2 Grid & Containers
 
@@ -289,8 +272,7 @@ _Assumption (Med confidence)_
 | `radius.4`    |   16px | Hero containers, large panels                       |
 | `radius.pill` | 9999px | Badges, tags, pills                                 |
 
-**Note:** The terminal aesthetic favors sharp corners. Use `radius.0`–`radius.1` by default. Reserve
-larger radii for containers that need visual softness.
+**Note:** The terminal aesthetic favors sharp corners. Use `radius.0`–`radius.1` by default. Reserve larger radii for containers that need visual softness.
 
 ### 5.4 Border Widths
 
@@ -315,23 +297,19 @@ _Assumption (Med confidence):_ Inferred from the holographic wireframe globe in 
 
 **Do:** Keep icons monochrome by default; state drives color.
 
-**Don't:** Use multi-color filled icon sets, rounded/friendly styles, or illustrative icons that
-compete with neon.
+**Don't:** Use multi-color filled icon sets, rounded/friendly styles, or illustrative icons that compete with neon.
 
 ### Imagery
 
-- **Style:** Dark, atmospheric, high-contrast cyberpunk — rain reflections, neon signage, fog/haze,
-  industrial textures
+- **Style:** Dark, atmospheric, high-contrast cyberpunk — rain reflections, neon signage, fog/haze, industrial textures
 - **Color treatment:** Desaturate, apply purple/violet monochrome grading
-- **Overlay:** Always apply `gradient.overlay` or `gradient.bgHaze` over photography to preserve
-  text legibility
+- **Overlay:** Always apply `gradient.overlay` or `gradient.bgHaze` over photography to preserve text legibility
 - **Grain/noise:** 2–4% opacity noise overlay for texture (optional)
 - **Aspect ratios:** 16:9 hero, 4:3 cards, 1:1 thumbnails
 
 **Do:** Add overlay + gradient mask behind text-heavy areas.
 
-**Don't:** Place body text directly on bright neon clusters without overlay. Don't use
-bright/warm/saturated stock photography without color treatment.
+**Don't:** Place body text directly on bright neon clusters without overlay. Don't use bright/warm/saturated stock photography without color treatment.
 
 ---
 
@@ -443,8 +421,7 @@ All specs reference role tokens. Implementations should resolve tokens, not hard
 | Active link   | `accent.primary` + bottom 2px indicator                                 |
 | Hover link    | `accent.alt` + `textGlowSm`                                             |
 
-**Mobile:** Full-screen drawer, bg `surface.2`, overlay dark veil. Hamburger icon: 3 lines in
-`text.primary`, animates to X.
+**Mobile:** Full-screen drawer, bg `surface.2`, overlay dark veil. Hamburger icon: 3 lines in `text.primary`, animates to X.
 
 ### 7.6 Badges / Tags
 
@@ -492,8 +469,7 @@ _Assumption (Low confidence):_ Not visible in source.
 
 ## 8. Motion
 
-_Assumption (Med confidence):_ No motion visible in source. Proposed to match terminal/cyberpunk
-aesthetic — snappy, deliberate, not bouncy.
+_Assumption (Med confidence):_ No motion visible in source. Proposed to match terminal/cyberpunk aesthetic — snappy, deliberate, not bouncy.
 
 ### 8.1 Duration Tokens
 

@@ -30,19 +30,13 @@
 
 ## Purpose
 
-Rules this knowledge base adds to the adopted specs for how its own documents are written: the
-recipe shape of a guide, what a step is, where explanation goes and the companion that receives it,
-and two rules for any document, on filesystem indexes and on relative links. The adopted
-`SPEC-guides.md` and `SPEC-docs-format.md` state what every adopter of the canon shares; this
-spec states what this repository asks beyond them. `SPEC-kb-authoring/TEMPLATE-guide.md` carries
-the skeleton a new guide is copied from.
+Rules this knowledge base adds to the adopted specs for how its own documents are written: the recipe shape of a guide, what a step is, where explanation goes and the companion that receives it, and two rules for any document, on filesystem indexes and on relative links. The adopted `SPEC-guides.md` and `SPEC-docs-format.md` state what every adopter of the canon shares; this spec states what this repository asks beyond them. `SPEC-kb-authoring/TEMPLATE-guide.md` carries the skeleton a new guide is copied from.
 
 ## Requirements
 
 ### `kb-authoring:a-guide-is-an-ordered-recipe` — A guide is an ordered recipe
 
-The author MUST write a guide as a `## Prerequisites` section followed by a `## Steps` section whose
-body is one ordered list.
+The author MUST write a guide as a `## Prerequisites` section followed by a `## Steps` section whose body is one ordered list.
 
 #### Scenario: A procedure is written as an essay
 
@@ -66,8 +60,7 @@ Verify: reviewer confirms each step names one action and puts its command in a f
 
 ### `kb-authoring:a-step-leaves-no-gap` — A step leaves no gap
 
-Where a step assumes a state, that state MUST be produced by an earlier step or named in the
-prerequisites.
+Where a step assumes a state, that state MUST be produced by an earlier step or named in the prerequisites.
 
 #### Scenario: A step runs a command the guide never installs
 
@@ -79,8 +72,7 @@ Verify: reviewer confirms every state a step assumes is produced earlier or list
 
 ### `kb-authoring:a-subtask-nests-under-its-step` — A subtask nests under its step
 
-Where a step decomposes into parts, the author MUST write those parts as list items indented under
-the step.
+Where a step decomposes into parts, the author MUST write those parts as list items indented under the step.
 
 #### Scenario: A step's parts are promoted to steps
 
@@ -92,8 +84,7 @@ Verify: `prek run guide-recipe-shape --all-files`
 
 ### `kb-authoring:a-step-shows-its-output` — A step shows its output
 
-The author MUST follow a step's command with the output the reader should see, and MUST NOT spend
-prose describing what that output already carries.
+The author MUST follow a step's command with the output the reader should see, and MUST NOT spend prose describing what that output already carries.
 
 #### Scenario: A step describes its result in a sentence
 
@@ -117,8 +108,7 @@ Verify: reviewer confirms the final step is a command or observation confirming 
 
 ### `kb-authoring:explanation-moves-to-a-companion` — Explanation moves to a companion document
 
-Where a step needs justification beyond a decision, a hazard, or a non-obvious ordering constraint,
-the author MUST move it into a linked companion document and MUST NOT expand the step into prose.
+Where a step needs justification beyond a decision, a hazard, or a non-obvious ordering constraint, the author MUST move it into a linked companion document and MUST NOT expand the step into prose.
 
 #### Scenario: A step grows a rationale paragraph
 
@@ -130,8 +120,7 @@ Verify: reviewer confirms no step carries prose beyond a decision, a hazard, or 
 
 ### `kb-authoring:a-companion-walks-a-scenario` — A companion document walks a scenario
 
-The author MUST give every document a guide offloads explanation to at least one worked scenario:
-a concrete starting state, the commands run, and the outcome.
+The author MUST give every document a guide offloads explanation to at least one worked scenario: a concrete starting state, the commands run, and the outcome.
 
 #### Scenario: A companion becomes an essay
 

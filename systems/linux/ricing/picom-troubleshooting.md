@@ -2,22 +2,19 @@
 
 ## Symptom
 
-Subtle black flicker/flash when opening a new terminal (or any window) in a tiled window manager
-workspace.
+Subtle black flicker/flash when opening a new terminal (or any window) in a tiled window manager workspace.
 
 ## Fix escalation (try in order)
 
 ### 1. Disable `unredir-if-possible` (most likely fix)
 
-`unredir-if-possible = true` causes picom to toggle between redirected and unredirected compositing.
-Window map/unmap triggers a redirect switch, producing a visible black frame.
+`unredir-if-possible = true` causes picom to toggle between redirected and unredirected compositing. Window map/unmap triggers a redirect switch, producing a visible black frame.
 
 ```conf
 unredir-if-possible = false;
 ```
 
-Trade-off: fullscreen apps (games, video players) no longer bypass the compositor. Usually
-negligible for desktop use.
+Trade-off: fullscreen apps (games, video players) no longer bypass the compositor. Usually negligible for desktop use.
 
 **Test without editing config:**
 
@@ -28,8 +25,7 @@ picom --config ~/.config/picom/picom.conf --unredir-if-possible=false --log-leve
 
 ### 2. Disable damage tracking
 
-`use-damage = true` tells picom to only repaint changed screen regions. Buggy damage tracking can
-composite incomplete regions on newly mapped windows.
+`use-damage = true` tells picom to only repaint changed screen regions. Buggy damage tracking can composite incomplete regions on newly mapped windows.
 
 ```conf
 use-damage = false;
@@ -46,8 +42,7 @@ picom --config ~/.config/picom/picom.conf --no-use-damage --log-level WARN
 
 ### 3. Fall back to xrender backend
 
-If GLX artifacts persist, xrender is the safe fallback. Picom docs call it the stable option when
-GLX causes rendering issues.
+If GLX artifacts persist, xrender is the safe fallback. Picom docs call it the stable option when GLX causes rendering issues.
 
 ```conf
 backend = "xrender";
@@ -64,8 +59,7 @@ picom --backend xrender --vsync --log-level WARN
 
 ### 4. Disable xrender-sync-fence
 
-Only relevant if using GLX on NVIDIA hybrid. In rare cases, the sync fence itself introduces latency
-that looks like a flash.
+Only relevant if using GLX on NVIDIA hybrid. In rare cases, the sync fence itself introduces latency that looks like a flash.
 
 ```conf
 xrender-sync-fence = false;
@@ -78,8 +72,7 @@ pkill -x picom
 picom --config ~/.config/picom/picom.conf --log-level WARN &
 ```
 
-Note: `--no-xrender-sync-fence` does not exist as a CLI flag. This option can only be toggled via
-the config file.
+Note: `--no-xrender-sync-fence` does not exist as a CLI flag. This option can only be toggled via the config file.
 
 ## Not applicable to current config
 

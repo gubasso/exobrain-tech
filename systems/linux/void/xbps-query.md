@@ -1,7 +1,6 @@
 # xbps-query
 
-Here’s how to search for packages on Void Linux using the `xbps-query` utility (part of the XBPS
-package manager):
+Here’s how to search for packages on Void Linux using the `xbps-query` utility (part of the XBPS package manager):
 
 - **Remote search** (in repositories): use `-R` (repositories) and `-s` (search).
 - **Local search** (among all installed packages): use `-s` without `-R`.
@@ -26,8 +25,7 @@ Example:
 xbps-query -Rs firefox
 ```
 
-This will list all `firefox` packages available for installation, along with versions and
-descriptions ([docs.voidlinux.org][1])([commandexamples.com][2]).
+This will list all `firefox` packages available for installation, along with versions and descriptions ([docs.voidlinux.org][1])([commandexamples.com][2]).
 
 ---
 
@@ -52,8 +50,7 @@ Example:
 xbps-query -s pipewire
 ```
 
-This finds any installed packages matching “pipewire”
-([docs.voidlinux.org][1])([commandexamples.com][2]).
+This finds any installed packages matching “pipewire” ([docs.voidlinux.org][1])([commandexamples.com][2]).
 
 ---
 
@@ -71,8 +68,7 @@ or its shorthand:
 xbps-query -m
 ```
 
-This shows the “root” packages you explicitly requested, which is useful for auditing or tidying up
-unused packages ([commandexamples.com][2])([de.wikipedia.org][3]).
+This shows the “root” packages you explicitly requested, which is useful for auditing or tidying up unused packages ([commandexamples.com][2])([de.wikipedia.org][3]).
 
 ---
 
@@ -105,8 +101,7 @@ unused packages ([commandexamples.com][2])([de.wikipedia.org][3]).
 
   Useful when you need to locate installed files ([docs.voidlinux.org][1]).
 
-With these commands, you can effectively discover packages across remote repos, on your system, and
-isolate those you explicitly installed.
+With these commands, you can effectively discover packages across remote repos, on your system, and isolate those you explicitly installed.
 
 [1]: https://docs.voidlinux.org/xbps/index.html "XBPS Package Manager - Void Linux Handbook"
 [2]: https://commandexamples.com/linux/xbps-query "Examples of xbps-query Command in Linux - Command Examples"

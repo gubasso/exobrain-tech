@@ -39,13 +39,11 @@ Include = /etc/pacman.d/mirrorlist
 
 ## 3.6 Initramfs
 
-- Continue at
-  [LVM on LUKS: 4.4 Configuring mkinitcpio](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_mkinitcpio_3)
+- Continue at [LVM on LUKS: 4.4 Configuring mkinitcpio](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_mkinitcpio_3)
 
 ## 3.8 Boot loader
 
-- Continue at
-  [LVM on LUKS: 4.5 Configuring the boot loader](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_mkinitcpio_3)
+- Continue at [LVM on LUKS: 4.5 Configuring the boot loader](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_mkinitcpio_3)
 
 Get "device-UUID" with command:
 
@@ -54,7 +52,6 @@ Get "device-UUID" with command:
 blkid -o value -s UUID /dev/sdaX
 ```
 
-On Arch Linux most users add kernel parameters to `GRUB_CMDLINE_LINUX_DEFAULT`, like
-`cryptdevice=...`.
+On Arch Linux most users add kernel parameters to `GRUB_CMDLINE_LINUX_DEFAULT`, like `cryptdevice=...`.
 
 - See [Boot loader](./boot-loader.md)

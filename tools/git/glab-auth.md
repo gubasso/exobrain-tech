@@ -1,8 +1,6 @@
 # glab: Authentication Setup & Fixes
 
-> TLDR runbook. Check `glab` auth, store the token in the system keyring, wire the HTTPS git
-> credential helper, and verify — top to bottom. This is the source of truth for `glab`
-> authentication. For GitHub's `gh`, see [gh-auth.md](./gh-auth.md).
+> TLDR runbook. Check `glab` auth, store the token in the system keyring, wire the HTTPS git credential helper, and verify — top to bottom. This is the source of truth for `glab` authentication. For GitHub's `gh`, see [gh-auth.md](./gh-auth.md).
 
 ## TLDR
 
@@ -13,8 +11,7 @@ glab auth login --hostname gitlab.com --web --git-protocol https --use-keyring  
 printf 'protocol=https\nhost=gitlab.com\n\n' | git credential fill  # 4. verify
 ```
 
-Answer **Yes** to "Authenticate Git with your GitLab credentials?" during step 3 so the git
-credential helper is wired for you.
+Answer **Yes** to "Authenticate Git with your GitLab credentials?" during step 3 so the git credential helper is wired for you.
 
 ## 1. Check auth
 
@@ -34,8 +31,7 @@ Expected when healthy:
 
 ## 2. Clear stale env overrides
 
-Environment variables **override** the stored token, so a stale one masks a good login. Check, then
-unset for the current shell if present:
+Environment variables **override** the stored token, so a stale one masks a good login. Check, then unset for the current shell if present:
 
 ```bash
 env | grep -E '^(GITLAB_TOKEN|GITLAB_ACCESS_TOKEN|OAUTH_TOKEN|GITLAB_HOST)='
@@ -43,13 +39,11 @@ env | grep -E '^(GITLAB_TOKEN|GITLAB_ACCESS_TOKEN|OAUTH_TOKEN|GITLAB_HOST)='
 unset GITLAB_TOKEN GITLAB_ACCESS_TOKEN OAUTH_TOKEN
 ```
 
-> If one of these is set permanently (shell rc, secrets manager), remove it there too — otherwise it
-> keeps shadowing the keyring/config token every session.
+> If one of these is set permanently (shell rc, secrets manager), remove it there too — otherwise it keeps shadowing the keyring/config token every session.
 
 ## 3. Log in (token → system keyring)
 
-`--use-keyring` stores the token in your OS keyring (GNOME Keyring / KWallet / any libsecret Secret
-Service backend) instead of the default plaintext `~/.config/glab-cli/config.yml`.
+`--use-keyring` stores the token in your OS keyring (GNOME Keyring / KWallet / any libsecret Secret Service backend) instead of the default plaintext `~/.config/glab-cli/config.yml`.
 
 ```bash
 glab auth logout --hostname gitlab.com          # optional: clear a broken/partial session
@@ -63,8 +57,7 @@ glab auth login \
 When prompted:
 
 1. Git protocol: **HTTPS**
-2. "Authenticate Git with your GitLab credentials?" → **Yes** (this wires the credential helper for
-   you — see step 4).
+2. "Authenticate Git with your GitLab credentials?" → **Yes** (this wires the credential helper for you — see step 4).
 
 Prefer a Personal Access Token (scope `api`) over browser OAuth? Drop `--web` and paste it:
 
@@ -72,9 +65,7 @@ Prefer a Personal Access Token (scope `api`) over browser OAuth? Drop `--web` an
 glab auth login --hostname gitlab.com --git-protocol https --use-keyring --stdin < token.txt
 ```
 
-**Keyring caveat.** `--use-keyring` can still fall back to writing the token into `config.yml` when
-no working Secret Service backend is reachable (a known bug — [gitlab-org/cli#8132]). Confirm the
-keyring actually holds it:
+**Keyring caveat.** `--use-keyring` can still fall back to writing the token into `config.yml` when no working Secret Service backend is reachable (a known bug — [gitlab-org/cli#8132]). Confirm the keyring actually holds it:
 
 ```bash
 # config.yml should NOT contain a token line for the host
@@ -83,15 +74,13 @@ grep -A3 'gitlab.com' ~/.config/glab-cli/config.yml
 glab auth status
 ```
 
-If `config.yml` holds the token in plaintext, your keyring/Secret Service isn't running for this
-session (common in headless shells / containers) — start it or accept the config-file fallback.
+If `config.yml` holds the token in plaintext, your keyring/Secret Service isn't running for this session (common in headless shells / containers) — start it or accept the config-file fallback.
 
 [gitlab-org/cli#8132]: https://gitlab.com/gitlab-org/cli/-/issues/8132
 
 ## 4. Wire / verify the HTTPS credential helper
 
-Unlike `gh` (which has `gh auth setup-git`), `glab` has **no** separate command to configure the git
-credential helper — it's done during `glab auth login` (step 3) or manually. To set it by hand:
+Unlike `gh` (which has `gh auth setup-git`), `glab` has **no** separate command to configure the git credential helper — it's done during `glab auth login` (step 3) or manually. To set it by hand:
 
 ```bash
 which glab   # confirm the binary path used below
@@ -109,8 +98,7 @@ git config --global --get-all credential.https://gitlab.com.helper
 
 ### Fixing duplicate entries
 
-If a git operation errors with `cannot overwrite multiple values with a single value`, or
-`--get-all` prints more than one line, reset to a single entry:
+If a git operation errors with `cannot overwrite multiple values with a single value`, or `--get-all` prints more than one line, reset to a single entry:
 
 ```bash
 git config --global --unset-all credential.https://gitlab.com.helper
@@ -130,9 +118,7 @@ git fetch
 
 ## Troubleshooting
 
-**HTTPS clone still invokes an askpass helper** (e.g.
-`unable to read askpass response from '.../ssh-askpass-rofi'`) — git isn't getting credentials from
-`glab`. Clear any askpass override so git uses the credential helper:
+**HTTPS clone still invokes an askpass helper** (e.g. `unable to read askpass response from '.../ssh-askpass-rofi'`) — git isn't getting credentials from `glab`. Clear any askpass override so git uses the credential helper:
 
 ```bash
 git config --global --get core.askPass   # inspect
@@ -144,13 +130,8 @@ unset GIT_ASKPASS SSH_ASKPASS             # for this session
 
 Then re-check step 4 (single helper, correct binary path) and step 5.
 
-**`glab auth status` says SSH but you clone over HTTPS** — re-run step 3 with
-`--git-protocol https`, or clone with the HTTPS URL and let the helper authenticate.
+**`glab auth status` says SSH but you clone over HTTPS** — re-run step 3 with `--git-protocol https`, or clone with the HTTPS URL and let the helper authenticate.
 
 ## How it works
 
-`glab auth git-credential` implements the
-[git credential helper protocol](https://git-scm.com/docs/gitcredentials). When git needs to
-authenticate an HTTPS remote, it calls the configured helper, which returns the token from `glab`'s
-store (keyring or `~/.config/glab-cli/config.yml`) — no prompt, no askpass. GitHub's
-`gh auth git-credential` uses the same mechanism; see [gh-auth.md](./gh-auth.md).
+`glab auth git-credential` implements the [git credential helper protocol](https://git-scm.com/docs/gitcredentials). When git needs to authenticate an HTTPS remote, it calls the configured helper, which returns the token from `glab`'s store (keyring or `~/.config/glab-cli/config.yml`) — no prompt, no askpass. GitHub's `gh auth git-credential` uses the same mechanism; see [gh-auth.md](./gh-auth.md).

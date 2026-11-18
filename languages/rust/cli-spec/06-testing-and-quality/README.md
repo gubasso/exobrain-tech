@@ -2,12 +2,9 @@
 
 > Part of the [Rust CLI Spec](../README.md).
 >
-> For the language-agnostic principles, see
-> [09 — Testing & Quality](../../../../programming/cli-design/09-testing-and-quality/).
+> For the language-agnostic principles, see [09 — Testing & Quality](../../../../programming/cli-design/09-testing-and-quality/).
 
-Rust-specific testing and code quality tooling. These chapters apply the general principles from
-[`cli-design/09-testing-and-quality/`](../../../../programming/cli-design/09-testing-and-quality/)
-using the Rust ecosystem.
+Rust-specific testing and code quality tooling. These chapters apply the general principles from [`cli-design/09-testing-and-quality/`](../../../../programming/cli-design/09-testing-and-quality/) using the Rust ecosystem.
 
 ## Chapters
 

@@ -15,43 +15,24 @@ audience: AI coding agents and humans setting up / debugging dctl-managed devcon
 
 # dctl — devcontainerctl CLI reference
 
-> **AI-friendly reference for `dctl`** (devcontainerctl). This file (`tools/dctl.md`) is the
-> **digest**; the authoritative source is the **shell library itself** (`bin/dctl` +
-> `lib/dctl/*.sh`) under the dctl source tree. When in doubt, `grep` the source — never guess CLI
-> flags or subcommand names.
+> **AI-friendly reference for `dctl`** (devcontainerctl). This file (`tools/dctl.md`) is the **digest**; the authoritative source is the **shell library itself** (`bin/dctl` + `lib/dctl/*.sh`) under the dctl source tree. When in doubt, `grep` the source — never guess CLI flags or subcommand names.
 >
 > **Common wrong assumptions to unlearn:**
 >
-> - There is **no** `dctl image rebuild`. The verb is `dctl image build`, and a clean rebuild is
->   `dctl image build --full-rebuild`.
-> - There is **no** `dctl image build --no-cache`. The equivalent is `--full-rebuild` (which sets
->   `--no-cache` internally and implies `--all`).
-> - `dctl ws reup` does **not** rebuild images. It recreates the _container_ from the existing
->   image. To get a fresh image into a running workspace you must
->   `dctl image build … && dctl ws reup`.
-> - Editing `~/.dotfiles/dctl/.config/dctl/images/<image>/Dockerfile` only changes what dctl builds
->   **if** that path is the same inode as `~/.config/dctl/images/<image>/Dockerfile` (i.e. stowed).
->   If the user config is a real copy, you must re-deploy with `dctl deploy image <image> --reset`
->   before rebuilding.
+> - There is **no** `dctl image rebuild`. The verb is `dctl image build`, and a clean rebuild is `dctl image build --full-rebuild`.
+> - There is **no** `dctl image build --no-cache`. The equivalent is `--full-rebuild` (which sets `--no-cache` internally and implies `--all`).
+> - `dctl ws reup` does **not** rebuild images. It recreates the _container_ from the existing image. To get a fresh image into a running workspace you must `dctl image build … && dctl ws reup`.
+> - Editing `~/.dotfiles/dctl/.config/dctl/images/<image>/Dockerfile` only changes what dctl builds **if** that path is the same inode as `~/.config/dctl/images/<image>/Dockerfile` (i.e. stowed). If the user config is a real copy, you must re-deploy with `dctl deploy image <image> --reset` before rebuilding.
 
 ## What dctl is
 
-`dctl` (devcontainerctl) is a thin bash wrapper around the Dev Container CLI (`devcontainer`) and
-`docker buildx`. It does three things the upstream tools don't:
+`dctl` (devcontainerctl) is a thin bash wrapper around the Dev Container CLI (`devcontainer`) and `docker buildx`. It does three things the upstream tools don't:
 
-1. **Composable devcontainer manifests** — YAML manifests under
-   `~/.config/dctl/devcontainer/<name>.yaml` declare an ordered `layers:` list. `dctl init` resolves
-   each layer's `devcontainer.json` and merges them into a single cached config under
-   `~/.cache/dctl/`.
-2. **Managed image catalog** — Dockerfiles under `~/.config/dctl/images/<name>/Dockerfile` are built
-   with `docker buildx`, tagged `devimg/<name>:latest`, and built with the build-time args
-   `USERNAME`, `USER_UID`, `USER_GID` set from the host's `$USER` / `id -u` / `id -g`.
-3. **Credential and term env forwarding** — every `dctl ws exec/shell/run` extracts `gh auth token`
-   / `glab auth status --show-token` and forwards `GH_TOKEN` / `GITLAB_TOKEN` plus `TERM*` /
-   `COLORTERM` / Kitty env vars into the container.
+1. **Composable devcontainer manifests** — YAML manifests under `~/.config/dctl/devcontainer/<name>.yaml` declare an ordered `layers:` list. `dctl init` resolves each layer's `devcontainer.json` and merges them into a single cached config under `~/.cache/dctl/`.
+2. **Managed image catalog** — Dockerfiles under `~/.config/dctl/images/<name>/Dockerfile` are built with `docker buildx`, tagged `devimg/<name>:latest`, and built with the build-time args `USERNAME`, `USER_UID`, `USER_GID` set from the host's `$USER` / `id -u` / `id -g`.
+3. **Credential and term env forwarding** — every `dctl ws exec/shell/run` extracts `gh auth token` / `glab auth status --show-token` and forwards `GH_TOKEN` / `GITLAB_TOKEN` plus `TERM*` / `COLORTERM` / Kitty env vars into the container.
 
-The XDG layout below is the **non-negotiable invariant**: changes to installed seed assets do not
-affect runtime; runtime is fed exclusively from user config + cache.
+The XDG layout below is the **non-negotiable invariant**: changes to installed seed assets do not affect runtime; runtime is fed exclusively from user config + cache.
 
 ## XDG layout (the 3-tier model)
 
@@ -63,23 +44,13 @@ affect runtime; runtime is fed exclusively from user config + cache.
 
 All three honor `XDG_DATA_HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`.
 
-The one config writer here — `dctl deploy` — is a **deliberate, explicit
-scaffold/stow step** (it copies installed seeds into the user-editable config
-tree, seed → config, on request), not a runtime side effect. At runtime `dctl
-init` only _reads_ config and writes the generated merge to `~/.cache/`; it never
-rewrites `~/.config/dctl/*`. That keeps config read-only during normal operation
-and safe under a `/nix/store` symlink — the distinction the
-[configuration and state ownership](../programming/design-decisions/config-state-ownership/README.md)
-rule draws between scaffolding config and mutating it.
+The one config writer here — `dctl deploy` — is a **deliberate, explicit scaffold/stow step** (it copies installed seeds into the user-editable config tree, seed → config, on request), not a runtime side effect. At runtime `dctl init` only _reads_ config and writes the generated merge to `~/.cache/`; it never rewrites `~/.config/dctl/*`. That keeps config read-only during normal operation and safe under a `/nix/store` symlink — the distinction the [configuration and state ownership](../programming/design-decisions/config-state-ownership/README.md) rule draws between scaffolding config and mutating it.
 
-`dctl image build` resolves Dockerfiles **only** from `~/.config/dctl/images/<target>/Dockerfile` —
-never from the installed seed. To use a freshly-edited Dockerfile, it must live at (or be stowed to)
-the user-config path.
+`dctl image build` resolves Dockerfiles **only** from `~/.config/dctl/images/<target>/Dockerfile` — never from the installed seed. To use a freshly-edited Dockerfile, it must live at (or be stowed to) the user-config path.
 
 ## CLI surface — exhaustive
 
-Source: `bin/dctl` + `lib/dctl/*.sh` in the upstream tree. Quoted inline from the live `usage_*`
-heredocs.
+Source: `bin/dctl` + `lib/dctl/*.sh` in the upstream tree. Quoted inline from the live `usage_*` heredocs.
 
 ### Global
 
@@ -89,16 +60,13 @@ dctl help
 dctl version
 ```
 
-`--config <path>` overrides the devcontainer.json resolution chain (see
-[resolution chain](#devcontainerjson-resolution-chain) below) for the current invocation and exports
-`DCTL_CLI_CONFIG`.
+`--config <path>` overrides the devcontainer.json resolution chain (see [resolution chain](#devcontainerjson-resolution-chain) below) for the current invocation and exports `DCTL_CLI_CONFIG`.
 
 Command groups: `init`, `deploy`, `test`, `ws`, `image`, `config`, `help`, `version`.
 
 ### `dctl deploy`
 
-Copies installed seed assets into user config. **Required** before `dctl image build` or `dctl init`
-can see new images or manifests.
+Copies installed seed assets into user config. **Required** before `dctl image build` or `dctl init` can see new images or manifests.
 
 ```text
 Usage: dctl deploy [selector] [options]
@@ -125,11 +93,8 @@ Interactive:
 Semantics:
 
 - Manifest files (`<name>.yaml`) are **always** reconciled on every devcontainer deploy.
-- Non-leaf layers (everything except the last entry in a manifest's `layers:`) are **always**
-  reconciled.
-- **Leaf layers are user-protected.** They are only overwritten when `--reset` is passed; otherwise
-  an existing deployed leaf is skipped with
-  `skipped <category> '<name>': <dest> (exists; pass --reset to overwrite)`.
+- Non-leaf layers (everything except the last entry in a manifest's `layers:`) are **always** reconciled.
+- **Leaf layers are user-protected.** They are only overwritten when `--reset` is passed; otherwise an existing deployed leaf is skipped with `skipped <category> '<name>': <dest> (exists; pass --reset to overwrite)`.
 - `--reset` writes a `.bak.<timestamp>` next to the original before overwriting.
 - `--dry-run` and `--reset` are **mutually exclusive** (`Cannot use --dry-run with --reset`).
 
@@ -150,11 +115,8 @@ Options:
 What `dctl init` actually does, in order:
 
 1. Resolves the manifest from `~/.config/dctl/devcontainer/<name>.yaml`.
-2. Merges every layer's `devcontainer.json` in manifest order and writes the merged result to
-   `~/.cache/dctl/devcontainer/<name>/devcontainer.json`.
-3. If the merged config references a managed image (`devimg/<name>:latest`) and that image is not
-   present locally, **auto-builds it** via `dctl image build <name>`. Requires
-   `~/.config/dctl/images/<name>/Dockerfile` to exist.
+2. Merges every layer's `devcontainer.json` in manifest order and writes the merged result to `~/.cache/dctl/devcontainer/<name>/devcontainer.json`.
+3. If the merged config references a managed image (`devimg/<name>:latest`) and that image is not present locally, **auto-builds it** via `dctl image build <name>`. Requires `~/.config/dctl/images/<name>/Dockerfile` to exist.
 4. Writes the project → manifest mapping to `~/.config/dctl/projects.yaml` (registry).
 5. Runs `dctl test` and exits non-zero on smoke-test failure.
 
@@ -184,19 +146,16 @@ Commands:
 | `status`           | `docker ps -a` filtered by workspace label                                                                                          | `docker ps`                                           |
 | `down`             | Stop + remove all containers labeled for this workspace                                                                             | `docker rm -f`                                        |
 
-Critical detail: containers are **matched by workspace label**, not by directory name. Linked git
-worktrees of the same repo get **separate containers**.
+Critical detail: containers are **matched by workspace label**, not by directory name. Linked git worktrees of the same repo get **separate containers**.
 
 Credentials forwarded by `exec` / `shell` / `run` (silently skipped if unavailable):
 
 - `GH_TOKEN`: from `$GH_TOKEN` → `$GITHUB_TOKEN` → `gh auth token`
 - `GITLAB_TOKEN`: from `$GITLAB_TOKEN` → `glab auth status --show-token`
 
-Terminal env forwarded: `TERM`, `COLORTERM`, `TERM_PROGRAM`, `TERM_PROGRAM_VERSION`,
-`KITTY_WINDOW_ID`, `KITTY_LISTEN_ON`.
+Terminal env forwarded: `TERM`, `COLORTERM`, `TERM_PROGRAM`, `TERM_PROGRAM_VERSION`, `KITTY_WINDOW_ID`, `KITTY_LISTEN_ON`.
 
-Linked-worktree handling: if `WORKSPACE_FOLDER` is a `git worktree`, the shared `.git` common dir is
-bind-mounted into the container at the same absolute host path so the gitdir reference resolves.
+Linked-worktree handling: if `WORKSPACE_FOLDER` is a `git worktree`, the shared `.git` common dir is bind-mounted into the container at the same absolute host path so the gitdir reference resolves.
 
 ### `dctl image`
 
@@ -230,10 +189,7 @@ Commands:
 | `--dry-run`, `-n`       | Print the plan, build nothing.                                                                                                               |
 | (no target, no `--all`) | Interactive `fzf` picker over deployed targets. Errors out if not a TTY.                                                                     |
 
-**`--pull` is implicit and only added when** the target is `agents` AND `--all` is true. So
-`dctl image build --all` does `docker buildx build
---pull --no-cache` for the agents image (when
-`--full-rebuild` is set) or `--pull` only for agents (without `--full-rebuild`).
+**`--pull` is implicit and only added when** the target is `agents` AND `--all` is true. So `dctl image build --all` does `docker buildx build --pull --no-cache` for the agents image (when `--full-rebuild` is set) or `--pull` only for agents (without `--full-rebuild`).
 
 **Build args always passed:**
 
@@ -243,12 +199,9 @@ Commands:
 --build-arg USER_GID="$(id -g)"
 ```
 
-This is why running `dctl image build` **as root** is hard-refused
-(`Do not run as root (would bake UID 0 into images)`). Run from your host user account.
+This is why running `dctl image build` **as root** is hard-refused (`Do not run as root (would bake UID 0 into images)`). Run from your host user account.
 
-**GitHub token (optional).** Pass a personal access token to the build
-as `--secret id=gh_token,src=…`. Dockerfiles can read it via `--mount=type=secret,id=gh_token` to
-avoid the 60 req/hr anonymous GitHub API rate limit during mise installs.
+**GitHub token (optional).** Pass a personal access token to the build as `--secret id=gh_token,src=…`. Dockerfiles can read it via `--mount=type=secret,id=gh_token` to avoid the 60 req/hr anonymous GitHub API rate limit during mise installs.
 
 **Image tag format:** `devimg/<target>:latest`. Hard-coded.
 
@@ -258,14 +211,11 @@ avoid the 60 req/hr anonymous GitHub API rate limit during mise installs.
 Usage: dctl test [options]
 ```
 
-The workspace smoke test: prerequisite checks, auto-build of any missing managed image,
-`devcontainer up`, `devcontainer exec` (a trivial command), cleanup. Called automatically by
-`dctl init`.
+The workspace smoke test: prerequisite checks, auto-build of any missing managed image, `devcontainer up`, `devcontainer exec` (a trivial command), cleanup. Called automatically by `dctl init`.
 
 ### `dctl config`
 
-Currently a stub — only `help` is implemented. Project registry lives at
-`~/.config/dctl/projects.yaml`; edit that file directly to inspect or change manifest assignments.
+Currently a stub — only `help` is implemented. Project registry lives at `~/.config/dctl/projects.yaml`; edit that file directly to inspect or change manifest assignments.
 
 ## devcontainer.json resolution chain
 
@@ -273,24 +223,16 @@ Currently a stub — only `help` is implemented. Project registry lives at
 
 1. `--config` CLI flag (`DCTL_CLI_CONFIG`)
 2. `DCTL_CONFIG` environment variable
-3. Project registry `~/.config/dctl/projects.yaml` (`devcontainer-manifest: <name>` → merged cache
-   file)
+3. Project registry `~/.config/dctl/projects.yaml` (`devcontainer-manifest: <name>` → merged cache file)
 4. Local `.devcontainer/devcontainer.json` in `WORKSPACE_FOLDER`
 5. Work-clone sibling discovery (for linked worktrees: resolve from the main repo's config)
 6. User global default at `~/.config/dctl/default/devcontainer.json`
 
 ## Bind-mount mechanics (the part that breaks devcontainer setups)
 
-The Dev Containers spec leaves Docker to auto-create missing **parent directories** of a bind-mount
-target. **Docker creates them as `root:root 0755`, at container-start time, before the remoteUser
-runs.** This bites file mounts in particular, because the parent dir must exist to host the bind
-point.
+The Dev Containers spec leaves Docker to auto-create missing **parent directories** of a bind-mount target. **Docker creates them as `root:root 0755`, at container-start time, before the remoteUser runs.** This bites file mounts in particular, because the parent dir must exist to host the bind point.
 
-**Pattern that fails:** mount host file `~/.config/foo/bar` → container `~/.config/foo/bar`, where
-the image does not pre-create `/home/<user>/.config/foo`. Docker silently makes
-`/home/<user>/.config/foo` as `root:root 0755`, and any subsequent attempt by the non-root user to
-write a sibling (e.g. a `cache/` subdir) inside fails with
-`PermissionError: [Errno 13] Permission denied`.
+**Pattern that fails:** mount host file `~/.config/foo/bar` → container `~/.config/foo/bar`, where the image does not pre-create `/home/<user>/.config/foo`. Docker silently makes `/home/<user>/.config/foo` as `root:root 0755`, and any subsequent attempt by the non-root user to write a sibling (e.g. a `cache/` subdir) inside fails with `PermissionError: [Errno 13] Permission denied`.
 
 **Fix in the agents Dockerfile** (must run before `USER $USERNAME`):
 
@@ -300,8 +242,7 @@ RUN install -d -m 0755 -o $USERNAME -g $USERNAME \
         /home/$USERNAME/.config/osc
 ```
 
-After editing the Dockerfile, **a `dctl ws reup` alone is not enough** — that only recreates the
-container against the existing image. You must rebuild the image first:
+After editing the Dockerfile, **a `dctl ws reup` alone is not enough** — that only recreates the container against the existing image. You must rebuild the image first:
 
 ```bash
 dctl image build agents              # picks up Dockerfile changes
@@ -318,19 +259,15 @@ dctl ws reup                         # recreate the container against the new im
 stat -c '%U:%G %a  Birth=%w' ~/.config/<dir>
 ```
 
-Detailed worked example for `~/.config/osc`: see
-[`osc-obs/auth-in-devcontainers.md`](osc-obs/auth-in-devcontainers.md).
+Detailed worked example for `~/.config/osc`: see [`osc-obs/auth-in-devcontainers.md`](osc-obs/auth-in-devcontainers.md).
 
-These patterns (KWallet-free oscrc, obfuscated host-side seeding, `OSC_CONFIG`-pinned bind mount)
-compose into a deployable per-project loop setup: seed the obfuscated `oscrc` on the host, pin
-`OSC_CONFIG` to a bind-mounted path inside the container, and drive the build loop from there.
+These patterns (KWallet-free oscrc, obfuscated host-side seeding, `OSC_CONFIG`-pinned bind mount) compose into a deployable per-project loop setup: seed the obfuscated `oscrc` on the host, pin `OSC_CONFIG` to a bind-mounted path inside the container, and drive the build loop from there.
 
 ## Common gotchas
 
 ### "I edited the Dockerfile but `dctl image build agents` shows no change"
 
-dctl reads from `~/.config/dctl/images/agents/Dockerfile` (user config), **not** from the dotfiles
-repo or the installed seed. Confirm with:
+dctl reads from `~/.config/dctl/images/agents/Dockerfile` (user config), **not** from the dotfiles repo or the installed seed. Confirm with:
 
 ```bash
 realpath ~/.config/dctl/images/agents/Dockerfile
@@ -349,10 +286,7 @@ dctl deploy image agents --reset
 
 ### "Layer cache reused the old version even after Dockerfile edits"
 
-`docker buildx` invalidates layers based on the literal text of the `RUN` instruction plus
-referenced build-context files. Trivial edits (comment changes, whitespace) **do** invalidate the
-layer. Layers _after_ an edited line all rebuild. If somehow you still see cache hits where you
-don't want them:
+`docker buildx` invalidates layers based on the literal text of the `RUN` instruction plus referenced build-context files. Trivial edits (comment changes, whitespace) **do** invalidate the layer. Layers _after_ an edited line all rebuild. If somehow you still see cache hits where you don't want them:
 
 ```bash
 dctl image build --full-rebuild   # adds --no-cache, applies to all targets
@@ -377,30 +311,21 @@ dctl image build --refresh-agents agents
 dctl ws reup
 ```
 
-Sets `--build-arg CACHEBUST_AGENTS=<timestamp>`, which the agents Dockerfile uses as a cache buster
-before the `curl … claude.ai/install.sh
+Sets `--build-arg CACHEBUST_AGENTS=<timestamp>`, which the agents Dockerfile uses as a cache buster before the `curl … claude.ai/install.sh
 | bash` and `bun add -g @openai/codex …` layers. Re-runs
 only those final layers.
 
 ### "`dctl image build` says 'Do not run as root'"
 
-Build args bake `USERNAME=root`, `USER_UID=0` into the image, which makes the resulting container
-useless for any uid 1000 mounts. The command refuses. Run as your normal host user.
+Build args bake `USERNAME=root`, `USER_UID=0` into the image, which makes the resulting container useless for any uid 1000 mounts. The command refuses. Run as your normal host user.
 
 ### "No GitHub token found — builds may hit API rate limits"
 
-dctl extracts the token from `$GH_TOKEN` → `$GITHUB_TOKEN` → `gh auth token`. If none is available,
-the build proceeds without the `--secret id=gh_token` and may hit the 60 req/hr anonymous ceiling on
-mise's GitHub-backed installs. Fix: `gh auth login`.
+dctl extracts the token from `$GH_TOKEN` → `$GITHUB_TOKEN` → `gh auth token`. If none is available, the build proceeds without the `--secret id=gh_token` and may hit the 60 req/hr anonymous ceiling on mise's GitHub-backed installs. Fix: `gh auth login`.
 
 ### Worktrees and shared `.git`
 
-If `WORKSPACE_FOLDER` is a git linked worktree (i.e. `git rev-parse
---git-dir` ≠
-`git rev-parse --git-common-dir`), `dctl ws up/reup` auto-mounts the common dir at the same host
-path inside the container so the worktree's `.git` file resolves. You don't have to do anything —
-but if the container can't see git history, check that the host path of the common dir actually
-exists inside the container.
+If `WORKSPACE_FOLDER` is a git linked worktree (i.e. `git rev-parse --git-dir` ≠ `git rev-parse --git-common-dir`), `dctl ws up/reup` auto-mounts the common dir at the same host path inside the container so the worktree's `.git` file resolves. You don't have to do anything — but if the container can't see git history, check that the host path of the common dir actually exists inside the container.
 
 ## Recipes
 
@@ -470,8 +395,7 @@ When you don't trust this digest, read these in order:
 
 - [devcontainerctl source](https://github.com/devcontainerctl/devcontainerctl) — upstream
 - Local clone: `~/Projects/_sources/devcontainerctl-develop` — used as SoT for this digest
-- [README.md](https://github.com/devcontainerctl/devcontainerctl/blob/develop/README.md) — product
-  overview, XDG layout, install
+- [README.md](https://github.com/devcontainerctl/devcontainerctl/blob/develop/README.md) — product overview, XDG layout, install
 - [docs/QUICKSTART.md](https://github.com/devcontainerctl/devcontainerctl/blob/develop/docs/QUICKSTART.md)
 - [docs/ARCHITECTURE.md](https://github.com/devcontainerctl/devcontainerctl/blob/develop/docs/ARCHITECTURE.md)
 - [docs/WORKFLOW-COMPARISON.md](https://github.com/devcontainerctl/devcontainerctl/blob/develop/docs/WORKFLOW-COMPARISON.md)
@@ -481,13 +405,11 @@ When you don't trust this digest, read these in order:
 
 ## Maintenance
 
-This file is a **human-curated digest**. Refresh when any of the `refresh-triggers` in the
-frontmatter occur. The refresh procedure is:
+This file is a **human-curated digest**. Refresh when any of the `refresh-triggers` in the frontmatter occur. The refresh procedure is:
 
 1. `cd ~/Projects/_sources/devcontainerctl-develop && git pull`
 2. `head -50 lib/dctl/{image,ws,deploy,init,test,config}.sh` to capture updated `usage_*` heredocs.
 3. Diff against the CLI surface tables above; update verbatim.
 4. Bump `last-synced` in the frontmatter.
 5. If a new command group appeared, add a new section under [CLI surface](#cli-surface--exhaustive).
-6. If the source repo moved (e.g. published to a registry, renamed branch), update
-   `source-of-truth:` and `upstream-version-seen:`.
+6. If the source repo moved (e.g. published to a registry, renamed branch), update `source-of-truth:` and `upstream-version-seen:`.

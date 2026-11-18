@@ -25,47 +25,35 @@
 
 ## Purpose
 
-What may enter this repository and what may not: the split between the library and its metadata, the
-split between public knowledge and private material, and the rule that keeps the repository from
-adopting a method it does not teach. It binds placement and dependency, not shape — how a document is
-written belongs to `SPEC-docs-format.md`.
+What may enter this repository and what may not: the split between the library and its metadata, the split between public knowledge and private material, and the rule that keeps the repository from adopting a method it does not teach. It binds placement and dependency, not shape — how a document is written belongs to `SPEC-docs-format.md`.
 
 ## Requirements
 
 ### `knowledge-base-boundary:no-knowledge-is-external` — Current operation is self-contained
 
-Understanding, linting, formatting, testing, and building this checkout MUST require no file outside
-it. Upstream provenance and upgrade availability MAY be external because current operation does not
-exercise either one.
+Understanding, linting, formatting, testing, and building this checkout MUST require no file outside it. Upstream provenance and upgrade availability MAY be external because current operation does not exercise either one.
 
 #### Scenario: A gate reads a schema that lives in another project
 
 - GIVEN a hook validating this repository's own files
 - WHEN the upstream canon checkout is unavailable
-- THEN the vendored schema, hooks, specs, configuration, and verifier keep every current operation
-  available
+- THEN the vendored schema, hooks, specs, configuration, and verifier keep every current operation available
 
-The boundary is current operation. A public tool input pinned in `flake.lock` is local operational
-state because the lock fixes the revision every gate runs. Canon provenance is metadata for upgrade,
-not an input to routine verification (ADR-source-the-documentation-canon-upstream).
+The boundary is current operation. A public tool input pinned in `flake.lock` is local operational state because the lock fixes the revision every gate runs. Canon provenance is metadata for upgrade, not an input to routine verification (ADR-source-the-documentation-canon-upstream).
 
 Verify: `prek run spec-driven-docs-verify --all-files`
 
 ### `knowledge-base-boundary:the-canon-is-named-once` — The upstream canon is named once
 
-Where the upstream documentation canon is named, this repository MUST name it only in the root
-`AGENTS.md`, as a project URL carrying no version.
+Where the upstream documentation canon is named, this repository MUST name it only in the root `AGENTS.md`, as a project URL carrying no version.
 
 #### Scenario: A chapter cites the canon passage that argues the same rule
 
 - GIVEN a library page restating a rule the canon also states
 - WHEN it links that canon passage at a pinned tag
-- THEN the commit fails, because the version now has a second home and a bucket has taken a
-  dependency it does not own (ADR-the-upstream-canon-is-named-once)
+- THEN the commit fails, because the version now has a second home and a bucket has taken a dependency it does not own (ADR-the-upstream-canon-is-named-once)
 
-The decision log and the vendored payload are exempt: a record states its own moment, and the
-payload is canon-written provenance. The version implemented lives in
-`.spec-driven-docs/manifest.json`, which the verifier reads and an upgrade rewrites.
+The decision log and the vendored payload are exempt: a record states its own moment, and the payload is canon-written provenance. The version implemented lives in `.spec-driven-docs/manifest.json`, which the verifier reads and an upgrade rewrites.
 
 Verify: `prek run canon-named-once --all-files`
 
@@ -77,22 +65,19 @@ Every tool input this repository runs MUST resolve to one revision recorded in `
 
 - GIVEN a flake input added for a new gate
 - WHEN the lock is not updated alongside it
-- THEN the input can change under the repository with no commit here to explain it, which is the
-  dependency the pin exists to remove (ADR-a-flake-pinned-tool-input-is-a-tool-dependency)
+- THEN the input can change under the repository with no commit here to explain it, which is the dependency the pin exists to remove (ADR-a-flake-pinned-tool-input-is-a-tool-dependency)
 
 Verify: `jq -e 'del(.nodes.root) | [.nodes[] | .locked.rev] | all(type == "string")' flake.lock`
 
 ### `knowledge-base-boundary:no-method-is-named` — The repository names no planning method
 
-Outside the decision log, this repository MUST NOT name a planning, project-management, or workflow
-method as a dependency, a tool, a schema source, or a link target.
+Outside the decision log, this repository MUST NOT name a planning, project-management, or workflow method as a dependency, a tool, a schema source, or a link target.
 
 #### Scenario: The work waiting on this repository is tracked elsewhere
 
 - GIVEN a planning record kept outside this checkout
 - WHEN a change here cites what that record holds
-- THEN it states the work and never the method that shapes it, because naming the method makes every
-  consumer of this repository inherit the choice
+- THEN it states the work and never the method that shapes it, because naming the method makes every consumer of this repository inherit the choice
 
 Verify: reviewer confirms the change names no method
 
@@ -104,15 +89,13 @@ A name listed in `.hooks/unnamed-methods.txt` MUST NOT appear outside the decisi
 
 - GIVEN a method removed from the flake, the hooks, and the prose
 - WHEN a later change reintroduces the name in a comment or a link
-- THEN the commit fails, because the list is what stops the removal from being undone one file at a
-  time
+- THEN the commit fails, because the list is what stops the removal from being undone one file at a time
 
 Verify: `prek run no-named-method --all-files`
 
 ### `knowledge-base-boundary:private-material-stays-in-the-vault` — Private material stays in the vault
 
-Equipment identity, security posture, recovery material, credentials, and personal workflows MUST
-live in `exobrain-tech-vault`, not here.
+Equipment identity, security posture, recovery material, credentials, and personal workflows MUST live in `exobrain-tech-vault`, not here.
 
 #### Scenario: A guide needs a real host to be useful
 
@@ -132,13 +115,11 @@ A knowledge article MUST live in the bucket that owns its subject, never under `
 - WHEN it teaches the formatter rather than stating how this repository is governed
 - THEN it belongs to the owning bucket, and `_docs/` cross-links to it
 
-Verify: reviewer applies the placement test — is this about how the KB works, or is it knowledge the
-library serves
+Verify: reviewer applies the placement test — is this about how the KB works, or is it knowledge the library serves
 
 ### `knowledge-base-boundary:a-shipped-script-is-gated` — A shipped shell script is linted and formatted
 
-Every `.sh` file in a library bucket MUST pass the lint and format gates this checkout runs, and
-those gates MUST run outside pre-commit as well.
+Every `.sh` file in a library bucket MUST pass the lint and format gates this checkout runs, and those gates MUST run outside pre-commit as well.
 
 #### Scenario: A bucket gains a script nobody checks
 

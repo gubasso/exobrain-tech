@@ -8,8 +8,7 @@ token-estimate: 250
 
 ## Scope
 
-Cross-cutting best practices for licensing, operational responsibilities, pre-commit hooks,
-refactor and migration guidance, and refusal lists.
+Cross-cutting best practices for licensing, operational responsibilities, pre-commit hooks, refactor and migration guidance, and refusal lists.
 
 ## Key Points
 

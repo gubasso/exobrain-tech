@@ -1,15 +1,13 @@
 # SSH Agent on Arch Linux
 
-On **current Arch**, you typically **do not need to create**
-`~/.config/systemd/user/ssh-agent.service`.
+On **current Arch**, you typically **do not need to create** `~/.config/systemd/user/ssh-agent.service`.
 
 The **official `openssh` package ships systemd _user_ units**:
 
 - `/usr/lib/systemd/user/ssh-agent.service`
 - `/usr/lib/systemd/user/ssh-agent.socket` ([Arch Linux][1])
 
-A common gotcha is checking it as a _system_ unit (`systemctl status ssh-agent.service`) instead of
-a _user_ unit (`systemctl --user …`). ([bbs.archlinux.org][2])
+A common gotcha is checking it as a _system_ unit (`systemctl status ssh-agent.service`) instead of a _user_ unit (`systemctl --user …`). ([bbs.archlinux.org][2])
 
 ### Quick verification (on your machine)
 
@@ -31,8 +29,7 @@ Then ensure clients can find the socket (e.g., `~/.config/environment.d/ssh-agen
 SSH_AUTH_SOCK=%t/ssh-agent.socket
 ```
 
-If you need custom environment (e.g., `DISPLAY` for askpass from user services), prefer a drop-in
-override instead of creating your own unit:
+If you need custom environment (e.g., `DISPLAY` for askpass from user services), prefer a drop-in override instead of creating your own unit:
 
 ```bash
 systemctl --user edit ssh-agent.service

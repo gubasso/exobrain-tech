@@ -2,24 +2,13 @@
 
 ## Summary
 
-When choosing between a quick symlink-based fix (Option 2) and a more comprehensive
-resolver-management setup (Option 3), the right approach depends on your desired balance of
-simplicity versus control. **Option 2**—symlinking `/etc/resolv.conf` to NetworkManager’s runtime
-copy—is exactly how Arch Linux’s NetworkManager package is configured by default, requiring no extra
-packages or per-connection tweaks ([wiki.archlinux.org][1]). **Option 3** adds explicit fallback DNS
-servers, ignores broken DHCP-supplied DNS, and installs `openresolv` to coordinate multiple sources
-modifying `/etc/resolv.conf`, mirroring the classic Debian/`resolvconf` paradigm
-([wiki.debian.org][2]). An even more modern alternative—used by Ubuntu (≥16.10) and Fedora (≥33)—is
-to enable **systemd-resolved** and point the symlink at its stub resolver, combining simplicity with
-built-in caching and per-link DNS handling ([askubuntu.com][3], [wiki.archlinux.org][4]).
+When choosing between a quick symlink-based fix (Option 2) and a more comprehensive resolver-management setup (Option 3), the right approach depends on your desired balance of simplicity versus control. **Option 2**—symlinking `/etc/resolv.conf` to NetworkManager’s runtime copy—is exactly how Arch Linux’s NetworkManager package is configured by default, requiring no extra packages or per-connection tweaks ([wiki.archlinux.org][1]). **Option 3** adds explicit fallback DNS servers, ignores broken DHCP-supplied DNS, and installs `openresolv` to coordinate multiple sources modifying `/etc/resolv.conf`, mirroring the classic Debian/`resolvconf` paradigm ([wiki.debian.org][2]). An even more modern alternative—used by Ubuntu (≥16.10) and Fedora (≥33)—is to enable **systemd-resolved** and point the symlink at its stub resolver, combining simplicity with built-in caching and per-link DNS handling ([askubuntu.com][3], [wiki.archlinux.org][4]).
 
 ---
 
 ## Option 2: Symlink to NetworkManager’s Resolver (Arch’s Default)
 
-By default, NetworkManager on Arch sets its DNS management mode to **symlink**, writing a fresh
-`/run/NetworkManager/resolv.conf` on each connection change and expecting `/etc/resolv.conf` to
-point there ([wiki.archlinux.org][1]). To model that:
+By default, NetworkManager on Arch sets its DNS management mode to **symlink**, writing a fresh `/run/NetworkManager/resolv.conf` on each connection change and expecting `/etc/resolv.conf` to point there ([wiki.archlinux.org][1]). To model that:
 
 ```bash
 sudo rm -f /etc/resolv.conf
@@ -34,8 +23,7 @@ sudo nmcli connection up "$(nmcli -g NAME,TYPE con show --active | awk -F: '/wif
 
 ## Option 3: Persistent & Robust via `openresolv` & `nmcli`
 
-This approach layers on four tasks to ensure DNS always works—even when DHCP is broken—and lets
-multiple services modify `/etc/resolv.conf` safely:
+This approach layers on four tasks to ensure DNS always works—even when DHCP is broken—and lets multiple services modify `/etc/resolv.conf` safely:
 
 | Task                             | Command                                                              | Why                                                                                     |
 | -------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -51,34 +39,25 @@ multiple services modify `/etc/resolv.conf` safely:
 
 ## Alternative: systemd-resolved (Modern Default on Ubuntu & Fedora)
 
-Instead of `openresolv`, many distributions now ship with **systemd-resolved**, which offers a stub
-listener at `127.0.0.53` and DNS caching via D-Bus ([wiki.archlinux.org][4]). You can emulate this
-on Void/Arch:
+Instead of `openresolv`, many distributions now ship with **systemd-resolved**, which offers a stub listener at `127.0.0.53` and DNS caching via D-Bus ([wiki.archlinux.org][4]). You can emulate this on Void/Arch:
 
 ```bash
 sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 sudo systemctl enable --now systemd-resolved
 ```
 
-Optionally, configure NetworkManager to hand off DNS to systemd-resolved by adding
-`dns=systemd-resolved` under `[main]` in `/etc/NetworkManager/conf.d/dns.conf`. Ubuntu (since 16.10)
-and Fedora 33+ do exactly this automatically ([askubuntu.com][3]).
+Optionally, configure NetworkManager to hand off DNS to systemd-resolved by adding `dns=systemd-resolved` under `[main]` in `/etc/NetworkManager/conf.d/dns.conf`. Ubuntu (since 16.10) and Fedora 33+ do exactly this automatically ([askubuntu.com][3]).
 
-- **Pros**: Single service manages DNS for all clients, per-link settings, caching, DoT/DoH
-  integration.
+- **Pros**: Single service manages DNS for all clients, per-link settings, caching, DoT/DoH integration.
 - **Cons**: Requires running systemd-resolved; some legacy tools may need `systemd-resolvconf`.
 
 ---
 
 ## Recommendation
 
-- **For a lean setup** on Void Linux (aligned with Arch defaults), **Option 2** is sufficient: a
-  simple symlink and let NetworkManager do the rest.
-- **If you frequently roam across networks** with flaky DHCP or need split-DNS, **Option 3** gives
-  you granular control and reliable fallbacks.
-- **If you prefer the most “set-and-forget” experience**, enable **systemd-resolved**: it combines
-  the simplicity of Option 2 with caching and robust per-link DNS, matching the defaults on Ubuntu
-  and Fedora.
+- **For a lean setup** on Void Linux (aligned with Arch defaults), **Option 2** is sufficient: a simple symlink and let NetworkManager do the rest.
+- **If you frequently roam across networks** with flaky DHCP or need split-DNS, **Option 3** gives you granular control and reliable fallbacks.
+- **If you prefer the most “set-and-forget” experience**, enable **systemd-resolved**: it combines the simplicity of Option 2 with caching and robust per-link DNS, matching the defaults on Ubuntu and Fedora.
 
 [1]: https://wiki.archlinux.org/title/NetworkManager "NetworkManager - ArchWiki"
 [2]: https://wiki.debian.org/resolv.conf?action=raw "Debian Wiki"

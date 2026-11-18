@@ -2,12 +2,9 @@
 
 > <https://en.opensuse.org/openSUSE:OSC> · <https://github.com/openSUSE/osc>
 
-`osc` is the CLI for the Open Build Service. It works like a version-control system for packages:
-checkout, edit, build locally, commit, submit-request.
+`osc` is the CLI for the Open Build Service. It works like a version-control system for packages: checkout, edit, build locally, commit, submit-request.
 
-This page is a compact cheat sheet of the verbs grouped by workflow. For end-to-end walkthroughs,
-see [setup-home-project-from-upstream.md](./setup-home-project-from-upstream.md) and the case
-studies under [case-studies/](case-studies/).
+This page is a compact cheat sheet of the verbs grouped by workflow. For end-to-end walkthroughs, see [setup-home-project-from-upstream.md](./setup-home-project-from-upstream.md) and the case studies under [case-studies/](case-studies/).
 
 ## Authentication and setup
 
@@ -15,14 +12,11 @@ studies under [case-studies/](case-studies/).
 osc ls                    # sanity-check your login / list projects
 ```
 
-For credential setup in a devcontainer (no host keyring), see
-[auth-in-devcontainers.md](./auth-in-devcontainers.md).
+For credential setup in a devcontainer (no host keyring), see [auth-in-devcontainers.md](./auth-in-devcontainers.md).
 
 ## Checkout and branch
 
-`osc co`'s synopsis is `osc co PROJECT [PACKAGE] [FILE]` — two space-separated positionals, not a
-slash-joined `PROJECT/PACKAGE` (verify with `osc help co`). `osc branch`'s synopsis is
-`osc branch SOURCEPROJECT SOURCEPACKAGE [TARGETPROJECT | . [TARGETPACKAGE]]`.
+`osc co`'s synopsis is `osc co PROJECT [PACKAGE] [FILE]` — two space-separated positionals, not a slash-joined `PROJECT/PACKAGE` (verify with `osc help co`). `osc branch`'s synopsis is `osc branch SOURCEPROJECT SOURCEPACKAGE [TARGETPROJECT | . [TARGETPACKAGE]]`.
 
 ```bash
 # Check out a package (download a working copy)
@@ -38,9 +32,7 @@ osc branch openSUSE:Factory <package> home:<your-user> <package>
 osc co home:<your-user> <package>
 ```
 
-The four-arg `osc branch` form lets you rename the target package on the fly — useful when the
-source-package name differs from the binary you actually want to override. See
-[libexpat-source-naming.md](./libexpat-source-naming.md) for a worked example.
+The four-arg `osc branch` form lets you rename the target package on the fly — useful when the source-package name differs from the binary you actually want to override. See [libexpat-source-naming.md](./libexpat-source-naming.md) for a worked example.
 
 ## Working with sources
 
@@ -53,9 +45,7 @@ osc add <file>            # add a specific file
 osc addpatch fix-foo.patch  # add a patch file
 ```
 
-`osc ar` is what you reach for after renaming, deleting, or adding files in the working copy — it
-reconciles the local file set with what OBS expects. See
-[broken-state-link-drift.md](./broken-state-link-drift.md) for the failure mode this prevents.
+`osc ar` is what you reach for after renaming, deleting, or adding files in the working copy — it reconciles the local file set with what OBS expects. See [broken-state-link-drift.md](./broken-state-link-drift.md) for the failure mode this prevents.
 
 ## Changelog
 
@@ -99,8 +89,7 @@ osc buildresults <project> <package>
 osc buildlog                     # view build log for the current lane
 ```
 
-For interpreting result states, see [blocked-state-is-transient.md](./blocked-state-is-transient.md)
-and [broken-state-link-drift.md](./broken-state-link-drift.md).
+For interpreting result states, see [blocked-state-is-transient.md](./blocked-state-is-transient.md) and [broken-state-link-drift.md](./broken-state-link-drift.md).
 
 ```bash
 # Submit request (like a PR — merge branch into target project)
@@ -132,22 +121,16 @@ rpm -ql <package> | grep <expected-file>
 
 ## Getting changes from the link target back into your branch
 
-`osc` does not have a top-level `merge` verb. To pull upstream changes into a branched/linked
-package, use `osc pull` from inside the working copy:
+`osc` does not have a top-level `merge` verb. To pull upstream changes into a branched/linked package, use `osc pull` from inside the working copy:
 
 ```bash
 osc pull                          # merge the link target's changes into the working copy
 ```
 
-To send your branch's changes the other way (back into the upstream project), open a submit request
-with `osc sr` — see "Committing and submitting" above. Maintainers of the target project review and
-merge it server-side.
+To send your branch's changes the other way (back into the upstream project), open a submit request with `osc sr` — see "Committing and submitting" above. Maintainers of the target project review and merge it server-side.
 
 ## See also
 
-- [setup-home-project-from-upstream.md](./setup-home-project-from-upstream.md) — end-to-end
-  home-project walkthrough.
-- [common-mistakes-and-pitfalls.md](./common-mistakes-and-pitfalls.md) — the CLI foot-guns and
-  workspace mistakes worth memorizing before you hit them.
-- [`systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md)
-  — curated upstream-URL index (user guides, packaging guidelines, cheat sheets).
+- [setup-home-project-from-upstream.md](./setup-home-project-from-upstream.md) — end-to-end home-project walkthrough.
+- [common-mistakes-and-pitfalls.md](./common-mistakes-and-pitfalls.md) — the CLI foot-guns and workspace mistakes worth memorizing before you hit them.
+- [`systems/linux/opensuse/opensuse-build-service-obs.md`](../../systems/linux/opensuse/opensuse-build-service-obs.md) — curated upstream-URL index (user guides, packaging guidelines, cheat sheets).

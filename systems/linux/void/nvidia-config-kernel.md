@@ -2,12 +2,9 @@
 
 ## TLDR
 
-Option Where to set Benefit Source options nvidia-drm modeset=1 (or nvidia-drm.modeset=1 on the
-kernel cmdline) /etc/modprobe.d/nvidia.conf Enables DRM/KMS path required for GBM; on by default in
-560 or newer drivers but harmless to keep <https://github.com/hyprwm/hyprland-wiki/issues/968>
+Option Where to set Benefit Source options nvidia-drm modeset=1 (or nvidia-drm.modeset=1 on the kernel cmdline) /etc/modprobe.d/nvidia.conf Enables DRM/KMS path required for GBM; on by default in 560 or newer drivers but harmless to keep <https://github.com/hyprwm/hyprland-wiki/issues/968>
 
-Neither switch changes GPU clocks. Real performance (on AC) and power-saving (on battery) hinge on
-NVIDIA’s PowerMizer, PCIe runtime-PM and PRIME off-load, not on these two flags.
+Neither switch changes GPU clocks. Real performance (on AC) and power-saving (on battery) hinge on NVIDIA’s PowerMizer, PCIe runtime-PM and PRIME off-load, not on these two flags.
 
 `/etc/modprobe.d/99‑nvidia.conf`
 
@@ -36,16 +33,8 @@ cat /sys/module/nvidia_drm/parameters/fbdev
 
 **Short answer up-front:**
 
-- `nvidia-drm.modeset=1` (or the modprobe equivalent) **is still required** for any Wayland
-  compositor on NVIDIA - including Niri and Hyprland – because it turns on the DRM/KMS “GBM path”.
-  With driver 560 the option is often **pre-enabled by the distro package**, but Void currently
-  ships the upstream `.run` driver without that patch, so you should keep the line in
-  `/etc/modprobe.d/99-nvidia.conf`; it has no measurable performance or battery-life penalty.
-- `nvidia-drm.fbdev=1` only creates a simple framebuffer console and helps some suspend/hibernate
-  paths; it is **optional** and occasionally unstable on laptops. Test it; if you see a black screen
-  or boot hang, drop the option. Neither switch changes GPU clocks. Real performance (on AC) and
-  power-saving (on battery) hinge on NVIDIA’s PowerMizer, PCIe runtime-PM and PRIME off-load, not on
-  these two flags.
+- `nvidia-drm.modeset=1` (or the modprobe equivalent) **is still required** for any Wayland compositor on NVIDIA - including Niri and Hyprland – because it turns on the DRM/KMS “GBM path”. With driver 560 the option is often **pre-enabled by the distro package**, but Void currently ships the upstream `.run` driver without that patch, so you should keep the line in `/etc/modprobe.d/99-nvidia.conf`; it has no measurable performance or battery-life penalty.
+- `nvidia-drm.fbdev=1` only creates a simple framebuffer console and helps some suspend/hibernate paths; it is **optional** and occasionally unstable on laptops. Test it; if you see a black screen or boot hang, drop the option. Neither switch changes GPU clocks. Real performance (on AC) and power-saving (on battery) hinge on NVIDIA’s PowerMizer, PCIe runtime-PM and PRIME off-load, not on these two flags.
 
 ---
 
@@ -67,10 +56,8 @@ cat /sys/module/nvidia_drm/parameters/fbdev
    cat /sys/module/nvidia_drm/parameters/fbdev     # Y means enabled
    ```
 
-2. On Arch and a few other distros the **560.35.03** packaging script flips both switches to “Y”
-   automatically ([bbs.archlinux.org][4], [bbs.archlinux.org][4]).
-3. **Void packages the upstream binary**, whose README still ships them **disabled by default**
-   ([download.nvidia.com][5]), so you’ll almost certainly see `N`.
+2. On Arch and a few other distros the **560.35.03** packaging script flips both switches to “Y” automatically ([bbs.archlinux.org][4], [bbs.archlinux.org][4]).
+3. **Void packages the upstream binary**, whose README still ships them **disabled by default** ([download.nvidia.com][5]), so you’ll almost certainly see `N`.
 
 **Conclusion:** keep the file you showed:
 
@@ -85,11 +72,8 @@ It is evaluated early by runit’s udev cold-plug, so no GRUB edits are needed.
 
 ## 3 Performance when plugged-in
 
-- The flags only touch the kernel display path; they **do not alter clocks, VRAM timings or boost
-  behaviour**, so FPS in e.g. `glmark2` or Vulkan titles remains unchanged
-  ([support.exxactcorp.com][6]).
-- Enabling DRM/KMS actually removes one copy operation in Wayland compositors and can cut a few ms
-  of latency in games and video playback on Hyprland ([deepwiki.com][7]).
+- The flags only touch the kernel display path; they **do not alter clocks, VRAM timings or boost behaviour**, so FPS in e.g. `glmark2` or Vulkan titles remains unchanged ([support.exxactcorp.com][6]).
+- Enabling DRM/KMS actually removes one copy operation in Wayland compositors and can cut a few ms of latency in games and video playback on Hyprland ([deepwiki.com][7]).
 
 ---
 
@@ -108,8 +92,7 @@ The two `nvidia-drm` options above **do not influence any of these power states*
 
 ## 5 Void-specific early-KMS / initramfs note
 
-If you regenerate initramfs with **dracut** (needed for LUKS or early console), include the driver
-list you pasted:
+If you regenerate initramfs with **dracut** (needed for LUKS or early console), include the driver list you pasted:
 
 ```conf
 # /etc/dracut.conf.d/nvidia.conf
@@ -124,15 +107,10 @@ Void’s wiki and community gist recommend the same ([gist.github.com][11]).
 ## 6 Practical recommendation for your Lenovo P-series laptop
 
 1. **Keep `modeset=1`** – required for Niri/Hyprland and stable since R520+.
-2. **Start with `fbdev=1` disabled** (`fbdev=0`) if you experience a boot hang or frozen TTY;
-   otherwise leave it on for nicer text consoles and smoother resume ([bbs.archlinux.org][12],
-   [bbs.archlinux.org][13]).
-3. Enable runtime-PM (`nvidia-powerd`) and PRIME off-load for actual battery gains; use AC-powered
-   profiles (`Prefer‐Maximum‐Performance`) only when gaming or benchmarking
-   ([nvidia.custhelp.com][14]).
+2. **Start with `fbdev=1` disabled** (`fbdev=0`) if you experience a boot hang or frozen TTY; otherwise leave it on for nicer text consoles and smoother resume ([bbs.archlinux.org][12], [bbs.archlinux.org][13]).
+3. Enable runtime-PM (`nvidia-powerd`) and PRIME off-load for actual battery gains; use AC-powered profiles (`Prefer‐Maximum‐Performance`) only when gaming or benchmarking ([nvidia.custhelp.com][14]).
 
-Follow these steps and your RTX 3000 Ada will run Wayland fast on AC while sleeping soundly on
-battery.
+Follow these steps and your RTX 3000 Ada will run Wayland fast on AC while sleeping soundly on battery.
 
 [1]: https://forums.developer.nvidia.com/t/understanding-nvidia-drm-modeset-1-nvidia-linux-driver-modesetting/204068 "Understanding nvidia-drm.modeset=1 (NVIDIA Linux driver modesetting)"
 [2]: https://forums.developer.nvidia.com/t/blank-screen-on-boot/284828 "Blank screen on boot? - Linux - NVIDIA Developer Forums"
@@ -157,23 +135,13 @@ battery.
 
 ---
 
-Below is a detailed review of the two snippets you quoted, what they achieve, and whether they are
-still useful on a **current Void Linux + Wayland (Niri) + proprietary NVIDIA** system.
+Below is a detailed review of the two snippets you quoted, what they achieve, and whether they are still useful on a **current Void Linux + Wayland (Niri) + proprietary NVIDIA** system.
 
 ---
 
 In one paragraph – **key findings**
 
-_Void’s stock `nvidia`/`nvidiaXXX` packages already give you a working Wayland session; all you
-normally add is the kernel parameter (or a modprobe file) `nvidia‑drm.modeset=1`, which the official
-handbook itself hints at for KMS/Wayland support. Everything else in your snippet is only needed if
-you **also** want the very early, high‑resolution framebuffer console that shows the LUKS password
-prompt and bootsplash in native resolution. That feature became **experimental in driver 545** and
-is enabled by `fbdev=1`. To make that console appear before the root filesystem is unlocked you must
-place the NVIDIA modules **inside the initramfs**, which is what the `dracut.conf.d` lines do.
-Keeping these extra lines therefore trades a larger/tainted initramfs and the risk of black‑screen
-bugs for a prettier boot; if you can live with the low‑resolution `simpledrm` console, you can drop
-them._
+_Void’s stock `nvidia`/`nvidiaXXX` packages already give you a working Wayland session; all you normally add is the kernel parameter (or a modprobe file) `nvidia‑drm.modeset=1`, which the official handbook itself hints at for KMS/Wayland support. Everything else in your snippet is only needed if you **also** want the very early, high‑resolution framebuffer console that shows the LUKS password prompt and bootsplash in native resolution. That feature became **experimental in driver 545** and is enabled by `fbdev=1`. To make that console appear before the root filesystem is unlocked you must place the NVIDIA modules **inside the initramfs**, which is what the `dracut.conf.d` lines do. Keeping these extra lines therefore trades a larger/tainted initramfs and the risk of black‑screen bugs for a prettier boot; if you can live with the low‑resolution `simpledrm` console, you can drop them._
 
 ---
 
@@ -185,8 +153,7 @@ them._
 | Wayland readiness   | Handbook recommends adding **`nvidia‑drm.modeset=1`** (either on the kernel command line or as a modprobe option) so wlroots/Niri can open the DRM device                                    | ([docs.voidlinux.org][1], [gist.github.com][2]) |
 | initramfs content   | Dracut _already_ copies every module **that is loaded while the image is generated**; because the NVIDIA modules are _not_ loaded at that moment, they are **absent** from the default image | ([docs.voidlinux.org][3])                       |
 
-So after installing the driver and adding the _modeset_ option you can log straight into Niri on
-Wayland without touching dracut.
+So after installing the driver and adding the _modeset_ option you can log straight into Niri on Wayland without touching dracut.
 
 ---
 
@@ -201,14 +168,9 @@ Wayland without touching dracut.
 
 ### 2.2 Experimental framebuffer console (`fbdev=1`)
 
-- Added in **driver 545**; gives a native‑resolution console provided by `nvidia‑drm` instead of
-  `simpledrm`/`efifb`, so Plymouth or the cryptsetup prompt looks sharp.
-- Still tagged _experimental_ in 550/555; known to cause flip‑timeout or blank‑screen errors on some
-  GPUs. ([forums.developer.nvidia.com][6], [forums.developer.nvidia.com][7],
-  [forums.developer.nvidia.com][8])
-- If `fbdev=1` is not set you still get a console – but via `simpledrm`, which stays at firmware
-  resolution and hands over to NVIDIA only when the display server starts.
-  ([forums.developer.nvidia.com][9], [bbs.archlinux.org][10])
+- Added in **driver 545**; gives a native‑resolution console provided by `nvidia‑drm` instead of `simpledrm`/`efifb`, so Plymouth or the cryptsetup prompt looks sharp.
+- Still tagged _experimental_ in 550/555; known to cause flip‑timeout or blank‑screen errors on some GPUs. ([forums.developer.nvidia.com][6], [forums.developer.nvidia.com][7], [forums.developer.nvidia.com][8])
+- If `fbdev=1` is not set you still get a console – but via `simpledrm`, which stays at firmware resolution and hands over to NVIDIA only when the display server starts. ([forums.developer.nvidia.com][9], [bbs.archlinux.org][10])
 
 ---
 
@@ -220,11 +182,9 @@ Wayland without touching dracut.
 options nvidia_drm modeset=1 fbdev=1
 ```
 
-- **Syntax:** Module names in modprobe files are written with dashes, not underscores, so the
-  canonical spelling is `nvidia-drm`. Both usually work but dash is safer. ([github.com][11])
+- **Syntax:** Module names in modprobe files are written with dashes, not underscores, so the canonical spelling is `nvidia-drm`. Both usually work but dash is safer. ([github.com][11])
 - **modeset=1:** Correct and recommended for Wayland.
-- **fbdev=1:** Optional; only useful if you run driver ≥ 545 _and_ care about a high‑resolution
-  text/plymouth/LUKS screen.
+- **fbdev=1:** Optional; only useful if you run driver ≥ 545 _and_ care about a high‑resolution text/plymouth/LUKS screen.
 
 ### 3.2 `/etc/dracut.conf.d/nvidia.conf`
 
@@ -240,20 +200,15 @@ install_items+="/etc/modprobe.d/nvidia.conf"
 
 ### 3.3 `dracut --regenerate-all --force`
 
-After editing any dracut config you must rebuild the images; the command is correct.
-([linuxconfig.org][12])
+After editing any dracut config you must rebuild the images; the command is correct. ([linuxconfig.org][12])
 
 ---
 
 ## 4  Risks & caveats
 
-- **Boot‑time failures.** Some users report a hard freeze or “Flip event timeout” when `fbdev=1` is
-  enabled on RTX 30/40‑series cards; simply remove `fbdev=1` (or blacklist the modprobe file) to
-  recover. ([forums.developer.nvidia.com][8])
-- **Large initramfs.** Because the proprietary modules are \~50 MiB, the compressed image can grow
-  by 10‑15 MiB and is tagged “tainted” by the kernel.
-- **Updates.** Every NVIDIA or kernel update requires rebuilding the initramfs **again**
-  (`xbps-reconfigure -fa` or the dracut command).
+- **Boot‑time failures.** Some users report a hard freeze or “Flip event timeout” when `fbdev=1` is enabled on RTX 30/40‑series cards; simply remove `fbdev=1` (or blacklist the modprobe file) to recover. ([forums.developer.nvidia.com][8])
+- **Large initramfs.** Because the proprietary modules are \~50 MiB, the compressed image can grow by 10‑15 MiB and is tagged “tainted” by the kernel.
+- **Updates.** Every NVIDIA or kernel update requires rebuilding the initramfs **again** (`xbps-reconfigure -fa` or the dracut command).
 
 ---
 
@@ -269,7 +224,4 @@ After editing any dracut config you must rebuild the images; the command is corr
 
 ### Bottom line
 
-_`modeset=1` is effectively **required** for any NVIDIA‑on‑Wayland setup and harmless to keep;
-`fbdev=1` plus the dracut tweaks buy you a nicer pre‑login console but remain experimental. If the
-crisp LUKS prompt is not worth occasional boot regressions, drop `fbdev=1` and the dracut file and
-follow the simpler handbook procedure._
+_`modeset=1` is effectively **required** for any NVIDIA‑on‑Wayland setup and harmless to keep; `fbdev=1` plus the dracut tweaks buy you a nicer pre‑login console but remain experimental. If the crisp LUKS prompt is not worth occasional boot regressions, drop `fbdev=1` and the dracut file and follow the simpler handbook procedure._

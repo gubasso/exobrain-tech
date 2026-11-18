@@ -8,49 +8,20 @@ token-estimate: 800
 
 ## Scope
 
-Go binding of the general `programming/project-bootstrap/` shelf: the once-per-project Go setup
-that takes an empty repo to a scaffolded, gated, buildable module ready for feature work. It
-**overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates
-it; it owns only the Go ecosystem choices and the two implementation-kind orderings (CLI, HTTP
-service). Do the general steps first, then this overlay.
+Go binding of the general `programming/project-bootstrap/` shelf: the once-per-project Go setup that takes an empty repo to a scaffolded, gated, buildable module ready for feature work. It **overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates it; it owns only the Go ecosystem choices and the two implementation-kind orderings (CLI, HTTP service). Do the general steps first, then this overlay.
 
 ## Key Points
 
-- **Module init:** `go mod init <module-path>` creates `go.mod`. The module path is the canonical
-  import prefix and should be the repo URL (`github.com/<org>/<name>`); choose it once — renaming a
-  published path is disruptive. Bootstrap needs only `go.mod` (and `go.sum` once deps land) to build
-  and test.
-- **Layout (convention, not enforced):** `cmd/<binary>/main.go` — one dir per executable, `main`
-  packages kept thin; `internal/` — module-private packages, the default home for application code;
-  `pkg/` — added **only** when actually publishing importable packages, else prefer `internal/` and
-  avoid premature public surface. A single small binary can start with a top-level `main.go`;
-  introduce `cmd/`/`internal/` as it grows. Bootstrap owns the ordering: buildable module first.
-- **Version pin:** `go 1.XX` (minimum language version) + `toolchain go1.XX.Y` (exact build
-  toolchain) directives in `go.mod`, set from the first commit for reproducible builds. Host the
-  pinned Go in the Nix devShell so local and CI share one version, kept aligned with the `go.mod`
-  directives (`nix/02-per-project-devshell`).
-- **Quality gates:** `gofmt` (canonical, non-configurable) / `goimports` (superset, fixes imports)
-  for format; `go vet` (ships with toolchain) + `golangci-lint` (meta-linter, `.golangci.yml`) for
-  lint; `go test -race ./...` for tests; `govulncheck ./...` (official, reachability-aware,
-  low-noise security baseline). Wire `gofmt`/`goimports`, `go vet`, `golangci-lint` into the commit
-  stage; run the heavier `go test -race` and `govulncheck` at pre-push, and CI repeats both stages.
-- **CLI kind:** entrypoint at `cmd/<name>/main.go`, `main` thin, logic in `internal/`; arg parsing
-  via stdlib `flag` (single command) or `cobra` (subcommand tree, help/completion); return errors up
-  to `main` and map to exit codes in one place (not `os.Exit` deep in the tree); config precedence
-  flag → env → config-file (e.g. `cobra` + `viper`) with explicit defaults.
-- **Web-service kind:** entrypoint at `cmd/<name>/main.go`, handlers/routing/logic in `internal/`;
-  start from stdlib `net/http` + `http.ServeMux` (Go 1.22+ method/path patterns), reach for a router
-  (e.g. `chi`) only for richer routing/middleware; middleware chain (request logging, recovery,
-  request IDs) before routes; load port/timeouts/deps from env/flags with explicit defaults and set
-  `ReadTimeout`/`WriteTimeout` on `http.Server`; graceful shutdown on `SIGINT`/`SIGTERM` via
-  `server.Shutdown(ctx)`.
+- **Module init:** `go mod init <module-path>` creates `go.mod`. The module path is the canonical import prefix and should be the repo URL (`github.com/<org>/<name>`); choose it once — renaming a published path is disruptive. Bootstrap needs only `go.mod` (and `go.sum` once deps land) to build and test.
+- **Layout (convention, not enforced):** `cmd/<binary>/main.go` — one dir per executable, `main` packages kept thin; `internal/` — module-private packages, the default home for application code; `pkg/` — added **only** when actually publishing importable packages, else prefer `internal/` and avoid premature public surface. A single small binary can start with a top-level `main.go`; introduce `cmd/`/`internal/` as it grows. Bootstrap owns the ordering: buildable module first.
+- **Version pin:** `go 1.XX` (minimum language version) + `toolchain go1.XX.Y` (exact build toolchain) directives in `go.mod`, set from the first commit for reproducible builds. Host the pinned Go in the Nix devShell so local and CI share one version, kept aligned with the `go.mod` directives (`nix/02-per-project-devshell`).
+- **Quality gates:** `gofmt` (canonical, non-configurable) / `goimports` (superset, fixes imports) for format; `go vet` (ships with toolchain) + `golangci-lint` (meta-linter, `.golangci.yml`) for lint; `go test -race ./...` for tests; `govulncheck ./...` (official, reachability-aware, low-noise security baseline). Wire `gofmt`/`goimports`, `go vet`, `golangci-lint` into the commit stage; run the heavier `go test -race` and `govulncheck` at pre-push, and CI repeats both stages.
+- **CLI kind:** entrypoint at `cmd/<name>/main.go`, `main` thin, logic in `internal/`; arg parsing via stdlib `flag` (single command) or `cobra` (subcommand tree, help/completion); return errors up to `main` and map to exit codes in one place (not `os.Exit` deep in the tree); config precedence flag → env → config-file (e.g. `cobra` + `viper`) with explicit defaults.
+- **Web-service kind:** entrypoint at `cmd/<name>/main.go`, handlers/routing/logic in `internal/`; start from stdlib `net/http` + `http.ServeMux` (Go 1.22+ method/path patterns), reach for a router (e.g. `chi`) only for richer routing/middleware; middleware chain (request logging, recovery, request IDs) before routes; load port/timeouts/deps from env/flags with explicit defaults and set `ReadTimeout`/`WriteTimeout` on `http.Server`; graceful shutdown on `SIGINT`/`SIGTERM` via `server.Shutdown(ctx)`.
 
 ## Maintenance Notes
 
-- General spine: `../../../programming/project-bootstrap/`. Nix devShell host:
-  `../../../tools/nix/02-per-project-devshell.md`.
-- `library-project.md` is a declared followup kind; add it when a Go
-  library is bootstrapped.
-- Binary distribution, container images, and deploy manifests are out of scope here. Bootstrap
-  stops at a working, gated module.
+- General spine: `../../../programming/project-bootstrap/`. Nix devShell host: `../../../tools/nix/02-per-project-devshell.md`.
+- `library-project.md` is a declared followup kind; add it when a Go library is bootstrapped.
+- Binary distribution, container images, and deploy manifests are out of scope here. Bootstrap stops at a working, gated module.
 - No conflicts among the current source files.

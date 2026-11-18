@@ -2,9 +2,7 @@
 
 ## Context and Problem Statement
 
-The work unit used a project-specific name, a directory for every unit, and a calendar-oriented
-budget. Agent implementation makes human review judgment the scarce resource, and the directory
-shape adds ceremony before artifacts exist.
+The work unit used a project-specific name, a directory for every unit, and a calendar-oriented budget. Agent implementation makes human review judgment the scarce resource, and the directory shape adds ceremony before artifacts exist.
 
 ## Considered Options
 
@@ -14,21 +12,15 @@ shape adds ceremony before artifacts exist.
 
 ## Decision Outcome
 
-Chosen option: XP stories in one file — each work unit is
-`docs/plan/stories/<id>-<slug>.md`, with an optional same-name sibling directory only for traces,
-fixtures, diagram sources, or other non-narrative artifacts.
+Chosen option: XP stories in one file — each work unit is `docs/plan/stories/<id>-<slug>.md`, with an optional same-name sibling directory only for traces, fixtures, diagram sources, or other non-narrative artifacts.
 
-Each lane entry owns `type` and `points`. Types are `story`, `spike`, or `chore`; points are
-`1 | 2 | 3`, count irreducible human judgments, and force work needing four or more judgments to
-split. Velocity is derived from points on completed entries and is a cap on reviewer capacity, not
-an estimate of agent time.
+Each lane entry owns `type` and `points`. Types are `story`, `spike`, or `chore`; points are `1 | 2 | 3`, count irreducible human judgments, and force work needing four or more judgments to split. Velocity is derived from points on completed entries and is a cap on reviewer capacity, not an estimate of agent time.
 
 ## Consequences
 
 - Good: a story maps directly to common issue trackers and never moves when artifacts appear.
 - Good: the record has one estimate owner and no cached value in the story.
-- Bad: optional artifact directories require discipline to keep narrative material in the story or
-  a durable documentation zone.
+- Bad: optional artifact directories require discipline to keep narrative material in the story or a durable documentation zone.
 
 ## Status
 

@@ -1,12 +1,8 @@
 # Tool Matrix — Per-Language Recommendations
 
-Loaded by Phase 3 of the `test-review` skill when generating the **Suggestions** section of
-`REFACTOR_PLAN.md`. Mirrors the canonical reference at
-`tech/programming/cli-design/09-testing-and-quality/testing-tools.md`. Refresh from canonical when
-adding a new language.
+Loaded by Phase 3 of the `test-review` skill when generating the **Suggestions** section of `REFACTOR_PLAN.md`. Mirrors the canonical reference at `tech/programming/cli-design/09-testing-and-quality/testing-tools.md`. Refresh from canonical when adding a new language.
 
-The rule for surfacing suggestions: **never silently install.** Every suggestion in REFACTOR_PLAN.md
-is a copy-paste snippet the user (or the codex twin, with user approval) chooses to apply.
+The rule for surfacing suggestions: **never silently install.** Every suggestion in REFACTOR_PLAN.md is a copy-paste snippet the user (or the codex twin, with user approval) chooses to apply.
 
 ## Opinionated defaults — "if in doubt, start here"
 
@@ -20,11 +16,7 @@ is a copy-paste snippet the user (or the codex twin, with user approval) chooses
 
 ## Detection commands — is the tool already set up?
 
-Used by the skill's tooling-detection phase. Each cell is a probe that exits non-zero (or returns
-empty) when the tool is **not** installed or not wired into the project. Run all probes in parallel;
-classify each tool as `installed`, `manifest-only` (declared in pyproject.toml / Cargo.toml /
-package.json / go.mod but binary not on PATH), `not-installed`, or `n/a` (no canonical tool for the
-language).
+Used by the skill's tooling-detection phase. Each cell is a probe that exits non-zero (or returns empty) when the tool is **not** installed or not wired into the project. Run all probes in parallel; classify each tool as `installed`, `manifest-only` (declared in pyproject.toml / Cargo.toml / package.json / go.mod but binary not on PATH), `not-installed`, or `n/a` (no canonical tool for the language).
 
 | Category                | Rust                                                                                       | Python                                                                | TypeScript / JS                                                                                         | Go                                              | Bash                                      |
 | ----------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------- |
@@ -38,17 +30,13 @@ language).
 | Pre-commit configured   | `test -f .pre-commit-config.yaml` (any language)                                           |                                                                       |                                                                                                         |                                                 |                                           |
 | CI configured           | `test -d .github/workflows -o -f .gitlab-ci.yml -o -f .circleci/config.yml` (any language) |                                                                       |                                                                                                         |                                                 |                                           |
 
-If `jq` is not available, fall back to `grep -E '"vitest":' package.json`-style probes. The exact
-command matters less than the answer (`installed` / `manifest-only` / `not-installed`).
+If `jq` is not available, fall back to `grep -E '"vitest":' package.json`-style probes. The exact command matters less than the answer (`installed` / `manifest-only` / `not-installed`).
 
 Project-config-file lookup precedence (per language) for "is this declared somewhere":
 
-- **Python:** `pyproject.toml` (PEP 621 `[project.optional-dependencies.test]`, Poetry
-  `[tool.poetry.group.dev.dependencies]`, PDM `[tool.pdm.dev-dependencies.test]`), then
-  `requirements*.txt`, then `setup.cfg`.
+- **Python:** `pyproject.toml` (PEP 621 `[project.optional-dependencies.test]`, Poetry `[tool.poetry.group.dev.dependencies]`, PDM `[tool.pdm.dev-dependencies.test]`), then `requirements*.txt`, then `setup.cfg`.
 - **Rust:** `Cargo.toml` `[dev-dependencies]` + workspace inheritance.
-- **TypeScript/JS:** `package.json` `devDependencies` + `peerDependencies`; pnpm/yarn workspace
-  roots.
+- **TypeScript/JS:** `package.json` `devDependencies` + `peerDependencies`; pnpm/yarn workspace roots.
 - **Go:** `go.mod` (test-only imports are still tracked).
 - **Bash:** binary presence on `PATH`; project may have a `bats/` git submodule.
 
@@ -65,11 +53,7 @@ Project-config-file lookup precedence (per language) for "is this declared somew
 
 ## Pre-commit / CI tier suggestions
 
-For projects without a `.pre-commit-config.yaml`, REFACTOR_PLAN.md's Suggestions section can include
-a copy-paste hook tailored to the detected language. A test runner keeps `language: system` because
-it runs in the environment of the project, and the comment above its `- id:` line names its owner
-and class, as
-[04 — Quality gates](../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
+For projects without a `.pre-commit-config.yaml`, REFACTOR_PLAN.md's Suggestions section can include a copy-paste hook tailored to the detected language. A test runner keeps `language: system` because it runs in the environment of the project, and the comment above its `- id:` line names its owner and class, as [04 — Quality gates](../project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
 
 ### Python
 
@@ -137,8 +121,7 @@ and class, as
 
 ## Mutation-testing schedule snippet
 
-For projects that want mutation testing on a nightly schedule (the only sensible cadence — see
-`08-testing-and-quality/testing-strategy.md:#mutation-testing-as-quality-gate`):
+For projects that want mutation testing on a nightly schedule (the only sensible cadence — see `08-testing-and-quality/testing-strategy.md:#mutation-testing-as-quality-gate`):
 
 ```yaml
 # .github/workflows/mutation.yml
@@ -159,8 +142,7 @@ jobs:
       - run: nix develop --command mutmut results
 ```
 
-Adapt the `mutmut` lines per language. The `|| true` is intentional: surviving mutants are reported,
-not a gate, until the score is stable on a critical module.
+Adapt the `mutmut` lines per language. The `|| true` is intentional: surviving mutants are reported, not a gate, until the score is stable on a critical module.
 
 ## Makefile / justfile target snippet
 
@@ -184,9 +166,7 @@ mutate:      cargo mutants --in-place --no-shuffle
 
 ## Install snippets — tailored per project manager
 
-Used by `TOOLING_REPORT.md` setup steps. Each snippet is a copy-paste block the user (or the codex
-twin with explicit approval) applies once to add a missing tool. **Never auto-applied** — see Rule 8
-of the skills.
+Used by `TOOLING_REPORT.md` setup steps. Each snippet is a copy-paste block the user (or the codex twin with explicit approval) applies once to add a missing tool. **Never auto-applied** — see Rule 8 of the skills.
 
 ### Python — `pyproject.toml`
 
@@ -231,8 +211,7 @@ wiremock   = "0.6"
 }
 ```
 
-Install: `pnpm add -D vitest fast-check msw @stryker-mutator/core @stryker-mutator/vitest-runner`
-(or `npm i -D …`).
+Install: `pnpm add -D vitest fast-check msw @stryker-mutator/core @stryker-mutator/vitest-runner` (or `npm i -D …`).
 
 ### Go — go.mod
 
@@ -253,8 +232,7 @@ go install github.com/go-gremlins/gremlins/cmd/gremlins@latest
 
 ## Per-round web research instructions
 
-When the skill runs its web research pass, prompt the dispatched research agent (or the WebSearch
-tool directly) along the lines of:
+When the skill runs its web research pass, prompt the dispatched research agent (or the WebSearch tool directly) along the lines of:
 
 ```text
 For a project written in <language(s)>, identify testing tools that
@@ -281,13 +259,8 @@ Skip tools already in the opinionated defaults table unless a major
 2025/2026 release substantively changed their behavior.
 ```
 
-The skill writes the research output into the **Discoveries** section of `TOOLING_REPORT.md`. Each
-discovery is advisory — the user decides whether to incorporate it. Discoveries do not become tasks
-in `REFACTOR_PLAN.md` unless the user explicitly promotes them.
+The skill writes the research output into the **Discoveries** section of `TOOLING_REPORT.md`. Each discovery is advisory — the user decides whether to incorporate it. Discoveries do not become tasks in `REFACTOR_PLAN.md` unless the user explicitly promotes them.
 
 ## Authority
 
-For the full per-language matrix (CLI testing libraries, contract testing, coverage tools, recording
-stubs in their entirety) the canonical reference is the user's
-`tech/programming/cli-design/09-testing-and-quality/testing-tools.md`. Read that file when the
-project's needs go beyond the opinionated defaults above.
+For the full per-language matrix (CLI testing libraries, contract testing, coverage tools, recording stubs in their entirety) the canonical reference is the user's `tech/programming/cli-design/09-testing-and-quality/testing-tools.md`. Read that file when the project's needs go beyond the opinionated defaults above.

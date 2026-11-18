@@ -16,8 +16,7 @@
 
 ## General
 
-- Initial setup:
-  https://internetcomputer.org/docs/current/tutorials/developer-journey/level-0/dev-env
+- Initial setup: https://internetcomputer.org/docs/current/tutorials/developer-journey/level-0/dev-env
 
 ### Create a new project
 
@@ -73,8 +72,7 @@ dfx canister deposit-cycles [cycles amount] [canister-name]
 
 ## Testing
 
-> [Building with Rust > 5: Writing and deploying canisters > Testing the canister](https://internetcomputer.org/docs/current/developer-docs/backend/rust/deploying#testing-the-canister)
-> [PocketIC](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/test/pocket-ic)
+> [Building with Rust > 5: Writing and deploying canisters > Testing the canister](https://internetcomputer.org/docs/current/developer-docs/backend/rust/deploying#testing-the-canister) [PocketIC](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/test/pocket-ic)
 
 ## Resources
 
@@ -87,5 +85,4 @@ dfx canister deposit-cycles [cycles amount] [canister-name]
 
 - [Introduction to developing canisters in Rust](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
 - rust cdk https://github.com/dfinity/cdk-rs
-  - examples: see `examples/` in <https://github.com/dfinity/cdk-rs> (former `tree/main/examples`
-    path 404s; layout reorganized)
+  - examples: see `examples/` in <https://github.com/dfinity/cdk-rs> (former `tree/main/examples` path 404s; layout reorganized)

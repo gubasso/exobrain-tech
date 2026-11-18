@@ -48,8 +48,7 @@ xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt base-syst
 
 - mpv, vlc
 - exec niri --session
-  - can use this to start a session (without the need to wrap it on a d-bus explicitly, because
-    turnstile started a dbus session for the user before login)
+  - can use this to start a session (without the need to wrap it on a d-bus explicitly, because turnstile started a dbus session for the user before login)
 
 #### Battery / TLP
 

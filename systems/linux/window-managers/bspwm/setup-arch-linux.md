@@ -113,8 +113,7 @@ These are well-known, well-documented bspwm rices:
 | [elenapan/dotfiles](https://github.com/elenapan/dotfiles)             | Soft, pastel                 | Very polished         |
 | [siduck/dotfiles](https://github.com/siduck/dotfiles)                 | Minimal                      | NvChad creator        |
 
-**gh0stzk** is probably your best starting point - it includes an install script and 12 switchable
-themes.
+**gh0stzk** is probably your best starting point - it includes an install script and 12 switchable themes.
 
 ---
 

@@ -16,8 +16,7 @@
 
 - -r is it the location of the backup (destination, actual backup)
 
-Calling restic in this way, the shell starts `gpg` and provides restic with file descriptor that it
-can read like a file.[^1]
+Calling restic in this way, the shell starts `gpg` and provides restic with file descriptor that it can read like a file.[^1]
 
 ```text
 restic --password-file <( gpg --decrypt path-to-key.gpg ) backup [...]

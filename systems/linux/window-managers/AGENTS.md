@@ -8,8 +8,7 @@ token-estimate: 200
 
 ## Scope
 
-Window-manager notes for bspwm, dwm, niri, X11 monitor workflows, and migration/troubleshooting
-material.
+Window-manager notes for bspwm, dwm, niri, X11 monitor workflows, and migration/troubleshooting material.
 
 ## Key Points
 

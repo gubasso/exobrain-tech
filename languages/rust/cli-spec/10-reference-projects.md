@@ -1,9 +1,6 @@
 # 10 — Reference Projects (Rust)
 
-> Prerequisite:
-> [General principles — Reference Projects](../../../programming/cli-design/10-reference-projects.md)
-> for the language-agnostic organizational patterns these projects exemplify. This chapter zooms in
-> on the Rust specifics.
+> Prerequisite: [General principles — Reference Projects](../../../programming/cli-design/10-reference-projects.md) for the language-agnostic organizational patterns these projects exemplify. This chapter zooms in on the Rust specifics.
 
 Real-world Rust CLIs worth studying. For each: shape, what they do well, what to copy.
 
@@ -31,8 +28,7 @@ Copy: the dedicated `exit_codes.rs`, the per-feature subdirectories (`exec/`, `f
 
 ### [`sharkdp/bat`](https://github.com/sharkdp/bat) — pretty `cat`
 
-**The canonical lib+bin pattern.** `src/lib.rs` exposes the rendering engine; `src/bin/bat/` is the
-thin CLI on top:
+**The canonical lib+bin pattern.** `src/lib.rs` exposes the rendering engine; `src/bin/bat/` is the thin CLI on top:
 
 ```text
 src/
@@ -64,8 +60,7 @@ src/
 └─ keys/
 ```
 
-Copy: the `components/` + `tabs/` + `popups/` split for TUI projects. Less relevant for pure CLIs
-but instructive.
+Copy: the `components/` + `tabs/` + `popups/` split for TUI projects. Less relevant for pure CLIs but instructive.
 
 ### [`ouch-org/ouch`](https://github.com/ouch-org/ouch) — universal compressor
 
@@ -79,8 +74,7 @@ src/
 └─ non_archive/         # topical: single-file compressors
 ```
 
-Copy: the `cli/` + `commands/` split this spec recommends. Topical dirs (`archive/`, `non_archive/`)
-for plugin-like features.
+Copy: the `cli/` + `commands/` split this spec recommends. Topical dirs (`archive/`, `non_archive/`) for plugin-like features.
 
 ## Workspace CLIs
 
@@ -101,8 +95,7 @@ crates/
 └─ ...
 ```
 
-Copy: extracting reusable subsystems into library crates when they have value independent of the
-binary. The `globset` and `ignore` crates are used by dozens of other projects.
+Copy: extracting reusable subsystems into library crates when they have value independent of the binary. The `globset` and `ignore` crates are used by dozens of other projects.
 
 ### [`rust-lang/cargo`](https://github.com/rust-lang/cargo) — Rust's package manager
 
@@ -122,8 +115,7 @@ pub fn cli() -> clap::Command { ... }
 pub fn exec(gctx: &GlobalContext, args: &ArgMatches) -> CliResult { ... }
 ```
 
-Copy: the uniform `exec()` signature across subcommands. Cargo uses imperative clap (not derive) but
-the discipline is the same.
+Copy: the uniform `exec()` signature across subcommands. Cargo uses imperative clap (not derive) but the discipline is the same.
 
 ### [`jj-vcs/jj`](https://github.com/jj-vcs/jj) — Jujutsu VCS
 
@@ -149,8 +141,7 @@ src/
 └─ theme/
 ```
 
-Copy: the `options/` (parsing) + `output/` (rendering) split if your CLI has substantial formatting
-logic.
+Copy: the `options/` (parsing) + `output/` (rendering) split if your CLI has substantial formatting logic.
 
 ### [`starship/starship`](https://github.com/starship/starship) — shell prompt
 
@@ -182,9 +173,7 @@ helix-event/            # event bus
 xtask/                  # build automation
 ```
 
-Copy: workspace boundaries that align with **dependency direction** — `helix-core` depends on
-nothing app-specific, `helix-term` depends on everything. Lower-level crates do not depend on
-higher-level ones.
+Copy: workspace boundaries that align with **dependency direction** — `helix-core` depends on nothing app-specific, `helix-term` depends on everything. Lower-level crates do not depend on higher-level ones.
 
 ### [`atuinsh/atuin`](https://github.com/atuinsh/atuin) — shell history
 
@@ -196,8 +185,7 @@ crates/
 └─ atuin-common/        # shared types
 ```
 
-Copy: the four-crate split (`bin` + `client` + `server` + `common`) when you ship both client and
-server.
+Copy: the four-crate split (`bin` + `client` + `server` + `common`) when you ship both client and server.
 
 ### [`zellij-org/zellij`](https://github.com/zellij-org/zellij) — terminal multiplexer
 
@@ -209,20 +197,15 @@ zellij-tile/            # plugin API
 default-plugins/
 ```
 
-Copy: a separate `<app>-tile` (or `<app>-plugin-api`) crate when you support plugins — keeps the
-plugin ABI small and stable.
+Copy: a separate `<app>-tile` (or `<app>-plugin-api`) crate when you support plugins — keeps the plugin ABI small and stable.
 
 ## Daemons, supervisors, and VMMs
 
-Long-running processes started by a service manager rather than a shell. Study these when the binary
-you are writing is supervised — the entry-point discipline is the same, the audience is not. See
-[03 — Error handling · Binaries a service manager supervises](./03-error-handling.md#binaries-a-service-manager-supervises).
+Long-running processes started by a service manager rather than a shell. Study these when the binary you are writing is supervised — the entry-point discipline is the same, the audience is not. See [03 — Error handling · Binaries a service manager supervises](./03-error-handling.md#binaries-a-service-manager-supervises).
 
 ### [`firecracker-microvm/firecracker`](https://github.com/firecracker-microvm/firecracker) — AWS microVM VMM
 
-**The reference implementation of this spec's error boundary**, arrived at independently. `main`
-delegates, `MainError` is a `thiserror` enum with `#[source]` chaining, and one `From` impl owns the
-whole mapping:
+**The reference implementation of this spec's error boundary**, arrived at independently. `main` delegates, `MainError` is a `thiserror` enum with `#[source]` chaining, and one `From` impl owns the whole mapping:
 
 ```rust
 fn main() -> ExitCode {
@@ -237,26 +220,17 @@ fn main_exec() -> Result<(), MainError> { ... }
 impl From<MainError> for FcExitCode { ... }      // exhaustive match
 ```
 
-Copy: the render-then-classify ordering; the hand-rolled `FcExitCode` enum (it carries signal-derived
-codes `148..=157`, which is why the `sysexits` crate was unusable); one `From` impl as the single
-audit surface for "which codes can this program return".
+Copy: the render-then-classify ordering; the hand-rolled `FcExitCode` enum (it carries signal-derived codes `148..=157`, which is why the `sysexits` crate was unusable); one `From` impl as the single audit surface for "which codes can this program return".
 
 ### [`cloud-hypervisor/cloud-hypervisor`](https://github.com/cloud-hypervisor/cloud-hypervisor) — VMM
 
-A strong `thiserror` enum with 30-plus `#[source]`-chained variants, a bespoke `cli_print_error_chain`
-renderer — and exit codes of only `0` and `1`. **It invests everything in the message and nothing in
-the code**, which is a coherent choice when the consumer reads stderr rather than `$?`. It also
-cleans up its API socket before exiting, which is the argument against `process::exit` in miniature.
+A strong `thiserror` enum with 30-plus `#[source]`-chained variants, a bespoke `cli_print_error_chain` renderer — and exit codes of only `0` and `1`. **It invests everything in the message and nothing in the code**, which is a coherent choice when the consumer reads stderr rather than `$?`. It also cleans up its API socket before exiting, which is the argument against `process::exit` in miniature.
 
-Copy: the error-chain renderer. Don't copy the `process::exit(0|1)` boundary if your exit matrix is
-richer than "worked / didn't".
+Copy: the error-chain renderer. Don't copy the `process::exit(0|1)` boundary if your exit matrix is richer than "worked / didn't".
 
 ### [`containers/youki`](https://github.com/containers/youki) — OCI runtime
 
-Relevant for the **pass-through** problem: `exec` and `run` must reproduce a contained process's exit
-status verbatim, which youki does with `std::process::exit(exit_code)` mid-`main`. That works, and it
-is exactly what `clippy::exit` warns about. A `GuestStatus(u8)` variant on your code enum reaching
-`ExitCode::from(u8)` gets the same result with a clean unwind.
+Relevant for the **pass-through** problem: `exec` and `run` must reproduce a contained process's exit status verbatim, which youki does with `std::process::exit(exit_code)` mid-`main`. That works, and it is exactly what `clippy::exit` warns about. A `GuestStatus(u8)` variant on your code enum reaching `ExitCode::from(u8)` gets the same result with a clean unwind.
 
 ### [`astral-sh/ruff`](https://github.com/astral-sh/ruff) — linter
 
@@ -273,9 +247,7 @@ pub enum ExitStatus { Success, Failure, Error }
 impl From<ExitStatus> for ExitCode { ... }
 ```
 
-Copy: `report_error(&err) -> ExitCode`, which produces the rendering and the code in one boundary
-function; the separate `ExitStatus` type so the _success_ channel also carries a code (linting that
-found violations is not an error).
+Copy: `report_error(&err) -> ExitCode`, which produces the rendering and the code in one boundary function; the separate `ExitStatus` type so the _success_ channel also carries a code (linting that found violations is not an error).
 
 ## Quick comparison
 
@@ -321,8 +293,7 @@ From `riptask`:
 
 From `ripwork`:
 
-- The parse-shape / runtime-shape split: `cli/<name>.rs` + `workflows/<name>.rs` (this spec calls it
-  `commands/<name>.rs`).
+- The parse-shape / runtime-shape split: `cli/<name>.rs` + `workflows/<name>.rs` (this spec calls it `commands/<name>.rs`).
 - `pub(crate)` everywhere (`src/runtime/mod.rs:1-7`).
 - The `ui/` module as the only place that prints (`CLAUDE.md:46-52`).
 - Figment-based config (`src/config.rs:1-13`).
@@ -334,5 +305,4 @@ From `ripwork`:
 
 - Dead `src/lib.rs:1-13` that exports nothing. Delete it or make it real.
 - Recursive `#[from]` chains in `src/error.rs:144-188`. Lift shared infra instead.
-- Mixing workflow-args and `common.rs`/`preflight.rs` in one directory. Keep `cli/` strictly
-  clap-derive.
+- Mixing workflow-args and `common.rs`/`preflight.rs` in one directory. Keep `cli/` strictly clap-derive.

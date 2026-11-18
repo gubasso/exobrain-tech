@@ -2,9 +2,7 @@
 
 ## 1. Purpose and scope
 
-This document defines a cohesive **dark UI color system** inspired by a **green phosphor terminal /
-HUD** aesthetic (thin lines, controlled glow, near-black glass). It is optimized for **OLED-friendly
-near-black backgrounds**, high legibility, and strict **single-accent discipline**.
+This document defines a cohesive **dark UI color system** inspired by a **green phosphor terminal / HUD** aesthetic (thin lines, controlled glow, near-black glass). It is optimized for **OLED-friendly near-black backgrounds**, high legibility, and strict **single-accent discipline**.
 
 Apply consistently across:
 
@@ -27,10 +25,8 @@ Apply consistently across:
 
 ### 2.1 Typography and optional CRT feel (non-color guidance)
 
-- Fonts: prefer crisp monospace with good low-contrast rendering (e.g., **IBM Plex Mono**,
-  **JetBrains Mono**, **Terminus**).
-- Optional CRT effects (scanlines/bloom) are **out of scope** for this palette, but pair well if
-  kept subtle.
+- Fonts: prefer crisp monospace with good low-contrast rendering (e.g., **IBM Plex Mono**, **JetBrains Mono**, **Terminus**).
+- Optional CRT effects (scanlines/bloom) are **out of scope** for this palette, but pair well if kept subtle.
 
 ---
 
@@ -56,8 +52,7 @@ Apply consistently across:
 | `subtext` | `#BFE9D3` | Secondary text (labels, inactive tabs)       |
 | `muted`   | `#94C8AD` | Tertiary text (hints, timestamps, subtle UI) |
 
-**Contrast verification note:** `muted` (`#94C8AD`) on `surface1` (`#0F3620`) is ~**7.09:1** (WCAG
-contrast ratio), leaving headroom even if perceived contrast feels softer in green-heavy pairs.
+**Contrast verification note:** `muted` (`#94C8AD`) on `surface1` (`#0F3620`) is ~**7.09:1** (WCAG contrast ratio), leaving headroom even if perceived contrast feels softer in green-heavy pairs.
 
 ### 3.3 Brand accents (phosphor greens)
 
@@ -67,9 +62,7 @@ contrast ratio), leaving headroom even if perceived contrast feels softer in gre
 | `accent`      | `#7CF5A6` | **Primary accent** (focus ring, active border, links, primary buttons)      |
 | `accent_glow` | `#00FF80` | **Attention-only** (urgent highlight, glow indicators, critical focus cues) |
 
-**Rationale:** `accent_glow` stays **on-hue** (intensified green) rather than shifting into
-yellow-green, and is deliberately **higher saturation** than `accent` so it reads as “attention” on
-real OLED panels. If it’s too aggressive in your environment, dial back toward `#5FFFB0`.
+**Rationale:** `accent_glow` stays **on-hue** (intensified green) rather than shifting into yellow-green, and is deliberately **higher saturation** than `accent` so it reads as “attention” on real OLED panels. If it’s too aggressive in your environment, dial back toward `#5FFFB0`.
 
 ### 3.4 Semantic colors (status)
 
@@ -140,8 +133,7 @@ These tokens exist to keep terminal/ANSI behavior coherent without polluting the
 ### 4.6 Cursor model (CRT-friendly guidance)
 
 - Prefer a **block cursor** with a **moderate blink** for phosphor feel.
-- For kitty, place cursor behavior in **`kitty.conf`** (not `colors.conf`): `cursor_shape block` +
-  `cursor_blink_interval 0.6`
+- For kitty, place cursor behavior in **`kitty.conf`** (not `colors.conf`): `cursor_shape block` + `cursor_blink_interval 0.6`
 
 ---
 
@@ -284,8 +276,7 @@ frame_color = "#FF5A7A"
 
 ### 5.5 Rofi
 
-**Theme file**: `~/.config/rofi/themes/subion-phosphor.rasi` **Config include**:
-`~/.config/rofi/config.rasi`
+**Theme file**: `~/.config/rofi/themes/subion-phosphor.rasi` **Config include**: `~/.config/rofi/config.rasi`
 
 ```css
 /* Subion Phosphor (subion) */
@@ -398,8 +389,7 @@ rofi -show drun -theme ~/.config/rofi/themes/subion-phosphor.rasi
 - [ ] Body text uses `text` on dark surfaces
 - [ ] Focus states use `accent`
 - [ ] Only urgent cues use `accent_glow` / `error`
-- [ ] ANSI magenta slot is **not** lime/yellow; it remains on-theme but semantically distinct
-      (`alt_phosphor`)
+- [ ] ANSI magenta slot is **not** lime/yellow; it remains on-theme but semantically distinct (`alt_phosphor`)
 - [ ] Cyan lane (`cyan` / `color6`) is distinct from `success`
 - [ ] Rofi selection uses a left-bar indicator (not a full box border)
 - [ ] Kitty cursor behavior lives in `kitty.conf` (colors stay in `colors.conf`)

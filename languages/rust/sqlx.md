@@ -504,9 +504,7 @@ let book = sqlx::query_as!(Book,
 
 ## Others
 
-At video
-[SQLx is my favorite PostgreSQL driver to use with Rust.](https://www.youtube.com/watch?v=TCERYbgvbq0)[^1],
-there are more explanations about:
+At video [SQLx is my favorite PostgreSQL driver to use with Rust.](https://www.youtube.com/watch?v=TCERYbgvbq0)[^1], there are more explanations about:
 
 - ipnetwork type
 - listen / notify

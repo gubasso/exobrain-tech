@@ -1,12 +1,8 @@
 # Read the branch without changing it
 
-Puts the branch a pull request proposes into the directory you are already in, so its code can be
-read and run, and takes you back off it afterwards. No local bookmark is created: reading remote
-work needs no name. Pushing commits onto the branch is
-[./contribute-to-the-branch.md](./contribute-to-the-branch.md).
+Puts the branch a pull request proposes into the directory you are already in, so its code can be read and run, and takes you back off it afterwards. No local bookmark is created: reading remote work needs no name. Pushing commits onto the branch is [./contribute-to-the-branch.md](./contribute-to-the-branch.md).
 
-The steps run one worked example: pull request 42, proposing the branch `feat-x` against the
-trunk `master`.
+The steps run one worked example: pull request 42, proposing the branch `feat-x` against the trunk `master`.
 
 ## The whole run
 
@@ -44,8 +40,7 @@ jj new master@origin
      jj git fetch
      ```
 
-   - `"isCrossRepository": true` — the branch lives in a fork, which is a remote of its own, and
-     every `feat-x@origin` below reads `feat-x@fork`:
+   - `"isCrossRepository": true` — the branch lives in a fork, which is a remote of its own, and every `feat-x@origin` below reads `feat-x@fork`:
 
      ```sh
      jj git remote add fork https://github.com/<owner>/<repo>.git
@@ -80,9 +75,7 @@ jj new master@origin
 
 4. Stand on the branch head.
 
-   `jj new` parents a new empty commit on it, so the branch's files land in the directory and any
-   edit becomes a change of your own. `jj edit feat-x@origin` is refused instead: an untracked
-   remote bookmark is immutable by default.
+   `jj new` parents a new empty commit on it, so the branch's files land in the directory and any edit becomes a change of your own. `jj edit feat-x@origin` is refused instead: an untracked remote bookmark is immutable by default.
 
    ```sh
    jj new feat-x@origin
@@ -94,15 +87,12 @@ jj new master@origin
    Added 2 files, modified 1 files, removed 0 files
    ```
 
-   - Whatever the working copy held is parked as a head of its own, reachable by its change id:
-     [../one-directory/switching-changes-in-place.md](../one-directory/switching-changes-in-place.md)
-   - Carrying review notes onto the branch instead of parking them, where `wqnrkuzp` is the change
-     holding them: `jj rebase -r wqnrkuzp -d feat-x@origin && jj edit wqnrkuzp`
+   - Whatever the working copy held is parked as a head of its own, reachable by its change id: [../one-directory/switching-changes-in-place.md](../one-directory/switching-changes-in-place.md)
+   - Carrying review notes onto the branch instead of parking them, where `wqnrkuzp` is the change holding them: `jj rebase -r wqnrkuzp -d feat-x@origin && jj edit wqnrkuzp`
 
 5. Read the diff the pull request contributes.
 
-   `fork_point()` is where the branch left `master`, so whatever `master` gained afterwards stays
-   out of the diff.
+   `fork_point()` is where the branch left `master`, so whatever `master` gained afterwards stays out of the diff.
 
    ```sh
    jj diff --from 'fork_point(master@origin | feat-x@origin)' --to feat-x@origin
@@ -139,18 +129,13 @@ jj new master@origin
      @origin: zzkytpwl 7b22a8cb docs: fix typo
    ```
 
-   Expected: the working copy parents on `master@origin`, and no bookmark names the reviewed
-   branch.
+   Expected: the working copy parents on `master@origin`, and no bookmark names the reviewed branch.
 
 ## Reference
 
-- [./contribute-to-the-branch.md](./contribute-to-the-branch.md) — the same branch, once the review
-  turns into commits you push onto it
-- [../one-directory/switching-changes-in-place.md](../one-directory/switching-changes-in-place.md) —
-  parking a change and coming back to it
+- [./contribute-to-the-branch.md](./contribute-to-the-branch.md) — the same branch, once the review turns into commits you push onto it
+- [../one-directory/switching-changes-in-place.md](../one-directory/switching-changes-in-place.md) — parking a change and coming back to it
 - [../README.md](../README.md) — the naming convention these examples use
-- [Working with GitHub](https://docs.jj-vcs.dev/latest/github/) — `jj new <bookmark>@<remote>` as
-  the upstream route onto a contributor's branch, and `remotes.<name>.auto-track-bookmarks` for
-  dropping the `@origin` suffix
+- [Working with GitHub](https://docs.jj-vcs.dev/latest/github/) — `jj new <bookmark>@<remote>` as the upstream route onto a contributor's branch, and `remotes.<name>.auto-track-bookmarks` for dropping the `@origin` suffix
 - [Bookmarks](https://docs.jj-vcs.dev/latest/bookmarks/) — tracked and untracked remote bookmarks
 - [Revsets](https://docs.jj-vcs.dev/latest/revsets/) — `fork_point()` and the `x..y` range

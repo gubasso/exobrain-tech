@@ -1,18 +1,10 @@
 # Bash CLI Project — Specs Overview
 
-> Prerequisite: [General CLI principles](../../../programming/cli-design/) for architecture,
-> logging, errors, config, and coding-style rules that apply to every CLI regardless of language.
-> Facing-category consequences follow
-> [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+> Prerequisite: [General CLI principles](../../../programming/cli-design/) for architecture, logging, errors, config, and coding-style rules that apply to every CLI regardless of language. Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 >
-> For the **machine-facing standard surface** (`help`/usage, `--json`, output-as-prompt, error
-> shape, `doctor`, `init`, completion, man-via-subcommand, exit-code conventions, config precedence,
-> dry-run discipline, skill wrapper, evals), see
-> [Designing for LLM Coding Agents](../../../programming/cli-design/05-designing-for-llm-agents.md).
-> Rules there apply to this stack; they are not duplicated here.
+> For the **machine-facing standard surface** (`help`/usage, `--json`, output-as-prompt, error shape, `doctor`, `init`, completion, man-via-subcommand, exit-code conventions, config precedence, dry-run discipline, skill wrapper, evals), see [Designing for LLM Coding Agents](../../../programming/cli-design/05-designing-for-llm-agents.md). Rules there apply to this stack; they are not duplicated here.
 
-Bash-specific conventions for building a CLI tool: layout, entry point, strict-mode caveats, module
-organisation, testing, linting, install, and distribution.
+Bash-specific conventions for building a CLI tool: layout, entry point, strict-mode caveats, module organisation, testing, linting, install, and distribution.
 
 ---
 
@@ -52,19 +44,13 @@ my-cli/
 └── uninstall.sh
 ```
 
-One public function per file; filename encodes the function name. `lib/` holds shared libraries,
-`libexec/commands/` holds CLI subcommands, and top-level `functions/` holds sourced user-facing
-functions when the project also exposes a shell framework. Same shape as a well-organised
-interactive-shell package, applied to a standalone CLI.
+One public function per file; filename encodes the function name. `lib/` holds shared libraries, `libexec/commands/` holds CLI subcommands, and top-level `functions/` holds sourced user-facing functions when the project also exposes a shell framework. Same shape as a well-organised interactive-shell package, applied to a standalone CLI.
 
 ---
 
 ## Entry Points
 
-Every non-trivial runnable Bash entry point uses an explicit `main` function and ends by calling
-`main "$@"` or the project-namespaced equivalent. This applies to `bin/<name>` shims, maintenance
-scripts, installers, and single-file utilities. The only exception is a genuinely trivial one-liner:
-no parsing, branching, traps, temporary state, helper functions, or multiple commands.
+Every non-trivial runnable Bash entry point uses an explicit `main` function and ends by calling `main "$@"` or the project-namespaced equivalent. This applies to `bin/<name>` shims, maintenance scripts, installers, and single-file utilities. The only exception is a genuinely trivial one-liner: no parsing, branching, traps, temporary state, helper functions, or multiple commands.
 
 Single-file utility shape:
 
@@ -111,12 +97,9 @@ mycli::main "$@"
 ```
 
 - Shims stay thin — no business logic in `bin/`.
-- Symlink resolution matters: `stow`, `make install`, and `ln -s` in `~/.local/bin` all break the
-  naive `dirname "${BASH_SOURCE[0]}"` idiom.
-- `inherit_errexit` fixes the silent-`set -e`-disables-in-subshells pitfall; guarded for pre-4.4
-  bash.
-- A `BASH_SOURCE[0]` source/execute guard is only for intentional dual-mode scripts. Do not make it
-  the default for ordinary runnable entry points.
+- Symlink resolution matters: `stow`, `make install`, and `ln -s` in `~/.local/bin` all break the naive `dirname "${BASH_SOURCE[0]}"` idiom.
+- `inherit_errexit` fixes the silent-`set -e`-disables-in-subshells pitfall; guarded for pre-4.4 bash.
+- A `BASH_SOURCE[0]` source/execute guard is only for intentional dual-mode scripts. Do not make it the default for ordinary runnable entry points.
 
 Intentional dual-mode script shape:
 
@@ -130,9 +113,7 @@ if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
 fi
 ```
 
-Further reading: [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html),
-[Greg's Wiki BashGuide Practices](https://mywiki.wooledge.org/BashGuide/Practices), and
-[Nick Janetakis on source/execute guards](https://nickjanetakis.com/blog/detect-if-a-shell-script-is-being-executed-or-sourced).
+Further reading: [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html), [Greg's Wiki BashGuide Practices](https://mywiki.wooledge.org/BashGuide/Practices), and [Nick Janetakis on source/execute guards](https://nickjanetakis.com/blog/detect-if-a-shell-script-is-being-executed-or-sourced).
 
 ---
 
@@ -145,33 +126,21 @@ shopt -s inherit_errexit failglob nullglob lastpipe
 
 Treat as the default. Known limits:
 
-- `set -e` is disabled inside command substitutions, `if`/`&&`/`||` chains, and `local var=$(...)`
-  (the `local` masks the inner exit). See
-  [ShellCheck SC2310/SC2311](https://www.shellcheck.net/wiki/SC2310).
-- `set -o pipefail` can turn a benign SIGPIPE (producer killed by a short-circuiting `grep -q`) into
-  a failure.
+- `set -e` is disabled inside command substitutions, `if`/`&&`/`||` chains, and `local var=$(...)` (the `local` masks the inner exit). See [ShellCheck SC2310/SC2311](https://www.shellcheck.net/wiki/SC2310).
+- `set -o pipefail` can turn a benign SIGPIPE (producer killed by a short-circuiting `grep -q`) into a failure.
 - `set -u` overlaps with shellcheck; keep it for defence-in-depth.
-- **Do not set global `IFS`.** Changing word-splitting semantics globally breaks sourced code that
-  assumes the shell default. Quote everything (`"$@"`, `"${arr[@]}"`) and use arrays; that solves
-  the real problem without global side effects. (Critique:
-  [Gondža](https://olivergondza.github.io/2019/10/01/bash-strict-mode.html),
-  [BashFAQ/105](https://mywiki.wooledge.org/BashFAQ/105).)
+- **Do not set global `IFS`.** Changing word-splitting semantics globally breaks sourced code that assumes the shell default. Quote everything (`"$@"`, `"${arr[@]}"`) and use arrays; that solves the real problem without global side effects. (Critique: [Gondža](https://olivergondza.github.io/2019/10/01/bash-strict-mode.html), [BashFAQ/105](https://mywiki.wooledge.org/BashFAQ/105).)
 
-For load-bearing logic, prefer an explicit `|| return` / `trap '...' ERR` over trusting `set -e`
-implicitly.
+For load-bearing logic, prefer an explicit `|| return` / `trap '...' ERR` over trusting `set -e` implicitly.
 
 ---
 
 ## Function Scope, Constants, and Builtins
 
 - Use `local` for function variables so helpers do not leak names into callers.
-- Use `readonly` for constants after assignment. When the assignment involves command substitution,
-  split assignment from `readonly` so the command status stays visible.
-- Split `local`, `export`, and `readonly` command-substitution assignments whenever the command's
-  status matters; declaration builtins can mask the substitution's exit code.
-- Prefer Bash builtins and parameter expansion for simple Bash-native transformations such as
-  trimming prefixes, defaults, case conversion, and string replacement. Use external tools when they
-  are clearer or doing real tool work.
+- Use `readonly` for constants after assignment. When the assignment involves command substitution, split assignment from `readonly` so the command status stays visible.
+- Split `local`, `export`, and `readonly` command-substitution assignments whenever the command's status matters; declaration builtins can mask the substitution's exit code.
+- Prefer Bash builtins and parameter expansion for simple Bash-native transformations such as trimming prefixes, defaults, case conversion, and string replacement. Use external tools when they are clearer or doing real tool work.
 
 ```bash
 load_config() {
@@ -186,16 +155,13 @@ load_config() {
 }
 ```
 
-Further reading: [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html),
-[ShellCheck SC2155](https://www.shellcheck.net/wiki/SC2155), and
-[Pure Bash Bible](https://github.com/dylanaraps/pure-bash-bible).
+Further reading: [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html), [ShellCheck SC2155](https://www.shellcheck.net/wiki/SC2155), and [Pure Bash Bible](https://github.com/dylanaraps/pure-bash-bible).
 
 ---
 
 ## Module Layout: One Function per File
 
-This is the core organisational pattern. Makes the code easy for humans and LLMs to reason about,
-and keeps startup O(1) via lazy sourcing.
+This is the core organisational pattern. Makes the code easy for humans and LLMs to reason about, and keeps startup O(1) via lazy sourcing.
 
 ### Naming
 
@@ -207,11 +173,9 @@ and keeps startup O(1) via lazy sourcing.
 | `lib/<name>.sh`               | shared helpers/libraries    | shared     |
 | (any file) `__<n>`            | private helper, same file   | private    |
 
-- **One public function per file.** Filename mirrors the function name so the dispatcher can derive
-  it without a lookup table.
+- **One public function per file.** Filename mirrors the function name so the dispatcher can derive it without a lookup table.
 - `__`-prefix marks private helpers (sourced alongside, not exported).
-- Every `.sh` under `lib/` starts with `# shellcheck shell=bash` (no shebang — these are sourced,
-  not executed).
+- Every `.sh` under `lib/` starts with `# shellcheck shell=bash` (no shebang — these are sourced, not executed).
 
 ### Self-describing files
 
@@ -227,8 +191,7 @@ mycli::cmd::dispatch() {
 }
 ```
 
-The `desc:` line is lazy-loaded — costs nothing at startup, parseable by a trivial `grep`-driven
-help generator on demand.
+The `desc:` line is lazy-loaded — costs nothing at startup, parseable by a trivial `grep`-driven help generator on demand.
 
 ### Loader (source on dispatch)
 
@@ -248,17 +211,11 @@ mycli::loader::dispatch() {
 }
 ```
 
-Startup stays O(1) regardless of command count — commands load only when invoked. This is the same
-shape as a Bash autoloader: source on first use, cache nothing.
+Startup stays O(1) regardless of command count — commands load only when invoked. This is the same shape as a Bash autoloader: source on first use, cache nothing.
 
 ### Host / env overlays
 
-Use XDG paths by role. True configuration belongs under `${XDG_CONFIG_HOME:-$HOME/.config}/my-cli/`;
-user-authored code or command sources belong under `${XDG_DATA_HOME:-$HOME/.local/share}/my-cli/`.
-Expose any user command on `PATH` with an explicit symlink in `~/.local/bin` instead of implicitly
-prepending a whole commands directory. Same idea as per-host overlays in interactive Bash startup
-files: drop-in config files are sourced in lexical order after built-in defaults, while executable
-exposure remains intentional.
+Use XDG paths by role. True configuration belongs under `${XDG_CONFIG_HOME:-$HOME/.config}/my-cli/`; user-authored code or command sources belong under `${XDG_DATA_HOME:-$HOME/.local/share}/my-cli/`. Expose any user command on `PATH` with an explicit symlink in `~/.local/bin` instead of implicitly prepending a whole commands directory. Same idea as per-host overlays in interactive Bash startup files: drop-in config files are sourced in lexical order after built-in defaults, while executable exposure remains intentional.
 
 ---
 
@@ -275,11 +232,8 @@ shell=bash
 
 Rules:
 
-- Every cross-file `source` gets an explicit `# shellcheck source=<path>` directive (or rely on
-  `source-path=` above). Without it, shellcheck silently skips the file and misses half the real
-  bugs.
-- `# shellcheck disable=SC<n>` must carry a one-line justification comment; unexplained disables
-  fail review.
+- Every cross-file `source` gets an explicit `# shellcheck source=<path>` directive (or rely on `source-path=` above). Without it, shellcheck silently skips the file and misses half the real bugs.
+- `# shellcheck disable=SC<n>` must carry a one-line justification comment; unexplained disables fail review.
 - Reference: [shellcheck directives](https://github.com/koalaman/shellcheck/wiki/Directive).
 
 ---
@@ -297,24 +251,15 @@ trap 'rm -rf "$tmpdir"; exit 143' TERM
 - `mktemp -d` always with `|| exit 1`, always paired with an `EXIT` trap.
 - SIGINT exits `130`, SIGTERM `143` (128 + signal number).
 - `printf '%s\n'` over `echo` (portable across bash versions).
-- stdout is the result only (command data or machine-output); stderr carries progress/prompts
-  (human-facing) and error reports for both categories — prose for human-facing, structured JSON for
-  machine-facing — plus an explicit log mirror; program logs are file-first. The stdout/stderr split
-  is universal; errors and a non-zero exit code never go to stdout.
+- stdout is the result only (command data or machine-output); stderr carries progress/prompts (human-facing) and error reports for both categories — prose for human-facing, structured JSON for machine-facing — plus an explicit log mirror; program logs are file-first. The stdout/stderr split is universal; errors and a non-zero exit code never go to stdout.
 
-Exit-code conventions (`0`/`1`/`2` + `sysexits.h` ranges + `128+N`) are documented in
-[Designing for LLM Coding Agents](../../../programming/cli-design/05-designing-for-llm-agents.md)
-§2.4 and in [General — Error Messages](../../../programming/cli-design/02-error-messages.md) — the
-bash side just has to implement them consistently.
+Exit-code conventions (`0`/`1`/`2` + `sysexits.h` ranges + `128+N`) are documented in [Designing for LLM Coding Agents](../../../programming/cli-design/05-designing-for-llm-agents.md) §2.4 and in [General — Error Messages](../../../programming/cli-design/02-error-messages.md) — the bash side just has to implement them consistently.
 
 ---
 
 ## Testing (bats-core)
 
-> Prerequisite:
-> [General principles — Testing Strategy](../../../programming/cli-design/09-testing-and-quality/testing-strategy.md)
-> for the pyramid, tier table, isolation rules, and what to mock. This section is the bats-core
-> implementation.
+> Prerequisite: [General principles — Testing Strategy](../../../programming/cli-design/09-testing-and-quality/testing-strategy.md) for the pyramid, tier table, isolation rules, and what to mock. This section is the bats-core implementation.
 
 Layout:
 
@@ -362,25 +307,11 @@ setup() {
 
 ### Sanitise the git environment (pre-commit pitfall)
 
-A test that creates a throwaway git repo (`git init` in a tmpdir, then
-`add`/`commit`/`worktree
-add`) passes when you run `bats test/` directly but **fails only when the
-same suite runs from a git hook** (e.g. pre-commit's local `test` stage). Symptoms:
-`error: invalid object … for
-'<some path from the PARENT repo>'`, `Error building trees`,
-`fatal: .git/index: index file open
-failed`, or a bats `Executed N-1 instead of expected N tests`
-warning when the crash aborts a test mid-run.
+A test that creates a throwaway git repo (`git init` in a tmpdir, then `add`/`commit`/`worktree add`) passes when you run `bats test/` directly but **fails only when the same suite runs from a git hook** (e.g. pre-commit's local `test` stage). Symptoms: `error: invalid object … for '<some path from the PARENT repo>'`, `Error building trees`, `fatal: .git/index: index file open failed`, or a bats `Executed N-1 instead of expected N tests` warning when the crash aborts a test mid-run.
 
-Root cause: git hooks **export the parent repo's local git environment** — `GIT_DIR`,
-`GIT_INDEX_FILE`, `GIT_WORK_TREE`, `GIT_OBJECT_DIRECTORY`, `GIT_COMMON_DIR`, … — into the hook
-process and everything it spawns. `bats` inherits them, so a test's `git -C "$tmpdir" …` changes the
-working directory but still reads the inherited `GIT_INDEX_FILE`, operating on the **parent repo's
-staged index** instead of the throwaway repo's. `git -C`, `--git-dir`, and friends do **not**
-override these env vars.
+Root cause: git hooks **export the parent repo's local git environment** — `GIT_DIR`, `GIT_INDEX_FILE`, `GIT_WORK_TREE`, `GIT_OBJECT_DIRECTORY`, `GIT_COMMON_DIR`, … — into the hook process and everything it spawns. `bats` inherits them, so a test's `git -C "$tmpdir" …` changes the working directory but still reads the inherited `GIT_INDEX_FILE`, operating on the **parent repo's staged index** instead of the throwaway repo's. `git -C`, `--git-dir`, and friends do **not** override these env vars.
 
-Fix once, at the shared test-harness boundary (`common-setup.bash` above), not per-test and not with
-shellcheck disables. Clear git's own canonical repo-local variable list:
+Fix once, at the shared test-harness boundary (`common-setup.bash` above), not per-test and not with shellcheck disables. Clear git's own canonical repo-local variable list:
 
 ```bash
 unset $(git rev-parse --local-env-vars)        # documented githooks(5) idiom
@@ -390,11 +321,7 @@ mapfile -t git_env_vars < <(git rev-parse --local-env-vars 2>/dev/null || :)
 ((${#git_env_vars[@]})) && unset "${git_env_vars[@]}"
 ```
 
-`git rev-parse --local-env-vars` _is_ the authoritative list (no hardcoding; auto-tracks new git
-versions). This is the same sanitisation git's own `t/test-lib.sh` performs globally, the pattern
-[`githooks(5)`](https://git-scm.com/docs/githooks) documents for hooks that touch a foreign repo,
-and the exact class of bug pre-commit guards internally in its `no_git_env()` (`GIT_INDEX_FILE` is
-commented there as _"Causes 'error invalid object …' during commit"_).
+`git rev-parse --local-env-vars` _is_ the authoritative list (no hardcoding; auto-tracks new git versions). This is the same sanitisation git's own `t/test-lib.sh` performs globally, the pattern [`githooks(5)`](https://git-scm.com/docs/githooks) documents for hooks that touch a foreign repo, and the exact class of bug pre-commit guards internally in its `no_git_env()` (`GIT_INDEX_FILE` is commented there as _"Causes 'error invalid object …' during commit"_).
 
 Reference: [bats-core tutorial](https://bats-core.readthedocs.io/en/stable/tutorial.html).
 
@@ -402,8 +329,7 @@ Reference: [bats-core tutorial](https://bats-core.readthedocs.io/en/stable/tutor
 
 ## Linting / Formatting
 
-All checks run through **pre-commit** (see root CLAUDE (path: `../../../../CLAUDE.md`) § "Linting &
-Validation" for the repo-wide policy):
+All checks run through **pre-commit** (see root CLAUDE (path: `../../../../CLAUDE.md`) § "Linting & Validation" for the repo-wide policy):
 
 - [shellcheck](https://www.shellcheck.net/) — static analysis.
 - [shfmt](https://github.com/mvdan/sh) — formatter. Canonical flags: `shfmt -i 2 -ci -bn -s`.
@@ -427,27 +353,19 @@ Validation" for the repo-wide policy):
 
 - Detect root vs user install via `[[ $EUID -eq 0 ]]`.
 - `uninstall.sh` reads a manifest written by `install.sh` at install time.
-- Reference:
-  [XDG Base Directory spec](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html).
+- Reference: [XDG Base Directory spec](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html).
 
 `Makefile` wraps `install` / `uninstall` / `test` / `lint` / `man`.
 
-Bash human-UX should gate color, tables, and spinners with `[[ -t 1 ]]` or `[[ -t 2 ]]` as
-appropriate. Completion scripts and `scdoc`/man artifacts support both human use and agent
-self-documentation; expose man text through a `man` subcommand when the CLI needs agents to read it
-without shelling out to `man(1)`.
+Bash human-UX should gate color, tables, and spinners with `[[ -t 1 ]]` or `[[ -t 2 ]]` as appropriate. Completion scripts and `scdoc`/man artifacts support both human use and agent self-documentation; expose man text through a `man` subcommand when the CLI needs agents to read it without shelling out to `man(1)`.
 
-Config precedence: see
-[`cli-design/03-config-precedence.md`](../../../programming/cli-design/03-config-precedence.md) for
-the canonical 5-layer ladder. Secret handling and missing-config error shape: see
-[`cli-design/05-designing-for-llm-agents.md §2.9`](../../../programming/cli-design/05-designing-for-llm-agents.md#29-configuration-from-the-environment-and-files).
+Config precedence: see [`cli-design/03-config-precedence.md`](../../../programming/cli-design/03-config-precedence.md) for the canonical 5-layer ladder. Secret handling and missing-config error shape: see [`cli-design/05-designing-for-llm-agents.md §2.9`](../../../programming/cli-design/05-designing-for-llm-agents.md#29-configuration-from-the-environment-and-files).
 
 ---
 
 ## Man Page
 
-Prefer [scdoc](https://git.sr.ht/~sircmpwn/scdoc) over hand-rolled `.1` or pandoc — tiny C dep,
-markdown-ish source, deterministic output:
+Prefer [scdoc](https://git.sr.ht/~sircmpwn/scdoc) over hand-rolled `.1` or pandoc — tiny C dep, markdown-ish source, deterministic output:
 
 ```text
 man/my-cli.1.scd   →   man/my-cli.1   (built by Makefile)
@@ -497,12 +415,7 @@ jobs:
 3. shfmt clean (`-i 2 -ci -bn -s`), config checked in.
 4. Namespaced functions (`mycli::<ns>::<fn>`), one public function per file.
 5. XDG-aware, `PREFIX`-overridable installer; uninstall via manifest.
-6. bats-core tests under `test/` with `test_helper/` submodules; `common-setup.bash` clears git's
-   repo-local env (`unset $(git rev-parse --local-env-vars)`) so hook-run suites stay hermetic.
+6. bats-core tests under `test/` with `test_helper/` submodules; `common-setup.bash` clears git's repo-local env (`unset $(git rev-parse --local-env-vars)`) so hook-run suites stay hermetic.
 7. `trap ... EXIT INT TERM` cleanup for any script that creates temp state.
-8. `printf` over `echo`; program logs default to XDG state file; stdout is data/machine-output;
-   stderr carries terminal UX and only mirrors logs by explicit option.
-9. Agent-facing surface per
-   [Designing for LLM Coding Agents](../../../programming/cli-design/05-designing-for-llm-agents.md)
-   (`help`/usage, `--json`, error shape, `doctor`, `init`, completion, man-via-subcommand, dry-run,
-   exit codes).
+8. `printf` over `echo`; program logs default to XDG state file; stdout is data/machine-output; stderr carries terminal UX and only mirrors logs by explicit option.
+9. Agent-facing surface per [Designing for LLM Coding Agents](../../../programming/cli-design/05-designing-for-llm-agents.md) (`help`/usage, `--json`, error shape, `doctor`, `init`, completion, man-via-subcommand, dry-run, exit codes).

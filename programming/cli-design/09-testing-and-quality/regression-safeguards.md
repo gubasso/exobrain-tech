@@ -1,17 +1,12 @@
 # Regression Safeguards
 
-Preventing implementation regressions, especially those introduced by AI coding agents. This chapter
-defines the two safeguard categories (behavioral and structural), the verification workflow, and the
-layering model that determines when each check runs.
+Preventing implementation regressions, especially those introduced by AI coding agents. This chapter defines the two safeguard categories (behavioral and structural), the verification workflow, and the layering model that determines when each check runs.
 
-For concrete per-language tooling, see the companion file
-**[10a — Code Quality Tools](./code-quality-tools.md)** and the existing testing references
-**[09 — Testing Strategy](./testing-strategy.md)** / **[09a — Testing Tools](./testing-tools.md)**.
+For concrete per-language tooling, see the companion file **[10a — Code Quality Tools](./code-quality-tools.md)** and the existing testing references **[09 — Testing Strategy](./testing-strategy.md)** / **[09a — Testing Tools](./testing-tools.md)**.
 
 ## Why AI agents cause regressions
 
-AI coding agents are non-deterministic. The same prompt can produce structurally different
-implementations across runs. The failure modes are predictable:
+AI coding agents are non-deterministic. The same prompt can produce structurally different implementations across runs. The failure modes are predictable:
 
 | Failure mode                | What happens                                                                                                  | Which safeguard catches it                                                      |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -30,8 +25,7 @@ The safeguards below address these failure modes systematically.
 
 ### Category 1: Behavioral guarantees
 
-Tests and checks that verify the program does what users expect. These lock down the **external
-contract** — what the program does, not how it does it.
+Tests and checks that verify the program does what users expect. These lock down the **external contract** — what the program does, not how it does it.
 
 | Technique               | What it locks down                                         | Where documented                                                                                  |
 | ----------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -47,9 +41,7 @@ contract** — what the program does, not how it does it.
 
 ### Category 2: Structural quality gates
 
-Checks that enforce code quality, complexity limits, and dependency hygiene. These protect against
-**how** the code is written — catching overengineering, dead code, and unnecessary dependencies
-before they land.
+Checks that enforce code quality, complexity limits, and dependency hygiene. These protect against **how** the code is written — catching overengineering, dead code, and unnecessary dependencies before they land.
 
 | Technique                     | What it catches                                                | Where documented                                                                 |
 | ----------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -100,19 +92,13 @@ CI — NIGHTLY  (hours OK)
 
 - Each tier is a superset of the previous — nothing skipped, just added.
 - Pre-commit must never exceed 30 seconds. If a check is too slow, move it to pre-push.
-- Nightly checks are informational, not blocking (unless the team promotes a specific module to
-  gated after the score stabilizes).
-- The layering is encoded in the justfile / Makefile / task runner and in `.pre-commit-config.yaml`.
-  CI invokes the same recipes.
-- **Profiles are dead config unless invoked explicitly.** Every CI step, pre-commit hook, and
-  pre-push hook must pass the right `--profile` / `--config` flag. This is the most common reason a
-  gate silently does nothing. See
-  [09a § Tuning test-runner output](./testing-tools.md#tuning-test-runner-output-for-ci--ai-agents).
+- Nightly checks are informational, not blocking (unless the team promotes a specific module to gated after the score stabilizes).
+- The layering is encoded in the justfile / Makefile / task runner and in `.pre-commit-config.yaml`. CI invokes the same recipes.
+- **Profiles are dead config unless invoked explicitly.** Every CI step, pre-commit hook, and pre-push hook must pass the right `--profile` / `--config` flag. This is the most common reason a gate silently does nothing. See [09a § Tuning test-runner output](./testing-tools.md#tuning-test-runner-output-for-ci--ai-agents).
 
 ## Test-Driven Development for AI agents
 
-The single most effective safeguard against AI-agent regressions is **writing tests before handing
-implementation to the agent**.
+The single most effective safeguard against AI-agent regressions is **writing tests before handing implementation to the agent**.
 
 ### The TDD-for-agents workflow
 
@@ -129,8 +115,7 @@ implementation to the agent**.
 
 - The contract is explicit and machine-checkable. The agent can't silently change the specification.
 - Rust's compiler gives the agent immediate, precise feedback on type errors and borrow violations.
-- The test suite constrains the solution space — the agent can't overengineer when the tests define
-  exactly what's needed.
+- The test suite constrains the solution space — the agent can't overengineer when the tests define exactly what's needed.
 - Human review focuses on quality and style, not correctness — correctness is already verified.
 
 **When to skip it:**
@@ -139,23 +124,15 @@ implementation to the agent**.
 - Pure refactoring where existing tests already cover the behavior.
 - Trivial changes where writing the test takes longer than verifying the change.
 
-Sources:
-[Test-Driven Generation](https://chanwit.medium.com/test-driven-generation-tdg-adopting-tdd-again-this-time-with-gen-ai-27f986bed6f8)
-·
-[Test-First Prompting](https://www.endorlabs.com/learn/test-first-prompting-using-tdd-for-secure-ai-generated-code/).
+Sources: [Test-Driven Generation](https://chanwit.medium.com/test-driven-generation-tdg-adopting-tdd-again-this-time-with-gen-ai-27f986bed6f8) · [Test-First Prompting](https://www.endorlabs.com/learn/test-first-prompting-using-tdd-for-secure-ai-generated-code/).
 
 ## Eval harnesses for agent skills
 
-An eval is a regression signal distinct from the test suite: the suite verifies that the CLI works,
-and an eval verifies that the agent uses it correctly. What an eval checks, how many samples a rate
-needs, and when a stable eval becomes a gate are in
-[agent-integration — Evaluations](../../agent-integration/evaluations.md).
+An eval is a regression signal distinct from the test suite: the suite verifies that the CLI works, and an eval verifies that the agent uses it correctly. What an eval checks, how many samples a rate needs, and when a stable eval becomes a gate are in [agent-integration — Evaluations](../../agent-integration/evaluations.md).
 
 ## Verification loops
 
-The validation loop a skill carries, in
-[agent-integration — Skills](../../agent-integration/skills.md), generalized to agent-written
-code:
+The validation loop a skill carries, in [agent-integration — Skills](../../agent-integration/skills.md), generalized to agent-written code:
 
 ```text
 1. Agent writes code.
@@ -167,24 +144,16 @@ code:
 7. If mutation score dropped or snapshots changed unexpectedly, reject and iterate.
 ```
 
-The key insight: **agents iterate cheaply against automated gates**. The more precise and fast the
-gates, the tighter the feedback loop, and the less human review is needed.
+The key insight: **agents iterate cheaply against automated gates**. The more precise and fast the gates, the tighter the feedback loop, and the less human review is needed.
 
 ## Anti-patterns
 
-- **Relying on coverage alone.** Coverage says what was executed, not what was checked. Pair it with
-  mutation testing for real signal. See
-  [09 § Coverage philosophy](./testing-strategy.md#coverage-philosophy).
-- **Skipping mutation testing because "tests pass."** AI-generated tests are notorious for high
-  coverage, low mutation score. The test runs the code but doesn't check the result.
-- **No complexity threshold.** Without a complexity gate, AI agents freely introduce deeply nested,
-  over-parameterized functions. Set thresholds and enforce them in CI.
-- **Trusting snapshot auto-update.** Never auto-update snapshots in CI. Every snapshot change must
-  be reviewed. An AI agent that silently changes a JSON schema is introducing a breaking change.
-- **One-sample eval runs.** Running an eval once and declaring "it works" is statistically
-  meaningless. Run 10+ samples; track the pass rate.
-- **No binary size baseline.** Without a baseline, you won't notice when an agent adds a 2MB
-  dependency for a 10-line feature.
+- **Relying on coverage alone.** Coverage says what was executed, not what was checked. Pair it with mutation testing for real signal. See [09 § Coverage philosophy](./testing-strategy.md#coverage-philosophy).
+- **Skipping mutation testing because "tests pass."** AI-generated tests are notorious for high coverage, low mutation score. The test runs the code but doesn't check the result.
+- **No complexity threshold.** Without a complexity gate, AI agents freely introduce deeply nested, over-parameterized functions. Set thresholds and enforce them in CI.
+- **Trusting snapshot auto-update.** Never auto-update snapshots in CI. Every snapshot change must be reviewed. An AI agent that silently changes a JSON schema is introducing a breaking change.
+- **One-sample eval runs.** Running an eval once and declaring "it works" is statistically meaningless. Run 10+ samples; track the pass rate.
+- **No binary size baseline.** Without a baseline, you won't notice when an agent adds a 2MB dependency for a 10-line feature.
 
 ## Implementation checklist
 
@@ -205,10 +174,8 @@ Add to [99 — Checklist](../99-checklist.md):
 - [09 — Testing Strategy](./testing-strategy.md) — the testing pyramid and principles.
 - [09a — Testing Tools](./testing-tools.md) — per-language testing tool matrix.
 - [10a — Code Quality Tools](./code-quality-tools.md) — per-language quality gate tool matrix.
-- [agent-integration — Evaluations](../../agent-integration/evaluations.md) — evals, and the
-  tests an agent writes badly.
-- [05 — Designing for LLM Agents](../05-designing-for-llm-agents.md) — CLI design for agent
-  consumption.
+- [agent-integration — Evaluations](../../agent-integration/evaluations.md) — evals, and the tests an agent writes badly.
+- [05 — Designing for LLM Agents](../05-designing-for-llm-agents.md) — CLI design for agent consumption.
 - [04 — Coding Style](../04-coding-style-rust-zig.md) — strict lints, module size caps.
 - [99 — Checklist](../99-checklist.md) — one-page sanity check.
 - Language-specific guides:
@@ -219,8 +186,7 @@ Add to [99 — Checklist](../99-checklist.md):
 
 - [Test-Driven Generation (TDG)](https://chanwit.medium.com/test-driven-generation-tdg-adopting-tdd-again-this-time-with-gen-ai-27f986bed6f8)
 - [Test-First Prompting (Endor Labs)](https://www.endorlabs.com/learn/test-first-prompting-using-tdd-for-secure-ai-generated-code/)
-- [SWE-Bench Verified](https://www.swebench.com/verified.html) — industry benchmark for agentic
-  coding
+- [SWE-Bench Verified](https://www.swebench.com/verified.html) — industry benchmark for agentic coding
 - [DeepEval — AI Agent Evaluation](https://deepeval.com/guides/guides-ai-agent-evaluation)
 - [Red Hat — Eval-Driven Development](https://developers.redhat.com/articles/2026/03/23/eval-driven-development-build-evaluate-ai-agents/)
 - [Stryker — Mutation Testing Intro](https://stryker-mutator.io/docs/)

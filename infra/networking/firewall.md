@@ -71,11 +71,9 @@ sudo ufw enable
 
 - check systemctl ufw status, start and enable `ufw.service`
 
-`sudo ufw app list`: show list of installed apps, can allow or deny by app name \- e.g.
-`sudo ufw allow "Nginx full"`
+`sudo ufw app list`: show list of installed apps, can allow or deny by app name \- e.g. `sudo ufw allow "Nginx full"`
 
-`sudo ufw allow 5000`: if want to test a service at hosted for outside access at port 5000 if want
-to remove this access after testing, for example: `sudo ufw delete allow 5000`
+`sudo ufw allow 5000`: if want to test a service at hosted for outside access at port 5000 if want to remove this access after testing, for example: `sudo ufw delete allow 5000`
 
 run `sudo ufw status` to check
 

@@ -1,14 +1,10 @@
 # CLI Design — General Principles
 
-Language-agnostic principles for designing command-line programs: architecture, logging, errors,
-config, coding style, agent-aware design, and wrapper patterns. Use this tree as the source of truth
-when bootstrapping a new CLI, and the language-specific `cli-spec/` directories for implementation
-details.
+Language-agnostic principles for designing command-line programs: architecture, logging, errors, config, coding style, agent-aware design, and wrapper patterns. Use this tree as the source of truth when bootstrapping a new CLI, and the language-specific `cli-spec/` directories for implementation details.
 
 ## How to use this tree
 
-1. Read [00 — Architecture](./00-architecture.md) first. It defines the vocabulary the other
-   chapters assume (parse-shape vs runtime-shape, `cli/` vs `commands/` vs `domain/`, etc.).
+1. Read [00 — Architecture](./00-architecture.md) first. It defines the vocabulary the other chapters assume (parse-shape vs runtime-shape, `cli/` vs `commands/` vs `domain/`, etc.).
 2. When a design question comes up, search the chapter that owns it.
 3. Cross-link to the appropriate language-specific spec for code-level patterns.
 
@@ -34,34 +30,22 @@ details.
 
 ## Language-specific implementation
 
-These chapters apply the general principles in a specific language. They assume you've read the
-matching general chapter.
+These chapters apply the general principles in a specific language. They assume you've read the matching general chapter.
 
-- [`tech/languages/rust/cli-spec/`](../../languages/rust/cli-spec/) — clap, thiserror + anyhow,
-  tracing, figment, assert_cmd + insta.
-- [`tech/languages/python/cli-spec/`](../../languages/python/cli-spec/) — Typer, Pydantic,
-  structlog/rich.
-- [`tech/languages/bash/cli-spec/`](../../languages/bash/cli-spec/) — strict mode, lib/ + bin/
-  layout, shellcheck, bats.
+- [`tech/languages/rust/cli-spec/`](../../languages/rust/cli-spec/) — clap, thiserror + anyhow, tracing, figment, assert_cmd + insta.
+- [`tech/languages/python/cli-spec/`](../../languages/python/cli-spec/) — Typer, Pydantic, structlog/rich.
+- [`tech/languages/bash/cli-spec/`](../../languages/bash/cli-spec/) — strict mode, lib/ + bin/ layout, shellcheck, bats.
 
 ## TL;DR (the irreducible defaults)
 
-- **Declare the facing category and message types.** Use
-  [human-facing or machine-facing](./00-architecture.md#facing-category--message-types); keep
-  human-UX, machine-output, and log-messages distinct.
-- **Default-log to `$XDG_STATE_HOME/<app>/<app>.log`** in structured `key=value` (or JSON), no ANSI.
-  Terminal mirror is opt-in.
+- **Declare the facing category and message types.** Use [human-facing or machine-facing](./00-architecture.md#facing-category--message-types); keep human-UX, machine-output, and log-messages distinct.
+- **Default-log to `$XDG_STATE_HOME/<app>/<app>.log`** in structured `key=value` (or JSON), no ANSI. Terminal mirror is opt-in.
 - **`CLI > env > project file > user file > defaults`** for every knob.
-- **Typed errors with stable `err.kind` per variant.** BSD sysexits exit codes. Unit-test the
-  matrix.
+- **Typed errors with stable `err.kind` per variant.** BSD sysexits exit codes. Unit-test the matrix.
 - **Parse, don't validate.** At every boundary (CLI, file, network), strings → precise types once.
 - **One `AppContext`, built in `main`, passed by reference.** No globals.
 - **`pub`/`pub(crate)`/private discipline.** Default to the least visibility that works.
 - **`--help` is documentation.** Treat `--help` and `man` pages as part of the API.
 - **`--json` for everything machine-readable.** LLM agents, CI scripts, and pipes will thank you.
-- **Copy-don't-scaffold config.** Never write the user's config; generate an annotated example +
-  JSON Schema from the config types and let the user copy it, with a pre-commit `--check` for drift.
-- **Guard prerequisites up front, aggregate them in `doctor`.** One probe set, three call sites:
-  `doctor` runs the whole catalog, each subcommand fail-fast-guards the subset it needs (refuse
-  before any mutation), and setup verbs reuse the same checks. See
-  [06](./06-preflight-and-health-checks.md).
+- **Copy-don't-scaffold config.** Never write the user's config; generate an annotated example + JSON Schema from the config types and let the user copy it, with a pre-commit `--check` for drift.
+- **Guard prerequisites up front, aggregate them in `doctor`.** One probe set, three call sites: `doctor` runs the whole catalog, each subcommand fail-fast-guards the subset it needs (refuse before any mutation), and setup verbs reuse the same checks. See [06](./06-preflight-and-health-checks.md).

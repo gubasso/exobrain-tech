@@ -8,8 +8,7 @@ Any `.svelte` file, or `.ts`/`.js` in a SvelteKit project (`svelte.config.js` pr
 
 ### Runes (Svelte 5)
 
-- `$state(...)` mutated from outside the declaring component (without exposing setter) →
-  `[important]`.
+- `$state(...)` mutated from outside the declaring component (without exposing setter) → `[important]`.
 - `$derived(expr)` with side effects → `[blocking]` "Derived must be pure."
 - `$effect(...)` reading + writing the same `$state` → `[blocking]` "Loop."
 - Legacy reactive `$: x = ...` mixed with runes in new code → `[important]` "Pick one."
@@ -23,10 +22,8 @@ Any `.svelte` file, or `.ts`/`.js` in a SvelteKit project (`svelte.config.js` pr
 ### Load functions (SvelteKit)
 
 - `load` function that throws instead of returning `error(...)` → `[important]`.
-- `load` function with side effects (writes to a store) → `[important]` "Load is pure; mutate in
-  actions or `+page.server.ts`."
-- Fetching with the global `fetch` instead of the `fetch` passed in event arg → `[important]`
-  "SSR-broken otherwise."
+- `load` function with side effects (writes to a store) → `[important]` "Load is pure; mutate in actions or `+page.server.ts`."
+- Fetching with the global `fetch` instead of the `fetch` passed in event arg → `[important]` "SSR-broken otherwise."
 
 ### Form actions
 
@@ -35,8 +32,7 @@ Any `.svelte` file, or `.ts`/`.js` in a SvelteKit project (`svelte.config.js` pr
 
 ### Stores
 
-- `writable` exported and mutated from anywhere → `[important]` "Encapsulate; expose only
-  `subscribe` + named actions."
+- `writable` exported and mutated from anywhere → `[important]` "Encapsulate; expose only `subscribe` + named actions."
 - `derived` with an async callback → `[important]` "Use a custom store; `derived` expects sync."
 
 ### SSR / CSR boundary

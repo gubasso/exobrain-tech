@@ -8,8 +8,7 @@ token-estimate: 200
 
 ## Scope
 
-Ricing notes covering color systems, GTK/Qt coherence, picom troubleshooting, programming fonts, and
-rofi-related theme organization.
+Ricing notes covering color systems, GTK/Qt coherence, picom troubleshooting, programming fonts, and rofi-related theme organization.
 
 ## Key Points
 

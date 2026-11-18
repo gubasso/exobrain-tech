@@ -1,17 +1,8 @@
 # libkrun vs bare Firecracker (via flake-pilot)
 
-A technical tradeoff analysis between two KVM microVM sandbox stacks: **libkrun** driven by
-`crun --krun` behind rootless Podman, versus **bare Firecracker** driven by
-[OSInside/flake-pilot](https://github.com/OSInside/flake-pilot)'s `firecracker-pilot` backend over
-bare [Firecracker](https://firecracker-microvm.github.io/) microVMs.
+A technical tradeoff analysis between two KVM microVM sandbox stacks: **libkrun** driven by `crun --krun` behind rootless Podman, versus **bare Firecracker** driven by [OSInside/flake-pilot](https://github.com/OSInside/flake-pilot)'s `firecracker-pilot` backend over bare [Firecracker](https://firecracker-microvm.github.io/) microVMs.
 
-The core finding up front: both approaches sit in the **same KVM hardware-virtualization isolation
-class**. Neither shares the host kernel with the guest — so the real question is _which_ microVM
-stack, not _whether_ to use one. For related material see
-[10-runtimes-catalog.md](./10-runtimes-catalog.md) (per-runtime catalog including flake-pilot),
-[20-decision-libkrun-linux.md](./20-decision-libkrun-linux.md) (the libkrun-on-Linux decision), and
-[00-threat-model-and-principles.md](./00-threat-model-and-principles.md) (threat model and
-premises).
+The core finding up front: both approaches sit in the **same KVM hardware-virtualization isolation class**. Neither shares the host kernel with the guest — so the real question is _which_ microVM stack, not _whether_ to use one. For related material see [10-runtimes-catalog.md](./10-runtimes-catalog.md) (per-runtime catalog including flake-pilot), [20-decision-libkrun-linux.md](./20-decision-libkrun-linux.md) (the libkrun-on-Linux decision), and [00-threat-model-and-principles.md](./00-threat-model-and-principles.md) (threat model and premises).
 
 ## 0. Summary
 
@@ -20,16 +11,9 @@ premises).
 | **libkrun via `crun --krun` + Podman-rootless**     | **KVM microVM** | **OCI / devcontainer schema**             | TSI (no host TAP/bridge)    | Rootless              | `containers/` org; production users (RamaLama, Microsandbox, krunvm)                                                                                                                                                                  |
 | **flake-pilot (`firecracker-pilot`) + Firecracker** | **KVM microVM** | KIWI KIS tarballs over HTTPS + flake YAML | Manual TAP + iptables + NAT | `sudo` per invocation | Firecracker is mature (powers AWS Lambda / Fargate). flake-pilot is a registration/provisioning framework with multiple backend pilots (`podman-pilot`, `firecracker-pilot`); this comparison evaluates the `firecracker-pilot` path. |
 
-**Both approaches sit in the same KVM hardware-virtualization isolation class.** Neither shares the
-host kernel with the guest; both rely on KVM as the security boundary. The framing that "VMs are the
-only safe option to shield host data" applies equally to either — collapsing the question to _which_
-microVM stack, not _whether_ to use one.
+**Both approaches sit in the same KVM hardware-virtualization isolation class.** Neither shares the host kernel with the guest; both rely on KVM as the security boundary. The framing that "VMs are the only safe option to shield host data" applies equally to either — collapsing the question to _which_ microVM stack, not _whether_ to use one.
 
-Throughout this document, **libkrun** refers to libkrun via `crun --krun` fronted by
-Podman-rootless. Against the goals of strong isolation, low owned-plumbing, OCI-native authoring,
-rootless invocation, simple networking, and production-proven upstreams, flake-pilot + Firecracker
-does not present an advantage on the boundary axis; it loses on engineering cost, networking
-simplicity, privilege model, authoring surface, and image distribution model.
+Throughout this document, **libkrun** refers to libkrun via `crun --krun` fronted by Podman-rootless. Against the goals of strong isolation, low owned-plumbing, OCI-native authoring, rootless invocation, simple networking, and production-proven upstreams, flake-pilot + Firecracker does not present an advantage on the boundary axis; it loses on engineering cost, networking simplicity, privilege model, authoring surface, and image distribution model.
 
 ---
 
@@ -37,29 +21,13 @@ simplicity, privilege model, authoring surface, and image distribution model.
 
 ### 1.1 libkrun via `crun --krun` + Podman-rootless
 
-Architecture in one paragraph: [`libkrun/libkrun`](https://github.com/libkrun/libkrun) is a Rust
-user-space VMM (rust-vmm lineage, partly derived from Firecracker and Cloud Hypervisor). Passing
-`--krun` to [`crun`](https://github.com/containers/crun) boots the OCI bundle inside a libkrun
-microVM instead of a namespaces-only container; Podman drives it as a normal OCI runtime:
-`podman --runtime krun run <image>`. Networking is **TSI (Transparent Socket Impersonation)** —
-in-guest sockets are transparently forwarded to host sockets through libkrun, with no TAP device,
-bridge, NAT, or `slirp4netns` plumbing on the host side.
+Architecture in one paragraph: [`libkrun/libkrun`](https://github.com/libkrun/libkrun) is a Rust user-space VMM (rust-vmm lineage, partly derived from Firecracker and Cloud Hypervisor). Passing `--krun` to [`crun`](https://github.com/containers/crun) boots the OCI bundle inside a libkrun microVM instead of a namespaces-only container; Podman drives it as a normal OCI runtime: `podman --runtime krun run <image>`. Networking is **TSI (Transparent Socket Impersonation)** — in-guest sockets are transparently forwarded to host sockets through libkrun, with no TAP device, bridge, NAT, or `slirp4netns` plumbing on the host side.
 
-Invocation surface for the user: the integrating tool sets `--runtime krun` on the existing rootless
-Podman invocation. No additional config required; existing OCI artifacts are consumed unchanged.
+Invocation surface for the user: the integrating tool sets `--runtime krun` on the existing rootless Podman invocation. No additional config required; existing OCI artifacts are consumed unchanged.
 
 ### 1.2 flake-pilot + Firecracker
 
-[`OSInside/flake-pilot`](https://github.com/OSInside/flake-pilot) is a registration/provisioning
-framework for running applications inside isolated environments. It ships multiple backend "pilots";
-per the upstream README, _"as of today, support for the `podman` and `firecracker` engines is
-implemented, leading to the respective `podman-pilot` and `firecracker-pilot` launcher binaries."_
-The framework's primary contribution is enabling semi-transparent container/VM instances that can
-run provisioning steps before execution. **This comparison evaluates the `firecracker-pilot` backend
-specifically** — that is the path the alternative approach exercises. Images for the Firecracker
-path are [KIWI](https://osinside.github.io/kiwi/)-built **KIS** artifacts (kernel + initrd + rootfs
-tarball) distributed over HTTPS, not OCI registries. Packaging is primarily through openSUSE
-repositories; the source is Rust and can be built on other distributions from source.
+[`OSInside/flake-pilot`](https://github.com/OSInside/flake-pilot) is a registration/provisioning framework for running applications inside isolated environments. It ships multiple backend "pilots"; per the upstream README, _"as of today, support for the `podman` and `firecracker` engines is implemented, leading to the respective `podman-pilot` and `firecracker-pilot` launcher binaries."_ The framework's primary contribution is enabling semi-transparent container/VM instances that can run provisioning steps before execution. **This comparison evaluates the `firecracker-pilot` backend specifically** — that is the path the alternative approach exercises. Images for the Firecracker path are [KIWI](https://osinside.github.io/kiwi/)-built **KIS** artifacts (kernel + initrd + rootfs tarball) distributed over HTTPS, not OCI registries. Packaging is primarily through openSUSE repositories; the source is Rust and can be built on other distributions from source.
 
 Reference invocation (as documented upstream):
 
@@ -79,10 +47,7 @@ sudo flake-ctl firecracker register \
 sudo <launcher-name>
 ```
 
-Networking is **deferred to manual TAP + iptables + NAT setup** by the host operator, per the
-upstream README's [networking section](https://github.com/OSInside/flake-pilot#networking-): _"it is
-the user's responsibility to set up the routing on the host from the TUN/TAP device to the outside
-world."_
+Networking is **deferred to manual TAP + iptables + NAT setup** by the host operator, per the upstream README's [networking section](https://github.com/OSInside/flake-pilot#networking-): _"it is the user's responsibility to set up the routing on the host from the TUN/TAP device to the outside world."_
 
 ---
 
@@ -101,16 +66,7 @@ world."_
 | Credential / token leakage to host                 | The integration replaces host-config bind-mounts (`~/.config/gh`, `~/.config/glab-cli`, `~/.claude*`) with scoped, ephemeral token forwarding; drops the host `/tmp` bind; sets `no-new-privileges`; `cap-drop=ALL`. Runtime-agnostic.                                                                                                                                                                                                                       | No bind-mounts at all (Firecracker has no virtio-fs in stable). Structurally more isolating on the file-sharing axis, but the practical implication is that the operator must invent a sync mechanism (whole-rootfs overlay, vsock-based tool, image rebuild) to get project artifacts in or out. See §4.                                                                                                                                                                                                                                                                                                                      |
 | Privilege model                                    | **Rootless.** Runs as the invoking user; Podman-rootless under the hood.                                                                                                                                                                                                                                                                                                                                                                                     | **`sudo` on every invocation.** `sudo flake-ctl firecracker pull/register` and `sudo <launcher>`. Firecracker's `jailer` drops privileges inside the launched VM, but the host-side user-facing UX is `sudo` per call.                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-**Honest assessment of the "VMs are the only safe option to shield host data" framing.** The claim
-is technically correct **as a comparison against shared-kernel containers** — KVM-class isolation is
-qualitatively stronger than namespaces + seccomp + AppArmor + userns, and the Nov 2025 runc CVE
-cluster is the canonical recent precedent. libkrun and the flake-pilot approach **both** satisfy the
-hardware-virtualization premise (see
-[00-threat-model-and-principles.md](./00-threat-model-and-principles.md)). The claim therefore
-collapses to a choice **between two KVM stacks**, not between "VM" and "container." Interpreted as
-"Firecracker specifically is the only safe option," the framing is overstated: libkrun delivers the
-same boundary class with a far smaller owned plumbing surface and the same KVM-level guest kernel
-isolation.
+**Honest assessment of the "VMs are the only safe option to shield host data" framing.** The claim is technically correct **as a comparison against shared-kernel containers** — KVM-class isolation is qualitatively stronger than namespaces + seccomp + AppArmor + userns, and the Nov 2025 runc CVE cluster is the canonical recent precedent. libkrun and the flake-pilot approach **both** satisfy the hardware-virtualization premise (see [00-threat-model-and-principles.md](./00-threat-model-and-principles.md)). The claim therefore collapses to a choice **between two KVM stacks**, not between "VM" and "container." Interpreted as "Firecracker specifically is the only safe option," the framing is overstated: libkrun delivers the same boundary class with a far smaller owned plumbing surface and the same KVM-level guest kernel isolation.
 
 ---
 
@@ -139,10 +95,7 @@ This is the axis on which the two approaches differ most.
 | Image authoring                                           | OCI / Containerfile schema preserved. The existing OCI/Containerfile composition and image-build pipeline is reused.                                                                                                            | KIWI XML build descriptions plus a flake YAML. Replaces the OCI/Containerfile authoring surface entirely; no path to consume existing OCI artifacts unchanged.                                                                                                                                                                                                                                                                                                                                                  |
 | Adapter implementation cost owned by the integrating tool | A thin per-runtime adapter adding `--runtime krun` to existing Podman calls.                                                                                                                                                    | To reach parity with the libkrun UX, the integrating tool would also have to own the KIS image pipeline (or replace it with an OCI-to-rootfs converter), the host networking setup, and an adapter calling out to `flake-ctl firecracker` / the `firecracker-pilot` launcher. Bare-Firecracker plumbing is a multi-week one-time build plus a permanent maintenance tail; flake-pilot's `firecracker-pilot` covers some of that orchestration but does not eliminate the rootfs/distribution/networking pieces. |
 
-Note on the authoring/IDE relationship: the OCI / `devcontainer.json` authoring surface is preserved
-by the libkrun stack because it reuses the existing image pipeline. Editor or IDE integration is
-**not a goal here**; the OCI compatibility matters for the **build and distribution** model, not for
-IDE support.
+Note on the authoring/IDE relationship: the OCI / `devcontainer.json` authoring surface is preserved by the libkrun stack because it reuses the existing image pipeline. Editor or IDE integration is **not a goal here**; the OCI compatibility matters for the **build and distribution** model, not for IDE support.
 
 ---
 
@@ -160,8 +113,7 @@ IDE support.
 
 ## 6. Fit to the stated goals
 
-Scoring against neutral goals — strong isolation, low owned-plumbing, OCI-native authoring, rootless
-invocation, simple networking, and production-proven upstream. The scorecard:
+Scoring against neutral goals — strong isolation, low owned-plumbing, OCI-native authoring, rootless invocation, simple networking, and production-proven upstream. The scorecard:
 
 | Criterion                                        | libkrun                                                                                                 | flake-pilot + Firecracker                                                                                                                                                                                                |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -171,10 +123,7 @@ invocation, simple networking, and production-proven upstream. The scorecard:
 | 4. Single working Linux implementation           | **Met.** One adapter, one manifest value.                                                               | **Partial.** Single Linux implementation in principle, but feature parity with the libkrun stack requires re-implementing the OCI build/distribution pipeline against KIS images, plus owning the host networking story. |
 | 5. Migration cheap                               | **Met.** Adapter is small; behind the runtime interface a future swap is mechanical.                    | **Partial.** Adopting flake-pilot now means moving the authoring surface off OCI; that is a deep migration and the inverse direction from the libkrun stack.                                                             |
 
-[10-runtimes-catalog.md](./10-runtimes-catalog.md) catalogs flake-pilot and notes the same
-architectural drivers visible here: the OCI-incompatible image flow on the Firecracker path, the
-operator-owned host networking, and a `firecracker-pilot` launcher binary that would land in the
-integrating tool's trust path.
+[10-runtimes-catalog.md](./10-runtimes-catalog.md) catalogs flake-pilot and notes the same architectural drivers visible here: the OCI-incompatible image flow on the Firecracker path, the operator-owned host networking, and a `firecracker-pilot` launcher binary that would land in the integrating tool's trust path.
 
 ---
 
@@ -182,57 +131,28 @@ integrating tool's trust path.
 
 ### 7.1 Where libkrun wins
 
-- **Engineering cost.** A thin per-runtime adapter vs. the rootfs/kernel/init/vsock/TAP plumbing
-  project the flake-pilot path would require the integrating tool to own to reach feature parity.
-- **Host-side networking attack surface.** TSI removes host TAP/bridge/NAT; flake-pilot requires the
-  operator to construct and maintain that chain.
-  ([flake-pilot README — networking](https://github.com/OSInside/flake-pilot#networking-))
+- **Engineering cost.** A thin per-runtime adapter vs. the rootfs/kernel/init/vsock/TAP plumbing project the flake-pilot path would require the integrating tool to own to reach feature parity.
+- **Host-side networking attack surface.** TSI removes host TAP/bridge/NAT; flake-pilot requires the operator to construct and maintain that chain. ([flake-pilot README — networking](https://github.com/OSInside/flake-pilot#networking-))
 - **Privilege model.** Rootless invocation vs. `sudo` per invocation.
-- **Image authoring and distribution.** OCI registries with the existing build pipeline vs. KIS
-  tarballs over HTTPS distributed by operator-run file servers; signing and digest pinning come for
-  free with OCI.
-- **Egress policy enforcement.** A runtime-agnostic egress allowlist shipped by the integrating tool
-  vs. operator-owned manual filtering.
-- **Production-proven upstream.** `containers/` org with RamaLama / Microsandbox / krunvm in
-  production. Firecracker itself is production-proven at AWS scale, but the `firecracker-pilot`
-  launcher binary that would sit in the trust path does not have comparable public
-  production-deployment evidence.
-- **Maintenance posture.** Distro-packaged CVE pipeline across the major Linux distributions vs.
-  SUSE-aligned packaging and a thin wrapper to track.
+- **Image authoring and distribution.** OCI registries with the existing build pipeline vs. KIS tarballs over HTTPS distributed by operator-run file servers; signing and digest pinning come for free with OCI.
+- **Egress policy enforcement.** A runtime-agnostic egress allowlist shipped by the integrating tool vs. operator-owned manual filtering.
+- **Production-proven upstream.** `containers/` org with RamaLama / Microsandbox / krunvm in production. Firecracker itself is production-proven at AWS scale, but the `firecracker-pilot` launcher binary that would sit in the trust path does not have comparable public production-deployment evidence.
+- **Maintenance posture.** Distro-packaged CVE pipeline across the major Linux distributions vs. SUSE-aligned packaging and a thin wrapper to track.
 
 ### 7.2 Scenarios excluded from this comparison
 
-Two scenarios sometimes cited as advantageous for flake-pilot + Firecracker are **out of scope** for
-this comparison because they do not correspond to the stated goals:
+Two scenarios sometimes cited as advantageous for flake-pilot + Firecracker are **out of scope** for this comparison because they do not correspond to the stated goals:
 
-- **"Smallest possible host-side VMM TCB"** is not a selection criterion here. The security premise
-  is the **boundary class** (KVM hardware-virtualization), which is satisfied identically by libkrun
-  and bare Firecracker. A smaller VMM TCB tightens the host trust path but does not raise the
-  isolation class. If a future deployment ever requires the smallest possible VMM TCB on the host,
-  the bare-Firecracker adapter slot remains documented in
-  [10-runtimes-catalog.md](./10-runtimes-catalog.md) for opt-in — but it is catalog-only.
-- **"Distribution-specific (e.g. openSUSE-only) deployments"** is not a selection criterion here.
-  The target is KVM-capable Linux broadly; distribution coverage is met by libkrun's
-  `containers/`-org packaging across Fedora, openSUSE, Arch, Debian, and Ubuntu. A
-  distribution-aligned packaging story is a distribution preference, not a security or correctness
-  property that would tilt the decision.
+- **"Smallest possible host-side VMM TCB"** is not a selection criterion here. The security premise is the **boundary class** (KVM hardware-virtualization), which is satisfied identically by libkrun and bare Firecracker. A smaller VMM TCB tightens the host trust path but does not raise the isolation class. If a future deployment ever requires the smallest possible VMM TCB on the host, the bare-Firecracker adapter slot remains documented in [10-runtimes-catalog.md](./10-runtimes-catalog.md) for opt-in — but it is catalog-only.
+- **"Distribution-specific (e.g. openSUSE-only) deployments"** is not a selection criterion here. The target is KVM-capable Linux broadly; distribution coverage is met by libkrun's `containers/`-org packaging across Fedora, openSUSE, Arch, Debian, and Ubuntu. A distribution-aligned packaging story is a distribution preference, not a security or correctness property that would tilt the decision.
 
 ### 7.3 Where flake-pilot + Firecracker does not present a relevant win
 
-Outside of the two excluded scenarios in §7.2, **there is no axis relevant to the stated goals on
-which flake-pilot + Firecracker presents a genuine advantage over libkrun.** It has the same
-boundary class, a more demanding host-networking model, a `sudo`-on-every-call privilege model, and
-an image distribution model that abandons OCI without compensating benefits for the stated use case.
+Outside of the two excluded scenarios in §7.2, **there is no axis relevant to the stated goals on which flake-pilot + Firecracker presents a genuine advantage over libkrun.** It has the same boundary class, a more demanding host-networking model, a `sudo`-on-every-call privilege model, and an image distribution model that abandons OCI without compensating benefits for the stated use case.
 
 ### 7.4 Bottom line
 
-libkrun and the flake-pilot `firecracker-pilot` + Firecracker path share the same isolation class
-(KVM microVM). libkrun wins on engineering cost, host-networking simplicity (TSI vs. manual
-TAP/NAT), rootless vs. sudo, OCI vs. KIS-over-HTTPS, its shipped egress allowlist, production proof,
-and maintenance posture. flake-pilot's Firecracker backend is a valid microVM-based sandboxing
-approach with its own architectural choices — but adopting it as the runtime backend would require
-the integrating tool to take on a substantial owned plumbing surface (KIS image distribution, manual
-host networking, the `firecracker-pilot` trust path) in exchange for no security gain over libkrun.
+libkrun and the flake-pilot `firecracker-pilot` + Firecracker path share the same isolation class (KVM microVM). libkrun wins on engineering cost, host-networking simplicity (TSI vs. manual TAP/NAT), rootless vs. sudo, OCI vs. KIS-over-HTTPS, its shipped egress allowlist, production proof, and maintenance posture. flake-pilot's Firecracker backend is a valid microVM-based sandboxing approach with its own architectural choices — but adopting it as the runtime backend would require the integrating tool to take on a substantial owned plumbing surface (KIS image distribution, manual host networking, the `firecracker-pilot` trust path) in exchange for no security gain over libkrun.
 
 ---
 
@@ -240,13 +160,10 @@ host networking, the `firecracker-pilot` trust path) in exchange for no security
 
 ### Sibling shelf docs
 
-- [00-threat-model-and-principles.md](./00-threat-model-and-principles.md) — threat model and
-  premises.
-- [10-runtimes-catalog.md](./10-runtimes-catalog.md) — per-runtime catalog, including libkrun and
-  flake-pilot.
+- [00-threat-model-and-principles.md](./00-threat-model-and-principles.md) — threat model and premises.
+- [10-runtimes-catalog.md](./10-runtimes-catalog.md) — per-runtime catalog, including libkrun and flake-pilot.
 - [20-decision-libkrun-linux.md](./20-decision-libkrun-linux.md) — the libkrun-on-Linux decision.
-- [60-podman-libkrun-operational-notes.md](./60-podman-libkrun-operational-notes.md) — Podman +
-  libkrun operational notes.
+- [60-podman-libkrun-operational-notes.md](./60-podman-libkrun-operational-notes.md) — Podman + libkrun operational notes.
 - [90-references.md](./90-references.md) — consolidated external references.
 
 ### Firecracker / KIWI / flake-pilot
@@ -281,11 +198,9 @@ host networking, the `firecracker-pilot` trust path) in exchange for no security
 
 ### Shared-kernel CVE precedent
 
-- [Sysdig — runc container escape vulnerabilities (Nov 2025)](https://www.sysdig.com/blog/runc-container-escape-vulnerabilities)
-  — CVE-2025-31133, CVE-2025-52565, CVE-2025-52881.
+- [Sysdig — runc container escape vulnerabilities (Nov 2025)](https://www.sysdig.com/blog/runc-container-escape-vulnerabilities) — CVE-2025-31133, CVE-2025-52565, CVE-2025-52881.
 - [CNCF — runc container breakout vulnerabilities: a technical overview (Nov 2025)](https://www.cncf.io/blog/2025/11/28/runc-container-breakout-vulnerabilities-a-technical-overview/)
-- [emirb — microvm-2026](https://emirb.github.io/blog/microvm-2026/) — hypervisor-escape bug-class
-  economics.
+- [emirb — microvm-2026](https://emirb.github.io/blog/microvm-2026/) — hypervisor-escape bug-class economics.
 
 ### Authoring-surface context (referenced for the OCI build/distribution comparison only; not a selection criterion)
 

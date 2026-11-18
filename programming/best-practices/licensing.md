@@ -1,7 +1,6 @@
 # Licensing
 
-[SPDX License List](https://spdx.org/licenses/)
-[SUSE Mapping for spdx.org : Sheet 1](https://docs.google.com/spreadsheets/u/0/d/14AdaJ6cmU0kvQ4ulq9pWpjdZL5tkR03exRSYJmPGdfs/pub)
+[SPDX License List](https://spdx.org/licenses/) [SUSE Mapping for spdx.org : Sheet 1](https://docs.google.com/spreadsheets/u/0/d/14AdaJ6cmU0kvQ4ulq9pWpjdZL5tkR03exRSYJmPGdfs/pub)
 
 SUSE's default licensing:
 

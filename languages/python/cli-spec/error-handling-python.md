@@ -1,26 +1,14 @@
 # Error Handling (Python)
 
-> Prerequisite:
-> [General principles — Error Messages](../../../programming/cli-design/02-error-messages.md) for
-> stable `err.kind`, BSD sysexits, structured stderr, and error-chain expectations. This chapter is
-> the Python implementation using typed exceptions and Typer.
+> Prerequisite: [General principles — Error Messages](../../../programming/cli-design/02-error-messages.md) for stable `err.kind`, BSD sysexits, structured stderr, and error-chain expectations. This chapter is the Python implementation using typed exceptions and Typer.
 
-Typed exception classes per layer, one top-level `AppError` base, explicit `kind` and `context`, and
-one Typer boundary that maps `AppError` to BSD sysexits and emits a structured error to `stderr`. A
-new project carries its failures inside the program as `Result` values instead, and keeps the same
-mapping at its one boundary, as the next section states.
+Typed exception classes per layer, one top-level `AppError` base, explicit `kind` and `context`, and one Typer boundary that maps `AppError` to BSD sysexits and emits a structured error to `stderr`. A new project carries its failures inside the program as `Result` values instead, and keeps the same mapping at its one boundary, as the next section states.
 
 ## A Result inside the program
 
-Inside the program, a fallible function returns `Result[T, E]` from `returns`, and `E` is a typed
-error: a frozen dataclass with a `StrEnum` kind and a message. `@safe` wraps a call into a library
-that raises, in an adapter module and nowhere else, and `.alt` maps the caught exception to a kind.
-The types are in [Typing a Python project](../typing.md).
+Inside the program, a fallible function returns `Result[T, E]` from `returns`, and `E` is a typed error: a frozen dataclass with a `StrEnum` kind and a message. `@safe` wraps a call into a library that raises, in an adapter module and nowhere else, and `.alt` maps the caught exception to a kind. The types are in [Typing a Python project](../typing.md).
 
-`main` is the one boundary. It matches the `Result` of the run, writes the message of a `Failure` to
-`stderr`, and exits with the sysexits code of its kind, the mapping that the rest of this chapter
-gives an `AppError`. It also catches an exception that escapes the run, logs it, and exits
-`EX_SOFTWARE = 70`. No other function calls `sys.exit` or raises `SystemExit`:
+`main` is the one boundary. It matches the `Result` of the run, writes the message of a `Failure` to `stderr`, and exits with the sysexits code of its kind, the mapping that the rest of this chapter gives an `AppError`. It also catches an exception that escapes the run, logs it, and exits `EX_SOFTWARE = 70`. No other function calls `sys.exit` or raises `SystemExit`:
 
 ```python
 def main() -> None:
@@ -37,11 +25,7 @@ def main() -> None:
             sys.exit(exit_code(error.kind))
 ```
 
-Typer keeps `main` the boundary when the command runs with `standalone_mode=False`: Typer then
-returns the parsed request instead of exiting, and a usage error raises a subclass of the public
-`typer.TyperException`, which `run` maps to `EX_USAGE = 64`. Typer 0.29 vendors click under a
-private module, so code catches the public class and imports nothing of click. A test parses every
-module with `ast` and fails when a function other than `main` names `sys.exit` or `SystemExit`.
+Typer keeps `main` the boundary when the command runs with `standalone_mode=False`: Typer then returns the parsed request instead of exiting, and a usage error raises a subclass of the public `typer.TyperException`, which `run` maps to `EX_USAGE = 64`. Typer 0.29 vendors click under a private module, so code catches the public class and imports nothing of click. A test parses every module with `ast` and fails when a function other than `main` names `sys.exit` or `SystemExit`.
 
 ## The layer table
 
@@ -56,10 +40,8 @@ module with `ast` and fails when a function other than `main` names `sys.exit` o
 ## Why typed exceptions, not bare `Exception`
 
 - A stable `err.kind` gives scripts, logs, tests, and coding agents something durable to match.
-- `raise ... from exc` preserves the cause chain, so the boundary can explain why the operation
-  failed without parsing arbitrary prose.
-- `exit_code` is explicit API surface. Shell callers can distinguish usage, config, input, I/O, and
-  internal failures.
+- `raise ... from exc` preserves the cause chain, so the boundary can explain why the operation failed without parsing arbitrary prose.
+- `exit_code` is explicit API surface. Shell callers can distinguish usage, config, input, I/O, and internal failures.
 - Structured context keeps agent-readable logs and stderr payloads consistent with the facts.
 
 ## Skeleton: `error.py`
@@ -123,8 +105,7 @@ class ServiceError(AppError):
         return EX_SOFTWARE
 ```
 
-`AppError` is an `Exception`, not a Pydantic model. Pydantic validates request and config shapes;
-exceptions carry failure identity, context, and chain information.
+`AppError` is an `Exception`, not a Pydantic model. Pydantic validates request and config shapes; exceptions carry failure identity, context, and chain information.
 
 ## BSD sysexits cheat sheet
 
@@ -139,9 +120,7 @@ exceptions carry failure identity, context, and chain information.
 | `77` | `EX_NOPERM`      | Permission denied.                      |
 | `78` | `EX_CONFIG`      | Config file invalid.                    |
 
-The full matrix lives in
-[General — Exit codes / BSD sysexits](../../../programming/cli-design/02-error-messages.md#exit-codes--bsd-sysexits).
-Do not use platform-specific `os.EX_*` constants; use documented module constants or literal ints.
+The full matrix lives in [General — Exit codes / BSD sysexits](../../../programming/cli-design/02-error-messages.md#exit-codes--bsd-sysexits). Do not use platform-specific `os.EX_*` constants; use documented module constants or literal ints.
 
 ## Per-layer exception examples
 
@@ -165,14 +144,11 @@ def parse_widget_id(value: str) -> str:
     return cleaned
 ```
 
-Domain errors describe invariant violations. They do not wrap `OSError`, subprocess failures, HTTP
-responses, terminal output, or config files.
+Domain errors describe invariant violations. They do not wrap `OSError`, subprocess failures, HTTP responses, terminal output, or config files.
 
 ### Adapter error
 
-`GitAdapterError` is the `AppError` subclass defined in the skeleton above (its `exit_code` maps
-`GitNotFound -> EX_NOINPUT`, `GitUnavailable -> EX_UNAVAILABLE`, `GitPermissionDenied -> EX_NOPERM`,
-else `EX_IOERR`). The adapter only constructs it with the right `kind`:
+`GitAdapterError` is the `AppError` subclass defined in the skeleton above (its `exit_code` maps `GitNotFound -> EX_NOINPUT`, `GitUnavailable -> EX_UNAVAILABLE`, `GitPermissionDenied -> EX_NOPERM`, else `EX_IOERR`). The adapter only constructs it with the right `kind`:
 
 ```python
 from pathlib import Path
@@ -209,8 +185,7 @@ def read_git_head(repo: Path) -> str:
     return result.stdout.strip()
 ```
 
-Adapters translate external failures into named application failures while preserving the original
-exception as the cause.
+Adapters translate external failures into named application failures while preserving the original exception as the cause.
 
 ### Service error
 
@@ -239,13 +214,11 @@ def load_widget_report(repo: Path, widget_id: str) -> dict[str, str]:
     return {"widget_id": parsed_id, "head": head}
 ```
 
-Services may add use-case context, but they keep the cause chain intact and keep distinct failure
-kinds distinct.
+Services may add use-case context, but they keep the cause chain intact and keep distinct failure kinds distinct.
 
 ## Where to raise vs. where to catch
 
-Handlers and lower layers raise typed errors. The top-level Typer boundary is the only place that
-turns an application failure into stderr output and a process exit code.
+Handlers and lower layers raise typed errors. The top-level Typer boundary is the only place that turns an application failure into stderr output and a process exit code.
 
 Rules:
 
@@ -295,9 +268,7 @@ def run_with_error_boundary(call) -> None:
         raise typer.Exit(code=EX_SOFTWARE) from err
 ```
 
-For machine-facing CLIs, structured JSON to `stderr` is the default. Human prose belongs only behind
-an explicit human-UX mode. `stdout` remains reserved for successful command output. Program logs
-still go through the file-first logging setup in [Python — Logging](./logging-python.md).
+For machine-facing CLIs, structured JSON to `stderr` is the default. Human prose belongs only behind an explicit human-UX mode. `stdout` remains reserved for successful command output. Program logs still go through the file-first logging setup in [Python — Logging](./logging-python.md).
 
 ## try/except rules
 
@@ -312,5 +283,4 @@ still go through the file-first logging setup in [Python — Logging](./logging-
 - Every application failure has a named, stable `kind`.
 - Every `AppError` maps explicitly to a BSD sysexits value.
 - Error handlers preserve cause chains and do not swallow context.
-- Machine-facing failures are structured on `stderr`; logs carry the same facts through the logging
-  layer.
+- Machine-facing failures are structured on `stderr`; logs carry the same facts through the logging layer.

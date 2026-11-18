@@ -51,8 +51,7 @@ ansible all -m ping
   - Can be pulled to multiple environments and playbooks
 - **Playbooks**:
   - Represents an entire specific solution, a whole implementation
-  - Consumes multiple roles and dependencies (db, webserver, system dependencies, shared filesystem,
-    etc...)
+  - Consumes multiple roles and dependencies (db, webserver, system dependencies, shared filesystem, etc...)
   - E.g. `wordpress.yml`: implements and manages the whole wordpress solution
     - E.g.: `drupal.yml`
 - **Ansible Vault**: must use
@@ -67,8 +66,7 @@ ansible all -m ping
 - Set/Group of tasks for specific setup
 - group your content into role
 - easily reuse them and share them with other users
-- automatically load related vars, files, tasks, handlers, and other Ansible artifacts based on a
-  known file structure
+- automatically load related vars, files, tasks, handlers, and other Ansible artifacts based on a known file structure
 
 Examples:
 
@@ -340,8 +338,7 @@ ssh_keys:
   git: "{{ vault_ssh_key_git }}"
 ```
 
-Sample vault vars `group_vars/[group_name]/vault.yml` (example with the whole vault encrypted, not
-just variables) [^2]
+Sample vault vars `group_vars/[group_name]/vault.yml` (example with the whole vault encrypted, not just variables) [^2]
 
 ```sh
 ansible-vault create group_vars/[group_name]/vault.yml
@@ -357,9 +354,7 @@ vault_ssh_key_git: ~/path/to/private/key
 
 ## Ansible Vault
 
-> [Protecting sensitive data with Ansible vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html)
-> [Managing vault passwords](https://docs.ansible.com/ansible/latest/vault_guide/vault_managing_passwords.html)
-> [Encrypting content with Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/vault_encrypting_content.html)
+> [Protecting sensitive data with Ansible vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) [Managing vault passwords](https://docs.ansible.com/ansible/latest/vault_guide/vault_managing_passwords.html) [Encrypting content with Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/vault_encrypting_content.html)
 
 ### Run playbook
 
@@ -488,8 +483,7 @@ ansible localhost -m debug -a var="new_user_password" -e "@vars.yml" --ask-vault
 
 > [ansible.builtin.service module – Manage services](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html)
 
-"Controls services on remote hosts. Supported init systems include BSD init, OpenRC, SysV, Solaris
-SMF, systemd, upstart."
+"Controls services on remote hosts. Supported init systems include BSD init, OpenRC, SysV, Solaris SMF, systemd, upstart."
 
 ### 'lineinfile'
 
@@ -526,8 +520,7 @@ Tips[^3.services]:
 
 `pre_task` runs before any other tasks.
 
-Conditional arm clause that can be put as a first task to run and test before executing the rest of
-the tasks.
+Conditional arm clause that can be put as a first task to run and test before executing the rest of the tasks.
 
 ```yml
 - name: Ensure this playbook runs only on Debian systems

@@ -8,8 +8,7 @@ token-estimate: 300
 
 ## Scope
 
-Review heuristics for configuration file formats: Dockerfiles, GitHub Actions workflows, Markdown,
-YAML, and TOML.
+Review heuristics for configuration file formats: Dockerfiles, GitHub Actions workflows, Markdown, YAML, and TOML.
 
 ## Key Points
 
@@ -34,8 +33,7 @@ YAML, and TOML.
 
 ### YAML/TOML
 
-- YAML: unquoted `0.10` parses as float -> `[blocking]`. `yes`/`no` boolean ambiguity ->
-  `[important]`.
+- YAML: unquoted `0.10` parses as float -> `[blocking]`. `yes`/`no` boolean ambiguity -> `[important]`.
 - TOML: table-of-tables vs array-of-tables confusion -> `[blocking]`.
 - Both: secrets committed -> `[blocking]`. Orphan config -> `[suggestion]`.
 

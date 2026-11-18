@@ -8,20 +8,16 @@
 
 ### Security
 
-- `pull_request_target` trigger with checkout of untrusted code → `[blocking]` "Code execution from
-  forks."
-- `${{ github.event.pull_request.head.ref }}` interpolated into a `run` step → `[blocking]` "Script
-  injection."
+- `pull_request_target` trigger with checkout of untrusted code → `[blocking]` "Code execution from forks."
+- `${{ github.event.pull_request.head.ref }}` interpolated into a `run` step → `[blocking]` "Script injection."
 - Secrets passed to action steps that print them → `[blocking]`.
 - `permissions:` missing or `write-all` → `[important]` "Principle of least privilege."
-- Third-party actions referenced by tag instead of full SHA → `[important]` "Tags can be re-pointed;
-  pin SHA."
+- Third-party actions referenced by tag instead of full SHA → `[important]` "Tags can be re-pointed; pin SHA."
 
 ### Versioning
 
 - Action pinned to a branch (`uses: org/action@main`) → `[blocking]`.
-- Tool version not pinned (e.g., `setup-node` with no `node-version`) → `[important]` "Builds drift
-  when GH updates defaults."
+- Tool version not pinned (e.g., `setup-node` with no `node-version`) → `[important]` "Builds drift when GH updates defaults."
 
 ### Triggers
 
@@ -46,8 +42,7 @@
 - `if: github.ref == 'main'` (incorrect; should be `'refs/heads/main'`) → `[blocking]`.
 - `secrets.GITHUB_TOKEN` used where `secrets.MY_PAT` is needed (or vice versa) → `[important]`.
 - Job depending on another job's outputs without declared `outputs:` → `[blocking]`.
-- Conditional step relying on an env var set in a previous step (must use `$GITHUB_ENV`, not inline
-  `export`) → `[blocking]`.
+- Conditional step relying on an env var set in a previous step (must use `$GITHUB_ENV`, not inline `export`) → `[blocking]`.
 
 ### Output / logging
 

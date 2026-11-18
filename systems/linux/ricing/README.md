@@ -37,13 +37,10 @@ xwallpapers
 
 ## DWM inspiration
 
-See [dwm ricing inspiration](../window-managers/dwm/README.md#ricing-inspiration) for the canonical
-list.
+See [dwm ricing inspiration](../window-managers/dwm/README.md#ricing-inspiration) for the canonical list.
 
-- [maxhu08/dwm-rev1](https://github.com/maxhu08/dwm-rev1?tab=readme-ov-file) - dotfiles and theming
-  inspiration
-- [r/unixporn: dwm my daily driver](https://www.reddit.com/r/unixporn/comments/1nmvdcu/dwm_my_daily_driver/) -
-  screenshot and workflow inspiration
+- [maxhu08/dwm-rev1](https://github.com/maxhu08/dwm-rev1?tab=readme-ov-file) - dotfiles and theming inspiration
+- [r/unixporn: dwm my daily driver](https://www.reddit.com/r/unixporn/comments/1nmvdcu/dwm_my_daily_driver/) - screenshot and workflow inspiration
 
 ## Wayland
 

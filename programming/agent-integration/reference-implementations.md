@@ -1,9 +1,6 @@
 # Reference Implementations
 
-Two tools implement parts of the pattern the landing chapters state. This chapter maps concepts to
-their concrete names, so a reader moving between a portable chapter and a codebase knows which word
-means which. Nothing here is normative: the portable chapter owns the concept, and a tool that does
-it differently changes the concept by argument, never by example.
+Two tools implement parts of the pattern the landing chapters state. This chapter maps concepts to their concrete names, so a reader moving between a portable chapter and a codebase knows which word means which. Nothing here is normative: the portable chapter owns the concept, and a tool that does it differently changes the concept by argument, never by example.
 
 Both are x86_64 Linux tools. That is a fact about them, and not a requirement the pattern makes.
 
@@ -34,29 +31,15 @@ at release `v0.10.1`, trunk commit `20ffd0a`.
 | Verification         | `rk status --check`                                                                           |
 | Cleanup              | `rk stage clean`                                                                              |
 
-The stage receipt names what the stage holds: the candidates with their destination, kind,
-placement, and digest; the omissions with a reason; the collisions; the retired and the dropped
-destinations; and the reference material the stage exposes without landing.
+The stage receipt names what the stage holds: the candidates with their destination, kind, placement, and digest; the omissions with a reason; the collisions; the retired and the dropped destinations; and the reference material the stage exposes without landing.
 
-It implements the rule of [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing)
-with two outcomes. A whole rendered file that the release no longer produces, and whose bytes the
-receipt still vouches for, is `retired`, and the landing removes it. Every other such destination
-is `dropped`: it stays on disk, and the project owns it. `rk status --check` names an edited release
-workflow that stays.
+It implements the rule of [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing) with two outcomes. A whole rendered file that the release no longer produces, and whose bytes the receipt still vouches for, is `retired`, and the landing removes it. Every other such destination is `dropped`: it stays on disk, and the project owns it. `rk status --check` names an edited release workflow that stays.
 
-What it does not carry is as much of the map as what it does. There is no cross-release bundle, no
-stored executable plan, and no command that reconciles one release's output against another's. Both
-renders call one projection, and the production render reads no byte the stage wrote, only the
-choices its receipt records.
+What it does not carry is as much of the map as what it does. There is no cross-release bundle, no stored executable plan, and no command that reconciles one release's output against another's. Both renders call one projection, and the production render reads no byte the stage wrote, only the choices its receipt records.
 
-Its migration moves another release tool's files rather than a document corpus. The archive holds
-the predecessor's configuration and workflows, the workspace snapshots the forge's protections and
-settings and a bundle of every branch a step deletes before any destructive step, and each
-predecessor file is replaced by the new tool, carried into a project-owned file, or dropped. The
-forge-side steps run after the repository-side branch merges.
+Its migration moves another release tool's files rather than a document corpus. The archive holds the predecessor's configuration and workflows, the workspace snapshots the forge's protections and settings and a bundle of every branch a step deletes before any destructive step, and each predecessor file is replaced by the new tool, carried into a project-owned file, or dropped. The forge-side steps run after the repository-side branch merges.
 
-The setup skill, `rk-setup`, fills the skeleton in
-[Setup skill skeleton](./setup-skill-skeleton.md) with ten task files, read at `v0.10.1`.
+The setup skill, `rk-setup`, fills the skeleton in [Setup skill skeleton](./setup-skill-skeleton.md) with ten task files, read at `v0.10.1`.
 
 | Task             | What it serves                                                                             |
 | ---------------- | ------------------------------------------------------------------------------------------ |
@@ -71,20 +54,13 @@ The setup skill, `rk-setup`, fills the skeleton in
 | `publish`        | the first publish, where the setup proof reads absent or stale                             |
 | `landing`        | the stage, compare, prepare, land, and prove pipeline the landing tasks share              |
 
-Its gate adds a state the documentation canon has no use for, `adopt`, and an intent beside the
-canon's, the forge setup, because a release tool also configures the forge. A first landing runs
-`forge-settings`, `land`, and `publish` in that order, and the migration runs the forge-side tasks
-only after its branch merges.
+Its gate adds a state the documentation canon has no use for, `adopt`, and an intent beside the canon's, the forge setup, because a release tool also configures the forge. A first landing runs `forge-settings`, `land`, and `publish` in that order, and the migration runs the forge-side tasks only after its branch merges.
 
-The release skill's gate reads `rk release status --json` and picks `release`, `lines`, or
-`recover`, and it names starting, integrating, and pruning a branch as the project's own workflow,
-with `rk issue start`, `rk integrate`, and `rk worktree prune` as helpers it runs as no task.
+The release skill's gate reads `rk release status --json` and picks `release`, `lines`, or `recover`, and it names starting, integrating, and pruning a branch as the project's own workflow, with `rk issue start`, `rk integrate`, and `rk worktree prune` as helpers it runs as no task.
 
 ## The documentation canon
 
-The upstream canon this repository runs as a pinned tool, named and linked once in the root
-`AGENTS.md` and versioned in `.spec-driven-docs/manifest.json`. Read on 2026-11-16 at release
-`v0.18.1`, trunk commit `57fa78f`.
+The upstream canon this repository runs as a pinned tool, named and linked once in the root `AGENTS.md` and versioned in `.spec-driven-docs/manifest.json`. Read on 2026-11-16 at release `v0.18.1`, trunk commit `57fa78f`.
 
 | Concept              | The name it carries there                                                           |
 | -------------------- | ----------------------------------------------------------------------------------- |
@@ -108,22 +84,11 @@ The upstream canon this repository runs as a pinned tool, named and linked once 
 | Verification         | `sdd verify`                                                                        |
 | Cleanup              | `sdd stage clean`                                                                   |
 
-It departs from the rule of
-[Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing)
-in two ways. An edited managed file that the release no longer lands is a conflict rather than a
-dropped file. The upgrade refuses until `sdd upgrade --replace` names it, and then it saves the
-bytes and removes the file. The landing also removes a vouched file only under
-`.spec-driven-docs/`, `.claude/skills/`, and `.agents/skills/`. Elsewhere the file stays on disk
-and leaves the record.
+It departs from the rule of [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing) in two ways. An edited managed file that the release no longer lands is a conflict rather than a dropped file. The upgrade refuses until `sdd upgrade --replace` names it, and then it saves the bytes and removes the file. The landing also removes a vouched file only under `.spec-driven-docs/`, `.claude/skills/`, and `.agents/skills/`. Elsewhere the file stays on disk and leaves the record.
 
-Its migration moves a document corpus: the archive holds the old documents, and a group of decision
-records of the previous convention becomes one record whose considered options name each old
-decision. The skeleton in [Setup skill skeleton](./setup-skill-skeleton.md) and the verbs in
-[What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) describe this
-implementation in generic terms.
+Its migration moves a document corpus: the archive holds the old documents, and a group of decision records of the previous convention becomes one record whose considered options name each old decision. The skeleton in [Setup skill skeleton](./setup-skill-skeleton.md) and the verbs in [What the CLI owes a setup skill](./what-the-cli-owes-a-setup-skill.md) describe this implementation in generic terms.
 
 ## See also
 
 - [Prior art](./prior-art.md) — the sources the concepts came from.
-- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the
-  lifecycle these names implement.
+- [Disposable staging and direct landing](./disposable-staging-and-direct-landing.md) — the lifecycle these names implement.

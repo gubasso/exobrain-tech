@@ -1,12 +1,8 @@
 # Python CLI Spec
 
-Python-specific conventions for building a CLI tool, primarily with **Typer** (which wraps
-**Click**) and **Pydantic** for validation.
+Python-specific conventions for building a CLI tool, primarily with **Typer** (which wraps **Click**) and **Pydantic** for validation.
 
-For the language-agnostic principles, see
-[`tech/programming/cli-design/`](../../../programming/cli-design/). Every Python-specific rule here
-applies the general principles to the specifics of Python. Facing-category consequences follow
-[General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+For the language-agnostic principles, see [`tech/programming/cli-design/`](../../../programming/cli-design/). Every Python-specific rule here applies the general principles to the specifics of Python. Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 
 ## Files
 
@@ -39,11 +35,9 @@ applies the general principles to the specifics of Python. Facing-category conse
 ## TL;DR
 
 - One file per subcommand under `cli/`; one handler per subcommand under `commands/`.
-- General parse-shape → runtime-shape maps to **Typer parameters → Pydantic request models** in
-  Python.
+- General parse-shape → runtime-shape maps to **Typer parameters → Pydantic request models** in Python.
 - Validation lives in `__post_init__` / Pydantic validators, not in handler bodies.
-- Logging via `structlog` writes structured records to
-  `${XDG_STATE_HOME:-~/.local/state}/<app>/<app>.log` by default.
+- Logging via `structlog` writes structured records to `${XDG_STATE_HOME:-~/.local/state}/<app>/<app>.log` by default.
 - `pytest` with `-n auto`. Every subcommand has `tests/test_cmd_<name>.py`.
 
 ## See also

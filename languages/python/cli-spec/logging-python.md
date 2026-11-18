@@ -2,8 +2,7 @@
 
 Python-specific logging setup for CLI tools using `structlog`.
 
-Facing-category consequences follow
-[General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
+Facing-category consequences follow [General — Facing category & message types](../../../programming/cli-design/00-architecture.md#facing-category--message-types).
 
 ## Stack
 
@@ -18,10 +17,8 @@ Facing-category consequences follow
 
 - Default log file: `${XDG_STATE_HOME:-$HOME/.local/state}/<app>/<app>.log`.
 - Default records are JSON, one line per event.
-- Levels include at least `error`, `warn`, `info`, and `debug`; `trace` can be modeled as verbose
-  `debug` or a project-specific lower level if needed.
-- `mirror_stderr` is explicit opt-in. Default it to `false` for machine-facing CLIs; set it from
-  `--log-stderr`, verbosity policy, or config for human-facing CLIs.
+- Levels include at least `error`, `warn`, `info`, and `debug`; `trace` can be modeled as verbose `debug` or a project-specific lower level if needed.
+- `mirror_stderr` is explicit opt-in. Default it to `false` for machine-facing CLIs; set it from `--log-stderr`, verbosity policy, or config for human-facing CLIs.
 
 ## Worked Example
 
@@ -114,5 +111,4 @@ def sync() -> None:
     typer.echo('{"ok": true, "count": 12}')
 ```
 
-The command output stays separate from log records. Tests should set `XDG_STATE_HOME` to a temporary
-directory and assert that the log file contains newline-delimited JSON records.
+The command output stays separate from log records. Tests should set `XDG_STATE_HOME` to a temporary directory and assert that the log file contains newline-delimited JSON records.

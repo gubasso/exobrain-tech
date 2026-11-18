@@ -2,8 +2,7 @@
 
 > $nix $nixos $home-manager
 
-A NixOS machine is defined by **modules**. This is a second declarative layer built on the language
-from `01-language-basics.md`.
+A NixOS machine is defined by **modules**. This is a second declarative layer built on the language from `01-language-basics.md`.
 
 ## A module = a function returning `imports` / `options` / `config`
 
@@ -24,9 +23,7 @@ from `01-language-basics.md`.
 }
 ```
 
-Mental model: **`options` declare what settings exist; `config` sets them.** NixOS _merges_ the
-`config` from hundreds of modules into one giant `config` set — that's what
-`config.services.openssh.enable` reads back.
+Mental model: **`options` declare what settings exist; `config` sets them.** NixOS _merges_ the `config` from hundreds of modules into one giant `config` set — that's what `config.services.openssh.enable` reads back.
 
 ## Priority / conditional helpers (needed because of merging)
 
@@ -39,9 +36,7 @@ lib.mkOption  { …} # define an option's type/default/description
 
 ## `configuration.nix`
 
-The classic entry module (`/etc/nixos/configuration.nix` on a normal install): one
-`{ config, pkgs, ... }: { ... }` describing the whole system — bootloader, users, services,
-packages, kernel.
+The classic entry module (`/etc/nixos/configuration.nix` on a normal install): one `{ config, pkgs, ... }: { ... }` describing the whole system — bootloader, users, services, packages, kernel.
 
 ## Flake for a machine
 

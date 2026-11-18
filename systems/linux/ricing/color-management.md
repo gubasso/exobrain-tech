@@ -1,7 +1,6 @@
 # Color Management (X11 / dwm)
 
-Color management ensures your display shows accurate colors by applying correction profiles (ICC
-files) that compensate for each panel's unique characteristics.
+Color management ensures your display shows accurate colors by applying correction profiles (ICC files) that compensate for each panel's unique characteristics.
 
 ## Stack Overview
 
@@ -13,15 +12,12 @@ The standard stack for non-GNOME/KDE X11 setups:
 | **colord**      | D-Bus system daemon that stores a device ↔ profile database                                                                                  |
 | **xiccd**       | Session bridge for X11 — enumerates XRandR displays, registers them in colord, generates EDID-based defaults, and applies the active profile |
 
-xiccd should **not** be used in desktop environments with native color management (GNOME, KDE). It
-is specifically for standalone WMs like dwm.
+xiccd should **not** be used in desktop environments with native color management (GNOME, KDE). It is specifically for standalone WMs like dwm.
 
 ## Do You Need This?
 
-- **Coding / general use:** Probably not. OLED panels ship with decent factory calibration. If
-  colors look off, check gamma or night-light settings first.
-- **Photo/video editing, design:** Yes — proper calibration matters, especially with mixed displays
-  (e.g., internal OLED + docked external).
+- **Coding / general use:** Probably not. OLED panels ship with decent factory calibration. If colors look off, check gamma or night-light settings first.
+- **Photo/video editing, design:** Yes — proper calibration matters, especially with mixed displays (e.g., internal OLED + docked external).
 
 ## Setup
 
@@ -47,11 +43,9 @@ sudo pacman -S gnome-color-manager
 
 ### 2. Polkit Authentication Agent
 
-colord actions may require PolicyKit authorization. Without a running agent in your X session, you
-get silent failures.
+colord actions may require PolicyKit authorization. Without a running agent in your X session, you get silent failures.
 
-The Arch X11 WM package list already includes `polkit-gnome`. Ensure its agent is autostarted in
-your session (add to `~/.xinitrc` before `exec startdwm`):
+The Arch X11 WM package list already includes `polkit-gnome`. Ensure its agent is autostarted in your session (add to `~/.xinitrc` before `exec startdwm`):
 
 ```sh
 pgrep -f polkit-gnome-authentication-agent-1 >/dev/null || \
@@ -68,8 +62,7 @@ Add to `~/.xinitrc` (before `exec startdwm`):
 pgrep -x xiccd >/dev/null || xiccd &
 ```
 
-Once running, xiccd enumerates displays via XRandR, registers them in colord, and applies profiles.
-It handles hotplug (dock/undock) automatically.
+Once running, xiccd enumerates displays via XRandR, registers them in colord, and applies profiles. It handles hotplug (dock/undock) automatically.
 
 ### 4. Check for Existing Profiles
 
@@ -84,8 +77,7 @@ ls ~/.color/icc/
 colormgr get-profiles
 ```
 
-Some panels ship with bundled profiles. Search for your panel model online for community profiles if
-none are present.
+Some panels ship with bundled profiles. Search for your panel model online for community profiles if none are present.
 
 ### 5. Assign Profiles to Displays
 
@@ -133,8 +125,7 @@ ArgyllCMS supports devices in the i1Display and ColorChecker families:
 - **Budget:** X-Rite i1Display Studio (~$180)
 - **Mid-range:** Calibrite ColorChecker Display (~$250)
 
-On Linux, you may need **udev rules** so ArgyllCMS can access the meter as a normal user. See
-[ArgyllCMS Linux installation][argyll-linux].
+On Linux, you may need **udev rules** so ArgyllCMS can access the meter as a normal user. See [ArgyllCMS Linux installation][argyll-linux].
 
 ### Profiling Workflow
 
@@ -156,15 +147,11 @@ For setups with mixed displays (e.g., internal OLED + docked 27" external):
 
 ## X11 Limitations
 
-Color management on X11 primarily benefits **color-managed applications** (browsers with profile
-support, photo editors, some toolkits). Many UI toolkits and applications still ignore ICC profiles.
-This is an inherent X11 limitation, not a configuration problem.
+Color management on X11 primarily benefits **color-managed applications** (browsers with profile support, photo editors, some toolkits). Many UI toolkits and applications still ignore ICC profiles. This is an inherent X11 limitation, not a configuration problem.
 
 ## OLED-Specific Notes (ThinkPad P1 Gen 7)
 
-The P1's 4K OLED panel has reasonable factory calibration. Unless you are doing color-critical work,
-the setup above is not worth the effort. The panel is more likely to benefit from proper calibration
-when paired with a docked external monitor that has visibly different color rendering.
+The P1's 4K OLED panel has reasonable factory calibration. Unless you are doing color-critical work, the setup above is not worth the effort. The panel is more likely to benefit from proper calibration when paired with a docked external monitor that has visibly different color rendering.
 
 ## References
 

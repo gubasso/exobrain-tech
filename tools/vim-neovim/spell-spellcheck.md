@@ -12,8 +12,7 @@ Spellcheck / spell:
 
 ## Download / Generate Dictionary / Language
 
-A melhor abordagem é baixar os dicionários corretos e garantir que estejam no local esperado pelo
-Neovim.
+A melhor abordagem é baixar os dicionários corretos e garantir que estejam no local esperado pelo Neovim.
 
 ### Baixar arquivos compatíveis
 
@@ -58,5 +57,4 @@ Abra qualquer arquivo de texto e veja se a verificação ortográfica está func
 :echo &spelllang
 ```
 
-Se a saída for `pt_br`, está tudo certo! 🚀 Caso continue com error, me avise que podemos tentar
-outra abordagem!
+Se a saída for `pt_br`, está tudo certo! 🚀 Caso continue com error, me avise que podemos tentar outra abordagem!

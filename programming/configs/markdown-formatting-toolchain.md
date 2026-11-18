@@ -1,19 +1,11 @@
 # Markdown Formatting Toolchain — dprint + markdownlint
 
-Canonical rationale for the markdown pre-commit stack used in the dotfiles
-`_templates/pre-commit/markdown/` template and in this repo's own root config. This note exists
-because `dprint.json` is validated by the `pretty-format-json` hook as **strict JSON** (no comments
-allowed), so the options/rationale cannot live inline in that file. See also
-[markdown-review.md](./markdown-review.md).
+Canonical rationale for the markdown pre-commit stack used in the dotfiles `_templates/pre-commit/markdown/` template and in this repo's own root config. This note exists because `dprint.json` is validated by the `pretty-format-json` hook as **strict JSON** (no comments allowed), so the options/rationale cannot live inline in that file. See also [markdown-review.md](./markdown-review.md).
 
 ## Division of labor
 
-- **dprint** is the canonical CommonMark/GFM **formatter** (autofix): whitespace, list markers,
-  emphasis, table column padding, fenced-code spacing, and code _inside_ fenced blocks (via dprint's
-  other language plugins).
-- **markdownlint-cli2** is a **linter** that gates on what dprint can't normalize (semantic style,
-  link integrity, heading hierarchy) **and** autofixes the one thing dprint cannot do: ordered-list
-  renumbering (MD029).
+- **dprint** is the canonical CommonMark/GFM **formatter** (autofix): whitespace, list markers, emphasis, table column padding, fenced-code spacing, and code _inside_ fenced blocks (via dprint's other language plugins).
+- **markdownlint-cli2** is a **linter** that gates on what dprint can't normalize (semantic style, link integrity, heading hierarchy) **and** autofixes the one thing dprint cannot do: ordered-list renumbering (MD029).
 
 ### markdownlint is NOT a formatter
 
@@ -36,18 +28,14 @@ So dprint stays. Full consolidation to a single tool is not viable. Ref:
 | `maintain` | Keep line breaks exactly as written. **CHOSEN.**          |
 | `never`    | Collapse a wrapped paragraph toward a single line.        |
 
-**Chosen: `maintain`.** Prose is authored one-paragraph-per-line by hand and arrives pre-wrapped
-from LLM tools (Claude Code, Codex); `maintain` leaves both untouched. Caveats:
+**Chosen: `maintain`.** Prose is authored one-paragraph-per-line by hand and arrives pre-wrapped from LLM tools (Claude Code, Codex); `maintain` leaves both untouched. Caveats:
 
 - `maintain` does **not** retroactively unwrap already-wrapped text — it only stops new wrapping.
-- `never` _would_ actively collapse wraps, but it can also merge intentional line breaks, so it was
-  not chosen.
+- `never` _would_ actively collapse wraps, but it can also merge intentional line breaks, so it was not chosen.
 
-`lineWidth` (100) is only consulted when wrapping; it is kept because it still governs table layout
-and other plugins.
+`lineWidth` (100) is only consulted when wrapping; it is kept because it still governs table layout and other plugins.
 
-dprint does **not** renumber ordered lists (`1.`/`1.`/`1.` stays as written) under any `textWrap`
-value — that is markdownlint's MD029 job. Ref: <https://dprint.dev/plugins/markdown/config/>
+dprint does **not** renumber ordered lists (`1.`/`1.`/`1.` stays as written) under any `textWrap` value — that is markdownlint's MD029 job. Ref: <https://dprint.dev/plugins/markdown/config/>
 
 ## markdownlint: ordered-list renumbering (MD029)
 
@@ -59,29 +47,20 @@ value — that is markdownlint's MD029 job. Ref: <https://dprint.dev/plugins/mar
 | `ordered` | `1. 2. 3.` **CHOSEN** |
 | `zero`    | `0. 0. 0.`            |
 
-**Chosen: `ordered`** — incrementing numbers read naturally and are easy to reference. MD029 carries
-`fixInfo`, so markdownlint can **autofix** the renumbering, but only when fix mode is on. Ref:
+**Chosen: `ordered`** — incrementing numbers read naturally and are easy to reference. MD029 carries `fixInfo`, so markdownlint can **autofix** the renumbering, but only when fix mode is on. Ref:
 <https://github.com/DavidAnson/markdownlint/blob/main/doc/md029.md>
 
 ### Isolating fix-mode to MD029
 
-`"fix": true` in `.markdownlint-cli2.jsonc` enables autofix, but it is **global** — there is no
-per-rule fix toggle, and it fixes every enabled fixable rule. To keep fix-mode from fighting dprint
-or silently editing content, **every other fixable rule is disabled** in the config, leaving MD029
-as the only rule fix-mode can act on. Non-fixable rules are unaffected and still gate (report-only).
+`"fix": true` in `.markdownlint-cli2.jsonc` enables autofix, but it is **global** — there is no per-rule fix toggle, and it fixes every enabled fixable rule. To keep fix-mode from fighting dprint or silently editing content, **every other fixable rule is disabled** in the config, leaving MD029 as the only rule fix-mode can act on. Non-fixable rules are unaffected and still gate (report-only).
 
-If a future markdownlint version makes a new rule fixable, add it to the disabled block to preserve
-isolation.
+If a future markdownlint version makes a new rule fixable, add it to the disabled block to preserve isolation.
 
 ## Single source of truth: use `.markdownlint-cli2.jsonc` only
 
-Do **not** keep both a `.markdownlint-cli2.jsonc` and a `.markdownlint.{yaml,json}`. When both exist
-in the same directory, the `.markdownlint.*` rules win and silently override the `config` block of
-the `.jsonc` (observed: a `.markdownlint.yaml` with `MD029: false` defeated the `.jsonc`'s
-`MD029: ordered`). Standardize on `.markdownlint-cli2.jsonc` because:
+Do **not** keep both a `.markdownlint-cli2.jsonc` and a `.markdownlint.{yaml,json}`. When both exist in the same directory, the `.markdownlint.*` rules win and silently override the `config` block of the `.jsonc` (observed: a `.markdownlint.yaml` with `MD029: false` defeated the `.jsonc`'s `MD029: ordered`). Standardize on `.markdownlint-cli2.jsonc` because:
 
-- it is the only file that can hold both the rule `config` **and** cli2-only options (`fix`,
-  `customRules`, `ignores`); `.markdownlint.*` holds rules only,
+- it is the only file that can hold both the rule `config` **and** cli2-only options (`fix`, `customRules`, `ignores`); `.markdownlint.*` holds rules only,
 - it supports JSONC comments (so rationale can live inline), and
 - `markdownlint-cli2` also reads it in VS Code, keeping editor + pre-commit in sync.
 
@@ -89,10 +68,7 @@ Ref: <https://github.com/DavidAnson/markdownlint-cli2#configuration>
 
 ## Generated Markdown
 
-dprint rewrites and markdownlint with `"fix": true` rewrites too, so both exclude every Markdown
-file a tool generates, such as a `CHANGELOG.md` that release-plz or git-cliff writes: list it in the
-`excludes` of the dprint configuration and in the `ignores` of `.markdownlint-cli2.jsonc`. The rule
-is in [project-bootstrap/04 — Generated files](../project-bootstrap/04-quality-gates.md#generated-files).
+dprint rewrites and markdownlint with `"fix": true` rewrites too, so both exclude every Markdown file a tool generates, such as a `CHANGELOG.md` that release-plz or git-cliff writes: list it in the `excludes` of the dprint configuration and in the `ignores` of `.markdownlint-cli2.jsonc`. The rule is in [project-bootstrap/04 — Generated files](../project-bootstrap/04-quality-gates.md#generated-files).
 
 ## References
 

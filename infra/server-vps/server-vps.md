@@ -41,8 +41,7 @@ passwd root
 ```
 
 - Add new `super_user` and set a strong password
-- Create groups and add the `super_user` to them:
-  [linux-general group management](../../systems/linux/linux-system-general.md#group-management)
+- Create groups and add the `super_user` to them: [linux-general group management](../../systems/linux/linux-system-general.md#group-management)
 
 ```text
 groupadd wheel
@@ -51,8 +50,7 @@ groupadd ssh-user
 usermod -aG wheel,sudo,ssh-user super_user
 ```
 
-- Grant `super_user` root/sudo privileges:
-  [linux-general sudo](../../systems/linux/linux-system-general.md#sudo)
+- Grant `super_user` root/sudo privileges: [linux-general sudo](../../systems/linux/linux-system-general.md#sudo)
 
 ```text
 EDITOR=vim visudo
@@ -101,11 +99,9 @@ Steps to setup a more secure way to access the server.
 
 **At `local`[^3]:**
 
-- setup agent forwarding:
-  [ssh-openssh ssh-agent](../../systems/security/ssh/ssh-openssh.md#ssh-agent)
+- setup agent forwarding: [ssh-openssh ssh-agent](../../systems/security/ssh/ssh-openssh.md#ssh-agent)
 - Select a `local` ssh identity (key pair) or create a new one[^4]
-- Copy this identity to server:
-  [ssh-openssh copy public key](../../systems/security/ssh/ssh-openssh.md#copying-the-public-key-to-the-remote-server)
+- Copy this identity to server: [ssh-openssh copy public key](../../systems/security/ssh/ssh-openssh.md#copying-the-public-key-to-the-remote-server)
 - test if login works: `ssh super_user@<fqdn>`
   - it should not ask for the password
 
@@ -140,12 +136,9 @@ Port 202
 AllowGroups ssh-user
 ```
 
-- if will be a [gitolite](../../tools/git/gitolite.md) server (see
-  [gitolite setup](../../tools/git/gitolite.md#setup)):
+- if will be a [gitolite](../../tools/git/gitolite.md) server (see [gitolite setup](../../tools/git/gitolite.md#setup)):
   - `usepam yes`
-- check applied configs
-  ([ssh-openssh config server](../../systems/security/ssh/ssh-openssh.md#config-server)), run
-  command:
+- check applied configs ([ssh-openssh config server](../../systems/security/ssh/ssh-openssh.md#config-server)), run command:
 
 ```sh
 # as root
@@ -209,9 +202,7 @@ to logout the server
 
 find my server/host ip address: `ifconfig`
 
-"PRO TIP - any time you make changes to authentication settings on a system - ssh, pam, sudoers, and
-so on - open a second root terminal to that system and leave it open until AFTER you verify your
-changes worked correctly, so you don't get locked out of your system."
+"PRO TIP - any time you make changes to authentication settings on a system - ssh, pam, sudoers, and so on - open a second root terminal to that system and leave it open until AFTER you verify your changes worked correctly, so you don't get locked out of your system."
 
 - proxmox: OS for bare metal manage VMs
 

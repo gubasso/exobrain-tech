@@ -33,20 +33,16 @@
 
 ### Merge branches (one-liner)
 
-To merge the target branch (e.g. `master`) into the feature branch, switch to the branch that
-receives the merge first:
+To merge the target branch (e.g. `master`) into the feature branch, switch to the branch that receives the merge first:
 
 ```sh
 git switch feat/auth
 git merge master
 ```
 
-`git merge` always merges into the current branch. Naming two branches, as in
-`git merge feat/auth master`, merges both of them into whatever is checked out — an octopus merge, not
-a shorthand for the two commands above.
+`git merge` always merges into the current branch. Naming two branches, as in `git merge feat/auth master`, merges both of them into whatever is checked out — an octopus merge, not a shorthand for the two commands above.
 
-On a trunk you would rebase rather than merge — see [rebase-workflow.md](./rebase-workflow.md) —
-but the mechanics above are what a merge does.
+On a trunk you would rebase rather than merge — see [rebase-workflow.md](./rebase-workflow.md) — but the mechanics above are what a merge does.
 
 ### Checkout vs Switch
 
@@ -67,8 +63,7 @@ git for-each-ref --format="%(refname:short) %(upstream:track) %(upstream:remoten
 git checkout -b feat/auth origin/feat/auth
 ```
 
-You can do it in one shot with `git`—create the local branch **with the same name** and set it to
-track the remote branch.
+You can do it in one shot with `git`—create the local branch **with the same name** and set it to track the remote branch.
 
 Assuming the remote is `origin` and the branch is `feat/auth`:
 
@@ -147,11 +142,7 @@ git remote update --prune
 
 ## Merge / Diff conflicts
 
-https://github.com/sindrets/diffview.nvim
-https://stackoverflow.com/questions/6412516/configuring-diff-tool-with-gitconfig
-https://stackoverflow.com/questions/70552371/is-there-a-neovim-version-of-vimdiff
-https://smittie.de/posts/git-mergetool/ simulate / create a merge conflict
-https://www.rosipov.com/blog/use-vimdiff-as-git-mergetool/
+https://github.com/sindrets/diffview.nvim https://stackoverflow.com/questions/6412516/configuring-diff-tool-with-gitconfig https://stackoverflow.com/questions/70552371/is-there-a-neovim-version-of-vimdiff https://smittie.de/posts/git-mergetool/ simulate / create a merge conflict https://www.rosipov.com/blog/use-vimdiff-as-git-mergetool/
 
 ### Merge just a file/path from another branch
 
@@ -178,10 +169,7 @@ git restore --staged .
 
 ## Development workflow
 
-This README keeps the git command mechanics. The day-to-day loop that feeds the trunk is documented
-in [feature-lifecycle.md](./feature-lifecycle.md) and [rebase-workflow.md](./rebase-workflow.md);
-the branching model behind it is
-[trunk-based development](../../workflows/trunk-based-development.md).
+This README keeps the git command mechanics. The day-to-day loop that feeds the trunk is documented in [feature-lifecycle.md](./feature-lifecycle.md) and [rebase-workflow.md](./rebase-workflow.md); the branching model behind it is [trunk-based development](../../workflows/trunk-based-development.md).
 
 ### External reading
 
@@ -225,10 +213,7 @@ the branching model behind it is
 
 [Git Rebase vs Merge Debate feat Theo : DevHour #1 - ThePrimeagen](https://www.youtube.com/watch?v=7gEbHsHXdn0)
 
-[Solving git merge conflicts with VIM](https://medium.com/prodopsio/solving-git-merge-conflicts-with-vim-c8a8617e3633)
-[Understanding Git conflict markers](https://wincent.com/wiki/Understanding_Git_conflict_markers)
-[Git merge conflict cheatsheet](https://wincent.com/wiki/Git_merge_conflict_cheatsheet)
-[Vim universe. Vim as a merge tool](https://www.youtube.com/watch?v=VxpCgQyUXlI)
+[Solving git merge conflicts with VIM](https://medium.com/prodopsio/solving-git-merge-conflicts-with-vim-c8a8617e3633) [Understanding Git conflict markers](https://wincent.com/wiki/Understanding_Git_conflict_markers) [Git merge conflict cheatsheet](https://wincent.com/wiki/Git_merge_conflict_cheatsheet) [Vim universe. Vim as a merge tool](https://www.youtube.com/watch?v=VxpCgQyUXlI)
 
 ## General
 
@@ -273,11 +258,9 @@ squash commits
   - rust: https://docs.rs/git2/latest/git2/
     - https://siciarz.net/24-days-rust-git2/
 
-- Git Objects:
-  [10.2 Git Internals - Git Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
+- Git Objects: [10.2 Git Internals - Git Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
 
-config git local info config
-[How to store a git config as part of the repository?](https://stackoverflow.com/questions/18329621/how-to-store-a-git-config-as-part-of-the-repository)
+config git local info config [How to store a git config as part of the repository?](https://stackoverflow.com/questions/18329621/how-to-store-a-git-config-as-part-of-the-repository)
 
 ```bash
 git config --local include.path ../.gitconfig
@@ -333,22 +316,16 @@ git add -A #--all
 
 ---
 
-[^android_note_git] note taking markdown mobile android integrated with git:
-https://play.google.com/store/apps/details?id=io.gitjournal.gitjournal
-https://play.google.com/store/apps/details?id=io.spck
-https://play.google.com/store/apps/details?id=com.foxdebug.acodefree
-https://play.google.com/store/apps/details?id=com.rhmsoft.edit
+[^android_note_git] note taking markdown mobile android integrated with git: https://play.google.com/store/apps/details?id=io.gitjournal.gitjournal https://play.google.com/store/apps/details?id=io.spck https://play.google.com/store/apps/details?id=com.foxdebug.acodefree https://play.google.com/store/apps/details?id=com.rhmsoft.edit
 
 - merge branch logic:
 
   - checkout the branch where you want to bring the commit
-  - just as a remote (github): I'm working in my local, checked out, and run git remote to bring the
-    changes from outside repos
+  - just as a remote (github): I'm working in my local, checked out, and run git remote to bring the changes from outside repos
 
 - if you decide to quit the merge: `git merge --abort`
 
-  - if you have already committed, to rollback and erase last commit, run:
-    `git reset --hard ORIG_HEAD`
+  - if you have already committed, to rollback and erase last commit, run: `git reset --hard ORIG_HEAD`
 
 - https://github.com/rbong/vim-flog/
 

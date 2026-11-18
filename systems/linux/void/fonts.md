@@ -1,16 +1,13 @@
 # Fonts on Void
 
-When you install fonts from Void’s repositories, **you don’t need to run `fc-cache -fv`
-yourself**—XBPS does it for you. However, if you drop font files into your local or system font
-directories by hand, you must rebuild the cache manually (or via `xbps-reconfigure`).
+When you install fonts from Void’s repositories, **you don’t need to run `fc-cache -fv` yourself**—XBPS does it for you. However, if you drop font files into your local or system font directories by hand, you must rebuild the cache manually (or via `xbps-reconfigure`).
 
 ## 1. Fonts installed via XBPS
 
 Void’s font packages include a **post-install hook** that:
 
 1. Builds the `fonts.dir` and `fonts.scale` files under `/usr/share/fonts…`
-2. Runs `fc-cache` to update fontconfig’s cache immediately after each package is installed
-   ([github.com][1]).
+2. Runs `fc-cache` to update fontconfig’s cache immediately after each package is installed ([github.com][1]).
 
 You’ll see lines like:
 
@@ -24,8 +21,7 @@ Updating fontconfig's cache...
 
 ## 2. Fonts installed manually
 
-If you copy or symlink `.ttf`/`.otf` files into `/usr/share/fonts` or `~/.local/share/fonts`,
-fontconfig won’t notice them until you rebuild its cache. You have two options:
+If you copy or symlink `.ttf`/`.otf` files into `/usr/share/fonts` or `~/.local/share/fonts`, fontconfig won’t notice them until you rebuild its cache. You have two options:
 
 - **Run fc-cache directly**
 
@@ -33,8 +29,7 @@ fontconfig won’t notice them until you rebuild its cache. You have two options
   fc-cache -fv
   ```
 
-  The `-f` flag forces rebuilding (even if up to date) and `-v` shows progress; this rescans all
-  directories in your fontconfig config ([man.voidlinux.org][2]).
+  The `-f` flag forces rebuilding (even if up to date) and `-v` shows progress; this rescans all directories in your fontconfig config ([man.voidlinux.org][2]).
 
 - **Reconfigure the fontconfig package**
 
@@ -43,8 +38,7 @@ fontconfig won’t notice them until you rebuild its cache. You have two options
   xbps-reconfigure -f fontconfig
   ```
 
-  This reruns fontconfig’s install scripts (including cache rebuild) system-wide
-  ([docs.voidlinux.org][3]).
+  This reruns fontconfig’s install scripts (including cache rebuild) system-wide ([docs.voidlinux.org][3]).
 
 ---
 

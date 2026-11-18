@@ -1,14 +1,8 @@
 # Code Quality (Rust)
 
-> Prerequisite: [09 — Coding Style (Rust)](../09-coding-style.md) for lint basics (`pedantic`,
-> `nursery`, `unwrap_used`, `expect_used`). This chapter covers Rust-specific code quality tooling
-> beyond linting: complexity metrics, restriction lints, binary size analysis, unused dependency
-> detection, and architectural boundary enforcement.
+> Prerequisite: [09 — Coding Style (Rust)](../09-coding-style.md) for lint basics (`pedantic`, `nursery`, `unwrap_used`, `expect_used`). This chapter covers Rust-specific code quality tooling beyond linting: complexity metrics, restriction lints, binary size analysis, unused dependency detection, and architectural boundary enforcement.
 >
-> General principles:
-> [10 — Regression Safeguards](../../../../programming/cli-design/09-testing-and-quality/regression-safeguards.md)
-> ·
-> [10a — Code Quality Tools](../../../../programming/cli-design/09-testing-and-quality/code-quality-tools.md).
+> General principles: [10 — Regression Safeguards](../../../../programming/cli-design/09-testing-and-quality/regression-safeguards.md) · [10a — Code Quality Tools](../../../../programming/cli-design/09-testing-and-quality/code-quality-tools.md).
 
 ## Tool stack
 
@@ -25,14 +19,11 @@
 | LOC metrics                   | `tokei`                  | Pre-push     | `pkgs.tokei`                  |
 | Continuous benchmarking       | Bencher + `criterion`    | Scheduled CI | `pkgs.cargo-criterion`        |
 
-pre-commit builds the `cargo-machete` hook from its upstream repository. The devshell supplies every
-other tool, and CI repeats the hook stages in it. A scheduled CI job is
-outside the push rule and is listed, as [05 — CI](../../../../programming/project-bootstrap/05-ci.md#ci-only-checks) says.
+pre-commit builds the `cargo-machete` hook from its upstream repository. The devshell supplies every other tool, and CI repeats the hook stages in it. A scheduled CI job is outside the push rule and is listed, as [05 — CI](../../../../programming/project-bootstrap/05-ci.md#ci-only-checks) says.
 
 ## Complexity metrics with `rust-code-analysis`
 
-[`rust-code-analysis`](https://github.com/mozilla/rust-code-analysis) (Mozilla) is the most
-comprehensive complexity analysis tool for Rust. It computes per-function metrics:
+[`rust-code-analysis`](https://github.com/mozilla/rust-code-analysis) (Mozilla) is the most comprehensive complexity analysis tool for Rust. It computes per-function metrics:
 
 | Metric        | What it measures                                                  |
 | ------------- | ----------------------------------------------------------------- |
@@ -92,9 +83,7 @@ lint-complexity:
 
 ## Clippy restriction lints
 
-[09 — Coding Style](../09-coding-style.md) § 5 covers the base lint config (`pedantic`, `nursery`,
-`unwrap_used`, `expect_used`). This section adds the **restriction** and **complexity** lints that
-catch AI-agent-specific failure modes.
+[09 — Coding Style](../09-coding-style.md) § 5 covers the base lint config (`pedantic`, `nursery`, `unwrap_used`, `expect_used`). This section adds the **restriction** and **complexity** lints that catch AI-agent-specific failure modes.
 
 ### Restriction lints to add
 
@@ -146,18 +135,14 @@ too-many-arguments-threshold = 7
 type-complexity-threshold = 250
 ```
 
-These thresholds are enforced by clippy at the function level. When clippy runs in pre-commit with
-`-D warnings`, any function exceeding these thresholds fails the gate.
+These thresholds are enforced by clippy at the function level. When clippy runs in pre-commit with `-D warnings`, any function exceeding these thresholds fails the gate.
 
 ### Interaction with `rust-code-analysis`
 
-Clippy's `cognitive_complexity` lint and `rust-code-analysis` both compute cognitive complexity, but
-they serve different purposes:
+Clippy's `cognitive_complexity` lint and `rust-code-analysis` both compute cognitive complexity, but they serve different purposes:
 
-- **Clippy** enforces a per-function threshold inline during the compile/lint cycle (pre-commit).
-  It's a gate.
-- **`rust-code-analysis`** produces detailed per-function metrics as JSON (CI/nightly). It's a
-  report.
+- **Clippy** enforces a per-function threshold inline during the compile/lint cycle (pre-commit). It's a gate.
+- **`rust-code-analysis`** produces detailed per-function metrics as JSON (CI/nightly). It's a report.
 
 Use both: clippy for fast gating, `rust-code-analysis` for deeper analysis and trend tracking.
 
@@ -165,15 +150,13 @@ Use both: clippy for fast gating, `rust-code-analysis` for deeper analysis and t
 
 ### `cargo-machete` (fast, stable Rust)
 
-[`cargo-machete`](https://github.com/bnjbvr/cargo-machete) greps `src/` for crate names. If a
-dependency isn't mentioned, it's likely unused.
+[`cargo-machete`](https://github.com/bnjbvr/cargo-machete) greps `src/` for crate names. If a dependency isn't mentioned, it's likely unused.
 
 ```bash
 prek run cargo-machete --all-files   # the upstream hook, pinned in .pre-commit-config.yaml
 ```
 
-**False positives:** crates used only via macros (e.g., `tracing` used via `#[instrument]`) may not
-be found by grep. Allowlist them:
+**False positives:** crates used only via macros (e.g., `tracing` used via `#[instrument]`) may not be found by grep. Allowlist them:
 
 ```toml
 # Cargo.toml
@@ -185,8 +168,7 @@ ignored = ["tracing"]
 
 ### `cargo-udeps` (precise, nightly only)
 
-[`cargo-udeps`](https://github.com/est31/cargo-udeps) uses the compiler to find truly unused
-dependencies. More precise than machete but requires nightly.
+[`cargo-udeps`](https://github.com/est31/cargo-udeps) uses the compiler to find truly unused dependencies. More precise than machete but requires nightly.
 
 ```bash
 cargo +nightly udeps --all-targets   # pkgs.cargo-udeps in the devshell
@@ -205,9 +187,7 @@ Use both: machete in pre-commit for fast feedback, udeps in nightly for precisio
 
 ## Security and license auditing with `cargo-deny`
 
-[`cargo-deny`](https://github.com/EmbarkStudios/cargo-deny) is a comprehensive dependency policy
-engine. It subsumes `cargo-audit` (CVE scanning) and adds license compliance, bans, duplicate
-detection, and source restrictions.
+[`cargo-deny`](https://github.com/EmbarkStudios/cargo-deny) is a comprehensive dependency policy engine. It subsumes `cargo-audit` (CVE scanning) and adds license compliance, bans, duplicate detection, and source restrictions.
 
 ### Configuration
 
@@ -263,9 +243,7 @@ cargo deny check licenses     # license compliance only
 
 ## Binary size analysis with `cargo-bloat`
 
-[`cargo-bloat`](https://github.com/RazrFalcon/cargo-bloat) shows per-function and per-crate binary
-size breakdown. Sudden growth often indicates AI-introduced dependency bloat or excessive
-monomorphization.
+[`cargo-bloat`](https://github.com/RazrFalcon/cargo-bloat) shows per-function and per-crate binary size breakdown. Sudden growth often indicates AI-introduced dependency bloat or excessive monomorphization.
 
 ### Usage
 
@@ -291,8 +269,7 @@ cargo bloat --release --crates -n 0 --wide > bloat-pr.txt
 diff bloat-baseline.txt bloat-pr.txt
 ```
 
-For continuous tracking with statistical regression detection, use [Bencher](https://bencher.dev/) —
-it tracks binary size across commits and alerts on regressions.
+For continuous tracking with statistical regression detection, use [Bencher](https://bencher.dev/) — it tracks binary size across commits and alerts on regressions.
 
 ### justfile recipe
 
@@ -303,8 +280,7 @@ bloat:
 
 ## LOC metrics with `tokei`
 
-[`tokei`](https://github.com/XAMPPRocky/tokei) counts lines of code, comments, and blanks by
-language. Machine-readable output for CI tracking.
+[`tokei`](https://github.com/XAMPPRocky/tokei) counts lines of code, comments, and blanks by language. Machine-readable output for CI tracking.
 
 ```bash
 # JSON output for CI
@@ -314,13 +290,11 @@ tokei . --output json | jq '.Rust'
 tokei .
 ```
 
-**CI pattern:** track `.Rust.code` across PRs. A PR that adds > 500 LLOC to a single module is a
-review flag.
+**CI pattern:** track `.Rust.code` across PRs. A PR that adds > 500 LLOC to a single module is a review flag.
 
 ## Continuous benchmarking with `criterion` + Bencher
 
-[`criterion`](https://bheisler.github.io/criterion.rs/book/) is the standard Rust benchmarking
-framework. [`divan`](https://github.com/nvzqz/divan) is a lighter alternative with attribute macros.
+[`criterion`](https://bheisler.github.io/criterion.rs/book/) is the standard Rust benchmarking framework. [`divan`](https://github.com/nvzqz/divan) is a lighter alternative with attribute macros.
 
 ### Setup
 
@@ -350,8 +324,7 @@ criterion_main!(benches);
 
 ### Continuous tracking with Bencher
 
-[Bencher](https://bencher.dev/) integrates with GitHub Actions to track benchmark results and binary
-size across commits. It detects statistical regressions and posts PR comments.
+[Bencher](https://bencher.dev/) integrates with GitHub Actions to track benchmark results and binary size across commits. It detects statistical regressions and posts PR comments.
 
 ```yaml
 # .github/workflows/bench.yml (nightly)
@@ -376,11 +349,9 @@ jobs:
 
 ## Architectural boundary enforcement
 
-Rust's module visibility system (`pub(crate)`, `pub(super)`, private) is the primary boundary
-enforcement mechanism. The compiler catches visibility violations at compile time.
+Rust's module visibility system (`pub(crate)`, `pub(super)`, private) is the primary boundary enforcement mechanism. The compiler catches visibility violations at compile time.
 
-The gap is at the **logical layer level**: the compiler doesn't know that `domain/` shouldn't import
-from `adapters/`. Fill this gap with grep-based lint rules.
+The gap is at the **logical layer level**: the compiler doesn't know that `domain/` shouldn't import from `adapters/`. Fill this gap with grep-based lint rules.
 
 ### Standard boundary rules
 
@@ -442,10 +413,7 @@ lint-boundaries:
       pass_filenames: false
 ```
 
-`cargo-machete` is an upstream hook in rust, so pre-commit builds its environment. The
-`lint-boundaries` recipe has no upstream hook and keeps `language: system`, as
-[04 — Quality gates](../../../../programming/project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment)
-says.
+`cargo-machete` is an upstream hook in rust, so pre-commit builds its environment. The `lint-boundaries` recipe has no upstream hook and keeps `language: system`, as [04 — Quality gates](../../../../programming/project-bootstrap/04-quality-gates.md#who-builds-a-hook-environment) says.
 
 ## Complete quality gate integration
 
@@ -525,26 +493,17 @@ CI on a push or pull request repeats the pre-commit and pre-push columns.
 - [Testing (Rust)](./testing.md) — core test crate stack.
 - [Advanced Testing (Rust)](./advanced-testing.md) — proptest, cargo-mutants, trycmd, wiremock.
 - [07 — Dependencies (Rust)](../07-dependencies.md) — curated crate list, pinning policy.
-- [09 — Coding Style (Rust)](../09-coding-style.md) — base lint config, no-unwrap rule, CI lint for
-  no-println.
+- [09 — Coding Style (Rust)](../09-coding-style.md) — base lint config, no-unwrap rule, CI lint for no-println.
 - General principles:
-  - [10 — Regression Safeguards](../../../../programming/cli-design/09-testing-and-quality/regression-safeguards.md)
-    — safeguard categories, layering model, TDD-for-agents.
-  - [10a — Code Quality Tools](../../../../programming/cli-design/09-testing-and-quality/code-quality-tools.md)
-    — per-language quality tool matrix.
+  - [10 — Regression Safeguards](../../../../programming/cli-design/09-testing-and-quality/regression-safeguards.md) — safeguard categories, layering model, TDD-for-agents.
+  - [10a — Code Quality Tools](../../../../programming/cli-design/09-testing-and-quality/code-quality-tools.md) — per-language quality tool matrix.
 
 ## References
 
-- [`rust-code-analysis`](https://github.com/mozilla/rust-code-analysis) ·
-  [docs](https://mozilla.github.io/rust-code-analysis/) ·
-  [metrics](https://mozilla.github.io/rust-code-analysis/metrics.html)
-- [`clippy` lint database](https://rust-lang.github.io/rust-clippy/master/index.html) ·
-  [`clippy.toml` reference](https://doc.rust-lang.org/clippy/lint_configuration.html)
-- [`cargo-machete`](https://github.com/bnjbvr/cargo-machete) ·
-  [`cargo-udeps`](https://github.com/est31/cargo-udeps)
-- [`cargo-deny`](https://github.com/EmbarkStudios/cargo-deny) ·
-  [docs](https://embarkstudios.github.io/cargo-deny/)
+- [`rust-code-analysis`](https://github.com/mozilla/rust-code-analysis) · [docs](https://mozilla.github.io/rust-code-analysis/) · [metrics](https://mozilla.github.io/rust-code-analysis/metrics.html)
+- [`clippy` lint database](https://rust-lang.github.io/rust-clippy/master/index.html) · [`clippy.toml` reference](https://doc.rust-lang.org/clippy/lint_configuration.html)
+- [`cargo-machete`](https://github.com/bnjbvr/cargo-machete) · [`cargo-udeps`](https://github.com/est31/cargo-udeps)
+- [`cargo-deny`](https://github.com/EmbarkStudios/cargo-deny) · [docs](https://embarkstudios.github.io/cargo-deny/)
 - [`cargo-bloat`](https://github.com/RazrFalcon/cargo-bloat)
 - [`tokei`](https://github.com/XAMPPRocky/tokei) · [`scc`](https://github.com/boyter/scc)
-- [`criterion`](https://bheisler.github.io/criterion.rs/book/) ·
-  [`divan`](https://github.com/nvzqz/divan) · [Bencher](https://bencher.dev/)
+- [`criterion`](https://bheisler.github.io/criterion.rs/book/) · [`divan`](https://github.com/nvzqz/divan) · [Bencher](https://bencher.dev/)

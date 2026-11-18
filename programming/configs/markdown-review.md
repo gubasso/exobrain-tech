@@ -8,8 +8,7 @@
 
 ### Fenced code blocks
 
-- Code block without language specifier → `[blocking]` per markdownlint MD040; use a language tag
-  (`text` if none applies). Confirms tooling alignment with this dotfiles' rule.
+- Code block without language specifier → `[blocking]` per markdownlint MD040; use a language tag (`text` if none applies). Confirms tooling alignment with this dotfiles' rule.
 - Mixed language fences in a tutorial without callouts → `[suggestion]`.
 
 ### Headings
@@ -20,8 +19,7 @@
 
 ### Links
 
-- Bare URL pasted without angle brackets / autolink → `[nit]` "Use `<https://...>` or
-  `text (path:`url`)`."
+- Bare URL pasted without angle brackets / autolink → `[nit]` "Use `<https://...>` or `text (path:`url`)`."
 - Relative link broken by repo restructure → `[blocking]`.
 - Link text "click here" / "this" → `[important]` "Accessibility; link text should be descriptive."
 
@@ -42,14 +40,10 @@
 
 ### Common bugs
 
-- Backtick-fenced code expected but used 4-space indent (mixes with surrounding lists) →
-  `[important]`.
-- `<details>`/`<summary>` HTML missing blank lines around it → `[important]` (renderer
-  inconsistencies).
+- Backtick-fenced code expected but used 4-space indent (mixes with surrounding lists) → `[important]`.
+- `<details>`/`<summary>` HTML missing blank lines around it → `[important]` (renderer inconsistencies).
 
 ## See also
 
 - Canonical: <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md>.
-- Per-project lint config: `.markdownlint-cli2.jsonc` (single SoT) + pre-commit
-  `markdownlint-cli2` + dprint. Toolchain rationale and options:
-  [markdown-formatting-toolchain.md](./markdown-formatting-toolchain.md).
+- Per-project lint config: `.markdownlint-cli2.jsonc` (single SoT) + pre-commit `markdownlint-cli2` + dprint. Toolchain rationale and options: [markdown-formatting-toolchain.md](./markdown-formatting-toolchain.md).

@@ -1,12 +1,8 @@
 # Contribute commits back to the branch
 
-Puts your own commits onto the branch a pull request proposes, pushes them so they appear in the
-review, and takes what the other contributor pushes meanwhile — the loop repeated until the pull
-request lands. Reading the branch without touching it is
-[./read-the-branch.md](./read-the-branch.md); merging the pull request is out of scope.
+Puts your own commits onto the branch a pull request proposes, pushes them so they appear in the review, and takes what the other contributor pushes meanwhile — the loop repeated until the pull request lands. Reading the branch without touching it is [./read-the-branch.md](./read-the-branch.md); merging the pull request is out of scope.
 
-The steps run one worked example: pull request 42 on the branch `feat-x`, where you add the change
-`qpvuntsm` and the other contributor pushes `nlksuwmv` while you work.
+The steps run one worked example: pull request 42 on the branch `feat-x`, where you add the change `qpvuntsm` and the other contributor pushes `nlksuwmv` while you work.
 
 ## The whole run
 
@@ -39,8 +35,7 @@ jj bookmark forget feat-x && jj new master@origin
 - The remote bookmark `feat-x@origin` is present.
   - check: `jj bookmark list --all-remotes`
   - if not: step 1 of [./read-the-branch.md](./read-the-branch.md)
-- You may write to the branch: it is on `origin` and you have push access, or it is on a fork whose
-  pull request allows edits from maintainers.
+- You may write to the branch: it is on `origin` and you have push access, or it is on a fork whose pull request allows edits from maintainers.
   - check: `gh pr view 42 --json maintainerCanModify,isCrossRepository`
 
 ## Steps
@@ -57,8 +52,7 @@ jj bookmark forget feat-x && jj new master@origin
 
 2. Track the branch, giving it a local bookmark that follows every later fetch.
 
-   Pushing to a remote bookmark that already exists requires it to be tracked, so this is what makes
-   the branch writable rather than a thing you can only read.
+   Pushing to a remote bookmark that already exists requires it to be tracked, so this is what makes the branch writable rather than a thing you can only read.
 
    ```sh
    jj bookmark track feat-x@origin
@@ -97,9 +91,7 @@ jj bookmark forget feat-x && jj new master@origin
 
 6. Start the next commit, so the described one stops being the working copy.
 
-   Every jj command snapshots the working copy into `@`. Left as `@`, `qpvuntsm` would keep
-   absorbing edits after the push at step 8, and the bookmark would follow each rewrite — reviewers
-   would see a commit id that no longer matches what they read.
+   Every jj command snapshots the working copy into `@`. Left as `@`, `qpvuntsm` would keep absorbing edits after the push at step 8, and the bookmark would follow each rewrite — reviewers would see a commit id that no longer matches what they read.
 
    ```sh
    jj new
@@ -132,8 +124,7 @@ jj bookmark forget feat-x && jj new master@origin
    ```
 
    - The branch is on a fork added as the remote `fork`: `jj git push --remote fork --bookmark feat-x`
-   - The remote moved since your last fetch, so jj refuses rather than overwriting, the way
-     `git push --force-with-lease` does. Continue at step 9 and return here.
+   - The remote moved since your last fetch, so jj refuses rather than overwriting, the way `git push --force-with-lease` does. Continue at step 9 and return here.
 
      ```text
      Error: Refusing to push a bookmark that unexpectedly moved on the remote. Affected refs: refs/heads/feat-x
@@ -161,8 +152,7 @@ jj bookmark forget feat-x && jj new master@origin
      @origin: nlksuwmv 4a0b91d2 test: cover the empty case
    ```
 
-   The bookmark is conflicted because both sides moved and neither contains the other. A fetch that
-   arrives while you have nothing unpushed prints no conflict and needs no step 10.
+   The bookmark is conflicted because both sides moved and neither contains the other. A fetch that arrives while you have nothing unpushed prints no conflict and needs no step 10.
 
 10. Put your change on top of theirs.
 
@@ -188,8 +178,7 @@ jj bookmark forget feat-x && jj new master@origin
 
 12. Leave the branch once the pull request lands.
 
-    - Drop the local bookmark: `jj bookmark forget feat-x`, which does not mark the branch for
-      deletion. `jj bookmark delete feat-x` would, removing it from the remote at the next push.
+    - Drop the local bookmark: `jj bookmark forget feat-x`, which does not mark the branch for deletion. `jj bookmark delete feat-x` would, removing it from the remote at the next push.
     - Return to the trunk: `jj new master@origin`
 
 13. Verify the branch is no longer yours to move and the directory sits on the trunk.
@@ -208,12 +197,8 @@ jj bookmark forget feat-x && jj new master@origin
 
 ## Reference
 
-- [./read-the-branch.md](./read-the-branch.md) — the same branch when nothing is pushed back, and
-  why an untracked remote bookmark is immutable
-- [../one-directory/recipe.md](../one-directory/recipe.md) — the same describe, rebase, and push
-  spine on a branch of your own
+- [./read-the-branch.md](./read-the-branch.md) — the same branch when nothing is pushed back, and why an untracked remote bookmark is immutable
+- [../one-directory/recipe.md](../one-directory/recipe.md) — the same describe, rebase, and push spine on a branch of your own
 - [../README.md](../README.md) — the naming convention these examples use
-- [Bookmarks](https://docs.jj-vcs.dev/latest/bookmarks/) — tracking, the push safety checks, and how
-  a conflicted bookmark is resolved
-- [CLI reference](https://docs.jj-vcs.dev/latest/cli-reference/) — `jj bookmark track`, `set`,
-  `forget`, `delete`, and `jj git push`
+- [Bookmarks](https://docs.jj-vcs.dev/latest/bookmarks/) — tracking, the push safety checks, and how a conflicted bookmark is resolved
+- [CLI reference](https://docs.jj-vcs.dev/latest/cli-reference/) — `jj bookmark track`, `set`, `forget`, `delete`, and `jj git push`

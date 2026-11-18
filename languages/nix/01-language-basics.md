@@ -80,8 +80,7 @@ import nixpkgs { ... }     # nixpkgs evaluates to a FUNCTION; call it with confi
 
 ## Standard libraries
 
-- `builtins.*` — interpreter primitives: `readFile`, `fromJSON`, `toJSON`, `map`, `filter`,
-  `fetchGit`, `currentSystem`.
+- `builtins.*` — interpreter primitives: `readFile`, `fromJSON`, `toJSON`, `map`, `filter`, `fetchGit`, `currentSystem`.
 - `lib.*` (from `pkgs.lib` / `nixpkgs.lib`) — the Nixpkgs stdlib.
 
 ```nix

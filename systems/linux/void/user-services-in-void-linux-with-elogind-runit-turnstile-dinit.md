@@ -2,24 +2,15 @@
 
 ## Solving this problem
 
-1. After the system starts, I already am at tty1. I mean that I want niri to autostart after login,
-   only if I am at tty1. I have this rule setup at .profile, but I want to know if
-   turnstile/dinit/elogind can manage that instead of .profile
+1. After the system starts, I already am at tty1. I mean that I want niri to autostart after login, only if I am at tty1. I have this rule setup at .profile, but I want to know if turnstile/dinit/elogind can manage that instead of .profile
 
-2. Let's focus on turnstile + dinit to make the declarative units a) computer starts and I am at
-   tty1 ready for login (it already is set) b) type user/password -> correctly logged in. I need to
-   setup niri to start automatically (.profile is already doing this, can I do this with
-   turnstile/dinit/elogind instead? c) setup the startup sequence rules with
-   turnstile/dinit/elogind: niri -> waybar -> keepassxc/nextcloud
+2. Let's focus on turnstile + dinit to make the declarative units a) computer starts and I am at tty1 ready for login (it already is set) b) type user/password -> correctly logged in. I need to setup niri to start automatically (.profile is already doing this, can I do this with turnstile/dinit/elogind instead? c) setup the startup sequence rules with turnstile/dinit/elogind: niri -> waybar -> keepassxc/nextcloud
 
 ## Solution
 
-- **turnstile** injects a _per‑login_ instance of **dinit** as soon as PAM finishes authenticating
-  you;
-- dinit then enforces the graph **niri → waybar → {keepassxc, nextcloud}** with true readiness
-  signalling, not arbitrary sleeps;
-- niri starts only when you log in on **tty 1**, thanks to the `XDG_VTNR` variable that elogind (or
-  logind‑compatible PAM) exports.
+- **turnstile** injects a _per‑login_ instance of **dinit** as soon as PAM finishes authenticating you;
+- dinit then enforces the graph **niri → waybar → {keepassxc, nextcloud}** with true readiness signalling, not arbitrary sleeps;
+- niri starts only when you log in on **tty 1**, thanks to the `XDG_VTNR` variable that elogind (or logind‑compatible PAM) exports.
 
 ## Setup
 
@@ -45,18 +36,15 @@ sudo sv restart turnstiled     # or: sv down/up turnstiled
 
 ### Check PAM: is `pam_turnstile.so` in the session stack?
 
-Turnstile’s PAM module is what signals the daemon to start the per-user dinit when you log in
-([Artix Linux Forum][5]).
+Turnstile’s PAM module is what signals the daemon to start the per-user dinit when you log in ([Artix Linux Forum][5]).
 
-You need **one** line like the following in either `/etc/pam.d/login` **or** the common file
-inherited by it (`system-login` on Void):
+You need **one** line like the following in either `/etc/pam.d/login` **or** the common file inherited by it (`system-login` on Void):
 
 ```text
 session   optional   pam_turnstile.so
 ```
 
-Void’s `turnstile` package normally installs this line automatically; confirm it wasn’t
-removed ([Artix Linux Forum][4]).
+Void’s `turnstile` package normally installs this line automatically; confirm it wasn’t removed ([Artix Linux Forum][4]).
 
 ### Log out and back in (or switch VTs)
 
@@ -67,8 +55,7 @@ pgrep -xu "$USER" dinit            # should print a PID
 ls -l /run/user/$(id -u)/dinitctl  # control socket should exist
 ```
 
-If those two checks pass, `dinitctl list` or `dinitctl enable boot` will work with no extra
-flags ([GitHub][6], [Davmac][7]).
+If those two checks pass, `dinitctl list` or `dinitctl enable boot` will work with no extra flags ([GitHub][6], [Davmac][7]).
 
 ### User‑mode dinit base directory
 
@@ -162,18 +149,13 @@ restart      = true
 1. When a service lists `depends-on = X`, dinit _recursively_ activates **X** first.
 2. It waits until **X** reaches the **started** state.
 
-   - For _process_ services **without** a readiness hook the state flips as soon as the `exec()`
-     succeeds.([wiki.artixlinux.org][3])
-   - If `ready-notification` is set, dinit blocks until the child **writes one byte** to the
-     provided pipe (FD 3 in our wrapper). This is identical to the s6 readiness model—no fixed
-     timeout, no polling.([GitHub][6], [GitHub][6])
+   - For _process_ services **without** a readiness hook the state flips as soon as the `exec()` succeeds.([wiki.artixlinux.org][3])
+   - If `ready-notification` is set, dinit blocks until the child **writes one byte** to the provided pipe (FD 3 in our wrapper). This is identical to the s6 readiness model—no fixed timeout, no polling.([GitHub][6], [GitHub][6])
    - For `bgprocess`, readiness is implicit when the forking parent exits.([GitHub][7])
    - For `scripted`, the service is _ready_ when the script exits with 0.([GitHub][8])
-3. After the dependency graph is satisfied dinit spawns the dependents; if any dependency later
-   crashes, dinit also stops/restarts the dependents according to policy.([GitHub][9], [GitHub][10])
+3. After the dependency graph is satisfied dinit spawns the dependents; if any dependency later crashes, dinit also stops/restarts the dependents according to policy.([GitHub][9], [GitHub][10])
 
-_**No arbitrary delay is ever inserted**_—readiness is event‑driven, giving you systemd‑style
-determinism without the sleeper loops.
+_**No arbitrary delay is ever inserted**_—readiness is event‑driven, giving you systemd‑style determinism without the sleeper loops.
 
 ---
 
@@ -188,18 +170,15 @@ dinitctl log niri             # tail compositor logs
 dinitcheck niri #checks for logs
 ```
 
-If you switch to tty2 and log in, `$XDG_VTNR` will be 2; `niri-wrapper.sh` exits 0, so no compositor
-or children start, yet the session still succeeds.
+If you switch to tty2 and log in, `$XDG_VTNR` will be 2; `niri-wrapper.sh` exits 0, so no compositor or children start, yet the session still succeeds.
 
 ---
 
 ### Why not leave this in `.profile`?
 
-- With turnstile + dinit every program runs under supervision and gains auto‑restart and
-  logging.([Void Linux Documentation][11])
+- With turnstile + dinit every program runs under supervision and gains auto‑restart and logging.([Void Linux Documentation][11])
 - The dependency graph is declarative and version‑controlled—no shell `if … then …` spaghetti.
-- `elogind` still handles seat/VT switching and power keys; turnstile merely _adds_ user‑service
-  orchestration.([Void Linux Documentation][2])
+- `elogind` still handles seat/VT switching and power keys; turnstile merely _adds_ user‑service orchestration.([Void Linux Documentation][2])
 
 ### Troubleshooting tips
 
@@ -211,8 +190,7 @@ or children start, yet the session still succeeds.
 
 #### If dinit **is** running but dinitctl still cannot find the socket
 
-Occasionally the backend places the socket under `/run/turnstiled/$UID/dinitctl`; this was seen
-after recent updates on Artix/turnstile ([Artix Linux Forum][8]). Two quick cures:
+Occasionally the backend places the socket under `/run/turnstiled/$UID/dinitctl`; this was seen after recent updates on Artix/turnstile ([Artix Linux Forum][8]). Two quick cures:
 
 - **Point dinitctl at it explicitly**
 
@@ -228,9 +206,7 @@ after recent updates on Artix/turnstile ([Artix Linux Forum][8]). Two quick cure
 
 Either method makes `dinitctl` happy without touching backend code.
 
-With these units in place your Void system boots directly to a login prompt on tty1; after you
-authenticate, turnstile + dinit bring up niri and the rest in a strictly ordered, fully supervised
-chain—no sleeps, no races, and nothing cluttering your `.profile`.
+With these units in place your Void system boots directly to a login prompt on tty1; after you authenticate, turnstile + dinit bring up niri and the rest in a strictly ordered, fully supervised chain—no sleeps, no races, and nothing cluttering your `.profile`.
 
 [2]: https://docs.voidlinux.org/config/session-management.html "Session and Seat Management - Void Linux Handbook"
 [3]: https://wiki.artixlinux.org/Main/Dinit "Wiki | Main / dinit"

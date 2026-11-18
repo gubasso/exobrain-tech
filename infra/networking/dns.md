@@ -77,8 +77,7 @@ About /etc/hosts: https://unix.stackexchange.com/questions/421491/what-is-the-pu
 
 Access my server by public ip address (or dns/ddns), from inside same network:
 
-nat loopback, nat reflection, hairpin http://opensimulator.org/wiki/NAT_Loopback_Routers
-https://en.wikipedia.org/wiki/Network_address_translation#NAT_hairpinning
+nat loopback, nat reflection, hairpin http://opensimulator.org/wiki/NAT_Loopback_Routers https://en.wikipedia.org/wiki/Network_address_translation#NAT_hairpinning
 
 [Cannot Access Public IP while connected Locally?](https://community.spiceworks.com/topic/2240145-cannot-access-public-ip-while-connected-locally)
 

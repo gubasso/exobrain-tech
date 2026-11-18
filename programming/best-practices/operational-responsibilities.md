@@ -1,8 +1,6 @@
 # DevOps: Operational Responsibilities for Application Infrastructure
 
-> **Purpose**: This checklist identifies every ongoing duty required to deploy, operate, and harden
-> any production application server. Use it as the master roadmap; link detailed runbooks for each
-> task.
+> **Purpose**: This checklist identifies every ongoing duty required to deploy, operate, and harden any production application server. Use it as the master roadmap; link detailed runbooks for each task.
 
 ---
 

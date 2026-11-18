@@ -9,8 +9,6 @@ Infrastructure, provisioning, containers, and networking notes.
 - [gcp](gcp/) — Google Cloud Platform notes
 - [networking](networking/) — networking notes
 - [research](research/) — infrastructure research notes
-- [sandbox-isolation-backends](sandbox-isolation-backends/README.md) — canonical, vendor-neutral
-  reference for KVM-class microVM isolation (libkrun / `crun --krun`): threat model, runtime
-  catalog, decision rationale, comparisons, and operational notes
+- [sandbox-isolation-backends](sandbox-isolation-backends/README.md) — canonical, vendor-neutral reference for KVM-class microVM isolation (libkrun / `crun --krun`): threat model, runtime catalog, decision rationale, comparisons, and operational notes
 - [server-vps](server-vps/) — server and VPS administration notes
 - [web-server](web-server/) — web-server configuration notes

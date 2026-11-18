@@ -1,13 +1,8 @@
 # Project Bootstrap — General Recipe
 
-Language-agnostic principles and the ordered, once-per-project setup that every new repository needs
-_before_ feature work begins: create the repo, lay the foundations (ignore/license/readme), seed
-governance docs, wire the local dev environment and quality gates, stand up CI, and set a security
-baseline. Use this tree as the source of truth for _what_ a new project must have, and the
-language-specific `project-bootstrap-spec/` bindings for the concrete tooling.
+Language-agnostic principles and the ordered, once-per-project setup that every new repository needs _before_ feature work begins: create the repo, lay the foundations (ignore/license/readme), seed governance docs, wire the local dev environment and quality gates, stand up CI, and set a security baseline. Use this tree as the source of truth for _what_ a new project must have, and the language-specific `project-bootstrap-spec/` bindings for the concrete tooling.
 
-Bootstrap is deliberately the **earliest** phase — repo → foundations → gates. The durable value
-here is the ordered checklist and the one-owner-per-fact discipline, not any single command.
+Bootstrap is deliberately the **earliest** phase — repo → foundations → gates. The durable value here is the ordered checklist and the one-owner-per-fact discipline, not any single command.
 
 ## The three-layer model
 
@@ -29,8 +24,7 @@ Ownership:
 
 - **General** owns universal, cross-language steps. This is the spine.
 - **Language** owns ecosystem choices; it _overlays_ the general spine and never restates it.
-- **Implementation-kind** owns shape-specific additions (CLI, library, service); it delegates the
-  detailed _how_ to any existing spec and owns only the bootstrap-time ordering.
+- **Implementation-kind** owns shape-specific additions (CLI, library, service); it delegates the detailed _how_ to any existing spec and owns only the bootstrap-time ordering.
 
 Routing flow the user follows:
 
@@ -41,12 +35,9 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 
 ## How to use this tree
 
-1. Read [`runbook.md`](./runbook.md) first — the ordered, once-per-project spine of _what_ to do and
-   _in what order_. Every other page explains the _why_ behind one of its steps.
+1. Read [`runbook.md`](./runbook.md) first — the ordered, once-per-project spine of _what_ to do and _in what order_. Every other page explains the _why_ behind one of its steps.
 2. Read the chapter behind any step you need to understand (the [Index](#index) below).
-3. Jump to your language binding (e.g.
-   [Rust](../../languages/rust/project-bootstrap-spec/README.md)) for the ecosystem specifics, then
-   to your implementation-kind file.
+3. Jump to your language binding (e.g. [Rust](../../languages/rust/project-bootstrap-spec/README.md)) for the ecosystem specifics, then to your implementation-kind file.
 
 ## Index
 
@@ -62,40 +53,24 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 
 ## Language-specific bindings
 
-These bindings apply the general recipe with a concrete toolchain. They assume you've read the
-general runbook, and each links back to it. Every language stack has one; they all follow the same
-shape (README + runbook + `00-toolchain-and-layout` + `01-quality-gates` + implementation-kind
-files):
+These bindings apply the general recipe with a concrete toolchain. They assume you've read the general runbook, and each links back to it. Every language stack has one; they all follow the same shape (README + runbook + `00-toolchain-and-layout` + `01-quality-gates` + implementation-kind files):
 
-- [`rust`](../../languages/rust/project-bootstrap-spec/) — the **reference binding**: cargo layout +
-  toolchain pinning, rustfmt/clippy/deny gates, CLI implementation-kind.
-- [`bash`](../../languages/bash/project-bootstrap-spec/) — shfmt/shellcheck/bats,
-  `set -euo pipefail`, getopts CLI.
-- [`c`](../../languages/c/project-bootstrap-spec/) — CMake/Meson, clang-format/clang-tidy,
-  sanitizers; CLI + library kinds.
-- [`css`](../../languages/css/project-bootstrap-spec/) — stylelint/prettier, PostCSS/Sass;
-  stylesheet-library kind.
-- [`go`](../../languages/go/project-bootstrap-spec/) — go mod, golangci-lint, govulncheck; CLI +
-  web-service kinds.
-- [`javascript`](../../languages/javascript/project-bootstrap-spec/) — npm/pnpm, prettier/eslint,
-  vitest, tsc; CLI + web-app kinds.
-- [`lua`](../../languages/lua/project-bootstrap-spec/) — LuaRocks, stylua/luacheck/busted;
-  rock-library kind.
-- [`nix`](../../languages/nix/project-bootstrap-spec/) — flake init, `nix flake check`,
-  statix/deadnix; flake-project kind.
-- [`python`](../../languages/python/project-bootstrap-spec/) — uv, ruff, mypy, pytest; CLI + library
-  kinds.
-- [`r`](../../languages/r/project-bootstrap-spec/) — usethis/renv, lintr/testthat; package +
-  analysis kinds.
-- [`zig`](../../languages/zig/project-bootstrap-spec/) — zig init, build.zig.zon, zig fmt/test;
-  CLI + library kinds.
+- [`rust`](../../languages/rust/project-bootstrap-spec/) — the **reference binding**: cargo layout + toolchain pinning, rustfmt/clippy/deny gates, CLI implementation-kind.
+- [`bash`](../../languages/bash/project-bootstrap-spec/) — shfmt/shellcheck/bats, `set -euo pipefail`, getopts CLI.
+- [`c`](../../languages/c/project-bootstrap-spec/) — CMake/Meson, clang-format/clang-tidy, sanitizers; CLI + library kinds.
+- [`css`](../../languages/css/project-bootstrap-spec/) — stylelint/prettier, PostCSS/Sass; stylesheet-library kind.
+- [`go`](../../languages/go/project-bootstrap-spec/) — go mod, golangci-lint, govulncheck; CLI + web-service kinds.
+- [`javascript`](../../languages/javascript/project-bootstrap-spec/) — npm/pnpm, prettier/eslint, vitest, tsc; CLI + web-app kinds.
+- [`lua`](../../languages/lua/project-bootstrap-spec/) — LuaRocks, stylua/luacheck/busted; rock-library kind.
+- [`nix`](../../languages/nix/project-bootstrap-spec/) — flake init, `nix flake check`, statix/deadnix; flake-project kind.
+- [`python`](../../languages/python/project-bootstrap-spec/) — uv, ruff, mypy, pytest; CLI + library kinds.
+- [`r`](../../languages/r/project-bootstrap-spec/) — usethis/renv, lintr/testthat; package + analysis kinds.
+- [`zig`](../../languages/zig/project-bootstrap-spec/) — zig init, build.zig.zon, zig fmt/test; CLI + library kinds.
 
-Add further implementation-kinds (library, web-service, …) under a language binding as followups
-when you bootstrap a project of that kind.
+Add further implementation-kinds (library, web-service, …) under a language binding as followups when you bootstrap a project of that kind.
 
 ## TL;DR (the irreducible defaults)
 
 - **One owner per fact.** Each step lives in exactly one place; other layers link, never restate.
-- **The runbook is the spine.** [`runbook.md`](./runbook.md) is the ordered _what_; chapters are the
-  _why_; language and kind bindings are _overlays_.
+- **The runbook is the spine.** [`runbook.md`](./runbook.md) is the ordered _what_; chapters are the _why_; language and kind bindings are _overlays_.
 - **Tool docs are linked, not copied.** A tool that owns its own shelf keeps it; this tree links.

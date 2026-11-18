@@ -1,7 +1,6 @@
 # Personal Security Framework
 
-A concise guide to establishing strong, consistent practices for your personal infrastructure. Think
-of this as the “starter kit” for your own security operations.
+A concise guide to establishing strong, consistent practices for your personal infrastructure. Think of this as the “starter kit” for your own security operations.
 
 ---
 
@@ -38,8 +37,7 @@ of this as the “starter kit” for your own security operations.
   - Cloud storage / Nextcloud accounts
   - Domain name registrar logins
 
-> 💡 **Tip:** Wherever possible, use a hardware security key (e.g. YubiKey) for the second factor
-> instead of SMS or TOTP to defend against phishing.
+> 💡 **Tip:** Wherever possible, use a hardware security key (e.g. YubiKey) for the second factor instead of SMS or TOTP to defend against phishing.
 
 ---
 
@@ -89,13 +87,11 @@ git clone https://github.com/gubasso/dotfiles.git
 
 - **Security Additions:**
 
-  - Use [git-secrets](https://github.com/awslabs/git-secrets) to scan for accidental commits of
-    private keys
+  - Use [git-secrets](https://github.com/awslabs/git-secrets) to scan for accidental commits of private keys
   - And/or: pre-commit hooks to security checks
   - Keep all secret templates out of the repo (e.g. `config.example` only)
 
-> 📚 **Tip:** Include a `CONTRIBUTING.md` explaining how others can securely contribute (GPG-signed
-> commits, branch protection).
+> 📚 **Tip:** Include a `CONTRIBUTING.md` explaining how others can securely contribute (GPG-signed commits, branch protection).
 
 ---
 
@@ -103,8 +99,7 @@ git clone https://github.com/gubasso/dotfiles.git
 
 Gopass is a modern, git-backed password manager for the CLI.
 
-- **Setup Guide:**
-  [./pass-gopass/gopass.md](./pass-gopass/gopass.md)
+- **Setup Guide:** [./pass-gopass/gopass.md](./pass-gopass/gopass.md)
 
 - **Storage:**
 

@@ -1,8 +1,6 @@
 # pre-commit hooks
 
-The rule for the two hook stages, and for what CI repeats, is in
-[project-bootstrap/04 — Quality gates](../project-bootstrap/04-quality-gates.md#git-hooks). This
-page holds the configuration forms.
+The rule for the two hook stages, and for what CI repeats, is in [project-bootstrap/04 — Quality gates](../project-bootstrap/04-quality-gates.md#git-hooks). This page holds the configuration forms.
 
 To run in just a subdir or selected files...
 
@@ -28,10 +26,7 @@ repos:
 
 ## Excluding generated files
 
-The rule is in
-[project-bootstrap/04 — Generated files](../project-bootstrap/04-quality-gates.md#generated-files):
-every hook that rewrites or judges a generated file excludes it, and the reading hooks keep it. Use
-the tool's own configuration first, because it also governs a run outside pre-commit:
+The rule is in [project-bootstrap/04 — Generated files](../project-bootstrap/04-quality-gates.md#generated-files): every hook that rewrites or judges a generated file excludes it, and the reading hooks keep it. Use the tool's own configuration first, because it also governs a run outside pre-commit:
 
 | Tool                            | Where the exclusion goes                          |
 | ------------------------------- | ------------------------------------------------- |
@@ -52,16 +47,10 @@ the tool's own configuration first, because it also governs a run outside pre-co
       exclude: '^(flake\.lock|CHANGELOG\.md)$'
 ```
 
-- Never use the top-level `exclude:` of `.pre-commit-config.yaml`. It also drops the reading hooks:
-  the secret scan, the large-file check, and the merge-conflict check.
+- Never use the top-level `exclude:` of `.pre-commit-config.yaml`. It also drops the reading hooks: the secret scan, the large-file check, and the merge-conflict check.
 - markdownlint-cli2 with `"fix": true` rewrites files, so it counts as a rewriting hook.
-- typos with no `args` inherits the upstream `--write-changes`, so it rewrites too. typos reads only
-  the name of a lock-type file (`*.lock`, `package-lock.json`), never its content. Keep
-  `--force-exclude` in its `args`, so that `extend-exclude` applies to the files pre-commit passes.
-- taplo and editorconfig-checker skip `Cargo.lock` on their own, and editorconfig-checker also skips
-  `*.snap`.
-- dprint fails with "No files found" when a commit stages only excluded files, such as a lock file
-  after an update. Run its hook as `dprint fmt --allow-no-files`.
+- typos with no `args` inherits the upstream `--write-changes`, so it rewrites too. typos reads only the name of a lock-type file (`*.lock`, `package-lock.json`), never its content. Keep `--force-exclude` in its `args`, so that `extend-exclude` applies to the files pre-commit passes.
+- taplo and editorconfig-checker skip `Cargo.lock` on their own, and editorconfig-checker also skips `*.snap`.
+- dprint fails with "No files found" when a commit stages only excluded files, such as a lock file after an update. Run its hook as `dprint fmt --allow-no-files`.
 - One comment beside each exclusion names the generator, so the next reader knows why it is there.
-- Ask the tools, not the patterns, whether an exclusion holds: `dprint output-file-paths`,
-  `typos --files`, and `editorconfig-checker -dry-run` list what each tool selects.
+- Ask the tools, not the patterns, whether an exclusion holds: `dprint output-file-paths`, `typos --files`, and `editorconfig-checker -dry-run` list what each tool selects.

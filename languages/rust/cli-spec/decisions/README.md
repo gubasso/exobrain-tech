@@ -4,10 +4,7 @@ Architecture Decision Records for changes to this spec.
 
 ## Format
 
-One file per decision: `ADR-<slug>.md`, where the slug is the identifier. A filename carries no
-counter and no digit, because two branches each allocating the next number are both right and the
-merge leaves two records claiming one identity. A merged record's filename never changes, so a
-citation stays resolvable; a replaced decision gets a new superseding record rather than an edit.
+One file per decision: `ADR-<slug>.md`, where the slug is the identifier. A filename carries no counter and no digit, because two branches each allocating the next number are both right and the merge leaves two records claiming one identity. A merged record's filename never changes, so a citation stays resolvable; a replaced decision gets a new superseding record rather than an edit.
 
 ## Template
 

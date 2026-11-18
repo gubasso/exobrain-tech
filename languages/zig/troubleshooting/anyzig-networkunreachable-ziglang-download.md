@@ -12,9 +12,7 @@
 
 ## Root cause
 
-You are on a dual-stack network where IPv6 connectivity to `ziglang.org:443` is broken while IPv4 is
-fine. In this scenario, clients without effective dual-stack fallback behavior can fail on IPv6
-attempts instead of quickly succeeding over IPv4. ([RFC 6555][1])
+You are on a dual-stack network where IPv6 connectivity to `ziglang.org:443` is broken while IPv4 is fine. In this scenario, clients without effective dual-stack fallback behavior can fail on IPv6 attempts instead of quickly succeeding over IPv4. ([RFC 6555][1])
 
 ---
 
@@ -37,8 +35,7 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0
 ```
 
-`sysctl -w` writes runtime kernel parameters, and `disable_ipv6` is a documented IPv6 sysctl toggle.
-([sysctl(8)][2]) ([Linux kernel ip-sysctl][3])
+`sysctl -w` writes runtime kernel parameters, and `disable_ipv6` is a documented IPv6 sysctl toggle. ([sysctl(8)][2]) ([Linux kernel ip-sysctl][3])
 
 ### Verify (optional)
 
@@ -55,8 +52,7 @@ ip -6 addr
 
 - This affects the entire machine while disabled.
 - IPv6-only applications/connections will fail during that window.
-- This is a workaround, not a root-cause fix; the underlying issue is broken IPv6 pathing to
-  `ziglang.org`.
+- This is a workaround, not a root-cause fix; the underlying issue is broken IPv6 pathing to `ziglang.org`.
 
 ---
 
@@ -76,9 +72,7 @@ zig <zig-version> init
 
 ## After success
 
-After the initial download/bootstrap succeeds and `build.zig.zon` exists, normal project commands
-can run without prefixing a version in that project tree (`zig build`, `zig build run`,
-`zig build test`).
+After the initial download/bootstrap succeeds and `build.zig.zon` exists, normal project commands can run without prefixing a version in that project tree (`zig build`, `zig build run`, `zig build test`).
 
 [1]: https://www.rfc-editor.org/rfc/rfc6555 "RFC 6555: Happy Eyeballs: Success with Dual-Stack Hosts"
 [2]: https://man7.org/linux/man-pages/man8/sysctl.8.html "sysctl(8)"

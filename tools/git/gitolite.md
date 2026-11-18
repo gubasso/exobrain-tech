@@ -36,8 +36,7 @@
 
 - **workstation:** my personal computer a.k.a. client
 - **server:** vps/remote server
-- **hosting user:** This is the user whose name goes into the repo URLs your users will be cloning,
-  for example
+- **hosting user:** This is the user whose name goes into the repo URLs your users will be cloning, for example
   - `ssh://git@server/repo`
   - `git@server:repo`
   - Usually, this is `git`
@@ -83,8 +82,7 @@ sudo useradd -m git -s /bin/bash
 - in archlinux: user `gitolite` already created
 - this user is a dedicated userid to host the repos
 - this user id does NOT currently have any ssh pubkey-based access
-- ideally, this user id has shell access ONLY by `su - git` from some other userid on the same
-  server (this ensure minimal confusion for ssh newbies!)
+- ideally, this user id has shell access ONLY by `su - git` from some other userid on the same server (this ensure minimal confusion for ssh newbies!)
 
 ### Basic Checks
 
@@ -219,8 +217,7 @@ repo @myrepos
     RW+     =   alice
 ```
 
-- Reponames can contain `/` characters (this allows you to put your repos in a tree-structure for
-  convenience).
+- Reponames can contain `/` characters (this allows you to put your repos in a tree-structure for convenience).
 
 ---
 
@@ -232,8 +229,7 @@ include files
 include "foo.conf"
 ```
 
-- You can also use a glob (`include "*.conf"`), or put your include files into subdirectories of
-  "conf" (`include "foo/bar.conf"`), or both (`include "repos/*.conf"`).
+- You can also use a glob (`include "*.conf"`), or put your include files into subdirectories of "conf" (`include "foo/bar.conf"`), or both (`include "repos/*.conf"`).
 
 #### Repos: Add existing repo (Migrate repository)
 
@@ -256,10 +252,8 @@ include "foo.conf"
 
 **renaming**
 
-- Go to the server and rename the repo at the Unix command line. Don't forget to retain the ".git"
-  extension on the directory name.
-- Change the name in the conf/gitolite.conf file in your gitolite-admin repo clone, and
-  add/commit/push.
+- Go to the server and rename the repo at the Unix command line. Don't forget to retain the ".git" extension on the directory name.
+- Change the name in the conf/gitolite.conf file in your gitolite-admin repo clone, and add/commit/push.
 
 ### Access Rules
 
@@ -280,8 +274,7 @@ repo foo
 ```
 
 - alice can do anything to any branch or tag -- create, push, delete, rewind/overwrite etc.
-- bob can create or fast-forward push any branch whose name does not start with "master" and create
-  any tag whose name does not start with "v"+digit.
+- bob can create or fast-forward push any branch whose name does not start with "master" and create any tag whose name does not start with "v"+digit.
 - carol can create tags whose names start with "v"+digit.
 - dave can clone/fetch.
 
@@ -369,8 +362,7 @@ is equal to:
 
 ---
 
-- `@all` is a special group name that is often convenient to use if you really mean "all repos" or
-  "all users".
+- `@all` is a special group name that is often convenient to use if you really mean "all repos" or "all users".
 
 ## Normal Usage (project/normal user)
 
@@ -402,16 +394,13 @@ git clone git@host:foo
 
 - ["non-core" gitolite](https://gitolite.com/gitolite/non-core)
 
-- Commands can be run from the shell command line. Among those, the ones in the ENABLE list in the
-  rc file can also be run remotely.
+- Commands can be run from the shell command line. Among those, the ones in the ENABLE list in the rc file can also be run remotely.
 
 - Hooks are standard git hooks.
 
-- Sugar scripts change the conf language for your convenience. The word sugar comes from "syntactic
-  sugar".
+- Sugar scripts change the conf language for your convenience. The word sugar comes from "syntactic sugar".
 
-- Triggers are to gitolite what hooks are to git. I just chose a different name to avoid confusion
-  and constant disambiguation in the docs.
+- Triggers are to gitolite what hooks are to git. I just chose a different name to avoid confusion and constant disambiguation in the docs.
 
 - VREFs are extensions to the access control check part of gitolite.
 

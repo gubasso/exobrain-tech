@@ -1,18 +1,12 @@
 # Rust — bootstrap a new project (spec/binding)
 
-The Rust binding of
-[`tech/programming/project-bootstrap/`](../../../programming/project-bootstrap/README.md). It
-applies the general once-per-project recipe with concrete cargo tooling — crate scaffolding,
-toolchain pinning, and the rustfmt/clippy/deny quality gates — and links to Rust
-implementation-kinds.
+The Rust binding of [`tech/programming/project-bootstrap/`](../../../programming/project-bootstrap/README.md). It applies the general once-per-project recipe with concrete cargo tooling — crate scaffolding, toolchain pinning, and the rustfmt/clippy/deny quality gates — and links to Rust implementation-kinds.
 
-This binding **overlays** the general spine; it does not restate it. Read the general recipe first,
-then the Rust specifics here.
+This binding **overlays** the general spine; it does not restate it. Read the general recipe first, then the Rust specifics here.
 
 ## How to use this binding
 
-1. Read the general [hub](../../../programming/project-bootstrap/README.md) and
-   [general runbook](../../../programming/project-bootstrap/runbook.md) — the cross-language _what_.
+1. Read the general [hub](../../../programming/project-bootstrap/README.md) and [general runbook](../../../programming/project-bootstrap/runbook.md) — the cross-language _what_.
 2. Follow this [`runbook.md`](./runbook.md) for the Rust-specific overlay steps.
 3. Jump to your implementation-kind file (e.g. [`cli-project.md`](./cli-project.md)).
 
@@ -25,13 +19,11 @@ then the Rust specifics here.
 
 ## Implementation kinds
 
-- [`cli-project.md`](./cli-project.md) — Rust CLI: the bootstrap-time ordering for arg-parsing,
-  logging, and config, delegating detail to [`../cli-spec/`](../cli-spec/README.md).
+- [`cli-project.md`](./cli-project.md) — Rust CLI: the bootstrap-time ordering for arg-parsing, logging, and config, delegating detail to [`../cli-spec/`](../cli-spec/README.md).
 
 `library-project.md` and `web-service.md` are followups; add them when you bootstrap those kinds.
 
 ## Related
 
-- [General project-bootstrap](../../../programming/project-bootstrap/README.md) — the cross-language
-  recipe this binding overlays.
+- [General project-bootstrap](../../../programming/project-bootstrap/README.md) — the cross-language recipe this binding overlays.
 - [`../cli-spec/`](../cli-spec/README.md) — the detailed Rust CLI structure spec.

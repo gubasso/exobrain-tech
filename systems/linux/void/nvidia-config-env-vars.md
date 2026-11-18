@@ -34,11 +34,7 @@ export VDPAU_DRIVER=nvidia        # optional, legacy API
 
 ### Explanation
 
-The short version: your RTX 3000 Ada card will already expose the NVIDIA GBM backend and the VA-API
-wrapper as soon as the proprietary driver is loaded, so neither export is _strictly_ mandatory. In
-practice, though, keeping the two little shell-scripts does no harm, prevents corner-case breakage
-in some apps, and does **nothing** to GPU clocking or battery life. Feel free to leave them in place
-unless you hit one of the known quirks listed below.
+The short version: your RTX 3000 Ada card will already expose the NVIDIA GBM backend and the VA-API wrapper as soon as the proprietary driver is loaded, so neither export is _strictly_ mandatory. In practice, though, keeping the two little shell-scripts does no harm, prevents corner-case breakage in some apps, and does **nothing** to GPU clocking or battery life. Feel free to leave them in place unless you hit one of the known quirks listed below.
 
 ---
 
@@ -53,29 +49,18 @@ unless you hit one of the known quirks listed below.
 
 #### 2 Is your RTX 3000 Ada “AD106GLM” different?
 
-- **Kernel display path** – The card speaks the same DRM interface as every Ada‐Lovelace laptop GPU;
-  the GBM backend that ships with driver 535+ is identical. No extra flags are needed for
-  performance. ([forums.developer.nvidia.com][3])
-- **Video codec path** – NVENC/NVDEC are fully supported; `nvidia-vaapi-driver` simply bridges
-  VA-API calls to those engines. The `LIBVA_DRIVER_NAME` export is therefore _generic_ for all
-  current GeForce/RTX parts, including yours. ([ubuntuhandbook.org][7])
+- **Kernel display path** – The card speaks the same DRM interface as every Ada‐Lovelace laptop GPU; the GBM backend that ships with driver 535+ is identical. No extra flags are needed for performance. ([forums.developer.nvidia.com][3])
+- **Video codec path** – NVENC/NVDEC are fully supported; `nvidia-vaapi-driver` simply bridges VA-API calls to those engines. The `LIBVA_DRIVER_NAME` export is therefore _generic_ for all current GeForce/RTX parts, including yours. ([ubuntuhandbook.org][7])
 
-**Bottom line:** the variables are _not hardware-specific_; they are there to paper over software
-detection gaps.
+**Bottom line:** the variables are _not hardware-specific_; they are there to paper over software detection gaps.
 
 ---
 
 #### 3 Impact on FPS, latency & battery
 
-- The GBM override only selects which allocator library your Wayland compositor talks to; it does
-  **not** touch clocks, render off-load, or frame pacing. Benchmarks show identical FPS with or
-  without it, except in edge cases where apps misdetect the backend and crash or stutter
-  ([github.com][8], [forums.developer.nvidia.com][9]).
-- The VA-API exports merely allow browsers/FFmpeg to push decode/encode work onto NVDEC/NVENC.
-  Off-loading video lets the CPU idle and _can_ save several watts during playback, extending
-  battery life by a few percent ([pcworld.com][10]).
-- Neither variable interferes with PowerMizer states, run-time PCIe D3cold, or PRIME off-loading,
-  which are the real levers for battery savings.
+- The GBM override only selects which allocator library your Wayland compositor talks to; it does **not** touch clocks, render off-load, or frame pacing. Benchmarks show identical FPS with or without it, except in edge cases where apps misdetect the backend and crash or stutter ([github.com][8], [forums.developer.nvidia.com][9]).
+- The VA-API exports merely allow browsers/FFmpeg to push decode/encode work onto NVDEC/NVENC. Off-loading video lets the CPU idle and _can_ save several watts during playback, extending battery life by a few percent ([pcworld.com][10]).
+- Neither variable interferes with PowerMizer states, run-time PCIe D3cold, or PRIME off-loading, which are the real levers for battery savings.
 
 ---
 
@@ -113,22 +98,17 @@ If none of those affect you, leaving the scripts executable is perfectly safe.
    ```
 
    You should see GBM reporting `nvidia-drm` and VA-API listing NVDEC codecs.
-3. Fine-tune power with the usual NVIDIA knobs (PowerMizer “Adaptive”, `nvidia-powerd`, PRIME render
-   off-load). The exports do not conflict with any of these.
+3. Fine-tune power with the usual NVIDIA knobs (PowerMizer “Adaptive”, `nvidia-powerd`, PRIME render off-load). The exports do not conflict with any of these.
 
 ---
 
 #### 6 Conclusion
 
-- **Not strictly necessary** but **harmless insurance**: the exports guarantee that every layer
-  (Wayland compositor, VA-API apps) picks the right NVIDIA backends on first boot.
-- They **do not influence** GPU clocks, AC performance, or battery drain—actual gains come from
-  NVDEC off-loading and your existing runtime-PM setup.
-- Leave them enabled unless they cause one of the documented corner-case issues; if so, drop only
-  the offending variable.
+- **Not strictly necessary** but **harmless insurance**: the exports guarantee that every layer (Wayland compositor, VA-API apps) picks the right NVIDIA backends on first boot.
+- They **do not influence** GPU clocks, AC performance, or battery drain—actual gains come from NVDEC off-loading and your existing runtime-PM setup.
+- Leave them enabled unless they cause one of the documented corner-case issues; if so, drop only the offending variable.
 
-Follow these guidelines and your Void + Wayland + Niri stack will keep the Ada GPU fast on mains
-power and thrifty on battery.
+Follow these guidelines and your Void + Wayland + Niri stack will keep the Ada GPU fast on mains power and thrifty on battery.
 
 [1]: https://download.nvidia.com/XFree86/Linux-x86_64/515.65.01/README/gbm.html "Chapter 40. GBM and GBM-based Wayland Compositors - Nvidia"
 [2]: https://discuss.cachyos.org/t/cant-get-gdm-to-show-wayland-session-upon-login/7671 "Can't get GDM to show Wayland session upon login"

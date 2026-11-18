@@ -8,43 +8,19 @@ token-estimate: 700
 
 ## Scope
 
-Rust binding of the general `programming/project-bootstrap/` shelf: the once-per-project Rust
-setup that takes an empty repo to a scaffolded, gated, buildable crate ready for feature work. It
-**overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates
-it; it owns only the Rust ecosystem choices and the CLI implementation-kind ordering. Publishing is
-out of scope.
+Rust binding of the general `programming/project-bootstrap/` shelf: the once-per-project Rust setup that takes an empty repo to a scaffolded, gated, buildable crate ready for feature work. It **overlays** the general spine (repo, license, governance, dev env, CI, security) and never restates it; it owns only the Rust ecosystem choices and the CLI implementation-kind ordering. Publishing is out of scope.
 
 ## Key Points
 
-- **Scaffold:** `cargo new <name>` for a binary (`Cargo.toml` + `src/main.rs`),
-  `cargo new --lib
+- **Scaffold:** `cargo new <name>` for a binary (`Cargo.toml` + `src/main.rs`), `cargo new --lib
   <name>` for a library (`src/lib.rs`); `cargo init` (or `cargo init --lib`) in
   an existing dir.
-- **`Cargo.toml` baseline:** set the minimum now — `name`, `version`, `edition`, short `description`
-  — enough to build and test. Publish-grade metadata (`license`, `repository`, `keywords`,
-  `categories`, `exclude`) is deferred to the publishing phase; do not duplicate that gate here.
-- **Toolchain pin + Nix:** a `rust-toolchain.toml` pins the channel/version and required components
-  (e.g. `clippy`, `rustfmt`); a Nix devShell reads that file so local and CI share one toolchain
-  (`nix/03-rust-toolchain`), closing the "works on my machine" gap before any code is written.
-- **Layout:** default `cargo new` layout is enough for a single crate; anything with subcommands,
-  multiple modules, or a workspace follows the detailed structure spec in `../cli-spec/` (bootstrap
-  owns the _ordering_ — buildable crate first — `cli-spec/` owns the detailed _how_).
-- **Quality gates:** `rustfmt` (non-negotiable formatter, `cargo fmt --check`, `rustfmt.toml` only
-  to deviate from defaults); `clippy` with warnings denied
-  (`cargo clippy --all-targets
-  --all-features -- -D warnings`, plus crate-level `#![deny(...)]` or
-  a `[lints]` table); `cargo
-  audit` (fails on RUSTSEC advisories) and `cargo deny check`
-  (advisories + license + source-ban policy) as the security baseline, both run in CI. Wire
-  `cargo fmt --check` and `cargo clippy` into pre-commit so failures surface locally in seconds.
-- **CLI kind:** on the buildable, gated crate, layer in order — (1) directory & crate layout
-  (binary/library split, module tree), (2) argument parsing & subcommands (e.g. `clap`), (3) error
-  handling (consistent error type + exit-code strategy), (4) logging (structured, level-controlled),
-  (5) configuration (file + env + flag precedence). This file owns only the bootstrap-time
-  _ordering_ and delegates every detail to `../cli-spec/`.
-- **Publishing is out of scope:** publish-readiness (`cargo publish --dry-run`, metadata
-  completeness) and binary distribution (installers, `cargo-binstall`) are later-phase work.
-  Bootstrap stops at a crate that builds, formats, lints, and audits clean.
+- **`Cargo.toml` baseline:** set the minimum now — `name`, `version`, `edition`, short `description` — enough to build and test. Publish-grade metadata (`license`, `repository`, `keywords`, `categories`, `exclude`) is deferred to the publishing phase; do not duplicate that gate here.
+- **Toolchain pin + Nix:** a `rust-toolchain.toml` pins the channel/version and required components (e.g. `clippy`, `rustfmt`); a Nix devShell reads that file so local and CI share one toolchain (`nix/03-rust-toolchain`), closing the "works on my machine" gap before any code is written.
+- **Layout:** default `cargo new` layout is enough for a single crate; anything with subcommands, multiple modules, or a workspace follows the detailed structure spec in `../cli-spec/` (bootstrap owns the _ordering_ — buildable crate first — `cli-spec/` owns the detailed _how_).
+- **Quality gates:** `rustfmt` (non-negotiable formatter, `cargo fmt --check`, `rustfmt.toml` only to deviate from defaults); `clippy` with warnings denied (`cargo clippy --all-targets --all-features -- -D warnings`, plus crate-level `#![deny(...)]` or a `[lints]` table); `cargo audit` (fails on RUSTSEC advisories) and `cargo deny check` (advisories + license + source-ban policy) as the security baseline, both run in CI. Wire `cargo fmt --check` and `cargo clippy` into pre-commit so failures surface locally in seconds.
+- **CLI kind:** on the buildable, gated crate, layer in order — (1) directory & crate layout (binary/library split, module tree), (2) argument parsing & subcommands (e.g. `clap`), (3) error handling (consistent error type + exit-code strategy), (4) logging (structured, level-controlled), (5) configuration (file + env + flag precedence). This file owns only the bootstrap-time _ordering_ and delegates every detail to `../cli-spec/`.
+- **Publishing is out of scope:** publish-readiness (`cargo publish --dry-run`, metadata completeness) and binary distribution (installers, `cargo-binstall`) are later-phase work. Bootstrap stops at a crate that builds, formats, lints, and audits clean.
 
 ## Maintenance Notes
 

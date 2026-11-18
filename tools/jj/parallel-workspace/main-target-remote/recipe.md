@@ -1,14 +1,8 @@
 # Work on a change in a parallel directory with jj
 
-Creates a second working directory backed by the same jj repo, develops a change there
-independently, and lands it on the trunk `master` at the remote. Landing in the main
-directory instead, with no remote, is [main-target-local/recipe.md](../main-target-local/recipe.md).
-One change at a time; sparse checkouts and conflict resolution are out of scope. Names carry a kind
-prefix while they are only names in this repo, per [README.md](../../README.md); a bookmark drops it
-before becoming a branch.
+Creates a second working directory backed by the same jj repo, develops a change there independently, and lands it on the trunk `master` at the remote. Landing in the main directory instead, with no remote, is [main-target-local/recipe.md](../main-target-local/recipe.md). One change at a time; sparse checkouts and conflict resolution are out of scope. Names carry a kind prefix while they are only names in this repo, per [README.md](../../README.md); a bookmark drops it before becoming a branch.
 
-The steps run one worked example end to end: a repo at `~/code/repo`, one edit to
-`src/parser.rs`, developed in `../wkspc-feat-x/` and landed as the branch `feat-x`.
+The steps run one worked example end to end: a repo at `~/code/repo`, one edit to `src/parser.rs`, developed in `../wkspc-feat-x/` and landed as the branch `feat-x`.
 
 ## Prerequisites
 
@@ -40,9 +34,7 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 2. Create the workspace as a sibling directory.
 
-   The workspace name defaults to the basename of the destination, so this one is addressed as
-   `wkspc-feat-x@`. Pass `-r master@origin` to start from the remote tip instead of this
-   directory's line, and keep the destination a sibling: a nested one makes a repo inside one.
+   The workspace name defaults to the basename of the destination, so this one is addressed as `wkspc-feat-x@`. Pass `-r master@origin` to start from the remote tip instead of this directory's line, and keep the destination a sibling: a nested one makes a repo inside one.
 
    ```sh
    jj workspace add ../wkspc-feat-x
@@ -74,8 +66,7 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 5. Describe the change once you know what it did.
 
-   Only an empty, undescribed commit is discarded when it stops being the working copy, so
-   describing this one is what makes it findable rather than what saves it.
+   Only an empty, undescribed commit is discarded when it stops being the working copy, so describing this one is what makes it findable rather than what saves it.
 
    ```sh
    jj describe -m "feat: teach parser about arrays"
@@ -100,15 +91,13 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 8. Rename the bookmark to the name the branch will carry.
 
    - The branch takes the bookmark's name character for character, so the prefix goes here.
-   - Rename before the first push. Renaming an already-pushed bookmark leaves the old branch
-     standing on the remote until you push the old name to delete it.
+   - Rename before the first push. Renaming an already-pushed bookmark leaves the old branch standing on the remote until you push the old name to delete it.
 
    ```sh
    jj bookmark rename bkmrk-feat-x feat-x
    ```
 
-9. Push the bookmark `feat-x`, creating the branch of that name on the remote. A new remote
-   bookmark is tracked automatically.
+9. Push the bookmark `feat-x`, creating the branch of that name on the remote. A new remote bookmark is tracked automatically.
 
    ```sh
    jj git push --bookmark feat-x
@@ -121,17 +110,12 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 10. Land the work on `master` by the route review calls for.
 
-    - [land-through-a-pull-request.md](./land-through-a-pull-request.md)
-      — the remote merges the branch, and a fetch brings the position back
-    - [land-by-moving-the-bookmark.md](./land-by-moving-the-bookmark.md)
-      — no review, so you move `master` yourself and push it
+    - [land-through-a-pull-request.md](./land-through-a-pull-request.md) — the remote merges the branch, and a fetch brings the position back
+    - [land-by-moving-the-bookmark.md](./land-by-moving-the-bookmark.md) — no review, so you move `master` yourself and push it
 
 11. Return to the main directory and start a commit on top of the landed work.
 
-    Either route moves a name alone, and a working copy never follows a name, so this directory
-    lacks the change until you move it. `jj new`, `jj rebase`, and `jj edit` all get you there and
-    differ in what they leave behind. The local recipe's companions compare the three against a
-    workspace rather than `master@origin`, idle case first:
+    Either route moves a name alone, and a working copy never follows a name, so this directory lacks the change until you move it. `jj new`, `jj rebase`, and `jj edit` all get you there and differ in what they leave behind. The local recipe's companions compare the three against a workspace rather than `master@origin`, idle case first:
 
     - [land-into-a-clean-main-directory.md](../main-target-local/land-into-a-clean-main-directory.md)
     - [land-over-work-in-progress.md](../main-target-local/land-over-work-in-progress.md)
@@ -169,10 +153,8 @@ The steps run one worked example end to end: a repo at `~/code/repo`, one edit t
 
 ## Reference
 
-- [land-through-a-pull-request.md](./land-through-a-pull-request.md)
-  — landing through review
-- [land-by-moving-the-bookmark.md](./land-by-moving-the-bookmark.md)
-  — landing with no review
+- [land-through-a-pull-request.md](./land-through-a-pull-request.md) — landing through review
+- [land-by-moving-the-bookmark.md](./land-by-moving-the-bookmark.md) — landing with no review
 - [main-target-local/recipe.md](../main-target-local/recipe.md) — the same recipe with no remote
 - [workspaces-share-one-repo.md](../../workspaces-share-one-repo.md) — landing, addressing, staleness
 - [what-names-a-change.md](../../what-names-a-change.md) — the four names walked through one scenario

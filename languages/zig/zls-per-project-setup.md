@@ -1,7 +1,6 @@
 # zls Per-Project Setup with anyzig and Neovim (`.nvim.lua`)
 
-This guide documents a practical workflow for using `zls` per Zig project while keeping `anyzig` as
-the Zig version manager.
+This guide documents a practical workflow for using `zls` per Zig project while keeping `anyzig` as the Zig version manager.
 
 It covers:
 

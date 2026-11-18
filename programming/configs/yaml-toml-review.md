@@ -8,9 +8,7 @@
 
 ### Common bugs
 
-- Booleans accidentally parsed as strings or vice versa (`yes`/`no`/`on`/`off` parsed as booleans in
-  YAML 1.1; `true`/`false` only in YAML 1.2) → `[important]` "Pin the parser version or quote
-  intentional strings."
+- Booleans accidentally parsed as strings or vice versa (`yes`/`no`/`on`/`off` parsed as booleans in YAML 1.1; `true`/`false` only in YAML 1.2) → `[important]` "Pin the parser version or quote intentional strings."
 - Indentation inconsistency (mixing 2-space and 4-space) → `[important]`.
 - Unquoted version strings like `0.10` → parses as float `0.1` → `[blocking]`.
 - Tabs instead of spaces → `[blocking]` (most parsers reject).
@@ -39,8 +37,7 @@
 ## Both
 
 - File present but unused (orphan config) → `[suggestion]`.
-- Two configs with overlapping responsibility (e.g., dependencies in both `package.json` and
-  `pyproject.toml`) → `[important]`.
+- Two configs with overlapping responsibility (e.g., dependencies in both `package.json` and `pyproject.toml`) → `[important]`.
 
 ## See also
 

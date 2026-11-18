@@ -1,7 +1,6 @@
 # cli: fzf
 
-> https://github.com/junegunn/fzf
-> https://github.com/junegunn/fzf/wiki/Configuring-shell-key-bindings
+> https://github.com/junegunn/fzf https://github.com/junegunn/fzf/wiki/Configuring-shell-key-bindings
 
 "CTRL-T"
 

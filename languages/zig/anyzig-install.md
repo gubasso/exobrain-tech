@@ -2,11 +2,9 @@
 
 ## Install anyzig
 
-Use the official install page and select your OS/arch; it generates copy-paste commands for
-available methods (Homebrew, curl, wget, PowerShell, direct download). ([anyzig install][1])
+Use the official install page and select your OS/arch; it generates copy-paste commands for available methods (Homebrew, curl, wget, PowerShell, direct download). ([anyzig install][1])
 
-Alternative: download the latest release archive directly from GitHub Releases.
-([anyzig releases][2])
+Alternative: download the latest release archive directly from GitHub Releases. ([anyzig releases][2])
 
 ---
 
@@ -27,8 +25,7 @@ zig any version
 zig version
 ```
 
-`zig any version` reports the anyzig build, and `zig version` reports the resolved Zig compiler
-version. ([anyzig][3])
+`zig any version` reports the anyzig build, and `zig version` reports the resolved Zig compiler version. ([anyzig][3])
 
 [1]: https://marler8997.github.io/anyzig/ "anyzig install"
 [2]: https://github.com/marler8997/anyzig/releases "anyzig releases"

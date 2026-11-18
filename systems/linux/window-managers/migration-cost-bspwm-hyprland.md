@@ -62,23 +62,18 @@ sudo pacman -S hyprland waybar wofi hyprpaper hyprlock hypridle
 
 **Migration cost: Medium (1-2 days of config work)**
 
-Your actual _work_ (terminal, neovim, bash, apps) is unaffected. Only the "window decoration" layer
-changes. If you set up bspwm now and want Hyprland later:
+Your actual _work_ (terminal, neovim, bash, apps) is unaffected. Only the "window decoration" layer changes. If you set up bspwm now and want Hyprland later:
 
 - You won't lose anything
 - You'll reuse 60%+ of your setup
 - The WM configs need rewriting but concepts transfer
 - Biggest learning curve: waybar syntax
 
-**My suggestion:** Start with bspwm. If NVIDIA Wayland matures and you get curious, Hyprland is a
-weekend project to try.
+**My suggestion:** Start with bspwm. If NVIDIA Wayland matures and you get curious, Hyprland is a weekend project to try.
 
 ## My take
 
-I don't mind for "learning curves", "new config ways, and config files"... what I bother is a system
-with a bunch of leftwovers (packages, spread config files loose, like when we install KDE or
-Gnome)... if I get a polluted system the migration cost that I can not handle is: having a cluttered
-system with dirs/files/packages... so the solution for me is to do a fresh distro install
+I don't mind for "learning curves", "new config ways, and config files"... what I bother is a system with a bunch of leftwovers (packages, spread config files loose, like when we install KDE or Gnome)... if I get a polluted system the migration cost that I can not handle is: having a cluttered system with dirs/files/packages... so the solution for me is to do a fresh distro install
 
 ## WM Setups Are Clean (Unlike DEs)
 
@@ -199,5 +194,4 @@ xorg-xinit
 
 When you migrate, you know exactly what to remove. No fresh install needed.
 
-**The "fresh install requirement" applies to DE migrations (GNOME↔KDE). WM setups are modular by
-design - that's the whole point.**
+**The "fresh install requirement" applies to DE migrations (GNOME↔KDE). WM setups are modular by design - that's the whole point.**

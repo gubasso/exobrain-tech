@@ -1,7 +1,6 @@
 # 04 — Migrate one project off mise/rustup onto a Nix devShell
 
-Do this per-project, incrementally. The dctl images already provide Nix + direnv; this just adds the
-three files to a repo.
+Do this per-project, incrementally. The dctl images already provide Nix + direnv; this just adds the three files to a repo.
 
 ## Prerequisites
 
@@ -18,11 +17,7 @@ three files to a repo.
    - Zig → `templates/zig/{flake.nix,.envrc}`
    - Anything else → `templates/generic/{flake.nix,.envrc}`
 
-2. **Tune `flake.nix`** to the runtime the project needs (e.g. `nodejs_22`, a Zig version, add
-   `pkgs.<system-lib>` for native builds). For Python, the devshell holds no interpreter and
-   no uv: the host supplies uv, `.python-version` names the exact patch, and `.envrc` adds
-   `layout uv`. See
-   [Python and uv in a devshell](./02-per-project-devshell.md#python-and-uv-in-a-devshell).
+2. **Tune `flake.nix`** to the runtime the project needs (e.g. `nodejs_22`, a Zig version, add `pkgs.<system-lib>` for native builds). For Python, the devshell holds no interpreter and no uv: the host supplies uv, `.python-version` names the exact patch, and `.envrc` adds `layout uv`. See [Python and uv in a devshell](./02-per-project-devshell.md#python-and-uv-in-a-devshell).
 
 3. **Generate the lock** on a host with Nix + network (never fabricate it):
    ```bash
@@ -31,8 +26,7 @@ three files to a repo.
 
 4. **`.gitignore`** `/.direnv/` and `/result`.
 
-5. **Trust + enter** (host): `direnv allow`. In a dctl sandbox it's trusted automatically by the
-   whitelist — just `cd` in.
+5. **Trust + enter** (host): `direnv allow`. In a dctl sandbox it's trusted automatically by the whitelist — just `cd` in.
 
 6. **Install deps inside the shell** (the language manager still owns them):
    ```bash
@@ -40,16 +34,11 @@ three files to a repo.
    prek install          # the host prek; writes the git hook shims once per clone
    ```
 
-7. **Drop non-Nix provisioning**: delete any `mise.toml` / `.tool-versions`, drop `mise install` /
-   `rustup` steps from project scripts or CI, and run CI through the flake
-   (`nix develop --command <task>`).
+7. **Drop non-Nix provisioning**: delete any `mise.toml` / `.tool-versions`, drop `mise install` / `rustup` steps from project scripts or CI, and run CI through the flake (`nix develop --command <task>`).
 
-8. **Verify**: open a fresh shell, `cd` in, confirm the runtime resolves into the Nix store
-   (`which python` / `cargo --version` matches the pin) with no manual activation.
+8. **Verify**: open a fresh shell, `cd` in, confirm the runtime resolves into the Nix store (`which python` / `cargo --version` matches the pin) with no manual activation.
 
 ## dctl specifics
 
-- Once the repo has `flake.nix` + `.envrc`, the dctl lifecycle hooks
-  (`direnv exec . uv sync`, etc.) light up automatically; before that they no-op.
-- Rust: keep `rust-toolchain.toml` — the flake reads it (see
-  [03-rust-toolchain](./03-rust-toolchain.md)); no `~/.rustup` volume anymore.
+- Once the repo has `flake.nix` + `.envrc`, the dctl lifecycle hooks (`direnv exec . uv sync`, etc.) light up automatically; before that they no-op.
+- Rust: keep `rust-toolchain.toml` — the flake reads it (see [03-rust-toolchain](./03-rust-toolchain.md)); no `~/.rustup` volume anymore.

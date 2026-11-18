@@ -1,13 +1,10 @@
 # 01 — Quality gates
 
-The Go concretion of the general
-[quality gates](../../../programming/project-bootstrap/04-quality-gates.md) and
-[security baseline](../../../programming/project-bootstrap/06-security-baseline.md) chapters.
+The Go concretion of the general [quality gates](../../../programming/project-bootstrap/04-quality-gates.md) and [security baseline](../../../programming/project-bootstrap/06-security-baseline.md) chapters.
 
 ## Formatter — `gofmt` / `goimports`
 
-`gofmt` is the canonical, non-configurable formatter; `goimports` is the superset that also fixes
-the import block. Enforce in CI that no file needs reformatting:
+`gofmt` is the canonical, non-configurable formatter; `goimports` is the superset that also fixes the import block. Enforce in CI that no file needs reformatting:
 
 ```bash
 gofmt -l .          # lists files that are not gofmt-clean; non-empty output = fail
@@ -16,9 +13,7 @@ goimports -l .      # same, plus import grouping/removal
 
 ## Linter — `go vet` + `golangci-lint`
 
-`go vet` ships with the toolchain and catches correctness issues the compiler does not.
-`golangci-lint` is the standard meta-linter that aggregates many linters behind one config
-(`.golangci.yml`):
+`go vet` ships with the toolchain and catches correctness issues the compiler does not. `golangci-lint` is the standard meta-linter that aggregates many linters behind one config (`.golangci.yml`):
 
 ```bash
 go vet ./...
@@ -37,8 +32,7 @@ go test -race ./...
 
 ## Security — `govulncheck`
 
-`govulncheck` is the official vulnerability scanner; it reports only advisories that actually reach
-the code paths your module calls, keeping the security baseline low-noise:
+`govulncheck` is the official vulnerability scanner; it reports only advisories that actually reach the code paths your module calls, keeping the security baseline low-noise:
 
 ```bash
 govulncheck ./...
@@ -48,7 +42,4 @@ Run it in CI so a vulnerable dependency cannot merge.
 
 ## Pre-commit wiring
 
-Wire `gofmt`/`goimports`, `go vet`, and `golangci-lint` into the commit stage of the git hooks from
-the general [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md#git-hooks)
-so failures surface locally in seconds. Run the heavier `go test -race` and `govulncheck` at
-pre-push, and let CI repeat both stages.
+Wire `gofmt`/`goimports`, `go vet`, and `golangci-lint` into the commit stage of the git hooks from the general [04 — Quality gates](../../../programming/project-bootstrap/04-quality-gates.md#git-hooks) so failures surface locally in seconds. Run the heavier `go test -race` and `govulncheck` at pre-push, and let CI repeat both stages.

@@ -36,13 +36,11 @@ eval $(keychain --clear --nogui --quiet --eval --agents ssh,gpg \
 
 The `--clear` option:
 
-- every new login to your account should be considered a potential security breach until proven
-  otherwise
+- every new login to your account should be considered a potential security breach until proven otherwise
 
 - flushes all your private keys from ssh-agent's cache when you log in
 
-- if you're an intruder, keychain will prompt you for passphrases rather than giving you access to
-  your existing set of cached keys
+- if you're an intruder, keychain will prompt you for passphrases rather than giving you access to your existing set of cached keys
 
 - `--nogui`
 
@@ -51,8 +49,7 @@ The `--clear` option:
 
 - `--noask`
 
-  - do not want to be immediately prompted for unlocking the keys but rather wait until they are
-    needed
+  - do not want to be immediately prompted for unlocking the keys but rather wait until they are needed
 
 - `--agents ssh,gpg`
 

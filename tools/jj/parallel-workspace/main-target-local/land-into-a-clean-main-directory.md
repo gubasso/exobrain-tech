@@ -1,13 +1,8 @@
 # Three ways to land into a clean main directory
 
-The main directory has nothing in progress: its `@` is the empty, undescribed commit jj leaves
-you on after a change. A workspace holds a described change, and the main directory should end up
-standing on it. Three commands get there, and they differ in what they leave behind. Where the
-main directory carries work of its own, none of this applies — that is
-[land-over-work-in-progress.md](./land-over-work-in-progress.md).
+The main directory has nothing in progress: its `@` is the empty, undescribed commit jj leaves you on after a change. A workspace holds a described change, and the main directory should end up standing on it. Three commands get there, and they differ in what they leave behind. Where the main directory carries work of its own, none of this applies — that is [land-over-work-in-progress.md](./land-over-work-in-progress.md).
 
-The recipe is [recipe.md](./recipe.md); this walks its
-step 7.
+The recipe is [recipe.md](./recipe.md); this walks its step 7.
 
 ## The scenario
 
@@ -38,8 +33,7 @@ ls
 README.md
 ```
 
-`src/parser.rs` is in the repo and not in this directory. Each route below is a separate run of
-that setup, so the change ids differ between them.
+`src/parser.rs` is in the repo and not in this directory. Each route below is a separate run of that setup, so the change ids differ between them.
 
 ## Route 1: `jj new`
 
@@ -60,9 +54,7 @@ Added 1 files, modified 0 files, removed 0 files
 ◆  zzzzzzzz   (empty)
 ```
 
-A fresh empty commit, parented on the change, and `Added 1 files` is `src/parser.rs` arriving on
-disk. The empty commit this directory used to stand on is gone: nothing was ever put on top of it,
-so jj collected it.
+A fresh empty commit, parented on the change, and `Added 1 files` is `src/parser.rs` arriving on disk. The empty commit this directory used to stand on is gone: nothing was ever put on top of it, so jj collected it.
 
 ## Route 2: `jj rebase -o`
 
@@ -84,9 +76,7 @@ Added 1 files, modified 0 files, removed 0 files
 ◆  zzzzzzzz   (empty)
 ```
 
-The same shape. The difference is in what moved: this rewrites the empty commit you are standing on
-so its parent becomes the change, rather than making a new one. With nothing in that commit, the two
-routes are indistinguishable afterwards. `jj rebase` takes `-b @` as its source when none is given.
+The same shape. The difference is in what moved: this rewrites the empty commit you are standing on so its parent becomes the change, rather than making a new one. With nothing in that commit, the two routes are indistinguishable afterwards. `jj rebase` takes `-b @` as its source when none is given.
 
 ## Route 3: `jj edit`
 
@@ -106,8 +96,7 @@ Added 1 files, modified 0 files, removed 0 files
 ◆  zzzzzzzz   (empty)
 ```
 
-This stands on the change itself rather than above it, and both directories are now checked out on
-one commit. Any edit here rewrites the commit the workspace has checked out:
+This stands on the change itself rather than above it, and both directories are now checked out on one commit. Any edit here rewrites the commit the workspace has checked out:
 
 ```sh
 echo 'fn parse_array() { todo!() }' > src/parser.rs
@@ -131,8 +120,7 @@ Error: The working copy is stale (not updated since operation 035cd691450a).
 Hint: Run `jj workspace update-stale` to update it.
 ```
 
-Nothing is lost — `jj workspace update-stale` catches those files up — but the route costs a repair
-the other two do not.
+Nothing is lost — `jj workspace update-stale` catches those files up — but the route costs a repair the other two do not.
 
 ## Which one
 
@@ -142,8 +130,7 @@ the other two do not.
 | `jj rebase -o 'wkspc-feat-x@'` | the same, by rewriting the commit you were on | none here, and it also covers the work-in-progress case |
 | `jj edit 'wkspc-feat-x@'`      | on the change itself, alongside the workspace | the workspace goes stale on your next edit              |
 
-`jj new` is the one the recipe uses: it says what you mean, which is to start the next change on top
-of this one. Reach for `jj edit` only to amend the change itself, and expect the staleness.
+`jj new` is the one the recipe uses: it says what you mean, which is to start the next change on top of this one. Reach for `jj edit` only to amend the change itself, and expect the staleness.
 
 ## Reference
 

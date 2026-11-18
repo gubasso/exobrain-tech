@@ -1,7 +1,6 @@
 # Documentation conventions
 
-Where each documentation rule for `exobrain-tech` is stated, and the few conventions that are local to
-this repository. Every owner below is a file in this checkout, so no rule needs a network to read.
+Where each documentation rule for `exobrain-tech` is stated, and the few conventions that are local to this repository. Every owner below is a file in this checkout, so no rule needs a network to read.
 
 ## Who owns what
 
@@ -17,21 +16,12 @@ this repository. Every owner below is a file in this checkout, so no rule needs 
 | Drafts, and what promotion means             | [AGENTS.md](../../AGENTS.md)                               |
 | What an agent loads, and semantic names      | [AGENTS.md](../../AGENTS.md)                               |
 
-The root `AGENTS.md` carries the rules that bind every file. Where it and a spec both speak, the spec
-is the one that binds.
+The root `AGENTS.md` carries the rules that bind every file. Where it and a spec both speak, the spec is the one that binds.
 
 ## Local to this repository
 
-Zone comes first and topic second: `_docs/reference/<topic>/`, never `_docs/<topic>/reference.md`. A
-top-level topic folder mixes reader needs and forces a reader to infer intent from prose. Where a
-document has a claim on two zones, choose the owner and link from the other.
+Zone comes first and topic second: `_docs/reference/<topic>/`, never `_docs/<topic>/reference.md`. A top-level topic folder mixes reader needs and forces a reader to infer intent from prose. Where a document has a claim on two zones, choose the owner and link from the other.
 
-Each substantial content area carries an `AGENTS.md` digest, derived from that area's files and never
-the source of truth for them. It declares a `last-synced` date so staleness is visible, and is
-rewritten when the area's knowledge changes. See
-[AGENTS.md digest template](./TEMPLATE-agents-digest.md) and
-[Knowledge-base architecture](../explanation/knowledge-base-architecture.md).
+Each substantial content area carries an `AGENTS.md` digest, derived from that area's files and never the source of truth for them. It declares a `last-synced` date so staleness is visible, and is rewritten when the area's knowledge changes. See [AGENTS.md digest template](./TEMPLATE-agents-digest.md) and [Knowledge-base architecture](../explanation/knowledge-base-architecture.md).
 
-A fact that expires — a price, a benchmark, a model roster, an external API shape — carries an owner,
-a revalidation cadence, and a `last_checked` date in a small machine-readable registry. The tracked
-artifact stays the source of truth; the registry is what keeps it from going stale unnoticed.
+A fact that expires — a price, a benchmark, a model roster, an external API shape — carries an owner, a revalidation cadence, and a `last_checked` date in a small machine-readable registry. The tracked artifact stays the source of truth; the registry is what keeps it from going stale unnoticed.

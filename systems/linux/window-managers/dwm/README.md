@@ -1,7 +1,6 @@
 # dwm
 
-`dwm` is a small X11 tiling window manager from suckless. It is configured by editing C source,
-rebuilding, and installing the resulting binary.
+`dwm` is a small X11 tiling window manager from suckless. It is configured by editing C source, rebuilding, and installing the resulting binary.
 
 <!-- toc -->
 
@@ -16,8 +15,7 @@ rebuilding, and installing the resulting binary.
 
 ## Source and build
 
-dwm source usually lives in a user-managed source checkout. The binary installs to `/usr/local/bin/`
-by default.
+dwm source usually lives in a user-managed source checkout. The binary installs to `/usr/local/bin/` by default.
 
 ```bash
 cd ~/src/dwm
@@ -33,13 +31,11 @@ The `autostart` patch runs two scripts on each dwm start:
 - `~/.local/share/dwm/autostart_blocking.sh`
 - `~/.local/share/dwm/autostart.sh`
 
-Use this when you want WM-coupled daemons, such as a hotkey daemon or compositor, to start and stop
-with the dwm session.
+Use this when you want WM-coupled daemons, such as a hotkey daemon or compositor, to start and stop with the dwm session.
 
 ## Status bar
 
-The native dwm bar uses the X root-window name, typically set with `xsetroot -name`. Tools such as
-`dwmblocks` or `slstatus` can provide dynamic status output.
+The native dwm bar uses the X root-window name, typically set with `xsetroot -name`. Tools such as `dwmblocks` or `slstatus` can provide dynamic status output.
 
 Signal handling for `dwmblocks`:
 
@@ -65,10 +61,8 @@ If `patch` fails, it generates `.rej` files showing rejected hunks.
 
 Reference setups for visual/style inspiration:
 
-- [maxhu08/dwm-rev1](https://github.com/maxhu08/dwm-rev1?tab=readme-ov-file) - dotfiles and theming
-  inspiration
-- [r/unixporn: dwm my daily driver](https://www.reddit.com/r/unixporn/comments/1nmvdcu/dwm_my_daily_driver/) -
-  screenshot and workflow inspiration
+- [maxhu08/dwm-rev1](https://github.com/maxhu08/dwm-rev1?tab=readme-ov-file) - dotfiles and theming inspiration
+- [r/unixporn: dwm my daily driver](https://www.reddit.com/r/unixporn/comments/1nmvdcu/dwm_my_daily_driver/) - screenshot and workflow inspiration
 
 ## References
 
