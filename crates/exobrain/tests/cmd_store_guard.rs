@@ -597,6 +597,304 @@ fn weekly_prek_gc_removes_the_clone_of_a_running_hook_whose_config_moved_its_rev
     );
 }
 
+// cli:store-guard-daily-warns-about-a-large-build-folder
+
+/// Put a wrapper that runs the `cargo` of the test process on the `PATH`
+/// of `exobrain`. `cargo metadata --no-deps` reads only the manifest.
+#[expect(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "a fixture helper, where a broken fixture aborts the test"
+)]
+fn link_cargo(world: &World) {
+    let cargo = std::env::var_os("CARGO")
+        .map(std::path::PathBuf::from)
+        .or_else(|| support::which("cargo"))
+        .expect("cargo runs this test");
+    let wrapper = world.path_dir().join("cargo");
+    std::fs::write(
+        &wrapper,
+        format!("#!/bin/sh\nexec '{}' \"$@\"\n", cargo.display()),
+    )
+    .unwrap();
+    let mut perms = std::fs::metadata(&wrapper).unwrap().permissions();
+    std::os::unix::fs::PermissionsExt::set_mode(&mut perms, 0o755);
+    std::fs::set_permissions(&wrapper, perms).unwrap();
+}
+
+/// A git repository that holds a one-crate Cargo project, with the real
+/// `cargo` on the `PATH` of `exobrain`.
+#[expect(
+    clippy::unwrap_used,
+    reason = "a fixture helper, where a broken fixture aborts the test"
+)]
+fn rust_repo(world: &World, name: &str) -> std::path::PathBuf {
+    let repo = world.repo(name, None);
+    std::fs::create_dir_all(repo.join("src")).unwrap();
+    std::fs::write(
+        repo.join("Cargo.toml"),
+        "[package]\nname = \"fixture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    std::fs::write(repo.join("src/lib.rs"), "").unwrap();
+    run_git(&repo, &["add", "Cargo.toml", "src/lib.rs"]);
+    run_git(&repo, &["commit", "-q", "-m", "crate"]);
+    link_cargo(world);
+    repo
+}
+
+/// Write a file of `bytes` bytes at `path`, with its parents.
+#[expect(
+    clippy::unwrap_used,
+    reason = "a fixture helper, where a broken fixture aborts the test"
+)]
+fn fill(path: &Path, bytes: usize) {
+    std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    std::fs::write(path, vec![7_u8; bytes]).unwrap();
+}
+
+/// A daily run in `cwd` with a build-folder limit of `limit`, and no
+/// inherited build-folder setting.
+#[expect(
+    clippy::unwrap_used,
+    reason = "a fixture helper, where a broken fixture aborts the test"
+)]
+fn daily_with_limit(world: &World, cwd: &Path, limit: &str) -> std::process::Output {
+    world
+        .guard(cwd)
+        .arg("--daily")
+        .env("EXOBRAIN_TARGET_LIMIT", limit)
+        .env_remove("CARGO_TARGET_DIR")
+        .env_remove("CARGO_BUILD_TARGET_DIR")
+        .output()
+        .unwrap()
+}
+
+#[test]
+fn large_build_folder_over_the_limit_gets_one_line() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    fill(&repo.join("target/debug/deps/libbig.rlib"), 300_000);
+    let out = daily_with_limit(&world, &repo, "100K");
+    assert_eq!(out.status.code(), Some(0));
+    assert!(out.stdout.is_empty(), "{}", stdout_of(&out));
+    let text = stderr_of(&out);
+    let target = repo.join("target");
+    assert_eq!(text.lines().count(), 1, "{text}");
+    assert!(
+        text.contains(&format!("build folder {} holds 0.3 MB", target.display())),
+        "{text}"
+    );
+    assert!(
+        text.contains(&format!("`cargo clean --target-dir {}`", target.display())),
+        "{text}"
+    );
+    assert!(
+        target.join("debug/deps/libbig.rlib").exists(),
+        "nothing deleted"
+    );
+}
+
+#[test]
+fn large_build_folder_under_the_limit_gets_no_line() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    fill(&repo.join("target/debug/deps/libbig.rlib"), 300_000);
+    let out = daily_with_limit(&world, &repo, "");
+    assert_eq!(out.status.code(), Some(0));
+    assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+    // The default limit is 10 GB; the limit itself is not over it.
+    let out = daily_with_limit(&world, &repo, "1M");
+    assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+}
+
+#[test]
+fn large_build_folder_is_skipped_without_a_cargo_manifest() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    link_cargo(&world);
+    fill(&repo.join("target/debug/deps/libbig.rlib"), 300_000);
+    let out = daily_with_limit(&world, &repo, "1K");
+    assert_eq!(out.status.code(), Some(0));
+    assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+}
+
+#[test]
+fn large_build_folder_outside_the_checkout_is_measured() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    let outside = world.root().join("builds/repo");
+    fill(&outside.join("debug/deps/libbig.rlib"), 300_000);
+    fill(&repo.join("target/debug/deps/libbig.rlib"), 300_000);
+    let out = world
+        .guard(&repo)
+        .arg("--daily")
+        .env("EXOBRAIN_TARGET_LIMIT", "100K")
+        .env("CARGO_TARGET_DIR", &outside)
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    let text = stderr_of(&out);
+    assert_eq!(text.lines().count(), 1, "{text}");
+    assert!(
+        text.contains(&format!("--target-dir {}`", outside.display())),
+        "{text}"
+    );
+    assert!(
+        !text.contains(&repo.join("target").display().to_string()),
+        "{text}"
+    );
+}
+
+#[test]
+fn large_build_folder_of_each_worktree_is_its_own() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    run_git(&repo, &["worktree", "add", "-q", "../feat", "-b", "feat"]);
+    let feat = world.root().join("feat");
+    let builds = world.root().join("builds");
+    fill(&builds.join("main/debug/libmain.rlib"), 300_000);
+    fill(&builds.join("feat/debug/libfeat.rlib"), 300_000);
+    let run = |cwd: &Path, folder: &str| {
+        let out = world
+            .guard(cwd)
+            .arg("--daily")
+            .env("EXOBRAIN_TARGET_LIMIT", "100K")
+            .env("CARGO_TARGET_DIR", builds.join(folder))
+            .output()
+            .unwrap();
+        assert_eq!(out.status.code(), Some(0));
+        stderr_of(&out)
+    };
+    let main_text = run(&repo, "main");
+    let feat_text = run(&feat, "feat");
+    for (text, own, other) in [(&main_text, "main", "feat"), (&feat_text, "feat", "main")] {
+        assert_eq!(text.lines().count(), 1, "{text}");
+        let own = builds.join(own).display().to_string();
+        let other = builds.join(other).display().to_string();
+        assert!(text.contains(&format!("build folder {own} ")), "{text}");
+        assert!(!text.contains(&other), "{text}");
+    }
+}
+
+#[test]
+fn large_build_folder_counts_a_hard_link_once_and_only_when_it_is_whole() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    let target = repo.join("target");
+    // Cargo links each binary of `deps/` into its profile folder.
+    fill(&target.join("debug/deps/tool-0123"), 300_000);
+    std::fs::hard_link(
+        target.join("debug/deps/tool-0123"),
+        target.join("debug/tool"),
+    )
+    .unwrap();
+    let out = daily_with_limit(&world, &repo, "400K");
+    assert!(
+        out.stderr.is_empty(),
+        "two links count once: {}",
+        stderr_of(&out)
+    );
+    world.clear_daily();
+    let out = daily_with_limit(&world, &repo, "200K");
+    assert_eq!(stderr_of(&out).lines().count(), 1, "{}", stderr_of(&out));
+
+    // A cache that holds another link keeps the blocks after a clean.
+    world.clear_daily();
+    std::fs::hard_link(target.join("debug/tool"), world.root().join("cache-entry")).unwrap();
+    let out = daily_with_limit(&world, &repo, "1K");
+    assert!(
+        out.stderr.is_empty(),
+        "a shared link counts zero: {}",
+        stderr_of(&out)
+    );
+}
+
+#[test]
+fn large_build_folder_counts_only_the_unshared_bytes_of_a_clone() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    // The scratch root of the world can be a tmpfs, which cannot reflink,
+    // so the clone lives in a temp dir beside the build output of this
+    // test, which shares the filesystem of the checkout.
+    let disk = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let entry = disk.path().join("cache/entry");
+    fill(&entry, 4_000_000);
+    let target = disk.path().join("target");
+    let clone = target.join("debug/deps/libdep.rlib");
+    std::fs::create_dir_all(clone.parent().unwrap()).unwrap();
+    let cloned = std::process::Command::new("cp")
+        .arg("--reflink=always")
+        .arg(&entry)
+        .arg(&clone)
+        .output()
+        .unwrap();
+    if !cloned.status.success() {
+        eprintln!(
+            "skipped: the filesystem of {} cannot reflink: {}",
+            disk.path().display(),
+            stderr_of(&cloned).trim()
+        );
+        return;
+    }
+    let run = || {
+        world
+            .guard(&repo)
+            .arg("--daily")
+            .env("EXOBRAIN_TARGET_LIMIT", "1M")
+            .env("CARGO_TARGET_DIR", &target)
+            .output()
+            .unwrap()
+    };
+    // A clone of a 4 MB cache entry frees nearly nothing, as a target that
+    // kache restored does, so it stays under a limit of 1 MB.
+    let out = run();
+    assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+    // Bytes that the target alone holds count in full.
+    world.clear_daily();
+    fill(&target.join("debug/deps/libown.rlib"), 2_000_000);
+    let out = run();
+    let text = stderr_of(&out);
+    assert_eq!(text.lines().count(), 1, "{text}");
+    assert!(text.contains("holds 2.0 MB"), "{text}");
+}
+
+#[test]
+fn large_build_folder_measure_error_keeps_the_exit_code() {
+    let world = World::new();
+    let repo = rust_repo(&world, "repo");
+    std::fs::write(repo.join("Cargo.toml"), "[package\n").unwrap();
+    let out = daily_with_limit(&world, &repo, "1K");
+    assert_eq!(out.status.code(), Some(0));
+    let text = stderr_of(&out);
+    assert_eq!(text.lines().count(), 1, "{text}");
+    assert!(
+        text.contains("exobrain store-guard: cargo metadata: "),
+        "{text}"
+    );
+
+    // An unreadable folder inside the build folder fails the walk.
+    run_git(&repo, &["checkout", "-q", "--", "Cargo.toml"]);
+    let locked = repo.join("target/debug/locked");
+    fill(&locked.join("file"), 10);
+    let mode = |bits| {
+        let mut perms = std::fs::metadata(&locked).unwrap().permissions();
+        std::os::unix::fs::PermissionsExt::set_mode(&mut perms, bits);
+        std::fs::set_permissions(&locked, perms).unwrap();
+    };
+    mode(0o000);
+    world.clear_daily();
+    let out = daily_with_limit(&world, &repo, "1K");
+    mode(0o755);
+    assert_eq!(out.status.code(), Some(0));
+    let text = stderr_of(&out);
+    assert_eq!(text.lines().count(), 1, "{text}");
+    assert!(
+        text.contains(&format!("cannot measure {}", repo.join("target").display())),
+        "{text}"
+    );
+}
+
 // cli:store-guard-stays-quiet-when-switched-off
 
 #[test]

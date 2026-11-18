@@ -12,6 +12,8 @@
     - [Scenario: The first scan of the day fails](#scenario-the-first-scan-of-the-day-fails)
   - [`cli:store-guard-daily-runs-prek-gc-once-a-week` — The daily guard runs prek cache gc once a week](#clistore-guard-daily-runs-prek-gc-once-a-week--the-daily-guard-runs-prek-cache-gc-once-a-week)
     - [Scenario: A configuration moves its rev during a hook run](#scenario-a-configuration-moves-its-rev-during-a-hook-run)
+  - [`cli:store-guard-daily-warns-about-a-large-build-folder` — The daily guard warns about a large build folder](#clistore-guard-daily-warns-about-a-large-build-folder--the-daily-guard-warns-about-a-large-build-folder)
+    - [Scenario: Two worktrees build into folders outside the checkout](#scenario-two-worktrees-build-into-folders-outside-the-checkout)
   - [`cli:store-guard-stays-quiet-when-switched-off` — The daily guard stays off when switched off](#clistore-guard-stays-quiet-when-switched-off--the-daily-guard-stays-off-when-switched-off)
     - [Scenario: A CI runner exports an empty CI variable](#scenario-a-ci-runner-exports-an-empty-ci-variable)
   - [`cli:output-is-human-or-json` — Output is human text or one JSON object](#clioutput-is-human-or-json--output-is-human-text-or-one-json-object)
@@ -33,7 +35,7 @@
 
 ## Purpose
 
-These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also runs `prek cache gc` once a week, and this spec owns that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules. `skill` prints the agent skills that the binary carries, and this spec owns where a skill lives and how the binary serves it.
+These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also warns about a large build folder of the checkout and runs `prek cache gc` once a week, and this spec owns that check and that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules. `skill` prints the agent skills that the binary carries, and this spec owns where a skill lives and how the binary serves it.
 
 ## Requirements
 
@@ -133,9 +135,34 @@ The test of this scenario asserts the race only for prek 0.5.7 to 0.5.11. For an
 
 Verify: `cargo nextest run -E 'test(weekly_prek_gc)'`
 
+### `cli:store-guard-daily-warns-about-a-large-build-folder` — The daily guard warns about a large build folder
+
+After the daily scan of a checkout, and before the weekly `prek cache gc`, `exobrain store-guard --daily` MUST take these steps in order:
+
+1. If the top level of the checkout holds no `Cargo.toml`, or `cargo` is not on `PATH`, it stops without a message.
+2. It reads the build folder from the `target_directory` that `cargo metadata --no-deps --format-version 1` reports at the top level, so `CARGO_TARGET_DIR` and `build.target-dir` apply. If the folder does not exist, it stops without a message.
+3. It measures the exclusive bytes of the folder, the bytes that deleting the folder would free.
+4. If the folder holds more exclusive bytes than the limit, it prints one line on stderr with the folder, its size, and the command `cargo clean --target-dir <folder>`.
+
+The limit is 10 GB, and `EXOBRAIN_TARGET_LIMIT` overrides it with a size in the form of `--min-size`. The guard measures each regular file with `measure_file` of the `kache-fs` crate, at the version of the kache that the host runs, and counts its `unique` bytes: the extents that the `FIEMAP` ioctl does not flag as shared. A copy-on-write clone of a kache entry therefore counts only the blocks that the build changed. Where the filesystem has no `FIEMAP` and `unique` is unknown, a file counts its allocated bytes, because such a filesystem shares no extent. A file with several hard links counts once, by device and inode, and only when every link lies inside the folder. The walk follows no symbolic link, and a file that a running build deletes counts as zero. The guard never uses `du`, which counts each shared extent in full, and calls no other tool for the measure.
+
+One limit is known. The count is per file, so an extent that two files of the same folder share counts as shared in both, and the total can read a little low.
+
+The guard measures only the folder of the checkout that runs it. Each worktree runs its own daily guard with its own environment, so each one reports its own folder. Under the limit, the guard prints nothing. When `cargo metadata` or the walk fails, the guard prints the error on one line and still exits 0. The guard never deletes the folder.
+
+#### Scenario: Two worktrees build into folders outside the checkout
+
+- GIVEN a main checkout with `CARGO_TARGET_DIR=builds/main` and a worktree with `CARGO_TARGET_DIR=builds/feat`, both over the limit
+- WHEN `.envrc` runs `exobrain store-guard --daily` in each one
+- THEN each run prints one line that names its own folder and never the folder of the other
+
+The tests run on a temp dir and read no network. The test of a clone runs in a temp dir on the filesystem of the build output, and it reports a skip where that filesystem cannot reflink.
+
+Verify: `cargo nextest run -E 'test(large_build_folder)'`
+
 ### `cli:store-guard-stays-quiet-when-switched-off` — The daily guard stays off when switched off
 
-In either of these conditions, `store-guard --daily` MUST exit 0 without a scan, without `prek cache gc`, and without a stamp:
+In either of these conditions, `store-guard --daily` MUST exit 0 without a scan, without a build-folder check, without `prek cache gc`, and without a stamp:
 
 - `EXOBRAIN_STORE_GUARD` is `0`.
 - One of `CI`, `GITHUB_ACTIONS`, `GITLAB_CI`, `BUILDKITE`, `CIRCLECI`, and `TF_BUILD` holds a value other than empty, `0`, or `false` in any case.

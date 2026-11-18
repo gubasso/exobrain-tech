@@ -235,6 +235,7 @@ dependencies = [
  "camino",
  "clap",
  "jiff",
+ "kache-fs",
  "predicates",
  "rustix",
  "semver",
@@ -365,6 +366,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "875a5a69ac2bab1a891711cf5eccbec1ce0341ea805560dcd90b7a2e925132e8"
 dependencies = [
  "jiff-tzdb",
+]
+
+[[package]]
+name = "kache-fs"
+version = "2.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e53201ddec0b3667ce7fe75a4ccec29c14e4ddf7d42f2dae4b6206688048aa2"
+dependencies = [
+ "libc",
+ "windows-sys",
 ]
 
 [[package]]

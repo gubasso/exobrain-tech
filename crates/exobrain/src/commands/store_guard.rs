@@ -2,7 +2,8 @@
 //! store, which a flake reference that does not read the git tree leaves
 //! behind.
 //!
-//! Its daily mode also runs `prek cache gc` once a week per prek store.
+//! Its daily mode also warns about a large build folder of the checkout,
+//! and runs `prek cache gc` once a week per prek store.
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -123,8 +124,90 @@ fn daily(min_size: u64) {
         Ok(_) => {}
         Err(e) => output::note(&format!("exobrain store-guard: {e}")),
     }
+    target_size(&checkout.root);
     prek_gc(&dir);
     drop(lock);
+}
+
+/// The limit of a build folder: 10 GB, or the size that
+/// `EXOBRAIN_TARGET_LIMIT` names.
+const TARGET_LIMIT: u64 = 10_000_000_000;
+
+/// The daily build-folder check: one line when the build folder of the
+/// checkout holds more exclusive bytes than the limit, silent without a
+/// `Cargo.toml`, without `cargo` on `PATH`, or before the first build, and
+/// never a failure. It deletes nothing.
+fn target_size(root: &Path) {
+    let limit = match target_limit() {
+        Ok(limit) => limit,
+        Err(e) => {
+            output::note(&format!("exobrain store-guard: EXOBRAIN_TARGET_LIMIT: {e}"));
+            return;
+        }
+    };
+    let folder = match build_folder(root) {
+        Ok(Some(folder)) if folder.is_dir() => folder,
+        Ok(_) => return,
+        Err(e) => {
+            output::note(&format!("exobrain store-guard: cargo metadata: {e}"));
+            return;
+        }
+    };
+    match extents::exclusive_bytes(&folder) {
+        Ok(bytes) if bytes > limit => output::note(&format!(
+            "exobrain store-guard: build folder {} holds {} of its own data; run `cargo clean --target-dir {}`",
+            folder.display(),
+            decimal_size(bytes),
+            shell_word(&folder.display().to_string())
+        )),
+        Ok(_) => {}
+        Err(e) => output::note(&format!(
+            "exobrain store-guard: cannot measure {} ({e})",
+            folder.display()
+        )),
+    }
+}
+
+/// The limit that `EXOBRAIN_TARGET_LIMIT` names, or [`TARGET_LIMIT`].
+fn target_limit() -> Result<u64, String> {
+    match std::env::var("EXOBRAIN_TARGET_LIMIT") {
+        Ok(text) if !text.is_empty() => crate::cli::store_guard::parse_size(&text),
+        Ok(_) | Err(std::env::VarError::NotPresent) => Ok(TARGET_LIMIT),
+        Err(std::env::VarError::NotUnicode(_)) => Err("not a size".to_owned()),
+    }
+}
+
+/// The `target_directory` that `cargo metadata` reports for the checkout at
+/// `root`, which honors `CARGO_TARGET_DIR` and `build.target-dir`, or
+/// `None` without a `Cargo.toml` at `root` or without `cargo` on `PATH`.
+fn build_folder(root: &Path) -> Result<Option<PathBuf>, String> {
+    if !root.join("Cargo.toml").is_file() {
+        return Ok(None);
+    }
+    let output = match Command::new("cargo")
+        .args(["metadata", "--no-deps", "--format-version", "1"])
+        .current_dir(root)
+        .output()
+    {
+        Ok(output) => output,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(e) => return Err(e.to_string()),
+    };
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(stderr
+            .lines()
+            .map(str::trim)
+            .find(|line| !line.is_empty())
+            .map_or_else(|| output.status.to_string(), str::to_owned));
+    }
+    let metadata: serde_json::Value =
+        serde_json::from_slice(&output.stdout).map_err(|e| e.to_string())?;
+    metadata
+        .get("target_directory")
+        .and_then(serde_json::Value::as_str)
+        .map(|dir| Some(PathBuf::from(dir)))
+        .ok_or_else(|| "no target_directory in its output".to_owned())
 }
 
 /// The weekly `prek cache gc`: silent without `prek` on `PATH`, at most one
@@ -261,9 +344,116 @@ pub fn scan(checkout: &Checkout, min_size: u64) -> Result<Report, Error> {
     })
 }
 
+/// A size in decimal gigabytes with one decimal, or in megabytes below
+/// one gigabyte.
+fn decimal_size(bytes: u64) -> String {
+    if bytes < 1_000_000_000 {
+        return output::megabytes(bytes);
+    }
+    let tenths = bytes.saturating_add(50_000_000) / 100_000_000;
+    format!("{}.{} GB", tenths / 10, tenths % 10)
+}
+
+/// `word` as one shell word: unchanged when it holds only safe characters,
+/// else in single quotes.
+fn shell_word(word: &str) -> String {
+    let safe = |c: char| c.is_ascii_alphanumeric() || "/._-+=:@,%".contains(c);
+    if !word.is_empty() && word.chars().all(safe) {
+        return word.to_owned();
+    }
+    format!("'{}'", word.replace('\'', r"'\''"))
+}
+
+/// The exclusive bytes of a folder: the bytes that deleting it would free.
+///
+/// Each regular file counts the `unique` bytes that `kache_fs` measures,
+/// the extents that the `FIEMAP` ioctl does not flag as shared, so a
+/// copy-on-write clone of a kache entry counts only the blocks it changed.
+/// Where the filesystem has no `FIEMAP`, a file counts its allocated bytes.
+/// A file with several hard links counts once, and only when every link
+/// lies inside the folder. Two files of the folder that share an extent
+/// both count it as shared, so the total can read a little low.
+mod extents {
+    use std::collections::HashMap;
+    use std::io;
+    use std::path::{Path, PathBuf};
+
+    /// The links seen inside the folder, the link count, and the bytes of
+    /// one inode with several hard links.
+    type Linked = (u64, u64, u64);
+
+    /// The exclusive bytes of `folder`, which it walks without following
+    /// a symbolic link. A file that disappears during the walk counts as
+    /// zero, because a running build deletes files.
+    pub fn exclusive_bytes(folder: &Path) -> io::Result<u64> {
+        let mut total = 0_u64;
+        let mut linked: HashMap<(u64, u64), Linked> = HashMap::new();
+        let mut stack: Vec<PathBuf> = vec![folder.to_path_buf()];
+        while let Some(dir) = stack.pop() {
+            let entries = match std::fs::read_dir(&dir) {
+                Ok(entries) => entries,
+                Err(e) if e.kind() == io::ErrorKind::NotFound => continue,
+                Err(e) => return Err(with_path(&e, &dir)),
+            };
+            for entry in entries {
+                let entry = entry.map_err(|e| with_path(&e, &dir))?;
+                let path = entry.path();
+                let kind = match entry.file_type() {
+                    Ok(kind) => kind,
+                    Err(e) if e.kind() == io::ErrorKind::NotFound => continue,
+                    Err(e) => return Err(with_path(&e, &path)),
+                };
+                if kind.is_dir() {
+                    stack.push(path);
+                    continue;
+                }
+                if !kind.is_file() {
+                    continue;
+                }
+                let sizing = match kache_fs::measure_file(&path) {
+                    Ok(sizing) => sizing,
+                    Err(e) if e.kind() == io::ErrorKind::NotFound => continue,
+                    Err(e) => return Err(with_path(&e, &path)),
+                };
+                let bytes = sizing.unique.unwrap_or(sizing.allocated);
+                if sizing.nlink > 1 {
+                    linked
+                        .entry((sizing.inode.dev, sizing.inode.ino))
+                        .and_modify(|seen| seen.0 += 1)
+                        .or_insert((1, sizing.nlink, bytes));
+                } else {
+                    total = total.saturating_add(bytes);
+                }
+            }
+        }
+        Ok(linked
+            .values()
+            .filter(|(seen, nlink, _)| seen >= nlink)
+            .fold(total, |sum, (_, _, bytes)| sum.saturating_add(*bytes)))
+    }
+
+    fn with_path(e: &io::Error, path: &Path) -> io::Error {
+        io::Error::new(e.kind(), format!("{}: {e}", path.display()))
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::freed_size;
+    use super::{decimal_size, freed_size, shell_word};
+
+    #[test]
+    fn a_size_reads_in_gigabytes_from_one_gigabyte() {
+        assert_eq!(decimal_size(12_345_678_901), "12.3 GB");
+        assert_eq!(decimal_size(1_000_000_000), "1.0 GB");
+        assert_eq!(decimal_size(999_000_000), "999.0 MB");
+    }
+
+    #[test]
+    fn a_path_quotes_as_one_shell_word() {
+        assert_eq!(shell_word("/srv/build/target"), "/srv/build/target");
+        assert_eq!(shell_word("/tmp/my target"), "'/tmp/my target'");
+        assert_eq!(shell_word("/tmp/it's"), r"'/tmp/it'\''s'");
+    }
 
     #[test]
     fn the_freed_size_comes_from_the_removed_line() {
