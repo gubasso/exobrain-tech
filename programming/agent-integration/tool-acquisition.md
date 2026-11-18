@@ -76,13 +76,13 @@ Three things discharge it.
 
 - The tool ships the sync verb.
 - Its status verb reports, offline, whether a target carries the wire, and exits 0 for every state it reports, because a report is not a verdict.
-- Its setup path raises a missing wire as a decision the operator answers, instead of a verb the operator has to discover.
+- Its setup path raises a missing wire as a decision the operator answers, instead of a verb the operator has to discover, and a target with no manager at all is a missing wire too.
 
 The failure this prevents is a consumer pinned at a release nobody moves. It is invisible by construction. Everything works, at the version that was current on the day of the landing. Nothing fails, so nothing reports it, and the gap surfaces when somebody reads a manifest and compares it to a release list.
 
 The alternative, where the consumer reads a manual and wires the loop by hand, is refused. A capability nobody offers reaches only the operator who already knew it existed, which is usually the tool's own author.
 
-Where no manager is wired, there is no pin to keep fresh and the tool says nothing. The obligation is to offer the loop where one is possible, never to press it on a project that pins nothing.
+What decides the offer is whether the project answered, not whether a manager is wired. Where a target carries a manager and no freshness line, the tool offers the line. Where a target carries no manager, the tool offers the route: a manager it serves, a host install, or wiring the operator does by hand, and it records the answer so that a refusal is a decision and nobody asks twice. Only a recorded answer, a refusal included, silences the offer, because a project with no manager is usually a project nobody asked.
 
 A tool that ships a setup skill also provisions itself. Where the host lacks the tool, runs an older version than the repository records, or the repository records no way to obtain it, the skill asks how the project obtains the tool and how the environment loads it, proposes the manager the repository already carries, and runs each install as a step the operator approves. Every answer lands in a file the contributors share. A host install leaves no manager file, so the tool records it as a decision in its own configuration, with the lowest version a host may run, and its status reads that decision as a state of its own rather than as an unwired target. [Setup skill skeleton](./setup-skill-skeleton.md) states the task.
 
