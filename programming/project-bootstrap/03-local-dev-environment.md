@@ -123,6 +123,18 @@ A shipped application is a separate scope. It checks the tools that it needs at 
 
 The rule is `project-platform:host-requirements-list-the-host-tools`.
 
+## Build output cleanup
+
+A Rust project keeps its compile output in the build folder of each worktree: `target/`, unless `CARGO_TARGET_DIR` or `build.target-dir` moves it. Cargo deletes none of that output by itself. `exobrain store-guard --daily`, which `.envrc` already runs, warns once a day when the build folder of the checkout holds more than 10 GB of its own data. The warning is one line with the folder, its size, and the command that cleans the folder:
+
+```bash
+cargo clean --target-dir <folder>
+```
+
+The guard counts exclusive bytes, the bytes that deleting the folder frees. A file that is a copy-on-write clone of a compile-cache entry counts only the blocks that the build changed. `du` counts each clone in full, so it overstates such a folder many times over. Each worktree runs its own guard and reports only its own folder. The guard deletes nothing. A person or an agent runs the command after the builds of that worktree end, and the next build takes the dependencies from the compile cache, such as kache. `EXOBRAIN_TARGET_LIMIT` sets another limit, with a size such as `20G`.
+
+The rule is `project-platform:a-large-build-folder-gets-a-warning`.
+
 ## `.editorconfig`
 
 `.editorconfig` sets the whitespace, charset, and final-newline rules that every editor honors. Formatting then stays consistent, whatever the configuration of each editor. Keep `.editorconfig` aligned with the language formatter (chapter [04](./04-quality-gates.md)), so the two never fight. The formatter is authoritative for code. `.editorconfig` covers the authored files that no formatter owns. A generated file, such as a lock file, follows its generator, and editorconfig-checker excludes it ([04 — Generated files](./04-quality-gates.md#generated-files)).

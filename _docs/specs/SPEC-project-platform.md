@@ -26,6 +26,8 @@
     - [Scenario: A built-in judges less than its upstream hook](#scenario-a-built-in-judges-less-than-its-upstream-hook)
   - [`project-platform:hook-revisions-follow-the-exobrain-tech-tag` — A project pins the hook revisions of its exobrain-tech tag](#project-platformhook-revisions-follow-the-exobrain-tech-tag--a-project-pins-the-hook-revisions-of-its-exobrain-tech-tag)
     - [Scenario: A project moves one revision alone](#scenario-a-project-moves-one-revision-alone)
+  - [`project-platform:a-large-build-folder-gets-a-warning` — A large build folder gets a warning](#project-platforma-large-build-folder-gets-a-warning--a-large-build-folder-gets-a-warning)
+    - [Scenario: A worktree restores its dependencies from the compile cache](#scenario-a-worktree-restores-its-dependencies-from-the-compile-cache)
 
 <!--TOC-->
 
@@ -263,3 +265,15 @@ The chapter that states the convention is `programming/project-bootstrap/04-qual
 - THEN `hook-revisions` fails the commit, and the project moves typos with `exobrain hooks sync --to` and a newer tag
 
 Verify: reviewer confirms that each repository the project shares with a named set carries the `rev` of that set at the exobrain-tech tag of the project
+
+### `project-platform:a-large-build-folder-gets-a-warning` — A large build folder gets a warning
+
+A Rust project that follows this canon MUST run `exobrain store-guard --daily` from its `.envrc`, and the guard MUST warn when the build folder of the checkout holds more than 10 GB of exclusive bytes. Exclusive bytes are the bytes that deleting the folder frees, so a copy-on-write clone of a compile-cache entry counts only its changed blocks. The warning names `cargo clean --target-dir <folder>`. Nothing deletes the folder on its own: a person or an agent runs the command. `SPEC-cli.md` owns how the guard finds and measures the folder, in `cli:store-guard-daily-warns-about-a-large-build-folder`. The chapter that states the convention is `programming/project-bootstrap/03-local-dev-environment.md`, "Build output cleanup".
+
+#### Scenario: A worktree restores its dependencies from the compile cache
+
+- GIVEN a worktree whose build folder holds 12 GB by `du`, nearly all of it clones of kache entries
+- WHEN `.envrc` runs `exobrain store-guard --daily`
+- THEN the guard prints nothing, because deleting the folder would free far less than 10 GB
+
+Verify: `cargo nextest run -E 'test(large_build_folder)'`
