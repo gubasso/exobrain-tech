@@ -3,12 +3,13 @@
 //!
 //! The library exists so the crate's own tests can link the modules; the
 //! `exobrain` binary in `main.rs` is the product. `cli` holds the argument
-//! surface, `commands` the handlers and the embedded skills, `store` the store listing and the
-//! `nix path-info` query, `origin` the checkout and the attribution of a
-//! copy, `stamp` the daily stamp and its lock, `switch` the off switches,
-//! `manifest` the parse of `host-requirements.toml`, `probe` the host
-//! lookup and the version cache of `host-check`,
-//! `output` the one place that prints, and `error` the exit codes.
+//! surface, `commands` the handlers and the embedded skills, `store` the
+//! store listing and the `nix path-info` query, `origin` the checkout and
+//! the attribution of a copy, `stamp` the daily stamp and its lock,
+//! `switch` the off switches, `manifest` the parse of
+//! `host-requirements.toml`, `probe` the host lookup and the version cache
+//! of `host-check`, `output` the one place that prints, and `error` the
+//! exit codes.
 
 pub mod cli;
 pub mod commands;
