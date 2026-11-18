@@ -3,8 +3,9 @@
 #
 # The release-kit block holds the Conventional Commits grammar through
 # conventional-pre-commit, so this file sets `style = "none"`, and two hooks
-# never judge one property. A project changes it to
-# `style = "conventional"` only where no conventional-pre-commit hook runs.
+# judge no property twice. A project changes it to `style = "conventional"`
+# where no conventional-pre-commit hook runs, or where its house style
+# capitalizes the description (see below).
 style = "none"
 
 # `line_length` caps every line, the subject included. `subject_length` caps
