@@ -84,6 +84,12 @@ exclude = [
   # legible; the host is real, the path never was.
   "^https?://github\\.com/example/",
 
+  # --- Links to a tag that exists only after the release ---
+  # release-plz writes a compare link into the heading of the unreleased
+  # version, and the release workflow creates its tag. Until then the link
+  # answers 404.
+  "^https://github\\.com/gubasso/exobrain-tech/compare/",
+
   # --- Ephemeral / video hosts ---
   # YouTube videos vanish constantly; not worth gating pushes on.
   "^https?://(www\\.)?youtube\\.com/watch",
