@@ -144,6 +144,20 @@ pub fn wait_for(path: &Path) {
     panic!("{} never appeared", path.display());
 }
 
+/// The version that `prek --version` of `prek` reports.
+pub fn prek_version(prek: &Path) -> semver::Version {
+    let output = std::process::Command::new(prek)
+        .arg("--version")
+        .output()
+        .unwrap();
+    let text = String::from_utf8_lossy(&output.stdout);
+    let word = text
+        .split_whitespace()
+        .nth(1)
+        .unwrap_or_else(|| panic!("`prek --version` printed {text:?}"));
+    semver::Version::parse(word).unwrap_or_else(|e| panic!("prek version {word:?}: {e}"))
+}
+
 /// One scratch world.
 pub struct World {
     dir: tempfile::TempDir,

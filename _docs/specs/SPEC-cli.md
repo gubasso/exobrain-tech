@@ -127,6 +127,8 @@ On prek 0.5.7 to 0.5.11, `gc` can remove the files of a running hook. `prek run`
 - WHEN the weekly `prek cache gc` runs before the hook reads the file
 - THEN `gc` removes the clone, and the hook run fails
 
+The test of this scenario asserts the race only for prek 0.5.7 to 0.5.11. For any other version, it prints the version and skips, and this rule needs a review for that version.
+
 Verify: `cargo nextest run -E 'test(weekly_prek_gc)'`
 
 ### `cli:store-guard-stays-quiet-when-switched-off` — The daily guard stays off when switched off

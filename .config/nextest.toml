@@ -4,6 +4,12 @@ final-status-level = "fail"
 success-output = "never"
 failure-output = "immediate-final"
 
+# The race test of the weekly prek gc prints why it skips a prek version
+# outside the range that SPEC-cli.md states, so its output always shows.
+[[profile.default.overrides]]
+filter = "test(weekly_prek_gc_removes_the_clone_of_a_running_hook)"
+success-output = "immediate"
+
 [profile.ci]
 fail-fast = false
 status-level = "fail"
@@ -15,3 +21,7 @@ failure-output = "immediate-final"
 backoff = "exponential"
 count = 2
 delay = "1s"
+
+[[profile.ci.overrides]]
+filter = "test(weekly_prek_gc_removes_the_clone_of_a_running_hook)"
+success-output = "immediate"
