@@ -1,0 +1,41 @@
+# The Nix reference set: the hooks of a project with a flake. Use it beside
+# the common set. Chapter 04, "Reference hook sets", states the convention.
+#
+# A project with a flake also enables the hooks `no-path-flake-reference` and
+# `no-hook-runner-in-flake` in its exobrain-tech entry, which the common set
+# names.
+
+minimum_prek_version: "0.5.7"
+default_install_hook_types: [pre-commit, commit-msg, pre-push, pre-merge-commit]
+default_stages: [pre-commit, pre-merge-commit]
+
+repos:
+  # The upstream `language: rust` hook, which prek builds with the cargo of
+  # the devshell. Its manifest carries `args: [--fail]` and `types: [nix]`.
+  - repo: https://github.com/astro/deadnix
+    rev: v1.3.2
+    hooks:
+      - id: deadnix
+
+  - repo: local
+    hooks:
+      # The flake publishes nixfmt as its `formatter`, and `nix fmt` and the
+      # editors run it outside prek. The hook formats exactly like them, so it
+      # runs the nixfmt of the same nixpkgs. The upstream hook is
+      # `language: haskell`, builds from Hackage at its own rev, and needs ghc
+      # and cabal on the PATH.
+      # owner: devshell (outside-caller) nix fmt runs the nixpkgs nixfmt, so the hook runs the same one.
+      - id: nixfmt
+        name: nixfmt
+        entry: nixfmt
+        language: system
+        types: [nix]
+      # statix walks the tree itself, so statix.toml holds its scope, and the
+      # hook passes no file names.
+      # owner: devshell (no-hook-language) statix has no hook in a language that prek builds.
+      - id: statix
+        name: statix
+        entry: statix check
+        language: system
+        types: [nix]
+        pass_filenames: false

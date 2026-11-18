@@ -455,6 +455,25 @@ repos:
         files: '^(\.hooks/|\.markdownlint/|\.spec-driven-docs/|\.pre-commit-config\.yaml$|\.pre-commit-hooks\.yaml$|justfile$)'
         pass_filenames: false
 
+  # --- The reference hook sets (pre-commit, local) ---
+  #
+  # The sets of programming/project-bootstrap/hook-sets/ are prek
+  # configurations that projects copy
+  # (`project-platform:reference-hook-sets-hold-their-evidence`). The gate
+  # validates each set with prek, holds each repository to one set, holds each
+  # set to its offline evidence of the upstream hook ids, and runs each prek
+  # built-in of a set on a fixture that its upstream hook refuses. It runs only
+  # when a set, its evidence, or the gate changes.
+  - repo: local
+    hooks:
+      # owner: devshell (no-hook-language) a script of this repository that calls the devShell yq and the host prek.
+      - id: hook-sets
+        name: the reference hook sets hold their rules
+        entry: .hooks/hook-sets.sh
+        language: system
+        files: '^(programming/project-bootstrap/hook-sets/|\.hooks/hook-sets\.sh$)'
+        pass_filenames: false
+
   # --- A flake holds no language library (pre-commit, pygrep) ---
   #
   # A Python, Node, or Perl package belongs to the manifest of its stack

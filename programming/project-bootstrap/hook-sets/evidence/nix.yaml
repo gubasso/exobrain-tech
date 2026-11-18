@@ -1,0 +1,7 @@
+# The hook ids that each upstream manifest publishes at the rev that
+# nix.yaml pins. .hooks/hook-sets-evidence.sh writes this file, and
+# .hooks/hook-sets.sh holds the set to it offline.
+repos:
+  - repo: https://github.com/astro/deadnix
+    rev: v1.3.2
+    ids: ["deadnix"]

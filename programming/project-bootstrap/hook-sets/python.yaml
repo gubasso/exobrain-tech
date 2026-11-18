@@ -1,0 +1,59 @@
+# The Python reference set: the hooks of a uv project. Use it beside the
+# common set. Chapter 04, "Reference hook sets", states the convention.
+#
+# A linter or a type checker that only a hook runs takes its upstream hook,
+# which prek builds with the uv of the host, even though it reads the code of
+# the project. The test suite must import the project, so pytest runs from the
+# uv environment of the project.
+
+minimum_prek_version: "0.5.7"
+default_install_hook_types: [pre-commit, commit-msg, pre-push, pre-merge-commit]
+default_stages: [pre-commit, pre-merge-commit]
+
+repos:
+  # --- Lint and format ---
+  #
+  # [tool.ruff] of pyproject.toml holds the configuration, and the rev pins the
+  # version. Select rules there, never with a `--select` argument here: a
+  # command-line `--select` replaces the whole selection of the configuration
+  # file, and once silently turned off a rule that the project relied on. Use
+  # `--extend-select` where a hook needs one more rule. ruff-format also
+  # formats the code blocks of Markdown files by default, which dprint owns, so
+  # `types_or` holds both hooks to Python.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.5
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        types_or: [python, pyi]
+      - id: ruff-format
+        types_or: [python, pyi]
+
+  # --- Types ---
+  #
+  # pyright reads the venv that pyrightconfig.json names, which gives it the
+  # imports of the project. A type error is a property of the program, so the
+  # hook passes no file names, and a whole-project run reports what the
+  # project reports. A project that types with mypy takes
+  # pre-commit/mirrors-mypy instead, with the typed libraries of uv.lock in
+  # `additional_dependencies`, and moves the two together. A mypy plugin that
+  # must load the versions of uv.lock runs mypy through `uv run` as a local
+  # `project-environment` hook.
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.414
+    hooks:
+      - id: pyright
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      # --frozen refuses a run that would change uv.lock. The suite can read
+      # any checked-in file, so it runs on every push.
+      # owner: pyproject.toml (project-environment) pytest runs the test suite in the uv environment of the project.
+      - id: pytest
+        name: pytest
+        entry: uv run --frozen pytest
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-push]

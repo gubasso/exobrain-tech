@@ -89,6 +89,11 @@
           # which the one-system pre-push hook and `just test-one-system` run.
           pkgs.jq
 
+          # yq reads the reference hook sets in .hooks/hook-sets.sh, which the
+          # hook-sets hook and `just test-hook-sets` run, and in
+          # .hooks/hook-sets-evidence.sh, which refreshes their evidence.
+          pkgs.yq-go
+
           # The link checker behind the `lychee-system` pre-push hook.
           pkgs.lychee
 

@@ -1,0 +1,214 @@
+# The common reference set: the hooks that every project runs, whatever its
+# stack. Chapter 04, "Reference hook sets", states the convention. Copy this
+# file into .pre-commit-config.yaml with the sets of the project's stacks, then
+# adapt, remove, or add hooks. The hook `hook-revisions` holds each `rev` below
+# to the copy that the exobrain-tech tag of the project states, and reads no
+# other field, so `args`, `stages`, `files`, and `exclude` stay the project's.
+#
+# This set leaves out three repositories, because a block that a tool renders
+# pins them: release-kit renders `conventional-pre-commit` and
+# `pre-commit/pre-commit-hooks` (`no-commit-to-branch`), and sdd
+# renders `markdownlint-cli2`. Keep each rendered block as its tool writes it.
+#
+# The exobrain-tech entry of a project selects the sets through its `rev`, and
+# `exobrain hooks sync --to <tag>` alone moves it, so no set states it. The
+# hooks that exobrain-tech publishes:
+#   - no-path-flake-reference: a flake reference reads the git tree.
+#   - no-hook-runner-in-flake: a flake holds no git hook runner.
+#   - host-requirements: host-requirements.toml parses.
+
+# The oldest prek that reads this file. `repo: builtin` needs prek, and
+# pre-commit refuses such a config.
+minimum_prek_version: "0.5.7"
+# pre-merge-commit is the integration gate that `rk integrate` runs. A project
+# without it drops the type here and in default_stages.
+default_install_hook_types: [pre-commit, commit-msg, pre-push, pre-merge-commit]
+# A hook with no `stages:` runs at commit and at the integration gate. A
+# manifest that declares its own `stages:` wins over this line, so each such
+# hook below states its stages.
+default_stages: [pre-commit, pre-merge-commit]
+
+repos:
+  # --- prek built-in hooks ---
+  #
+  # prek runs these in its own binary: no clone, no environment, and no `rev`.
+  # They take the place of the hooks of pre-commit/pre-commit-hooks and of the
+  # check-json5 repositories. Where a built-in judges less than its upstream
+  # hook by default, its arguments restore the upstream behavior
+  # (https://prek.j178.dev/0.5.7/reference/built-in-hooks/).
+  #
+  # forbid-submodules has no built-in: prek's forbid-new-submodules ignores a
+  # submodule that already exists. A project that refuses every submodule keeps
+  # the upstream hook from pre-commit/pre-commit-hooks, at the `rev` of the
+  # release-kit block.
+  #
+  # The fixers rewrite files, so they skip the generated files: the locks, the
+  # manifests of release-kit and sdd, the changelog of the release
+  # tool, and the skill packages that rk and sdd land. Trim the pattern to the
+  # files the project holds. check-useless-excludes refuses a pattern that
+  # matches no file.
+  - repo: builtin
+    hooks:
+      # The upstream manifest declares pre-push too, and the built-in copies it.
+      # A fixer never runs at push. The argument keeps a Markdown hard break.
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+        stages: [pre-commit, pre-merge-commit]
+        exclude: '(^|/)(flake|Cargo|uv)\.lock$|(^|/)package-lock\.json$|^\.release-kit/manifest\.json$|^\.spec-driven-docs/manifest\.json$|^CHANGELOG\.md$|^\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/'
+      - id: end-of-file-fixer
+        stages: [pre-commit, pre-merge-commit]
+        exclude: '(^|/)(flake|Cargo|uv)\.lock$|(^|/)package-lock\.json$|^\.release-kit/manifest\.json$|^\.spec-driven-docs/manifest\.json$|^CHANGELOG\.md$|^\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/'
+      # The default `auto` keeps the most frequent ending of a file, so a file
+      # that holds only CRLF passes. `--fix=lf` holds every file to LF.
+      - id: mixed-line-ending
+        args: [--fix=lf]
+        exclude: '(^|/)(flake|Cargo|uv)\.lock$|(^|/)package-lock\.json$|^\.release-kit/manifest\.json$|^\.spec-driven-docs/manifest\.json$|^CHANGELOG\.md$|^\.(claude|agents)/skills/(rk-setup|rk-release|sdd-setup|sdd-write-docs)/'
+      # 2 MiB, the most common limit of the owned projects. A project that
+      # tracks larger fixtures or documents raises it, or adds a second entry
+      # with its own `files:` for that folder.
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+        stages: [pre-commit, pre-merge-commit]
+      - id: check-case-conflict
+      # Without the argument the hook passes outside a merge or a rebase, so a
+      # marker that a resolved conflict left behind lands unseen.
+      - id: check-merge-conflict
+        args: [--assume-in-merge]
+      - id: check-symlinks
+      - id: destroyed-symlinks
+        stages: [pre-commit, pre-merge-commit]
+      - id: check-executables-have-shebangs
+        stages: [pre-commit, pre-merge-commit]
+      - id: check-shebang-scripts-are-executable
+        stages: [pre-commit, pre-merge-commit]
+      # prek accepts an unknown tag unless it gets --disallow-unknown-tags. The
+      # upstream hook refuses one while it loads the file.
+      - id: check-yaml
+        args: [--disallow-unknown-tags]
+      - id: check-toml
+      - id: check-xml
+      # check-json5 parses JSON with comments and trailing commas, so it does
+      # not refuse a commented .json configuration such as dprint.json or a
+      # .jsonc file. The built-in selects only .json5 files through `types`,
+      # and the upstream hook selected json and json5. `types` resets the
+      # filter to every file, and `types_or` restores json and json5 and adds
+      # jsonc. Unlike the upstream hook, the built-in refuses a duplicate key.
+      # It is the syntax gate only. A formatter owns the layout, and the stock
+      # check-json refuses comments.
+      - id: check-json5
+        types: [file]
+        types_or: [json, json5, jsonc]
+      - id: detect-private-key
+
+  # --- EditorConfig ---
+  #
+  # The upstream `language: golang` hook, which prek builds at the pinned rev.
+  # It checks what no formatter owns: the charset, the line endings, the
+  # trailing whitespace, and the indent style.
+  #   - -disable-insert-final-newline: end-of-file-fixer owns it.
+  #   - -disable-indent-size: each formatter owns the indentation of its files
+  #     (rustfmt, ruff, dprint, nixfmt, shfmt). The checker counts left padding
+  #     without the syntax, so it refuses formatter output, such as a
+  #     continued string aligned to its opening quote, or a docstring.
+  # Markdown is excluded: the checker flags fenced code and the odd-width
+  # continuation of an ordered list, and dprint owns Markdown. The project
+  # excludes its generated files in .editorconfig-checker.json, the tool's own
+  # configuration, so a direct run skips them too.
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker
+    rev: v4.0.2
+    hooks:
+      - id: editorconfig-checker
+        alias: ec
+        args: [-disable-insert-final-newline, -disable-indent-size]
+        exclude: '\.md$'
+
+  # --- Table of contents ---
+  #
+  # md-toc rewrites the list between two `<!--TOC-->` markers, and leaves a
+  # file without the markers alone.
+  #   - -p writes in place.
+  #   - -c does not judge the coherence of the heading levels.
+  #   - --skip-lines 1 leaves the H1 title out of the list.
+  # A project that keeps a TOC only in its specs adds `-l, '3'` and
+  # `files: '^_docs/specs/SPEC-.*\.md$'`. A project with sdd excludes the
+  # specs that sdd ships, because they keep the bytes that `sdd spec <name>`
+  # prints.
+  - repo: https://github.com/frnmst/md-toc
+    rev: 9.1.0
+    hooks:
+      - id: md-toc
+        args: [-p, -c, --skip-lines, '1', github]
+
+  # --- Spelling, report only ---
+  #
+  # The upstream `language: python` hook. Its wheel holds a prebuilt binary
+  # that links the standard ELF loader, which the host supplies (nix-ld on a
+  # NixOS host).
+  #
+  # The args replace the upstream [--write-changes, --force-exclude]. An
+  # automatic fix once renamed a deliberate identifier and an error-kind
+  # string of a machine-readable contract. Fix a real typo by hand, and
+  # allowlist a false positive in _typos.toml. --force-exclude keeps the
+  # excludes of _typos.toml for the files that prek passes. The manifest
+  # declares pre-push too, so `stages:` is explicit.
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.52.2
+    hooks:
+      - id: typos
+        args: [--force-exclude]
+        stages: [pre-commit, pre-merge-commit]
+
+  # --- Secrets ---
+  #
+  # Two layers. ripsecrets, the upstream `language: rust` hook, scans what each
+  # commit adds. gitleaks scans the whole history before a push: the upstream
+  # entry scans the staged index, which is empty at a push, so this entry scans
+  # the history and passes no file names. An allowlist, such as one for sops
+  # ciphertext, lives in .gitleaks.toml.
+  - repo: https://github.com/sirwart/ripsecrets
+    rev: v0.1.11
+    hooks:
+      - id: ripsecrets
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+        entry: gitleaks git --redact --verbose --no-banner
+        pass_filenames: false
+        stages: [pre-push]
+
+  # --- Link check, at push ---
+  #
+  # A network check, so it runs at push. lychee.toml holds every setting, and
+  # git ignores the cache file .lycheecache. The default `lychee` id is a
+  # `script` hook that downloads a release binary through cargo-binstall
+  # during the run, and fails in an offline or sandboxed shell. The devshell
+  # supplies lychee, and the rev pins only the hook definition. `prek update`
+  # moves this rev to the pre-release tag `nightly`. Keep the latest release.
+  - repo: https://github.com/lycheeverse/lychee
+    rev: lychee-v0.24.2
+    hooks:
+      # owner: devshell (no-hook-language) upstream lychee offers only script, docker_image, and system ids.
+      - id: lychee-system
+        stages: [pre-push]
+        types: [markdown]
+        args: [--no-progress]
+
+  # --- Commit message ---
+  #
+  # The upstream `language: python` hook, with its own args
+  # (--fixup --wip --commit-file). committed.toml holds the rules. Where the
+  # release-kit block holds the Conventional Commits grammar through
+  # conventional-pre-commit, committed.toml sets `style = "none"` and keeps the
+  # line length, the case, and the period at the end of the subject, so two
+  # hooks never judge one property.
+  - repo: https://github.com/crate-ci/committed
+    rev: v1.1.12
+    hooks:
+      - id: committed
+        stages: [commit-msg]
+
+  # --- The configuration itself ---
+  - repo: meta
+    hooks:
+      - id: check-useless-excludes

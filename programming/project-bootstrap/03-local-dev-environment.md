@@ -37,6 +37,7 @@ Each dependency of a project has exactly one owner: the most specific file that 
    - the tools that deploy the host
    - the standard ELF loader
    - the tools that carry credentials, such as `gh`, `glab`, `ssh`, and `aws`
+   - the `exobrain` CLI of exobrain-tech, which checks the host tools and the hook revisions
 
 A project uses a host tool by name, as it uses `git`. It lists the tool once in `host-requirements.toml`, as [Host requirements](#host-requirements) says.
 
@@ -70,6 +71,9 @@ A version requirement uses Cargo's syntax, with an explicit operator. Cargo read
 ```toml
 schema = 1
 
+[tools.exobrain]
+version = ">=1.2.0"
+
 [tools.git]
 version = ">=2.36.0"
 
@@ -80,7 +84,16 @@ version = ">=2.57.0"
 version = "*"
 ```
 
-`exobrain host-check`, from the exobrain-tech flake input, reads the file. With no argument it checks every tool, and with names it checks only those. It reports each missing tool and each version that misses its requirement, one line each, and then exits 1. It never picks another tool. Where a tool is missing, the developer installs it. Nothing checks when a shell enters the folder, so `.envrc` holds no check.
+The host supplies the `exobrain` CLI, like prek and git, so its `host-requirements.toml` entry names the oldest version that carries `exobrain hooks check`, which the hook `hook-revisions` calls ([04 — Reference hook sets](./04-quality-gates.md#reference-hook-sets)). The devshell holds no `exobrain` package, because a devshell copy comes first on the `PATH` and hides a newer host CLI. Each CI job that runs the hooks provides the CLI at the release that the project pins.
+
+`exobrain host-check` reads the file. With no argument it checks every tool, and with names it checks only those. It reports each missing tool and each version that misses its requirement, one line each, and then exits 1. It never picks another tool. Where a tool is missing, the developer installs it. Nothing checks when a shell enters the folder, so `.envrc` holds no check. It holds two warnings of the `exobrain` CLI, each of which exits 0 and moves nothing:
+
+```bash
+exobrain hooks status || true
+exobrain store-guard --daily || true
+```
+
+The first reports a newer CLI or newer hook revisions than the project pins. The second reports a store copy of the checkout once a day, and runs `prek cache gc` once a week.
 
 The call site decides where the check runs and names the tools that it needs:
 
@@ -98,9 +111,9 @@ The call site decides where the check runs and names the tools that it needs:
 - A `Makefile` checks in the first line of each dev target that needs the tool, such as `lint`, `test`, or `check`. A package build can run the same `Makefile` where `exobrain` is absent. For that reason, the check is never a `$(shell ...)` at parse time, and never in `all`, `install`, or a build target.
 - A git hook needs no check, because prek stops the run and names a missing executable. A hook tool with a version requirement gets its check through a recipe that the hook calls.
 
-The `host-requirements` hook that exobrain-tech publishes runs `exobrain host-check --parse-only` each time the file changes. A malformed file therefore fails at commit. A project that takes the flake input takes the hook too.
+The `host-requirements` hook that exobrain-tech publishes runs `exobrain host-check --parse-only` each time the file changes. A malformed file therefore fails at commit.
 
-A project without the exobrain-tech flake input checks natively in its `justfile`. just 1.39 and later has `require(name)`. just 1.16 and later has `semver_matches(version, requirement)`, which reads the requirement strings of the file unchanged ([just functions](https://just.systems/man/en/functions.html)). That project cannot run the hook, and just halts on a malformed requirement at the first check that reads it.
+A project that does not follow the canon of exobrain-tech, and so has no `exobrain` on its hosts, checks natively in its `justfile`. just 1.39 and later has `require(name)`. just 1.16 and later has `semver_matches(version, requirement)`, which reads the requirement strings of the file unchanged ([just functions](https://just.systems/man/en/functions.html)). That project cannot run the hook, and just halts on a malformed requirement at the first check that reads it.
 
 A project with no call site at all, whose only callers are its git hooks, lists its tools with no `version`, because no check enforces one.
 

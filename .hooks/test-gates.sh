@@ -454,4 +454,48 @@ out=$(try_hook "$req_hook" other.toml) ||
 printf '%s\n' "$out" | grep -q 'parses\.*(no files to check)Skipped$' ||
   fail "$req_hook did not skip a file outside its scope: $out"
 
+# --- hook-sets --------------------------------------------------------------
+#
+# The gate reads the set folder beside its own script, so each case copies the
+# script and the sets into a throwaway tree and breaks one rule there. A case
+# that breaks a set rule also updates the evidence where it must, so the case
+# fails on the rule it names and not on a stale evidence file.
+hs_tree() {
+  t="$work/hook-sets-$1"
+  rm -rf "$t"
+  mkdir -p "$t/.hooks" "$t/programming/project-bootstrap"
+  cp "$root/.hooks/hook-sets.sh" "$t/.hooks/hook-sets.sh"
+  cp -R "$root/programming/project-bootstrap/hook-sets" "$t/programming/project-bootstrap/hook-sets"
+  hs="$t/programming/project-bootstrap/hook-sets"
+}
+hs_tree pass
+accept "hook-sets" "$t/.hooks/hook-sets.sh"
+
+# A built-in that loses the argument that keeps its upstream behavior.
+hs_tree unknown-tags
+yq -i '(.repos[] | select(.repo == "builtin") | .hooks[] | select(.id == "check-yaml")) |= del(.args)' "$hs/common.yaml"
+reject "hook-sets (a built-in judges less than its upstream hook)" "$t/.hooks/hook-sets.sh"
+
+# One repository in two sets.
+hs_tree two-sets
+yq -i '.repos += [{"repo": "https://github.com/crate-ci/typos", "rev": "v1.0.0", "hooks": [{"id": "typos"}]}]' "$hs/rust.yaml"
+yq -i '.repos += [{"repo": "https://github.com/crate-ci/typos", "rev": "v1.0.0", "ids": ["typos"]}]' "$hs/evidence/rust.yaml"
+reject "hook-sets (one repository in two sets)" "$t/.hooks/hook-sets.sh"
+
+# A repository that a rendered block owns.
+hs_tree rendered
+yq -i '.repos += [{"repo": "https://github.com/DavidAnson/markdownlint-cli2", "rev": "v0.24.0", "hooks": [{"id": "markdownlint-cli2"}]}]' "$hs/nix.yaml"
+yq -i '.repos += [{"repo": "https://github.com/DavidAnson/markdownlint-cli2", "rev": "v0.24.0", "ids": ["markdownlint-cli2"]}]' "$hs/evidence/nix.yaml"
+reject "hook-sets (a set holds a rendered repository)" "$t/.hooks/hook-sets.sh"
+
+# A rev that moved without its evidence.
+hs_tree stale-rev
+yq -i '(.repos[] | select(.repo == "https://github.com/astro/deadnix")).rev = "v0.0.1"' "$hs/nix.yaml"
+reject "hook-sets (a rev without its evidence)" "$t/.hooks/hook-sets.sh"
+
+# A hook id that the manifest does not publish.
+hs_tree unknown-id
+yq -i '(.repos[] | select(.repo == "https://github.com/astro/deadnix") | .hooks[0].id) = "deadnix-gone"' "$hs/nix.yaml"
+reject "hook-sets (a hook id the manifest does not publish)" "$t/.hooks/hook-sets.sh"
+
 echo "test-gates: every gate failed when it should"

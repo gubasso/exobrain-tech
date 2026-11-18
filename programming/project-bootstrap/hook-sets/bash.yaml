@@ -1,0 +1,34 @@
+# The Bash reference set: the hooks of a project that holds shell scripts. Use
+# it beside the common set. Chapter 04, "Reference hook sets", states the
+# convention.
+#
+# Both hooks take their upstream `language: python` hooks, whose wheels carry
+# static binaries. A project whose other tool runs the shellcheck or the shfmt
+# of the devshell, such as actionlint or a doctor command, runs the same one in
+# a local `outside-caller` hook instead.
+
+minimum_prek_version: "0.5.7"
+default_install_hook_types: [pre-commit, commit-msg, pre-push, pre-merge-commit]
+default_stages: [pre-commit, pre-merge-commit]
+
+repos:
+  # .shellcheckrc holds the settings, such as the severity and the source path
+  # of `source` directives. A vendored library, such as a bats helper, keeps
+  # its upstream findings, so the project excludes it here.
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1-1
+    hooks:
+      - id: shellcheck
+
+  # shfmt reads .editorconfig only while it gets no parser or printer flag:
+  # one flag, such as `-i 2`, makes it ignore every EditorConfig file and fall
+  # back to its defaults, the first of which is tabs. So the hook keeps the
+  # upstream args, [--write], and .editorconfig holds the layout
+  # (indent_style, indent_size, switch_case_indent, binary_next_line), which
+  # editorconfig-checker reads too. `-s` has no EditorConfig property and stays
+  # out. The manifest declares pre-push too, and a fixer never runs at push.
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.14.1-1
+    hooks:
+      - id: shfmt
+        stages: [pre-commit, pre-merge-commit]

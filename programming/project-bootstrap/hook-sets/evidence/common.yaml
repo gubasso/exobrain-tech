@@ -1,0 +1,25 @@
+# The hook ids that each upstream manifest publishes at the rev that
+# common.yaml pins. .hooks/hook-sets-evidence.sh writes this file, and
+# .hooks/hook-sets.sh holds the set to it offline.
+repos:
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker
+    rev: v4.0.2
+    ids: ["editorconfig-checker"]
+  - repo: https://github.com/frnmst/md-toc
+    rev: 9.1.0
+    ids: ["md-toc"]
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.52.2
+    ids: ["typos","typos-docker","typos-src"]
+  - repo: https://github.com/sirwart/ripsecrets
+    rev: v0.1.11
+    ids: ["ripsecrets","ripsecrets-system"]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    ids: ["gitleaks","gitleaks-docker","gitleaks-system"]
+  - repo: https://github.com/lycheeverse/lychee
+    rev: lychee-v0.24.2
+    ids: ["lychee","lychee-system","lychee-docker"]
+  - repo: https://github.com/crate-ci/committed
+    rev: v1.1.12
+    ids: ["committed","committed-src"]

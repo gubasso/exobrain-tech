@@ -1,6 +1,6 @@
 ---
 digest-of: programming/project-bootstrap
-last-synced: 2026-11-12
+last-synced: 2026-11-18
 token-estimate: 1100
 ---
 
@@ -34,15 +34,16 @@ This tree is the source of truth for what a new project must have and in what or
   - 01 repository foundation: `.gitignore`, the SPDX `LICENSE`, and the `README` skeleton.
   - 02 governance and docs: `CLAUDE.md`, the `AGENTS.md` convention, the MADR-minimal ADR scaffold, and the README as an index.
   - 03 local dev environment: the Nix devShell and `.envrc`, the owner of each dependency, the host requirements, and `.editorconfig`.
-  - 04 quality gates: the formatter, the linter, git hooks in two stages, the hook exception classes, generated files, and the task runner.
+  - 04 quality gates: the formatter, the linter, git hooks in two stages, the reference hook sets, the hook exception classes, generated files, and the task runner.
   - 05 CI: the two hook stages repeated in the devshell, and the CI-only list.
   - 06 security baseline: secrets hygiene, dependency audit, and the OpenSSF Scorecard.
 - Each dependency has one owner, the most specific file that declares it natively. The owners run in this order:
   1. The manifest of the stack: `pyproject.toml` with `uv.lock`, a PEP 723 block, `Cargo.toml`, or `package.json`.
   2. `.pre-commit-config.yaml`, for each hook tool that the hook runner can build.
   3. The devshell, for the toolchains, the task runner, and what no owner above can declare.
-  4. The host, for the base tools, the git hook runner prek, the ELF loader, and the credentialed tools.
-- The hook configuration owns a tool that only a hook uses, a linter or a type checker included. No devshell holds a hook runner. A flake holds no language library. Python uses uv. A hook that keeps `language: system` carries an `# owner:` comment with one of five classes.
+  4. The host, for the base tools, the git hook runner prek, the `exobrain` CLI, the ELF loader, and the credentialed tools.
+- The hook configuration owns a tool that only a hook uses, a linter or a type checker included. No devshell holds a hook runner. A flake holds no language library. Python uses uv. A hook that keeps `language: system` carries an `# owner:` comment with one of six classes.
+- prek is the only hook runner. A project copies the reference hook sets of its stacks from `hook-sets/`, and pins each repository that it shares with a set at the `rev` of its exobrain-tech tag. The hook `hook-revisions` checks the pins, and `exobrain hooks sync` moves them.
 - A project uses a host tool by name and lists it once in `host-requirements.toml`. An entry carries a Cargo version requirement where the project needs one, or `"*"` for a tool that checks its own version. A call site runs `exobrain host-check <tools>` where it needs them:
   - once at the top of a `justfile`
   - at the top of a recipe or script that alone uses a tool

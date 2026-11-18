@@ -1,0 +1,69 @@
+# The Rust reference set: the hooks of a Cargo workspace. Use it beside the
+# common set. Chapter 04, "Reference hook sets", states the convention.
+#
+# The toolchain hooks run the cargo of the devshell, so they are local
+# `language: system` hooks of the class `project-environment`. Only
+# cargo-machete comes from an upstream repository with a `rev`.
+#
+# The fast checks run at commit. The costly checks, the test suite, the
+# dependency audit, and the unused-dependency scan, run at push, so a push
+# that passed its hooks passes CI.
+
+minimum_prek_version: "0.5.7"
+default_install_hook_types: [pre-commit, commit-msg, pre-push, pre-merge-commit]
+default_stages: [pre-commit, pre-merge-commit]
+
+repos:
+  # --- Unused dependencies, at push ---
+  #
+  # The upstream `language: rust` hook, which prek builds with the cargo of the
+  # devshell. Its manifest passes no file names and runs the scan of the whole
+  # workspace only when a manifest or the lock file changes. It declares no
+  # stages, and the scan is costly, so it runs at push.
+  - repo: https://github.com/bnjbvr/cargo-machete
+    rev: v0.10.1
+    hooks:
+      - id: cargo-machete
+        stages: [pre-push]
+
+  - repo: local
+    hooks:
+      # A check, not a fix: a hook that rewrites a file leaves the staged copy
+      # behind, so `cargo fmt --check` fails and the author formats.
+      # owner: devshell (project-environment) cargo fmt is part of the Rust toolchain that the devshell pins.
+      - id: cargo-fmt
+        name: cargo fmt check
+        entry: cargo fmt --check
+        language: system
+        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^rust-toolchain\.toml)$'
+        pass_filenames: false
+      # --all-targets lints the tests too, so a lint in a test fails at commit
+      # and not first in CI.
+      # owner: devshell (project-environment) cargo clippy is part of the Rust toolchain and builds the crate.
+      - id: cargo-clippy
+        name: cargo clippy
+        entry: cargo clippy --all-targets --all-features -- -D warnings
+        language: system
+        files: '(\.rs|(^|/)Cargo\.(toml|lock)|^(rust-toolchain|clippy)\.toml)$'
+        pass_filenames: false
+      # A test can read any checked-in file, so the suite runs on every push
+      # and not only on a change of a Rust file.
+      # owner: devshell (project-environment) cargo nextest runs the test suite of the crate.
+      - id: cargo-nextest
+        name: cargo nextest
+        entry: cargo nextest run --all-features --no-tests=pass
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-push]
+      # cargo deny reads the RustSec database that cargo audit reads, and adds
+      # the yanked crates, the bans, the sources, and the licenses, so one
+      # policy file, deny.toml, owns all four, and cargo audit stays out.
+      # owner: devshell (project-environment) cargo deny is a cargo subcommand that reads the lock file of the workspace.
+      - id: cargo-deny
+        name: cargo deny
+        entry: cargo deny check
+        language: system
+        files: '((^|/)Cargo\.(toml|lock)|^deny\.toml)$'
+        pass_filenames: false
+        stages: [pre-push]
