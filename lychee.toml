@@ -116,6 +116,7 @@ exclude = [
   "^https?://(www\\.)?argyllcms\\.com",
   "^https?://docs\\.appimage\\.org",
   "^https?://chromium\\.googlesource\\.com",
+  "^https?://wiki\\.gentoo\\.org",
 
   # --- Vendor docs that reorganized their URL structures wholesale ---
   # Keep historical references in notes; don't gate pushes on dead old paths.
