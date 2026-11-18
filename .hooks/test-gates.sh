@@ -261,13 +261,16 @@ cp "$root/programming/project-bootstrap/03-local-dev-environment.md" \
   "$r/programming/project-bootstrap/"
 cp "$root/programming/project-bootstrap/examples/rust.envrc" \
   "$r/programming/project-bootstrap/examples/"
-for f in 00-bootstrap-model.md 01-repository-foundation.md 04-quality-gates.md; do
-  : > "$r/programming/project-bootstrap/$f"
-done
-mkdir -p "$r/tools/nix" "$r/languages/nix" "$r/languages/python/project-bootstrap-spec"
-: > "$r/tools/nix/02-per-project-devshell.md"
-: > "$r/languages/nix/05-tooling-gotchas-resources.md"
-: > "$r/languages/python/project-bootstrap-spec/00-toolchain-and-layout.md"
+# Each other relative link of the chapter gets an empty file, so a new link in
+# the chapter needs no edit here.
+grep -oE '\]\([^)[:space:]]+\)' "$root/programming/project-bootstrap/03-local-dev-environment.md" \
+  | sed -e 's/^](//' -e 's/)$//' -e 's/#.*//' | grep -v -e ':' -e '^$' \
+  | while read -r target; do
+    f="$r/programming/project-bootstrap/$target"
+    [ -e "$f" ] && continue
+    mkdir -p "$(dirname "$f")"
+    : > "$f"
+  done
 accept "rust-envrc-example" "$rust_envrc" "$r"
 grep -v RUSTC_WRAPPER "$root/programming/project-bootstrap/examples/rust.envrc" \
   > "$r/programming/project-bootstrap/examples/rust.envrc"
