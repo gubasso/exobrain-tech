@@ -199,11 +199,12 @@ repos:
   # --- Commit message ---
   #
   # The upstream `language: python` hook, with its own args
-  # (--fixup --wip --commit-file). committed.toml holds the rules. Where the
-  # release-kit block holds the Conventional Commits grammar through
+  # (--fixup --wip --commit-file). committed.toml holds the rules, and a
+  # project copies it from hook-sets/committed.toml. Where the release-kit
+  # block holds the Conventional Commits grammar through
   # conventional-pre-commit, committed.toml sets `style = "none"` and keeps the
-  # line length, the case, and the period at the end of the subject, so two
-  # hooks never judge one property.
+  # line length and the period at the end of the subject, so two hooks never
+  # judge one property. committed does not judge the case of the subject.
   - repo: https://github.com/crate-ci/committed
     rev: v1.1.12
     hooks:

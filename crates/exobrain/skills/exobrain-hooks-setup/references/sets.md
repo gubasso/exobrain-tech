@@ -23,11 +23,22 @@ Write or merge `.pre-commit-config.yaml` from the reference sets of the tag, and
    - Each hook inside a rendered block.
 5. Run `prek run --all-files` again, and compare the two runs. A built-in with the arguments of the set judges at least what its upstream hook judged, so a new failure is a real finding, such as a CRLF file under `--fix=lf` or an unknown YAML tag under `--disallow-unknown-tags`. Fix the file in its own commit, or report it.
 6. Exclude the generated files from each hook that rewrites or judges them, in the configuration of the tool where it has one, as chapter 04 says under "Generated files". Trim each exclude pattern of a set to the files that the project holds, because `check-useless-excludes` refuses a pattern that matches nothing.
-7. Run `prek validate-config`.
-8. Commit as `build(hooks): adopt the <sets> reference hook sets of exobrain-tech`. Where the swap of step 4 is a change of its own, commit it first as `build(hooks): run the prek built-ins in place of pre-commit-hooks`.
+7. Where the project has no `committed.toml` at its root, copy the one of the tag from `$EXOBRAIN_TECH/programming/project-bootstrap/hook-sets/committed.toml`. Set `style = "conventional"` only where the release-kit block holds no `conventional-pre-commit` hook, as the comment of the file says.
+8. Run `prek validate-config`.
+9. Commit as `build(hooks): adopt the <sets> reference hook sets of exobrain-tech`. Where the swap of step 4 is a change of its own, commit it first as `build(hooks): run the prek built-ins in place of pre-commit-hooks`.
 
 ## Post-flight
 
 1. `prek validate-config` passes.
 2. No hook outside a rendered block names `pre-commit/pre-commit-hooks` or a `check-json5` repository, except `forbid-submodules`.
 3. Each field that differs from a set carries its reason in the comment above the hook.
+4. `committed.toml` is at the root, and the `committed` hook passes a sample header and refuses a header that runs more than one word past 72 characters:
+
+   ```bash
+   f=$(mktemp)
+   printf 'build(hooks): adopt the common reference hook set\n' >"$f"
+   prek run committed --hook-stage commit-msg --commit-msg-filename "$f"
+   printf 'build(hooks): adopt the common reference hook set of the tag that the project pins\n' >"$f"
+   ! prek run committed --hook-stage commit-msg --commit-msg-filename "$f"
+   rm -f "$f"
+   ```
