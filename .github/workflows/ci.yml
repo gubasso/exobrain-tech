@@ -40,13 +40,12 @@ jobs:
           sha256: "5c832a9ccd0855b7c054320d8921d90165a37459d3ac175923bdf121ff1aa9b1"
       - uses: DeterminateSystems/nix-installer-action@v19
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      # The commit stage first, then the costly checks of the push stage.
-      - run: nix develop --command prek run --all-files
-      # lychee-system stays local: an outside site answers a CI runner with a
-      # block or a timeout that it does not give a developer host.
-      - run: nix develop --command prek run --all-files --hook-stage pre-push
-        env:
-          SKIP: lychee-system
+      # The commit stage first, then the costly checks of the push stage. Each
+      # step names its stage, because a group filter alone also runs the
+      # manual hooks. The group local-only holds the hooks that CI cannot run,
+      # and this repository holds no ci-only hook, so no step runs that group.
+      - run: nix develop --command prek run --all-files --stage pre-commit --no-group local-only
+      - run: nix develop --command prek run --all-files --stage pre-push --no-group local-only
 
   # rk's rust binding serves the two jobs below verbatim, and the gate needs
   # them so that every release target builds before a merge. dist-build is
