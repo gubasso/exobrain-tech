@@ -42,7 +42,7 @@ Stop and ask the operator in each of these cases. State the evidence, and write 
 3. Give each tool one owner, as chapter 03 says. The devshell holds no hook runner and no `exobrain`. Never install a project tool on the host.
 4. Keep each project choice that differs from a set, and record the reason in a comment directly above the hook. `hook-revisions` reads only the `rev`, so `args`, `stages`, `files`, and `exclude` stay the project's. A `rev` is never a project choice: `exobrain hooks sync` owns it.
 5. Keep each hook of the project that no set holds. A `language: system` hook carries the `# owner:` comment of chapter 04.
-6. Work on the branch that the workflow of the project names. Never pass `--no-verify`, and never set `SKIP`.
+6. Work on the branch that the workflow of the project names. Never pass `--no-verify`, and never set `SKIP`. Where a hook cannot run in CI, or runs only in CI, give it the group of `$EXOBRAIN_TECH/programming/project-bootstrap/04-quality-gates.md`, "Hook scopes", with its reason in the comment above it, and never a `SKIP`.
 7. Commit with a type that cuts no release, because the hooks ship nothing: `build(hooks)` for the hook configuration, `build(nix)` for the flake, and `ci` for a workflow. A commit header names the change, such as `build(hooks): adopt the common and rust reference hook sets`.
 
 ## Tasks
