@@ -18,6 +18,8 @@
     - [Scenario: A recipe needs a tool that the host lacks](#scenario-a-recipe-needs-a-tool-that-the-host-lacks)
   - [`project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate](#project-platformthe-hooks-are-the-only-gate--the-git-hooks-are-the-only-gate)
     - [Scenario: A check is added outside the hooks](#scenario-a-check-is-added-outside-the-hooks)
+    - [Scenario: A hook that CI cannot run](#scenario-a-hook-that-ci-cannot-run)
+    - [Scenario: A hook that only CI can run](#scenario-a-hook-that-only-ci-can-run)
   - [`project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator](#project-platformhooks-exclude-generated-files--the-hooks-leave-generated-files-to-their-generator)
     - [Scenario: sdd rewrites its manifest](#scenario-sdd-rewrites-its-manifest)
   - [`project-platform:a-flake-is-read-from-its-git-tree` — A flake reference reads the git tree](#project-platforma-flake-is-read-from-its-git-tree--a-flake-reference-reads-the-git-tree)
@@ -166,14 +168,24 @@ Verify: `cargo run -q -p exobrain -- host-check --parse-only`
 
 ### `project-platform:the-hooks-are-the-only-gate` — The git hooks are the only gate
 
-The project MUST run every check in exactly one of its hook stages, the commit stage or the push stage. The one exception is `dist build`, which only CI runs. A fast check on the staged files runs at commit. A costly check, such as a flake evaluation or the link check, runs at push. The push stage MUST NOT rerun a commit-stage hook.
+The project MUST run every check in exactly one of its hook stages, the commit stage or the push stage. A hook that only CI can run takes the `manual` stage and the group `ci-only`, and the one other exception is `dist build`, which only CI runs. A fast check on the staged files runs at commit. A costly check, such as a flake evaluation or the link check, runs at push. The push stage MUST NOT rerun a commit-stage hook.
 
 A branch reaches the trunk through `rk integrate` and a push from a checkout that ran both stages. The change that lands is therefore the change that passed its hooks. CI MUST hold only three kinds of workflow:
 
-- The validation workflow, `ci.yml`. Every `run:` step of its job `test` is one `prek run` call of one hook stage. The call stands alone on its line, bare or through `nix develop --command`. A push that passed its hooks therefore passes `test`. A `uses:` step pinned by commit SHA installs prek. A hook skip list goes in the step's `env:`.
-- Beside `test`, `ci.yml` MAY hold the `dist-plan` and `dist-build` jobs that `rk binding rust` serves, as `test` needs, and no other job. The `dist-plan` hook runs the same plan at push. `dist build` is the one check that only CI runs. It builds the release archives that users download. From the workflow alone, rk judges that every release target builds before a merge. The operator keeps this costly build out of the local hooks.
+- The validation workflow, `ci.yml`. Every `run:` step of its job `test` is one `prek run` call of one hook stage. The call stands alone on its line, bare or through `nix develop --command`. A push that passed its hooks therefore passes `test`. A `uses:` step pinned by commit SHA installs prek.
+- Beside `test`, `ci.yml` MAY hold the `dist-plan` and `dist-build` jobs that `rk binding rust` serves, as `test` needs, and no other job. The `dist-plan` hook runs the same plan at push. `dist build` is the one check outside the hooks that only CI runs. It builds the release archives that users download. From the workflow alone, rk judges that every release target builds before a merge. The operator keeps this costly build out of the local hooks.
 - The release workflows, `release-plz.yml` and `release.yml`. They create tags, releases, and artifacts, and they check nothing that the hooks do not check.
 - The pull-request checks, `pr-commits.yml`, which judge what only a pull request has. No push starts them.
+
+The hook configuration MUST declare the scope of each hook that one runtime cannot run, as a prek group, and no committed file MAY set `SKIP`. `groups: [local-only]` marks a hook that CI cannot run, and a CI-only hook takes `stages: [manual]` and `groups: [ci-only]`. The comment above each grouped hook states why the other runtime cannot run it. The job `test` selects its hooks with these steps, and each step names its stage, because a group filter with no `--stage` also runs the `manual` hooks:
+
+```yaml
+- run: nix develop --command prek run --all-files --stage pre-commit --no-group local-only
+- run: nix develop --command prek run --all-files --stage pre-push --no-group local-only
+- run: nix develop --command prek run --all-files --stage manual --group ci-only
+```
+
+A project with no `ci-only` hook leaves the third step out, because prek refuses a `--group` that matches no hook. `SKIP` stays for a one-time run in one runtime.
 
 The chapter that states the general rule is `programming/project-bootstrap/04-quality-gates.md`, "Git hooks".
 
@@ -183,7 +195,19 @@ The chapter that states the general rule is `programming/project-bootstrap/04-qu
 - WHEN a contributor pushes a change that the check rejects
 - THEN the push passed and CI failed, so the check moves into the commit or the push stage
 
-Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; case "${f##*/}" in ci.yml) awk '/^  test:/{t=1;next} /^  [^ #]/{t=0} t' "$f" | grep -E '^[[:space:]]*(- )?run:' | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?prek run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1; awk '/^jobs:/{j=1;next} /^[^ #]/{j=0} j && /^  [A-Za-z0-9_-]+:/' "$f" | grep -Evq '^  (test|dist-plan|dist-build):' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; just lint`
+#### Scenario: A hook that CI cannot run
+
+- GIVEN a link check at push that an outside site blocks on a CI runner
+- WHEN the hook takes `groups: [local-only]` with its reason in the comment
+- THEN the push stage runs it on a developer host, the step `--stage pre-push --no-group local-only` leaves it out of CI, and no workflow sets `SKIP`
+
+#### Scenario: A hook that only CI can run
+
+- GIVEN a test that needs a secret that only the forge holds
+- WHEN the hook takes `stages: [manual]` and `groups: [ci-only]` with its reason in the comment
+- THEN no git hook fires it, and the step `--stage manual --group ci-only` runs it in CI
+
+Verify: `for f in .github/workflows/*; do [ -e "$f" ] || continue; grep -Eq 'SKIP[=:]' "$f" && exit 1; grep -E 'prek run' "$f" | grep -E -- '--(no-)?group' | grep -Evq -- '--(hook-)?stage[ =]' && exit 1; case "${f##*/}" in ci.yml) awk '/^  test:/{t=1;next} /^  [^ #]/{t=0} t' "$f" | grep -E '^[[:space:]]*(- )?run:' | grep -Evq '^[[:space:]]*(- )?run:[[:space:]]+(nix develop --command )?prek run( [-A-Za-z0-9=_.,]+)*[[:space:]]*$' && exit 1; awk '/^jobs:/{j=1;next} /^[^ #]/{j=0} j && /^  [A-Za-z0-9_-]+:/' "$f" | grep -Evq '^  (test|dist-plan|dist-build):' && exit 1 ;; release-plz.yml|release.yml|pr-commits.yml) ;; *) exit 1 ;; esac; done; just lint`
 
 ### `project-platform:hooks-exclude-generated-files` — The hooks leave generated files to their generator
 
