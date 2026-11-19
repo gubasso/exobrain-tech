@@ -17,11 +17,67 @@ Git hooks run the checks locally, so a failure surfaces before it reaches CI. De
 - The commit stage runs the fast checks: the formatter, the linter, and the cheap file checks.
 - The push stage runs the costly checks: the integration tests, the builds, and the networked checks, such as a link check or a vulnerability audit.
 
-The two stages together run every check that CI runs, so a push that passed its hooks passes CI. The push stage does not rerun the commit stage. Install both hook types, for example `default_install_hook_types: [pre-commit, commit-msg, pre-push]`.
+The two stages together run every check that CI runs, except a CI-only hook of [Hook scopes](#hook-scopes), so a push that passed its hooks passes CI. The push stage does not rerun the commit stage. Install both hook types, for example `default_install_hook_types: [pre-commit, commit-msg, pre-push]`.
 
 `default_stages` covers only a hook that declares no `stages:` of its own. The `stages:` of a remote hook's manifest wins over it: the manifests of typos and shfmt declare `pre-push` beside `pre-commit`, so those hooks run at push too unless the configuration gives each one an explicit `stages:`. A prek built-in copies the stages of its upstream hook, so the fixers `trailing-whitespace` and `end-of-file-fixer` declare `pre-push` too. Read the pinned manifest of each remote repository, and set `stages:` where it names a stage the hook does not belong to. A project that gates its integration on the manual stage keeps `manual` in both lists.
 
 A project with a flake also carries `no-path-flake-reference`, the hook that refuses a `path:` flake reference to the working tree, because such a reference copies every ignored file into the store. The [Nix quality gates](../../languages/nix/project-bootstrap-spec/01-quality-gates.md#a-flake-reference-reads-the-git-tree) state the rule and the hook entry.
+
+### Hook scopes
+
+Some hooks run in one runtime only. A prek group, declared on the hook, names that scope, and each runtime selects its hooks by group. The configuration states every exception, and no committed file sets `SKIP`. `SKIP` stays for a one-time run in one runtime that needs it.
+
+- A hook keeps its stage: `pre-commit` for a cheap check, `pre-push` for a costly check that the commit stage does not run.
+- `groups: [local-only]` marks a hook that CI cannot run, such as a link check that an outside site blocks on a CI runner. Its comment states why.
+- A CI-only hook takes `stages: [manual]` and `groups: [ci-only]`, so no git hook fires it. Its comment states why it cannot run locally, such as a secret that only the forge holds.
+
+prek 0.4.4 brought `groups`, so the floor `0.5.7` of the sets covers it. A group filter with no `--stage` also runs the `manual` hooks, so each CI step names its stage. prek refuses a `--group` that matches no hook, so a project with no `ci-only` hook leaves the third step out. A project adds `groups:` to any hook of its own file, a remote hook, a `repo: builtin` hook, or a `repo: local` hook, and `hook-revisions` reads only the `rev`. This fragment holds one hook of each kind:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: fmt
+        name: fmt
+        entry: cargo fmt --check
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: tests
+        name: tests
+        entry: cargo nextest run
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+      # local-only: an outside site blocks a CI runner with a 429 or a timeout.
+      - id: links
+        name: links
+        entry: lychee --no-progress .
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        groups: [local-only]
+      # ci-only: the test reads a token that only the forge holds.
+      - id: registry-smoke
+        name: registry-smoke
+        entry: scripts/registry-smoke.sh
+        language: system
+        pass_filenames: false
+        stages: [manual]
+        groups: [ci-only]
+```
+
+The job of `ci.yml` runs the three stages:
+
+```yaml
+# Each step names its stage: a group filter with no --stage also runs the
+# manual hooks.
+- run: nix develop --command prek run --all-files --stage pre-commit --no-group local-only
+- run: nix develop --command prek run --all-files --stage pre-push --no-group local-only
+- run: nix develop --command prek run --all-files --stage manual --group ci-only
+```
+
+`prek list --group local-only` and `prek list --group ci-only` name every exception of the project.
 
 ### Reference hook sets
 

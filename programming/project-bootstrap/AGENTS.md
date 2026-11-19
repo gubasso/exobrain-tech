@@ -1,7 +1,7 @@
 ---
 digest-of: programming/project-bootstrap
-last-synced: 2026-11-18
-token-estimate: 1260
+last-synced: 2026-11-19
+token-estimate: 1340
 ---
 
 # AGENTS
@@ -34,8 +34,8 @@ This tree is the source of truth for what a new project must have and in what or
   - 01 repository foundation: `.gitignore`, the SPDX `LICENSE`, and the `README` skeleton.
   - 02 governance and docs: `CLAUDE.md`, the `AGENTS.md` convention, the MADR-minimal ADR scaffold, and the README as an index.
   - 03 local dev environment: the Nix devShell and `.envrc`, the owner of each dependency, the host requirements, Rust builds, build output cleanup, and `.editorconfig`.
-  - 04 quality gates: the formatter, the linter, git hooks in two stages, the reference hook sets, the hook exception classes, generated files, and the task runner.
-  - 05 CI: the two hook stages repeated in the devshell, and the CI-only list.
+  - 04 quality gates: the formatter, the linter, git hooks in two stages, the hook scopes, the reference hook sets, the hook exception classes, generated files, and the task runner.
+  - 05 CI: the hook stages repeated in the devshell, each step selected by stage and group, and the CI-only checks.
   - 06 security baseline: secrets hygiene, dependency audit, and the OpenSSF Scorecard.
 - Each dependency has one owner, the most specific file that declares it natively. The owners run in this order:
   1. The manifest of the stack: `pyproject.toml` with `uv.lock`, a PEP 723 block, `Cargo.toml`, or `package.json`.
@@ -50,7 +50,7 @@ This tree is the source of truth for what a new project must have and in what or
   - in a dev target of a `Makefile`
 - A Rust project builds through the kache of the host. Its `.envrc` sets `RUSTC_WRAPPER=kache`, so CI, which enters the devshell without direnv, builds without it. `examples/rust.envrc` is the whole file. Each worktree keeps its own build folder. The dev profile keeps line tables for the project's crates and no debug information for dependencies. The kache daemon and a weekly `kache clean --stale 14d` delete old output, and `exobrain store-guard --daily` warns about a build folder over 10 GB of exclusive bytes.
 - Nothing checks on shell entry, and nothing falls back. The README links the file. A shipped application checks its runtime tools in its own code.
-- The commit stage runs the fast checks, and the push stage runs the costly ones. Together they run every CI check, and the push stage does not rerun the commit stage. CI repeats both stages in the devshell. A CI job that calls `exobrain` installs the CLI of the tag that the project pins. A CI-only check needs a reason other than a long runtime. The project lists it with the report-only and scheduled jobs.
+- The commit stage runs the fast checks, and the push stage runs the costly ones. Together they run every CI check except a CI-only hook, and the push stage does not rerun the commit stage. CI repeats the stages in the devshell. A CI job that calls `exobrain` installs the CLI of the tag that the project pins. A prek group declares each hook that runs in one runtime: `local-only` for a hook that CI cannot run, and `ci-only`, on the `manual` stage, for a hook that only CI runs. Its comment states the reason. Each CI step names its stage and its group filter, and no committed file sets `SKIP`. A CI-only check needs a reason other than a long runtime. The contributor guide repeats each reason, and names the report-only and scheduled jobs.
 - A generator runs natively, and the project configures it only as its tool documents. Every hook that rewrites or judges a generated file excludes it in the tool's own configuration. A lock file and a release changelog are generated files. The reading hooks keep the file: the parser, the secret scan, and the link check. A file that a person edits after generation belongs to the project, and so does a marked region.
 
 ## Maintenance Notes

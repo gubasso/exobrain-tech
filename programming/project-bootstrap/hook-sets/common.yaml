@@ -9,6 +9,8 @@
 # pins them: release-kit renders `conventional-pre-commit` and
 # `pre-commit/pre-commit-hooks` (`no-commit-to-branch`), and sdd
 # renders `markdownlint-cli2`. Keep each rendered block as its tool writes it.
+# The tool that renders a hook also owns its group, such as `local-only` on
+# `no-commit-to-branch`, which refuses the trunk checkout of a CI job.
 #
 # The exobrain-tech entry of a project selects the sets through its `rev`, and
 # `exobrain hooks sync --to <tag>` alone moves it, so no set states it. The
@@ -187,12 +189,16 @@ repos:
   # during the run, and fails in an offline or sandboxed shell. The devshell
   # supplies lychee, and the rev pins only the hook definition. `prek update`
   # moves this rev to the pre-release tag `nightly`. Keep the latest release.
+  # The group `local-only` keeps it out of CI, because an outside site answers
+  # a CI runner with a block or a timeout that it does not give a developer
+  # host.
   - repo: https://github.com/lycheeverse/lychee
     rev: lychee-v0.24.2
     hooks:
       # owner: devshell (no-hook-language) upstream lychee offers only script, docker_image, and system ids.
       - id: lychee-system
         stages: [pre-push]
+        groups: [local-only]
         types: [markdown]
         args: [--no-progress]
 
