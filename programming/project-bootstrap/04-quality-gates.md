@@ -37,12 +37,14 @@ prek 0.4.4 brought `groups`, so the floor `0.5.7` of the sets covers it. A group
 repos:
   - repo: local
     hooks:
+      # owner: devshell (project-environment) cargo fmt is part of the Rust toolchain that the devshell pins.
       - id: fmt
         name: fmt
         entry: cargo fmt --check
         language: system
         pass_filenames: false
         stages: [pre-commit]
+      # owner: devshell (project-environment) cargo nextest runs the test suite of the crate.
       - id: tests
         name: tests
         entry: cargo nextest run
@@ -50,6 +52,7 @@ repos:
         pass_filenames: false
         stages: [pre-push]
       # local-only: an outside site blocks a CI runner with a 429 or a timeout.
+      # owner: devshell (no-hook-language) upstream lychee offers only script, docker_image, and system ids.
       - id: links
         name: links
         entry: lychee --no-progress .
@@ -58,6 +61,7 @@ repos:
         stages: [pre-push]
         groups: [local-only]
       # ci-only: the test reads a token that only the forge holds.
+      # owner: devshell (project-environment) the script runs the build of the project against the registry.
       - id: registry-smoke
         name: registry-smoke
         entry: scripts/registry-smoke.sh
