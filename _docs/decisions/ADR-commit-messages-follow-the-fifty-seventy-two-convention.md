@@ -2,7 +2,7 @@
 
 ## Context and Problem Statement
 
-The common hook set runs committed on commit-msg, and its committed.toml capped the header and each body line at 72 characters with no softer aim for the header. The operator ruled on decision d120: "use Tim Pope's 50/72 convention". The operator added: "we will keep the convention from now on... we'll not rewrite anything... a rule that becomes valid since we land the new setup".
+The common hook set runs committed on commit-msg, and its committed.toml capped the header and each body line at 72 characters with no softer aim for the header. The operator ruled on 2026-11-19: "use Tim Pope's 50/72 convention". The operator added: "we will keep the convention from now on... we'll not rewrite anything... a rule that becomes valid since we land the new setup".
 
 ## Considered Options
 
