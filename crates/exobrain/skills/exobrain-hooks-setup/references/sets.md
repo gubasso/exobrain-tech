@@ -26,6 +26,7 @@ Write or merge `.pre-commit-config.yaml` from the reference sets of the tag, and
 7. Where the project has no `committed.toml` at its root, copy the one of the tag from `$EXOBRAIN_TECH/programming/project-bootstrap/hook-sets/committed.toml`. Set `style = "conventional"` only where the release-kit block holds no `conventional-pre-commit` hook, as the comment of the file says. A project whose house style capitalizes the description after the colon keeps `style = "conventional"` with `subject_capitalized = true` even beside that hook, as the same comment says.
 8. Run `prek validate-config`.
 9. Commit as `build(hooks): adopt the <sets> reference hook sets of exobrain-tech`. Where the swap of step 4 is a change of its own, commit it first as `build(hooks): run the prek built-ins in place of pre-commit-hooks`.
+10. Declare the hook scopes, as `$EXOBRAIN_TECH/programming/project-bootstrap/04-quality-gates.md`, "Hook scopes", says. Give `groups: [local-only]` to each hook that CI cannot run. Give `stages: [manual]` and `groups: [ci-only]` to each hook that only CI can run. Write the reason in the comment above the hook. Replace each `SKIP` of a CI workflow with the group of its hook. Change the `prek run` steps of the workflow to the steps of `$EXOBRAIN_TECH/programming/project-bootstrap/05-ci.md`, "First CI workflow". Commit the configuration as `build(hooks): declare the hooks that run in one runtime as groups`, then the workflow as `ci: select the hooks of each step by stage and group`.
 
 ## Post-flight
 
@@ -42,3 +43,5 @@ Write or merge `.pre-commit-config.yaml` from the reference sets of the tag, and
    ! prek run committed --hook-stage commit-msg --commit-msg-filename "$f"
    rm -f "$f"
    ```
+5. No committed file sets `SKIP`: `git grep -nE 'SKIP[=:]' -- .github .gitlab-ci.yml .pre-commit-config.yaml` prints no line outside a comment.
+6. `prek list --group local-only` and `prek list --group ci-only` name exactly the hooks whose comments give the reason, and each `prek run` step of CI names its `--stage`.
