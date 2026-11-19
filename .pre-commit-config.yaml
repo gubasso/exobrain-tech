@@ -394,13 +394,16 @@ repos:
   # accept/exclude rules) live in the sibling `lychee.toml` at the repo root.
   #
   # `lychee-system` runs the lychee of the devShell, so the hook downloads
-  # nothing and needs no version argument.
+  # nothing and needs no version argument. The group `local-only` keeps it out
+  # of CI, because an outside site answers a CI runner with a block or a
+  # timeout that it does not give a developer host.
   - repo: https://github.com/lycheeverse/lychee
     rev: lychee-v0.24.2
     hooks:
       # owner: devshell (no-hook-language) upstream lychee offers only script, docker_image, and system ids.
       - id: lychee-system
         stages: [pre-push]
+        groups: [local-only]
         # Knowledge base is markdown — don't crawl template/config files.
         types: [markdown]
         # Args intentionally minimal so lychee.toml owns the behavior.
