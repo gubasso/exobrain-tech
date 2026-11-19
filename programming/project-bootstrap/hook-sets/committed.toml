@@ -8,8 +8,11 @@
 # capitalizes the description (see below).
 style = "none"
 
-# `line_length` caps every line, the subject included. `subject_length` caps
-# the subject. committed lets one trailing word run past either limit.
+# The 50/72 convention: a header aims for 50 characters, a soft limit that
+# committed cannot warn on. Every line, the header included, stays at or
+# under 72 characters, the hard limit. `line_length` caps every line, and
+# `subject_length` caps the subject. committed lets one trailing word run past
+# either limit.
 line_length = 72
 subject_length = 72
 

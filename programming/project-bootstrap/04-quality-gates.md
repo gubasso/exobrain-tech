@@ -95,6 +95,8 @@ The sets exist so that projects share their hook environments. prek reuses an en
 - `common` takes prek's `repo: builtin` hooks in place of `pre-commit/pre-commit-hooks` and the check-json5 repositories. A built-in needs no clone, no environment, and no `rev`. A built-in can judge less than its upstream hook, and the set gives it the arguments that keep the upstream behavior: prek's `check-yaml` accepts an unknown tag unless it gets `--disallow-unknown-tags` ([built-in hooks](https://prek.j178.dev/0.5.7/reference/built-in-hooks/#check-yaml)).
 - prek has no built-in for `forbid-submodules`. Its `forbid-new-submodules` ignores a submodule that already exists, so a project that refuses every submodule keeps the upstream hook.
 
+The commit-msg hook `committed` of `common` reads [`hook-sets/committed.toml`](./hook-sets/committed.toml), which a project copies to its root. It holds the 50/72 convention: a commit header aims for 50 characters, and every line of a message stays at or under 72. The convention binds the commits that follow the landing of that file, and no past commit is rewritten for it.
+
 The exobrain-tech entry of a project enables the hook `hook-revisions` and names its sets in `args`:
 
 ```yaml
