@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0](https://github.com/gubasso/exobrain-tech/compare/v1.2.0...v1.3.0) - 2026-11-20
+
+### Added
+
+- *(cli/skill)* declare the hook scopes when a project adopts the sets
+- *(cli/skill)* give a hook that runs in one runtime a group, never a SKIP
+
+### Fixed
+
+- *(cli/skill)* keep conventional style for a capitalized commit subject
+- *(cli/skill)* give projects the committed.toml of the common hook set
+
 ## [1.2.0](https://github.com/gubasso/exobrain-tech/compare/v1.1.0...v1.2.0) - 2026-11-18
 
 ### Added
