@@ -19,7 +19,9 @@ repos:
   # The upstream `language: rust` hook, which prek builds with the cargo of the
   # devshell. Its manifest passes no file names and runs the scan of the whole
   # workspace only when a manifest or the lock file changes. It declares no
-  # stages, and the scan is costly, so it runs at push.
+  # stages, and the scan is costly, so it runs at push. v0.10.1 calls
+  # `Path::is_empty`, stable since Rust 1.98.0, so the toolchain of the devshell
+  # must be 1.98 or newer.
   - repo: https://github.com/bnjbvr/cargo-machete
     rev: v0.10.1
     hooks:

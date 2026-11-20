@@ -133,8 +133,10 @@ repos:
   #   - -p writes in place.
   #   - -c does not judge the coherence of the heading levels.
   #   - --skip-lines 1 leaves the H1 title out of the list.
-  # A project that keeps a TOC only in its specs adds `-l, '3'` and
-  # `files: '^_docs/specs/SPEC-.*\.md$'`. A project with sdd excludes the
+  # A project that keeps a TOC only in its specs sets
+  # `args: [-p, -c, --skip-lines, '1', github, -l, '3']` and
+  # `files: '^_docs/specs/SPEC-.*\.md$'`. `-l` is an option of the parser
+  # `github`, so it comes after the parser name. A project with sdd excludes the
   # specs that sdd ships, because they keep the bytes that `sdd spec <name>`
   # prints.
   - repo: https://github.com/frnmst/md-toc
