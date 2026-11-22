@@ -302,5 +302,5 @@ On next boot:
 [4]: https://gist.github.com/jkauppinen/3c437abe64206cafbac45ff2fdd0c478 "Arch linux installation with full disk encryption via dm-crypt + LUKS ..."
 [5]: https://man.archlinux.org/man/pacstrap.8 "pacstrap (8) — Arch manual pages"
 [6]: https://github.com/archlinux/mkinitcpio/blob/master/mkinitcpio.conf "mkinitcpio/mkinitcpio.conf at master · archlinux/mkinitcpio · GitHub"
-[7]: https://wiki.parabola.nu/Dm-crypt/System_configuration "dm-crypt/System configuration - ParabolaWiki - Parabola GNU/Linux-libre"
+[7]: https://web.archive.org/web/20250924031555/https://wiki.parabola.nu/Dm-crypt/System_configuration "dm-crypt/System configuration - ParabolaWiki - Parabola GNU/Linux-libre"
 [8]: https://wiki.archlinux.org/title/Dm-crypt/System_configuration "dm-crypt/System configuration - ArchWiki"
