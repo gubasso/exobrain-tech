@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0](https://github.com/gubasso/exobrain-tech/compare/v1.2.0...v2.0.0) - 2026-11-22
+
+### Added
+
+- *(cli)* [**breaking**] remove exobrain hooks status
+- *(cli/skill)* add exobrain outdated in hook setup
+- *(cli)* report a newer CLI and hook sets in outdated
+- *(cli)* bound tag reads and walk pages as flake-edit
+- *(cli)* warn when a tag-pinned flake input lags
+- *(cli)* read lock roots and follows as nix does
+- *(cli)* name the age limit in outdated help
+- *(cli)* warn when a nixpkgs pin grows old
+- *(cli/skill)* offer the hook sets and research hooks
+- *(cli/skill)* declare the hook scopes when a project adopts the sets
+- *(cli/skill)* give a hook that runs in one runtime a group, never a SKIP
+
+### Fixed
+
+- *(cli/skill)* keep conventional style for a capitalized commit subject
+- *(cli/skill)* give projects the committed.toml of the common hook set
+
+### Other
+
+- *(cli)* require a named gap for each verb
+- *(cli)* cover outdated roots, follows, and stubs
+
 ## [1.2.0](https://github.com/gubasso/exobrain-tech/compare/v1.1.0...v1.2.0) - 2026-11-18
 
 ### Added
