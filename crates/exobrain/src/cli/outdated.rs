@@ -7,10 +7,8 @@ use clap::Args;
 /// The lock that a call checks when it names none.
 pub const DEFAULT_LOCK: &str = "flake.lock";
 
-/// Report what is behind, change nothing, and always exit 0 (for `.envrc`).
-///
-/// Each lock whose nixpkgs pin is over 30 days old prints one line on
-/// stderr. The limit is fixed.
+/// The arguments of `exobrain outdated`. The variant of `Commands` holds
+/// the help text.
 #[derive(Debug, Args)]
 pub struct OutdatedArgs {
     /// The flake locks to check, each on its own. With none, `flake.lock`,

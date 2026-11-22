@@ -26,6 +26,9 @@ pub enum Commands {
     /// Hold the hook revisions of a project to its exobrain-tech tag.
     Hooks(hooks::HooksArgs),
     /// Report what is behind, change nothing, and always exit 0 (for `.envrc`).
+    ///
+    /// Each lock whose nixpkgs pin is over 30 days old prints one line on
+    /// stderr. The limit is fixed.
     Outdated(outdated::OutdatedArgs),
     /// Print the agent skills that the binary carries.
     Skill(skill::SkillArgs),

@@ -304,3 +304,14 @@ fn outdated_age_reads_only_the_lock() {
         "the age check called nix or gh"
     );
 }
+
+#[test]
+fn outdated_warns_over_30_days_names_the_limit_in_its_help() {
+    let dir = TempDir::new().unwrap();
+    let out = outdated(dir.path(), &["--help"]);
+    let help = String::from_utf8_lossy(&out.stdout);
+    assert_eq!(out.status.code(), Some(0), "{help}");
+    assert!(help.contains("over 30 days old"), "{help}");
+    assert!(help.contains("The limit is fixed."), "{help}");
+    assert!(help.contains("`flake.lock`"), "{help}");
+}
