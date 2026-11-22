@@ -27,7 +27,7 @@
 
 ## Purpose
 
-These rules govern `exobrain hooks`, the verbs of the `exobrain` binary that hold the hook revisions of a project to the reference sets of its exobrain-tech tag. `project-platform:hook-revisions-follow-the-exobrain-tech-tag` owns the convention, and chapter 04 of `programming/project-bootstrap/` holds the sets. This spec owns how `hooks check`, `hooks sync`, and `hooks status` read a config, compare it, rewrite it, and reach the network. `SPEC-cli.md` owns the rest of the binary, its output streams included.
+These rules govern `exobrain hooks`, the verbs of the `exobrain` binary that hold the hook revisions of a project to the reference sets of its exobrain-tech tag. `hook-sets:hook-revisions-follow-the-exobrain-tech-tag` owns the convention, and chapter 04 of `programming/project-bootstrap/` holds the sets. This spec owns how `hooks check`, `hooks sync`, and `hooks status` read a config, compare it, rewrite it, and reach the network. `SPEC-cli.md` owns the rest of the binary, its output streams included.
 
 ## Requirements
 

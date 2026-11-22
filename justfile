@@ -26,7 +26,7 @@ lint:
 test: test-gates test-shipped-scripts test-rust-envrc test-one-system test-hook-sets test-skill-sources verify-instance test-crates
 
 # Hold the reference hook sets to their rules, offline
-# (`project-platform:reference-hook-sets-hold-their-evidence`). The hook-sets
+# (`hook-sets:reference-hook-sets-hold-their-evidence`). The hook-sets
 # hook runs the same script when a set changes.
 test-hook-sets:
     nix develop --command .hooks/hook-sets.sh

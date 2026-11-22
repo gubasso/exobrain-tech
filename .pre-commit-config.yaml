@@ -491,7 +491,7 @@ repos:
   #
   # The sets of programming/project-bootstrap/hook-sets/ are prek
   # configurations that projects copy
-  # (`project-platform:reference-hook-sets-hold-their-evidence`). The gate
+  # (`hook-sets:reference-hook-sets-hold-their-evidence`). The gate
   # validates each set with prek, holds each repository to one set, holds each
   # set to its offline evidence of the upstream hook ids, and runs each prek
   # built-in of a set on a fixture that its upstream hook refuses. It runs only
@@ -595,7 +595,7 @@ repos:
   # --- The hook revisions follow the reference sets (system) ---
   #
   # The local twin of the hook that .pre-commit-hooks.yaml publishes
-  # (`project-platform:hook-revisions-follow-the-exobrain-tech-tag`). This
+  # (`hook-sets:hook-revisions-follow-the-exobrain-tech-tag`). This
   # repository holds the sets, so it pins each repository that it shares with
   # the sets `common`, `rust`, and `nix` at the `rev` of the same commit. In a
   # local hook, prek expands `{hook_repo}` to this checkout. The twin runs the

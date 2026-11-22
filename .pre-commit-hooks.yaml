@@ -29,7 +29,7 @@
 # it through as text. The host supplies `exobrain`.
 - id: hook-revisions
   name: hook revisions follow the exobrain-tech tag
-  description: project-platform:hook-revisions-follow-the-exobrain-tech-tag
+  description: hook-sets:hook-revisions-follow-the-exobrain-tech-tag
   language: system
   entry: exobrain hooks check --sets-dir {hook_repo}/programming/project-bootstrap/hook-sets .pre-commit-config.yaml
   pass_filenames: false

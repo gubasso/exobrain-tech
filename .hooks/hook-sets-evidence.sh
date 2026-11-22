@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Refresh the evidence of the reference hook sets: for each set, the hook ids
 # that the manifest of each upstream repository publishes at the pinned rev
-# (project-platform:reference-hook-sets-hold-their-evidence).
+# (hook-sets:reference-hook-sets-hold-their-evidence).
 #
 # This is the one step of the maintenance of the sets that reads the network.
 # It runs after `prek update -c <set>.yaml`, and writes

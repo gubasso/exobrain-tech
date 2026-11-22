@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Hold the reference hook sets of programming/project-bootstrap/hook-sets/ to
-# their rules, offline (project-platform:reference-hook-sets-hold-their-evidence).
+# their rules, offline (hook-sets:reference-hook-sets-hold-their-evidence).
 #
 # 1. prek validates each set as a configuration.
 # 2. A repository with a rev appears in one set only, so two sets never expect
@@ -24,7 +24,7 @@ set -u
 unset GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE GIT_OBJECT_DIRECTORY \
   GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_COMMON_DIR GIT_PREFIX
 
-rule=project-platform:reference-hook-sets-hold-their-evidence
+rule=hook-sets:reference-hook-sets-hold-their-evidence
 root=$(cd "$(dirname "$0")/.." && pwd)
 dir="$root/programming/project-bootstrap/hook-sets"
 work=$(mktemp -d)
