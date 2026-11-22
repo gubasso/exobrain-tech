@@ -2,8 +2,13 @@
 //!
 //! The age check reads each flake lock offline. The `lastModified` of the
 //! nixpkgs node of a lock is the clock of the whole lock, and a pin over
-//! [`LIMIT_DAYS`] days old prints one line on stderr. The check reads no
-//! network, no cache, and no state file, calls no `nix`, and writes nothing.
+//! [`LIMIT_DAYS`] days old prints one line on stderr. The age check reads
+//! no network, no cache, and no state file, calls no `nix`, and writes
+//! nothing.
+//!
+//! The release check judges each root input pinned at a version tag of a
+//! GitHub repository against the latest tag of that repository, which
+//! [`crate::release_cache`] reads through `gh` once a week.
 
 use std::path::{Component, Path, PathBuf};
 
@@ -13,6 +18,7 @@ use crate::cli::outdated::{DEFAULT_LOCK, OutdatedArgs};
 use crate::commands::store_guard::shell_word;
 use crate::error::Error;
 use crate::output;
+use crate::release_cache::{self, Repo};
 
 /// The age limit of a nixpkgs pin, in whole days. A pin of exactly this
 /// age stays silent.
@@ -36,12 +42,154 @@ pub fn run(args: &OutdatedArgs) -> Result<u8, Error> {
     } else {
         (args.locks.clone(), true)
     };
-    for lock in &locks {
-        if let Some(line) = age_line(lock, named, now) {
+    let loaded: Vec<(PathBuf, Loaded)> = locks
+        .into_iter()
+        .map(|path| {
+            let lock = load(&path);
+            (path, lock)
+        })
+        .collect();
+    let pins: Vec<Vec<TagInput>> = loaded
+        .iter()
+        .map(|(_, lock)| match lock {
+            Loaded::Lock(lock) => tag_inputs(lock),
+            Loaded::Missing | Loaded::Unreadable(_) => Vec::new(),
+        })
+        .collect();
+    let mut repos: Vec<Repo> = pins.iter().flatten().map(|pin| pin.repo.clone()).collect();
+    repos.sort();
+    repos.dedup();
+    let lookups = release_cache::latest(&repos, args.refresh);
+    for ((path, lock), pins) in loaded.iter().zip(&pins) {
+        if let Some(line) = judge_age(path, named, lock, now) {
             output::note(&line);
+        }
+        for pin in pins {
+            let latest = repos
+                .binary_search(&pin.repo)
+                .ok()
+                .and_then(|at| lookups[at].latest.as_deref());
+            if let Some(latest) = latest
+                && release_cache::newer(latest, &pin.tag)
+            {
+                output::note(&release_line(path, pin, latest));
+            }
+        }
+    }
+    for (repo, lookup) in repos.iter().zip(&lookups) {
+        if let Some(error) = &lookup.failed {
+            output::note(&format!(
+                "cannot read the latest release of {} ({error}); the next read runs in 1 hour, or now with --refresh",
+                repo.slug()
+            ));
         }
     }
     Ok(0)
+}
+
+/// A lock as the command found it.
+enum Loaded {
+    /// The path does not exist.
+    Missing,
+    /// The file does not read or does not parse, with the reason.
+    Unreadable(String),
+    /// The parsed lock.
+    Lock(Value),
+}
+
+/// Read and parse the lock at `path`.
+fn load(path: &Path) -> Loaded {
+    match std::fs::read(path) {
+        Ok(bytes) => match serde_json::from_slice(&bytes) {
+            Ok(lock) => Loaded::Lock(lock),
+            Err(e) => Loaded::Unreadable(e.to_string()),
+        },
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Loaded::Missing,
+        Err(e) => Loaded::Unreadable(e.to_string()),
+    }
+}
+
+/// One root input pinned at a version tag of a GitHub repository.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TagInput {
+    /// The name of the input in the root node.
+    pub input: String,
+    /// The repository of the input.
+    pub repo: Repo,
+    /// The tag that the input pins.
+    pub tag: String,
+}
+
+/// Every root input of `lock` that names a node, not a follows path, whose
+/// `original` is a GitHub reference at a version tag.
+#[must_use]
+pub fn tag_inputs(lock: &Value) -> Vec<TagInput> {
+    let Some(nodes) = lock.get("nodes") else {
+        return Vec::new();
+    };
+    let Some(inputs) = lock
+        .get("root")
+        .and_then(Value::as_str)
+        .and_then(|root| nodes.get(root))
+        .and_then(|root| root.get("inputs"))
+        .and_then(Value::as_object)
+    else {
+        return Vec::new();
+    };
+    inputs
+        .iter()
+        .filter_map(|(input, value)| {
+            let original = nodes.get(value.as_str()?)?.get("original")?;
+            if original.get("type")?.as_str()? != "github" {
+                return None;
+            }
+            let tag = original.get("ref")?.as_str()?;
+            if !version_tag(tag) {
+                return None;
+            }
+            let repo = Repo::new(
+                original.get("owner")?.as_str()?,
+                original.get("repo")?.as_str()?,
+            )?;
+            Some(TagInput {
+                input: input.clone(),
+                repo,
+                tag: tag.to_owned(),
+            })
+        })
+        .collect()
+}
+
+/// Whether `tag` reads `vMAJOR.MINOR.PATCH` or `MAJOR.MINOR.PATCH`.
+fn version_tag(tag: &str) -> bool {
+    let core = tag.strip_prefix('v').unwrap_or(tag);
+    let parts: Vec<&str> = core.split('.').collect();
+    parts.len() == 3
+        && parts
+            .iter()
+            .all(|part| !part.is_empty() && part.bytes().all(|b| b.is_ascii_digit()))
+}
+
+/// The warning for `pin` of the lock at `path`, whose repository is out
+/// at `latest`.
+fn release_line(path: &Path, pin: &TagInput, latest: &str) -> String {
+    let input = shell_word(&pin.input);
+    let default = path.as_os_str() == DEFAULT_LOCK;
+    let flags = if default {
+        String::new()
+    } else {
+        format!(
+            "--flake {} --lock-file {} ",
+            shell_word(&folder_of(path)),
+            shell_word(&path.display().to_string())
+        )
+    };
+    format!(
+        "{}: {} is pinned at {}, and {latest} is out. Move it with flake-edit {flags}update {input} when ready.",
+        path.display(),
+        pin.input,
+        pin.tag
+    )
 }
 
 /// The line of the age check for the lock at `path`, judged at `now`.
@@ -51,21 +199,22 @@ pub fn run(args: &OutdatedArgs) -> Result<u8, Error> {
 /// The check reads the one file at `path` and nothing else.
 #[must_use]
 pub fn age_line(path: &Path, named: bool, now: jiff::Timestamp) -> Option<String> {
+    judge_age(path, named, &load(path), now)
+}
+
+/// The line of the age check for `loaded`, the lock at `path`.
+fn judge_age(path: &Path, named: bool, loaded: &Loaded, now: jiff::Timestamp) -> Option<String> {
     let shown = path.display();
-    let bytes = match std::fs::read(path) {
-        Ok(bytes) => bytes,
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+    let lock = match loaded {
+        Loaded::Lock(lock) => lock,
+        Loaded::Missing => {
             return named.then(|| {
                 format!("{shown}: no such file, so the age of the nixpkgs pin is unknown.")
             });
         }
-        Err(e) => return Some(unreadable(path, &e.to_string())),
+        Loaded::Unreadable(reason) => return Some(unreadable(path, reason)),
     };
-    let lock: Value = match serde_json::from_slice(&bytes) {
-        Ok(lock) => lock,
-        Err(e) => return Some(unreadable(path, &e.to_string())),
-    };
-    let clock = match clock(&lock) {
+    let clock = match clock(lock) {
         Ok(clock) => clock,
         Err(Problem::NoRoot) => return Some(unreadable(path, "no root node")),
         Err(Problem::NoNixpkgs) => {

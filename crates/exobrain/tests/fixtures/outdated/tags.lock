@@ -1,0 +1,32 @@
+{
+  "nodes": {
+    "branch": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-DDDD", "owner": "o", "repo": "branch", "rev": "3333333333333333333333333333333333333333", "type": "github"},
+      "original": {"owner": "o", "ref": "main", "repo": "branch", "type": "github"}
+    },
+    "commit": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-EEEE", "owner": "o", "repo": "commit", "rev": "4444444444444444444444444444444444444444", "type": "github"},
+      "original": {"owner": "o", "repo": "commit", "rev": "4444444444444444444444444444444444444444", "type": "github"}
+    },
+    "forge": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-FFFF", "owner": "o", "repo": "forge", "rev": "5555555555555555555555555555555555555555", "type": "gitlab"},
+      "original": {"owner": "o", "ref": "v1.0.0", "repo": "forge", "type": "gitlab"}
+    },
+    "nixpkgs": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-AAAA", "owner": "NixOS", "repo": "nixpkgs", "rev": "0000000000000000000000000000000000000000", "type": "github"},
+      "original": {"owner": "NixOS", "ref": "nixos-unstable", "repo": "nixpkgs", "type": "github"}
+    },
+    "release-kit": {
+      "inputs": {"nixpkgs": ["nixpkgs"], "tool": "tool"},
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-BBBB", "owner": "gubasso", "repo": "release-kit", "rev": "1111111111111111111111111111111111111111", "type": "github"},
+      "original": {"owner": "gubasso", "ref": "@PINNED_TAG@", "repo": "release-kit", "type": "github"}
+    },
+    "tool": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-CCCC", "owner": "o", "repo": "tool", "rev": "2222222222222222222222222222222222222222", "type": "github"},
+      "original": {"owner": "o", "ref": "v1.0.0", "repo": "tool", "type": "github"}
+    },
+    "root": {"inputs": {"branch": "branch", "commit": "commit", "forge": "forge", "nixpkgs": "nixpkgs", "release-kit": "release-kit", "tool": ["release-kit", "tool"]}}
+  },
+  "root": "root",
+  "version": 7
+}

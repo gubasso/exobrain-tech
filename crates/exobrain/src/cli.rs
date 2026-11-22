@@ -28,7 +28,9 @@ pub enum Commands {
     /// Report what is behind, change nothing, and always exit 0 (for `.envrc`).
     ///
     /// Each lock whose nixpkgs pin is over 30 days old prints one line on
-    /// stderr. The limit is fixed.
+    /// stderr. The limit is fixed. Each root input pinned at a version tag
+    /// of a GitHub repository with a newer tag prints one line too. The
+    /// latest tag of each repository is read through `gh` once a week.
     Outdated(outdated::OutdatedArgs),
     /// Print the agent skills that the binary carries.
     Skill(skill::SkillArgs),

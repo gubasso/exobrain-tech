@@ -846,7 +846,7 @@ fn fetch_set(gh: &Path, slug: &str, tag: &str, name: &str) -> Result<String, Str
 
 /// Write `bytes` at `path` through a temporary file beside it and a
 /// rename, with the mode of the file it replaces.
-fn write_atomic(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
+pub(crate) fn write_atomic(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
     let name = path
         .file_name()
         .ok_or_else(|| std::io::Error::other("the path has no file name"))?;

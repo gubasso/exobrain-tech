@@ -8,7 +8,8 @@
 //! the attribution of a copy, `stamp` the daily stamp and its lock,
 //! `switch` the off switches, `manifest` the parse of
 //! `host-requirements.toml`, `probe` the host lookup and the version cache
-//! of `host-check`, `output` the one place that prints, and `error` the
+//! of `host-check`, `release_cache` the latest tags that `outdated` reads
+//! through `gh`, `output` the one place that prints, and `error` the
 //! exit codes.
 
 pub mod cli;
@@ -18,6 +19,7 @@ pub mod manifest;
 pub mod origin;
 pub mod output;
 pub mod probe;
+pub mod release_cache;
 pub mod stamp;
 pub mod store;
 pub mod switch;

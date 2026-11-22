@@ -348,3 +348,408 @@ fn outdated_warns_over_30_days_names_the_limit_in_its_help() {
     assert!(help.contains("The limit is fixed."), "{help}");
     assert!(help.contains("`flake.lock`"), "{help}");
 }
+
+// The release check. Each test runs the binary in a scratch world whose
+// `PATH` holds only the stub `gh`, and whose `XDG_STATE_HOME` is its own.
+
+/// The stub `gh`: it logs each call beside itself, sleeps for
+/// `STUB_SLEEP` seconds, fails when `STUB_FAIL` is set, and prints the
+/// file `tags/<owner>/<repo>` beside itself for the first page of tags.
+const STUB_GH: &str = r#"#!/bin/sh
+echo "$*" >> "${0%/*}/gh.log"
+if [ -n "${STUB_SLEEP:-}" ]; then @SLEEP@ "$STUB_SLEEP"; fi
+if [ -n "${STUB_FAIL:-}" ]; then echo "error: stub failure" >&2; exit 1; fi
+case "$2" in
+repos/*"&page=1")
+    p=${2#repos/}; p=${p%%/tags*}
+    f="${0%/*}/tags/${p%%/*}/${p#*/}"
+    if [ -f "$f" ]; then @CAT@ "$f"; fi
+    ;;
+esac
+"#;
+
+/// One scratch world for the release check.
+struct Gh {
+    dir: TempDir,
+}
+
+impl Gh {
+    /// A world with the stub `gh` on its `PATH`.
+    fn new() -> Self {
+        let world = Self::bare();
+        let stub = STUB_GH
+            .replace("@SLEEP@", &tool("sleep"))
+            .replace("@CAT@", &tool("cat"));
+        let path = world.bin().join("gh");
+        std::fs::write(&path, stub).unwrap();
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
+        world
+    }
+
+    /// A world with an empty `PATH` folder.
+    fn bare() -> Self {
+        let world = Self {
+            dir: TempDir::new().unwrap(),
+        };
+        for sub in ["bin", "state", "home"] {
+            std::fs::create_dir_all(world.root().join(sub)).unwrap();
+        }
+        world
+    }
+
+    fn root(&self) -> PathBuf {
+        std::fs::canonicalize(self.dir.path()).unwrap()
+    }
+
+    fn bin(&self) -> PathBuf {
+        self.root().join("bin")
+    }
+
+    /// A project folder `name` inside the world.
+    fn project(&self, name: &str) -> PathBuf {
+        let dir = self.root().join(name);
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    /// Make the stub report `tags` for `slug`, newest first.
+    fn tags(&self, slug: &str, tags: &[&str]) {
+        let path = self.bin().join("tags").join(slug);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        let mut text = tags.join("\n");
+        text.push('\n');
+        std::fs::write(path, text).unwrap();
+    }
+
+    /// The calls of the stub `gh`.
+    fn calls(&self) -> Vec<String> {
+        std::fs::read_to_string(self.bin().join("gh.log"))
+            .map(|log| log.lines().map(ToOwned::to_owned).collect())
+            .unwrap_or_default()
+    }
+
+    /// The cache file of `slug`.
+    fn cache(&self, slug: &str) -> PathBuf {
+        self.root()
+            .join("state/exobrain/releases")
+            .join(format!("{slug}.json"))
+    }
+
+    /// Run `exobrain outdated <args>` in `cwd`, with `env` set.
+    fn run(&self, cwd: &Path, args: &[&str], env: &[(&str, &str)]) -> Output {
+        let mut command = Command::new(assert_cmd::cargo::cargo_bin!("exobrain"));
+        command
+            .env_clear()
+            .env("PATH", self.bin())
+            .env("HOME", self.root().join("home"))
+            .env("XDG_STATE_HOME", self.root().join("state"))
+            .arg("outdated")
+            .args(args)
+            .current_dir(cwd);
+        for (key, value) in env {
+            command.env(key, value);
+        }
+        command.output().unwrap()
+    }
+}
+
+/// The absolute path of the host tool `name`, for the stub to call.
+fn tool(name: &str) -> String {
+    std::env::split_paths(&std::env::var_os("PATH").unwrap())
+        .map(|dir| dir.join(name))
+        .find(|path| path.is_file())
+        .unwrap_or_else(|| panic!("{name} is on PATH"))
+        .display()
+        .to_string()
+}
+
+/// Write the fixture `name` to `dir/rel`, with its clocks `days` days
+/// before now and its release-kit input pinned at `tag`.
+fn write_fixture(dir: &Path, rel: &str, name: &str, days: i64, tag: &str) {
+    let text = std::fs::read_to_string(fixture(name)).unwrap();
+    let stamp = Timestamp::now().as_second() - days * DAY;
+    let text = text
+        .replace(&PINNED.to_string(), &stamp.to_string())
+        .replace("@PINNED_TAG@", tag);
+    let path = dir.join(rel);
+    std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    std::fs::write(path, text).unwrap();
+}
+
+/// A fresh `flake.lock` in `dir` that pins release-kit at `tag`.
+fn write_tags(dir: &Path, tag: &str) {
+    write_fixture(dir, "flake.lock", "tags.lock", 0, tag);
+}
+
+/// Write a cache entry for `slug` whose last attempt is `age` seconds old.
+fn write_cache(world: &Gh, slug: &str, age: i64, latest: &str, error: Option<&str>) {
+    let now = Timestamp::now().as_second();
+    let succeeded = if error.is_some() {
+        now - 30 * DAY
+    } else {
+        now - age
+    };
+    let entry = serde_json::json!({
+        "attempted": now - age,
+        "succeeded": succeeded,
+        "latest": latest,
+        "error": error,
+    });
+    let path = world.cache(slug);
+    std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    std::fs::write(path, entry.to_string()).unwrap();
+}
+
+const RK: &str = "gubasso/release-kit";
+
+fn rk_line(from: &str, to: &str) -> String {
+    format!(
+        "flake.lock: release-kit is pinned at {from}, and {to} is out. Move it with flake-edit update release-kit when ready."
+    )
+}
+
+fn failed_line(slug: &str, error: &str) -> String {
+    format!(
+        "cannot read the latest release of {slug} ({error}); the next read runs in 1 hour, or now with --refresh"
+    )
+}
+
+// outdated:warns-about-a-newer-release
+
+#[test]
+fn outdated_warns_about_a_newer_release() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    world.tags(RK, &["v0.10.3", "v0.10.2", "v0.10.1"]);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v0.10.1", "v0.10.3")],
+    );
+    assert_eq!(
+        world.calls(),
+        [format!(
+            "api repos/{RK}/tags?per_page=100&page=1 --jq .[].name"
+        )]
+    );
+}
+
+#[test]
+fn outdated_orders_tags_like_flake_edit() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v1.0.0");
+    world.tags(RK, &["v1.5.0", "v2.0.0-beta.1", "nightly"]);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v1.0.0", "v2.0.0-beta.1")],
+    );
+}
+
+#[test]
+fn outdated_orders_versions_by_semver() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.9.8");
+    world.tags(RK, &["v0.10.1"]);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v0.9.8", "v0.10.1")],
+    );
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    world.tags(RK, &["v0.9.8"]);
+    assert_lines(&world.run(&project, &[], &[]), &[]);
+}
+
+#[test]
+fn outdated_names_the_lock_of_a_subfolder() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_fixture(&project, "nix/flake.lock", "tags.lock", 0, "v0.10.1");
+    world.tags(RK, &["v0.10.3"]);
+    assert_lines(
+        &world.run(&project, &["nix/flake.lock"], &[]),
+        &[
+            "nix/flake.lock: release-kit is pinned at v0.10.1, and v0.10.3 is out. Move it with flake-edit --flake ./nix --lock-file nix/flake.lock update release-kit when ready.",
+        ],
+    );
+}
+
+#[test]
+fn outdated_silent_on_the_latest_release() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.3");
+    world.tags(RK, &["v0.10.3", "v0.10.2"]);
+    assert_lines(&world.run(&project, &[], &[]), &[]);
+    assert_eq!(world.calls().len(), 1);
+}
+
+#[test]
+fn outdated_skips_branch_and_commit_inputs() {
+    // The fixture also holds a GitLab input at a tag and a follows path to
+    // a tag input, which the check skips too. Only release-kit is read.
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "main");
+    assert_lines(&world.run(&project, &[], &[]), &[]);
+    assert_eq!(world.calls(), Vec::<String>::new());
+    write_tags(&project, "v0.10.1");
+    assert_lines(&world.run(&project, &[], &[]), &[]);
+    let calls = world.calls();
+    assert_eq!(calls.len(), 1, "{calls:?}");
+    assert!(calls[0].contains(RK), "{calls:?}");
+}
+
+#[test]
+fn outdated_reads_two_locks_in_one_call() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_fixture(&project, "flake.lock", "tags.lock", 41, "v0.10.1");
+    write_lock(&project, "nix/flake.lock", 41);
+    world.tags(RK, &["v0.10.3"]);
+    assert_lines(
+        &world.run(&project, &["flake.lock", "nix/flake.lock"], &[]),
+        &[
+            "flake.lock: nixpkgs pin is 41 days old (limit 30). Move it with nix flake update --flake . when ready.",
+            &rk_line("v0.10.1", "v0.10.3"),
+            "nix/flake.lock: nixpkgs pin is 41 days old (limit 30). Move it with nix flake update --flake ./nix when ready.",
+        ],
+    );
+    assert_eq!(world.calls().len(), 1);
+}
+
+// outdated:reads-each-release-once-a-week
+
+#[test]
+fn outdated_keeps_two_owners_apart() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_fixture(&project, "flake.lock", "owners.lock", 0, "");
+    world.tags("a-b/c", &["v1.1.0"]);
+    world.tags("a/b-c", &["v1.2.0"]);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[
+            "flake.lock: first is pinned at v1.0.0, and v1.1.0 is out. Move it with flake-edit update first when ready.",
+            "flake.lock: second is pinned at v1.0.0, and v1.2.0 is out. Move it with flake-edit update second when ready.",
+        ],
+    );
+    let first: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(world.cache("a-b/c")).unwrap()).unwrap();
+    let second: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(world.cache("a/b-c")).unwrap()).unwrap();
+    assert_eq!(first["latest"], "v1.1.0");
+    assert_eq!(second["latest"], "v1.2.0");
+    assert_eq!(first["error"], serde_json::Value::Null);
+}
+
+#[test]
+fn outdated_reads_each_release_once_a_week() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    world.tags(RK, &["v0.10.3"]);
+    write_cache(&world, RK, DAY, "v0.10.2", None);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v0.10.1", "v0.10.2")],
+    );
+    assert_eq!(world.calls().len(), 0, "a cache 1 day old is fresh");
+    write_cache(&world, RK, 8 * DAY, "v0.10.2", None);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v0.10.1", "v0.10.3")],
+    );
+    assert_eq!(world.calls().len(), 1, "a cache 8 days old is due");
+    world.tags(RK, &["v0.11.0"]);
+    assert_lines(
+        &world.run(&project, &["--refresh"], &[]),
+        &[&rk_line("v0.10.1", "v0.11.0")],
+    );
+    assert_eq!(world.calls().len(), 2, "--refresh reads now");
+}
+
+#[test]
+fn outdated_retries_a_failed_read_after_an_hour() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    world.tags(RK, &["v0.10.3"]);
+    write_cache(&world, RK, 30 * 60, "v0.10.2", Some("offline"));
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v0.10.1", "v0.10.2")],
+    );
+    assert_eq!(world.calls().len(), 0, "a failure 30 minutes old waits");
+    write_cache(&world, RK, 2 * 3600, "v0.10.2", Some("offline"));
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v0.10.1", "v0.10.3")],
+    );
+    assert_eq!(world.calls().len(), 1, "a failure 2 hours old is due");
+}
+
+#[test]
+fn outdated_shares_the_cache_across_checkouts() {
+    let world = Gh::new();
+    let first = world.project("first");
+    let second = world.project("second");
+    write_tags(&first, "v0.10.1");
+    write_tags(&second, "v0.10.1");
+    world.tags(RK, &["v0.10.3"]);
+    for project in [&first, &second] {
+        assert_lines(
+            &world.run(project, &[], &[]),
+            &[&rk_line("v0.10.1", "v0.10.3")],
+        );
+    }
+    assert_eq!(world.calls().len(), 1);
+}
+
+// outdated:bounds-each-read
+
+#[test]
+fn outdated_bounds_each_read() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    world.tags(RK, &["v0.10.3"]);
+    let started = std::time::Instant::now();
+    let out = world.run(&project, &[], &[("STUB_SLEEP", "30")]);
+    let took = started.elapsed();
+    assert!(took < std::time::Duration::from_secs(20), "took {took:?}");
+    assert_lines(&out, &[&failed_line(RK, "gh timed out after 10 seconds")]);
+    let entry: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(world.cache(RK)).unwrap()).unwrap();
+    assert_eq!(entry["error"], "gh timed out after 10 seconds");
+}
+
+#[test]
+fn outdated_bounds_each_read_reports_a_failed_gh() {
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    write_cache(&world, RK, 8 * DAY, "v0.10.2", None);
+    assert_lines(
+        &world.run(&project, &[], &[("STUB_FAIL", "1")]),
+        &[
+            &rk_line("v0.10.1", "v0.10.2"),
+            &failed_line(RK, "error: stub failure"),
+        ],
+    );
+}
+
+#[test]
+fn outdated_without_gh_exits_0() {
+    let world = Gh::bare();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&failed_line(RK, "gh is not on PATH")],
+    );
+    assert_lines(&world.run(&project, &[], &[]), &[]);
+}
