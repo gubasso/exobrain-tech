@@ -8,6 +8,8 @@ A Nix flake devShell for each project pins the toolchain and the dev tools decla
 
 [`tools/nix/02 — Per-project devShell`](../../tools/nix/02-per-project-devshell.md) owns the flake shape, a `devShells.default` built with `mkShell`. It also owns the direnv wiring and the starting templates for each language. Follow it for the template. The language binding names the toolchain that goes inside.
 
+[Dev environment features](./COMPARISON-dev-tool-features.md) names each feature of a dev environment, the native command of each tool for it, and each gap that the `exobrain` CLI fills.
+
 A recipe or a script reaches the flake of its own project through `.` or a `git+file://` reference. It never uses a `path:` reference, which copies the ignored files of the tree into the store each time a file changes. [Nix gotcha 1](../../languages/nix/05-tooling-gotchas-resources.md#gotchas-that-bite-newcomers) explains the fetcher types.
 
 ## Who owns each dependency

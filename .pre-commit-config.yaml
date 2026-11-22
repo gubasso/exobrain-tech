@@ -674,10 +674,9 @@ repos:
   - repo: meta
     hooks:
       # `check-hooks-apply` is deliberately absent. The managed block wires the
-      # whole delivered gate set, including the comparison gates, and this
-      # knowledge base holds no `COMPARISON-<slug>.md` yet. Those gates matching
-      # nothing is the expected state of a document kind not yet written, not a
-      # misconfigured hook.
+      # whole delivered gate set, and a gate for a document kind that this
+      # knowledge base does not hold matches nothing. That is the expected
+      # state of a document kind not written here, not a misconfigured hook.
       - id: check-useless-excludes
 # BEGIN spec-driven-docs managed
   - repo: local

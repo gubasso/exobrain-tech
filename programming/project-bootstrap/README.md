@@ -51,6 +51,8 @@ root README  →  this hub  →  runbook.md  →  language project-bootstrap-spe
 | 5 | [CI](./05-ci.md)                                       | First CI workflow: build, test, format-check, lint on every push.                    |
 | 6 | [Security baseline](./06-security-baseline.md)         | Secrets hygiene, dependency audit, OpenSSF Scorecard.                                |
 
+[Dev environment features](./COMPARISON-dev-tool-features.md) compares mise, asdf, devbox, a Nix flake, and prek for each feature of a dev environment. It names the native command of each tool and each gap that no tool covers.
+
 ## Language-specific bindings
 
 These bindings apply the general recipe with a concrete toolchain. They assume you've read the general runbook, and each links back to it. Every language stack has one; they all follow the same shape (README + runbook + `00-toolchain-and-layout` + `01-quality-gates` + implementation-kind files):

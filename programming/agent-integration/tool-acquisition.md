@@ -8,7 +8,7 @@ The subject is a development-time tool a project depends on. Installing an appli
 
 Two independent facts decide how a project pins a tool.
 
-A manager is what the project declares its development tools in. It owns a file in the repository, and that file records a version. Four are in common use: a Nix flake input, mise, asdf, and devbox. A shell loader such as direnv is not a manager. It loads an environment and records no version, so a tool reports it beside the list and has nothing there to move.
+A manager is what the project declares its development tools in. It owns a file in the repository, and that file records a version. Four are in common use: a Nix flake input, mise, asdf, and devbox. A shell loader such as direnv is not a manager. It loads an environment and records no version, so a tool reports it beside the list and has nothing there to move. [Dev environment features](../project-bootstrap/COMPARISON-dev-tool-features.md) names the native command of each manager for each feature, and each gap that no manager covers.
 
 A venue is where a release is published: a package registry, a flake the repository serves at every tag, a forge release carrying prebuilt archives, or a distribution package built by a build service.
 
