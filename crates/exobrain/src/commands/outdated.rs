@@ -110,10 +110,13 @@ enum Problem {
 /// The node that the `nixpkgs` input of the root resolves to.
 fn clock(lock: &Value) -> Result<&Value, Problem> {
     let nodes = lock.get("nodes").ok_or(Problem::NoRoot)?;
-    let root_name = lock.get("root").and_then(Value::as_str).unwrap_or("root");
+    let root_name = lock
+        .get("root")
+        .and_then(Value::as_str)
+        .ok_or(Problem::NoRoot)?;
     let root = nodes.get(root_name).ok_or(Problem::NoRoot)?;
     let input = input_of(root, "nixpkgs").ok_or(Problem::NoNixpkgs)?;
-    let name = resolve(nodes, root, input, 0).ok_or(Problem::NoNixpkgs)?;
+    let name = resolve(nodes, root_name, input, 0).ok_or(Problem::NoNixpkgs)?;
     nodes.get(name).ok_or(Problem::NoNixpkgs)
 }
 
@@ -124,10 +127,10 @@ fn input_of<'a>(node: &'a Value, name: &str) -> Option<&'a Value> {
 
 /// The node name that an input value resolves to: the value itself when
 /// it is a node name, or the end of its follows path, which starts at the
-/// root node.
+/// root node named `root_name`. An empty follows path names the root.
 fn resolve<'a>(
     nodes: &'a Value,
-    root: &'a Value,
+    root_name: &'a str,
     input: &'a Value,
     depth: usize,
 ) -> Option<&'a str> {
@@ -137,15 +140,12 @@ fn resolve<'a>(
     if depth >= MAX_FOLLOWS {
         return None;
     }
-    let mut node = root;
-    let mut name = None;
+    let mut name = root_name;
     for step in input.as_array()? {
-        let value = input_of(node, step.as_str()?)?;
-        let next = resolve(nodes, root, value, depth + 1)?;
-        node = nodes.get(next)?;
-        name = Some(next);
+        let value = input_of(nodes.get(name)?, step.as_str()?)?;
+        name = resolve(nodes, root_name, value, depth + 1)?;
     }
-    name
+    Some(name)
 }
 
 /// The folder of the lock at `path` as a flake reference: `.` for a lock
