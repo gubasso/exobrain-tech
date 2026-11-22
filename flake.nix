@@ -28,7 +28,7 @@
     # `rk self-depend sync --apply`, run from a shell, moves the tag and the
     # lock together.
     release-kit = {
-      url = "github:gubasso/release-kit/v0.10.1";
+      url = "github:gubasso/release-kit/v0.10.3";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.release-kit.follows = "";
       inputs.spec-driven-docs.follows = "spec-driven-docs";
