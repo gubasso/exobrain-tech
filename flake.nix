@@ -23,8 +23,9 @@
     };
     # The release-kit convention's own binary, `rk`. The workflow hooks of the
     # release-kit block call it by name, and `rk integrate` lands a branch on
-    # the trunk. The same tool-input reading as spec-driven-docs applies, and
-    # `rk self-depend sync --apply`, run from a shell, moves the tag and the
+    # the trunk. The same tool-input reading as spec-driven-docs applies. The
+    # `exobrain outdated` line of .envrc warns when a newer release is out, and
+    # `flake-edit update release-kit`, run from a shell, moves the tag and the
     # lock together.
     release-kit = {
       url = "github:gubasso/release-kit/v0.10.3";
