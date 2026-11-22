@@ -85,7 +85,9 @@ The job of `ci.yml` runs the three stages:
 
 ### Reference hook sets
 
-exobrain-tech holds one reference set for each stack in [`hook-sets/`](./hook-sets/): `common`, `rust`, `python`, `bash`, and `nix`. Each set is a complete prek configuration. It gives each hook its `stages`, `args`, `files`, and `exclude`, and a comment above each hook records the mistakes and adjustments that shaped it. A project copies the sets of its stacks, in any combination, into its `.pre-commit-config.yaml`, then adapts, removes, or adds hooks.
+exobrain-tech holds one reference set for each stack in [`hook-sets/`](./hook-sets/): `common`, `rust`, `python`, `bash`, and `nix`. Each set is a complete prek configuration. It gives each hook its `stages`, `args`, `files`, and `exclude`, and a comment above each hook records the mistakes and adjustments that shaped it. The sets are an offer. A project adopts a set in whole, in part, or not at all, and keeps its own hooks and values beside it. It owes no reason for a value that differs from a set, or for a hook or a set that it leaves out.
+
+What the sets guarantee is one shared `rev` for each adopted hook. `hook-revisions` and `exobrain hooks sync` touch only the `rev` of a repository that the project shares with a set. No part of the canon judges another field of a project hook.
 
 The sets exist so that projects share their hook environments. prek reuses an environment only for the same repository, revision, language, and dependencies, so a revision that only one project pins is an install that no other project reuses. These rules hold the revisions together:
 
@@ -108,7 +110,7 @@ The exobrain-tech entry of a project enables the hook `hook-revisions` and names
       args: [--set, common, --set, rust]
 ```
 
-The hook compares the `rev` of each repository that appears both in the project configuration and in the named sets, at the tag that the entry pins, and fails on a difference. It reads no other field, so the project keeps its own `args`, `stages`, and `files`. The result depends only on the files of the commit, so two machines with different versions of the `exobrain` CLI agree, and CI agrees with the local hooks.
+The hook compares the `rev` of each repository that appears both in the project configuration and in the named sets, at the tag that the entry pins, and fails on a difference. It reads no other field, so the project keeps its own `args`, `stages`, and `files`. A hook that the project leaves out is outside the comparison. The result depends only on the files of the commit, so two machines with different versions of the `exobrain` CLI agree, and CI agrees with the local hooks.
 
 The hook calls `exobrain hooks check --sets-dir {hook_repo}/programming/project-bootstrap/hook-sets .pre-commit-config.yaml`, and prek appends the `args` of the project. prek expands `{hook_repo}` to its clone of the tag that the entry pins ([prek internals](https://prek.j178.dev/0.5.7/internals/#referencing-files-from-the-hook-repository)). prek 0.5.0 is the oldest that expands it, so the hook states `minimum_prek_version: "0.5.0"`, and the floor `0.5.7` of the sets covers it. pre-commit passes the placeholder through as text, so the hook runs under prek only. The host supplies `exobrain` ([03 — Host requirements](./03-local-dev-environment.md#host-requirements)).
 
@@ -119,7 +121,7 @@ Four commands of the `exobrain` CLI carry the rest of the convention:
 - `exobrain store-guard --daily`, which `.envrc` runs too, also runs `prek cache gc` at most once a week. prek then removes every clone and environment that no configuration on disk pins, so the environments of a tag go when the last project leaves it.
 - `exobrain hooks check` is what `hook-revisions` calls, with the set files of the tag that prek cloned.
 
-The skill `exobrain-hooks-setup` applies this convention to a project, and `exobrain skill show exobrain-hooks-setup` prints it. It picks the sets from the files of the project and reads them at the tag that the project pins. It moves the project from pre-commit to prek, writes or merges the configuration, and keeps each project choice with its reason in a comment. It swaps the hooks of `pre-commit/pre-commit-hooks` for the built-ins, enables `hook-revisions`, and takes the `exobrain` CLI from the host.
+The skill `exobrain-hooks-setup` applies this convention to a project, and `exobrain skill show exobrain-hooks-setup` prints it. It picks the sets from the files of the project and reads them at the tag that the project pins. It moves the project from pre-commit to prek, adds the hooks that the project takes from the sets, and keeps each value of the project as it stands. A first hook setup, a new stack, and a hook review start with research into more hooks, better alternatives, and new features beside the sets. A finding that would change a set goes back to exobrain-tech as a proposal. The skill swaps the hooks of `pre-commit/pre-commit-hooks` for the built-ins, enables `hook-revisions`, and takes the `exobrain` CLI from the host.
 
 The maintenance of the sets runs `prek update -c <set>.yaml` for each set, keeps each `rev` at a released version, since `prek update` takes a pre-release tag too, and refreshes the hook ids of each upstream manifest in `hook-sets/evidence/` with `.hooks/hook-sets-evidence.sh`. The gate of exobrain-tech holds each set to that evidence offline, and runs each built-in on a fixture that its upstream hook refuses.
 

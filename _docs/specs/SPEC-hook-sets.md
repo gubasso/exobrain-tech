@@ -8,13 +8,15 @@
     - [Scenario: A built-in judges less than its upstream hook](#scenario-a-built-in-judges-less-than-its-upstream-hook)
   - [`hook-sets:hook-revisions-follow-the-exobrain-tech-tag` — A project pins the hook revisions of its exobrain-tech tag](#hook-setshook-revisions-follow-the-exobrain-tech-tag--a-project-pins-the-hook-revisions-of-its-exobrain-tech-tag)
     - [Scenario: A project moves one revision alone](#scenario-a-project-moves-one-revision-alone)
+  - [`hook-sets:a-hook-setup-starts-with-research` — A hook setup starts with research](#hook-setsa-hook-setup-starts-with-research--a-hook-setup-starts-with-research)
+    - [Scenario: A built-in appears in a new prek release](#scenario-a-built-in-appears-in-a-new-prek-release)
 - [Unenforced](#unenforced)
 
 <!--TOC-->
 
 ## Purpose
 
-These rules govern the reference hook sets of exobrain-tech and how a project that follows the canon pins their revisions. `SPEC-hooks.md` owns the `exobrain hooks` verbs that carry the convention, and `SPEC-project-platform.md` owns the hook runner and the gate.
+These rules govern the reference hook sets of exobrain-tech, how a project that follows the canon adopts them and pins their revisions, and the research that starts each hook setup. `SPEC-hooks.md` owns the `exobrain hooks` verbs that carry the convention, and `SPEC-project-platform.md` owns the hook runner and the gate.
 
 ## Requirements
 
@@ -39,7 +41,7 @@ Verify: `prek run hook-sets --all-files`
 
 ### `hook-sets:hook-revisions-follow-the-exobrain-tech-tag` — A project pins the hook revisions of its exobrain-tech tag
 
-A project that follows this canon MUST run prek as its only hook runner. It MUST pin each repository that it shares with a reference set at the `rev` that the set states at the exobrain-tech tag of the project. The `rev` of the exobrain-tech entry of the project selects the sets. prek reuses an environment only for the same repository, revision, language, and dependencies, so a revision that only one project pins is an install that no other project reuses. These parts carry the convention:
+A project that follows this canon MUST run prek as its only hook runner. It MUST pin each repository that it shares with a reference set at the `rev` that the set states at the exobrain-tech tag of the project. The rule binds only the `rev` of a repository that the project shares with a set, so a project adopts any part of a set and keeps every other field as its own. The `rev` of the exobrain-tech entry of the project selects the sets. prek reuses an environment only for the same repository, revision, language, and dependencies, so a revision that only one project pins is an install that no other project reuses. These parts carry the convention:
 
 - The hook `hook-revisions` compares the `rev` of each repository in both the project configuration and its named sets, and fails on a difference. It reads only the files of the commit, and ignores every other field.
 - `exobrain hooks sync --to <tag>` moves the exobrain-tech entry and every revision of the named sets in one commit, on the branch of the work that needs it.
@@ -57,6 +59,18 @@ The chapter that states the convention is `programming/project-bootstrap/04-qual
 
 Verify: reviewer confirms that each repository the project shares with a named set carries the `rev` of that set at the exobrain-tech tag of the project
 
+### `hook-sets:a-hook-setup-starts-with-research` — A hook setup starts with research
+
+When a project sets up its hooks for the first time, adopts a new stack, or reviews its hooks, the setup MUST include research into more hooks, better alternatives, and new features beside the reference sets. The research reads upstream sources, such as the release notes of prek, the manifest of each hook repository, and the documentation of each tool. Each finding that would change a set, a chapter, or the skill `exobrain-hooks-setup` goes to exobrain-tech as a proposal. The setup of the project never changes the canon itself. The skill states the procedure, and its report records each finding with its source under "Research". The chapter that states the convention is `programming/project-bootstrap/04-quality-gates.md`, "Reference hook sets".
+
+#### Scenario: A built-in appears in a new prek release
+
+- GIVEN a project that adopts the common set, and a prek release with a built-in hook that no set holds
+- WHEN the skill runs a hook review of the project
+- THEN the report lists the built-in under "Research" with its source, and names it as a proposal for exobrain-tech
+
+Verify: reviewer confirms that the report of the hook setup or review holds a "Research" section with a source for each finding
+
 ## Unenforced
 
 No command decides these rules, or a command decides only part of each. A reviewer confirms the rest.
@@ -64,3 +78,4 @@ No command decides these rules, or a command decides only part of each. A review
 | Rule                                                    | Reviewer confirms                                                                                                              |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `hook-sets:hook-revisions-follow-the-exobrain-tech-tag` | Each repository that the project shares with a named set carries the `rev` of that set at the exobrain-tech tag of the project |
+| `hook-sets:a-hook-setup-starts-with-research`           | The report of the hook setup or review holds a "Research" section with a source for each finding                               |
