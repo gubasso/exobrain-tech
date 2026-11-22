@@ -1,0 +1,11 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {"narHash": "sha256-DDDD", "path": "/srv/nixpkgs", "type": "path"},
+      "original": {"path": "/srv/nixpkgs", "type": "path"}
+    },
+    "root": {"inputs": {"nixpkgs": "nixpkgs"}}
+  },
+  "root": "root",
+  "version": 7
+}

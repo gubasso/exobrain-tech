@@ -3,5 +3,6 @@
 
 pub mod hooks;
 pub mod host_check;
+pub mod outdated;
 pub mod skill;
 pub mod store_guard;

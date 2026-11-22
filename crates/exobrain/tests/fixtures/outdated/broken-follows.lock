@@ -1,0 +1,7 @@
+{
+  "nodes": {
+    "root": {"inputs": {"nixpkgs": ["missing", "nixpkgs"]}}
+  },
+  "root": "root",
+  "version": 7
+}

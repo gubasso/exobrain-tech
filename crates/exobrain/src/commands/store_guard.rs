@@ -356,7 +356,7 @@ fn decimal_size(bytes: u64) -> String {
 
 /// `word` as one shell word: unchanged when it holds only safe characters,
 /// else in single quotes.
-fn shell_word(word: &str) -> String {
+pub(crate) fn shell_word(word: &str) -> String {
     let safe = |c: char| c.is_ascii_alphanumeric() || "/._-+=:@,%".contains(c);
     if !word.is_empty() && word.chars().all(safe) {
         return word.to_owned();

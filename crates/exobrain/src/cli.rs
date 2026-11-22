@@ -3,6 +3,7 @@
 
 pub mod hooks;
 pub mod host_check;
+pub mod outdated;
 pub mod skill;
 pub mod store_guard;
 
@@ -24,6 +25,8 @@ pub enum Commands {
     HostCheck(host_check::HostCheckArgs),
     /// Hold the hook revisions of a project to its exobrain-tech tag.
     Hooks(hooks::HooksArgs),
+    /// Report what is behind, change nothing, and always exit 0 (for `.envrc`).
+    Outdated(outdated::OutdatedArgs),
     /// Print the agent skills that the binary carries.
     Skill(skill::SkillArgs),
     /// Find copies of this checkout in the Nix store.

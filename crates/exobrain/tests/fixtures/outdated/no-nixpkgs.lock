@@ -1,0 +1,11 @@
+{
+  "nodes": {
+    "other": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-CCCC", "owner": "o", "repo": "other", "rev": "2222222222222222222222222222222222222222", "type": "github"},
+      "original": {"owner": "o", "repo": "other", "type": "github"}
+    },
+    "root": {"inputs": {"other": "other"}}
+  },
+  "root": "root",
+  "version": 7
+}
