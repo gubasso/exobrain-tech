@@ -152,7 +152,7 @@ fn outdated_names_the_folder_of_the_lock() {
 fn outdated_follows_the_root_input() {
     // The decoy node named `nixpkgs` is 100 days older than the clock, so
     // a check that read it would warn at 41 days.
-    for name in ["renamed.lock", "follows.lock"] {
+    for name in ["renamed.lock", "follows.lock", "empty-follows.lock"] {
         assert_eq!(line_of(name, after(20 * DAY)), None, "{name}");
         let line = line_of(name, after(41 * DAY)).unwrap();
         assert!(
@@ -183,13 +183,29 @@ fn outdated_missing_file_exits_0() {
 fn outdated_unparsable_lock_exits_0() {
     let dir = TempDir::new().unwrap();
     std::fs::copy(fixture("not-json.lock"), dir.path().join("flake.lock")).unwrap();
-    std::fs::copy(fixture("no-root.lock"), dir.path().join("no-root.lock")).unwrap();
-    let out = outdated(dir.path(), &["flake.lock", "no-root.lock"]);
+    for name in [
+        "no-root.lock",
+        "missing-root-field.lock",
+        "wrong-root-type.lock",
+    ] {
+        std::fs::copy(fixture(name), dir.path().join(name)).unwrap();
+    }
+    let out = outdated(
+        dir.path(),
+        &[
+            "flake.lock",
+            "no-root.lock",
+            "missing-root-field.lock",
+            "wrong-root-type.lock",
+        ],
+    );
     assert_lines(
         &out,
         &[
             "flake.lock: cannot read the lock (expected ident at line 1 column 2), so the age of the nixpkgs pin is unknown.",
             "no-root.lock: cannot read the lock (no root node), so the age of the nixpkgs pin is unknown.",
+            "missing-root-field.lock: cannot read the lock (no root node), so the age of the nixpkgs pin is unknown.",
+            "wrong-root-type.lock: cannot read the lock (no root node), so the age of the nixpkgs pin is unknown.",
         ],
     );
 }
@@ -228,9 +244,11 @@ fn outdated_no_last_modified_exits_0() {
 /// The variable that hands the probe its scratch world.
 const PROBE: &str = "EXOBRAIN_OUTDATED_PROBE";
 
-/// A stub that logs each call beside itself, so a call to `nix` or `gh`
-/// leaves a trace.
-const STUB: &str = "#!/bin/sh\necho \"$0 $*\" >> \"$(dirname \"$0\")/calls.log\"\nexit 1\n";
+/// A stub that logs each call beside itself and names itself on stderr,
+/// so a call to `nix` or `gh` leaves a trace. It finds its folder with a
+/// parameter expansion, because its `PATH` holds no other tool.
+const STUB: &str =
+    "#!/bin/sh\necho \"$0 $*\" >> \"${0%/*}/calls.log\"\necho \"stub $0 called\" >&2\nexit 1\n";
 
 /// Every file under `dir`, with its length and modification time.
 fn snapshot(dir: &Path) -> Vec<(PathBuf, u64, std::time::SystemTime)> {
@@ -276,6 +294,19 @@ fn outdated_age_reads_only_the_lock() {
         std::fs::write(&stub, STUB).unwrap();
         std::fs::set_permissions(&stub, std::fs::Permissions::from_mode(0o755)).unwrap();
     }
+    // The positive control: under the same PATH, each stub logs its call.
+    for tool in ["nix", "gh"] {
+        let control = std::process::Command::new("/bin/sh")
+            .args(["-c", &format!("{tool} --version")])
+            .env_clear()
+            .env("PATH", root.join("bin"))
+            .output()
+            .unwrap();
+        assert!(!control.status.success(), "the {tool} stub exits 1");
+        let log = std::fs::read_to_string(root.join("bin/calls.log")).unwrap();
+        assert!(log.contains(&format!("/{tool} --version")), "{log}");
+        std::fs::remove_file(root.join("bin/calls.log")).unwrap();
+    }
     let before = snapshot(root);
     let out = std::process::Command::new(std::env::current_exe().unwrap())
         .args([
@@ -293,7 +324,9 @@ fn outdated_age_reads_only_the_lock() {
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&out.stdout);
-    assert!(out.status.success(), "{stdout}{}", stderr_of(&out));
+    let stderr = stderr_of(&out);
+    assert!(out.status.success(), "{stdout}{stderr}");
+    assert!(!stderr.contains("stub "), "{stderr}");
     assert!(
         stdout.contains("flake.lock: nixpkgs pin is 41 days old (limit 30)"),
         "{stdout}"
