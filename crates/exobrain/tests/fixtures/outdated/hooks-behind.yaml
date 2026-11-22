@@ -1,0 +1,15 @@
+# A project at exobrain-tech @TAG@ that pins typos at @TYPOS@.
+repos:
+  - repo: https://github.com/gubasso/exobrain-tech
+    rev: '@TAG@'
+    hooks:
+      - id: hook-revisions
+        args: [--set, common]
+  - repo: https://github.com/crate-ci/typos
+    rev: '@TYPOS@'
+    hooks:
+      - id: typos
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks

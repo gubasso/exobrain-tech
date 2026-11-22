@@ -16,12 +16,18 @@
     - [Scenario: Two checkouts pin the same repository](#scenario-two-checkouts-pin-the-same-repository)
   - [`outdated:bounds-each-read` — outdated ends each read of the tags after 10 seconds](#outdatedbounds-each-read--outdated-ends-each-read-of-the-tags-after-10-seconds)
     - [Scenario: The network hangs during a shell load](#scenario-the-network-hangs-during-a-shell-load)
+  - [`outdated:reads-github-only-through-gh` — outdated reads GitHub only through gh api](#outdatedreads-github-only-through-gh--outdated-reads-github-only-through-gh-api)
+    - [Scenario: A project pins exobrain-tech in its lock and in its config](#scenario-a-project-pins-exobrain-tech-in-its-lock-and-in-its-config)
+  - [`outdated:reports-a-newer-cli` — outdated reports a newer exobrain CLI](#outdatedreports-a-newer-cli--outdated-reports-a-newer-exobrain-cli)
+    - [Scenario: A host runs an older exobrain](#scenario-a-host-runs-an-older-exobrain)
+  - [`outdated:reports-newer-hook-revisions` — outdated reports the hook revisions of a newer exobrain-tech tag](#outdatedreports-newer-hook-revisions--outdated-reports-the-hook-revisions-of-a-newer-exobrain-tech-tag)
+    - [Scenario: A newer tag moves typos](#scenario-a-newer-tag-moves-typos)
 
 <!--TOC-->
 
 ## Purpose
 
-These rules govern `exobrain outdated [<lock>...]`, the verb of the `exobrain` binary that reports what is behind in a project and changes nothing. A project runs it from one line in `.envrc`, so it runs on each shell load. This spec owns the age check of the nixpkgs pin of a flake lock: which node is the clock, how the command judges its age, what it prints, and what it reads. It also owns the release check of each input pinned at a version tag: which inputs it judges, how it reads the latest release, how it caches and bounds that read, and what it prints. A call names zero or more locks, and the default is `flake.lock` alone. `SPEC-cli.md` owns the rest of the binary, its output streams included.
+These rules govern `exobrain outdated [<lock>...]`, the verb of the `exobrain` binary that reports what is behind in a project and changes nothing. A project runs it from one line in `.envrc`, so it runs on each shell load. This spec owns the age check of the nixpkgs pin of a flake lock: which node is the clock, how the command judges its age, what it prints, and what it reads. It also owns the release check of each input pinned at a version tag: which inputs it judges, how it reads the latest release, how it caches and bounds that read, and what it prints. It owns the CLI check and the hook-set check too, which judge the newest exobrain-tech tag against the running binary and against the hook revisions of the project. A call names zero or more locks, and the default is `flake.lock` alone. `SPEC-cli.md` owns the rest of the binary, its output streams included.
 
 ## Requirements
 
@@ -144,3 +150,63 @@ The command still exits 0, and judges the input against the latest tag of the la
 - THEN the command ends the `gh` process after 10 seconds, prints the failed-read line, and exits 0
 
 Verify: `cargo nextest run -E 'test(/^outdated_(bounds|without_gh)_/)'`
+
+### `outdated:reads-github-only-through-gh` — outdated reads GitHub only through gh api
+
+The command MUST read GitHub only through `gh api` on the host `PATH`, and through the bounded call of `outdated:bounds-each-read`. It reads two endpoints:
+
+- `repos/<owner>/<name>/tags?per_page=100&page=<n>`, for the tags of a repository
+- `repos/<owner>/<name>/contents/programming/project-bootstrap/hook-sets/<set>.yaml?ref=<tag>`, raw, for a set file at a tag
+
+The exobrain-tech repository is the repository of the exobrain-tech entry of `.pre-commit-config.yaml` in the current folder: the entry that holds the hook `hook-revisions`, else an entry of a repository named `exobrain-tech`. Where the config is missing, does not parse, or has no such entry on GitHub, it is the repository that ships the binary. Its newest tag comes from the release cache of `outdated:reads-each-release-once-a-week`, under the tag rule of `outdated:warns-about-a-newer-release`. So one call reads its tags once, also where a lock pins it at a tag.
+
+#### Scenario: A project pins exobrain-tech in its lock and in its config
+
+- GIVEN a `flake.lock` that pins `github:gubasso/exobrain-tech/v1.1.0`, a config that names the same repository, and an empty cache
+- WHEN `exobrain outdated` runs
+- THEN `gh` reads the tags of `gubasso/exobrain-tech` once, and the release line names the newest tag
+
+Verify: `cargo nextest run -E 'test(outdated_shares_the_exobrain_tech_read)'`
+
+### `outdated:reports-a-newer-cli` — outdated reports a newer exobrain CLI
+
+When the newest exobrain-tech tag is a greater version than the running binary, the command MUST print one line on stderr, once per call, however many locks the call names:
+
+```text
+exobrain hooks: exobrain-tech v1.3.0 is out, and this host runs exobrain 1.2.0
+```
+
+The CLI check runs with no config too, on the repository that ships the binary.
+
+#### Scenario: A host runs an older exobrain
+
+- GIVEN a folder with no `.pre-commit-config.yaml`, a binary at `1.2.0`, and a newest exobrain-tech tag `v1.3.0`
+- WHEN `.envrc` runs `exobrain outdated`
+- THEN stderr holds the CLI line, and the exit code is 0
+
+Verify: `cargo nextest run -E 'test(/^outdated_(reports_a_newer_cli|without_a_config)/)'`
+
+### `outdated:reports-newer-hook-revisions` — outdated reports the hook revisions of a newer exobrain-tech tag
+
+When the config holds the hook `hook-revisions` on a GitHub repository, and the newest exobrain-tech tag is newer than the `rev` of that entry, the command MUST print, once per call, one line on stderr for each repository whose `rev` differs from the sets of the newest tag, then one line that names `exobrain hooks sync --to <tag>`:
+
+```text
+exobrain hooks: v1.2.0 pins https://github.com/crate-ci/typos at v1.52.2, and this project pins v1.40.0
+exobrain hooks: this project selects v1.1.0; move it with `exobrain hooks sync --to v1.2.0` on the branch of your next change
+```
+
+The sets are the sets that the `--set` arguments of `hook-revisions` name. The check judges only the `rev` of a repository that the project shares with a set, outside a rendered block. A hook that the project leaves out, and its `args`, `stages`, `files`, `exclude`, and every other value, are outside it. On the newest tag, the command prints nothing about the project. Where the config is missing, does not parse, or holds no `hook-revisions` hook, the check skips in silence.
+
+The command reads the set files of a tag once and keeps them in `${XDG_STATE_HOME:-$HOME/.local/state}/exobrain/hooks/<owner>-<name>/<tag>/`, the set cache of `exobrain hooks`. All set reads of one call share one bound of 10 seconds. A failed read records its time in `.failed` in that folder, prints one line on stderr, and waits 1 hour, or runs now with `--refresh`. Without the sets, the command still prints the line that names `exobrain hooks sync --to <tag>`:
+
+```text
+cannot read the hook sets of gubasso/exobrain-tech (set common of v1.2.0: gh timed out after 10 seconds); the next read runs in 1 hour, or now with --refresh
+```
+
+#### Scenario: A newer tag moves typos
+
+- GIVEN a config at exobrain-tech `v1.1.0` that pins typos at `v1.40.0`, and a newest tag `v1.2.0` whose `common` set pins `v1.52.2`
+- WHEN `.envrc` runs `exobrain outdated flake.lock nix/flake.lock`
+- THEN stderr names typos with both revisions and names `exobrain hooks sync --to v1.2.0`, each once, and the exit code is 0
+
+Verify: `cargo nextest run -E 'test(/^outdated_(reports_newer|silent_on_the_newest|ignores|runs_the_hook|bounds_the_set)/)'`

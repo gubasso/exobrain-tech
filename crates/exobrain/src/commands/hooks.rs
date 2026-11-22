@@ -2,7 +2,9 @@
 //! reference sets of its exobrain-tech tag.
 //!
 //! `check` reads only local files. `sync` and `status` read GitHub through
-//! the host `gh`, which is the one network path of the binary.
+//! the host `gh`, through the bounded call of the release cache. The set
+//! fetch, the set cache, and the comparison with the sets of a tag serve
+//! `exobrain outdated` too.
 //!
 //! The config parse reads the block style that prek documents and
 //! `prek update` keeps: a top-level `repos:` block sequence whose entries
@@ -16,13 +18,11 @@ use std::fs;
 use std::io::Write as _;
 use std::ops::Range;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
-
-use semver::Version;
+use std::time::Instant;
 
 use crate::cli::hooks::{CheckArgs, HooksArgs, HooksCommand, StatusArgs, SyncArgs};
 use crate::error::{Error, USAGE};
-use crate::{output, probe, stamp};
+use crate::{output, probe, release_cache, stamp};
 
 /// The exit code of `check` when a revision differs, and of `sync` on
 /// any error.
@@ -798,23 +798,15 @@ fn gh() -> Result<PathBuf, String> {
     probe::which("gh", &path).ok_or_else(|| "gh is not on PATH".to_owned())
 }
 
-/// Run `gh api` with `args` and return its stdout.
-fn gh_api(gh: &Path, args: &[&str]) -> Result<String, String> {
-    let out = Command::new(gh)
-        .arg("api")
-        .args(args)
-        .stdin(Stdio::null())
-        .output()
-        .map_err(|e| format!("cannot run gh: {e}"))?;
-    if out.status.success() {
-        return String::from_utf8(out.stdout).map_err(|_| "gh printed no UTF-8".to_owned());
-    }
-    let stderr = String::from_utf8_lossy(&out.stderr);
-    let cause = stderr.lines().map(str::trim).find(|line| !line.is_empty());
-    Err(cause.map_or_else(
-        || format!("gh api failed with {}", out.status),
-        ToOwned::to_owned,
-    ))
+/// Run `gh api` with `args` through the bounded call of the release
+/// cache, and return its stdout.
+fn gh_api(gh: &Path, args: &[&str], deadline: Instant) -> Result<String, String> {
+    release_cache::gh_api(gh, args, deadline)
+}
+
+/// The deadline of one bounded `gh` call that starts now.
+fn deadline() -> Instant {
+    Instant::now() + release_cache::TIMEOUT
 }
 
 /// The tag of the latest release of `slug`.
@@ -826,14 +818,21 @@ fn latest_tag(gh: &Path, slug: &str) -> Result<String, String> {
             "--jq",
             ".tag_name",
         ],
+        deadline(),
     )?;
     let tag = text.trim().to_owned();
     plain_rev(&tag).map_err(|e| format!("the latest release: {e}"))?;
     Ok(tag)
 }
 
-/// The text of set `name` at `tag` of `slug`.
-fn fetch_set(gh: &Path, slug: &str, tag: &str, name: &str) -> Result<String, String> {
+/// The text of set `name` at `tag` of `slug`, read by `deadline`.
+fn fetch_set(
+    gh: &Path,
+    slug: &str,
+    tag: &str,
+    name: &str,
+    deadline: Instant,
+) -> Result<String, String> {
     gh_api(
         gh,
         &[
@@ -841,6 +840,7 @@ fn fetch_set(gh: &Path, slug: &str, tag: &str, name: &str) -> Result<String, Str
             "Accept: application/vnd.github.raw",
             &format!("repos/{slug}/contents/{SETS_PATH}/{name}.yaml?ref={tag}"),
         ],
+        deadline,
     )
 }
 
@@ -910,7 +910,7 @@ fn try_sync(args: &SyncArgs) -> Result<Vec<String>, String> {
     plain_rev(&tag)?;
     let mut sets = Vec::new();
     for name in &names {
-        let text = fetch_set(&gh, &slug, &tag, name)
+        let text = fetch_set(&gh, &slug, &tag, name, deadline())
             .map_err(|e| format!("cannot fetch set {name} of {slug} {tag}: {e}"))?;
         sets.push((name.clone(), text));
     }
@@ -952,41 +952,121 @@ fn try_sync(args: &SyncArgs) -> Result<Vec<String>, String> {
 
 // --- status ---
 
-/// The project facts that `status` reads from the config.
-struct Project {
+/// The project facts that the hook-set check reads from the config.
+#[derive(Debug, Clone)]
+pub(crate) struct Project {
     config: Config,
-    slug: String,
+    /// The `<owner>/<name>` of the exobrain-tech entry.
+    pub(crate) slug: String,
+    /// The exobrain-tech `rev` of the config.
     tag: Option<String>,
-    sets: Vec<String>,
+    /// The sets that `hook-revisions` names, each a plain set name.
+    pub(crate) sets: Vec<String>,
+}
+
+impl Project {
+    /// The project facts of `config`, or `None` when it has no
+    /// `hook-revisions` hook on a GitHub repository.
+    pub(crate) fn of(config: Config) -> Option<Self> {
+        let entry = config.hook_entry()?;
+        let slug = github_slug(&entry.repo.text)?;
+        let tag = entry.rev.as_ref().map(|rev| rev.text.clone());
+        let sets = set_names(entry)
+            .into_iter()
+            .filter(|name| plain_set(name).is_ok())
+            .collect();
+        Some(Self {
+            config,
+            slug,
+            tag,
+            sets,
+        })
+    }
+}
+
+/// Read and parse the config at `path`, or `None` where it is missing or
+/// does not parse.
+pub(crate) fn read_config(path: &Path) -> Option<Config> {
+    parse(&fs::read_to_string(path).ok()?).ok()
 }
 
 /// Read the project facts, or `None` when the config has no
 /// `hook-revisions` hook on a GitHub repository.
 fn project(path: &Path) -> Option<Project> {
-    let config = parse(&fs::read_to_string(path).ok()?).ok()?;
-    let entry = config.hook_entry()?;
-    let slug = github_slug(&entry.repo.text)?;
-    let tag = entry.rev.as_ref().map(|rev| rev.text.clone());
-    let sets = set_names(entry)
-        .into_iter()
-        .filter(|name| plain_set(name).is_ok())
-        .collect();
-    Some(Project {
-        config,
-        slug,
-        tag,
-        sets,
-    })
+    Project::of(read_config(path)?)
+}
+
+/// The `<owner>/<name>` of the exobrain-tech entry of `config`, where it
+/// is a GitHub repository.
+pub(crate) fn tech_slug(config: &Config) -> Option<String> {
+    github_slug(&config.exobrain_tech()?.repo.text)
 }
 
 /// The slug of the repository that ships this binary.
-fn own_slug() -> Option<String> {
+pub(crate) fn own_slug() -> Option<String> {
     github_slug(env!("CARGO_PKG_REPOSITORY"))
 }
 
 /// The folder of the state of `status`.
 fn status_dir() -> Option<PathBuf> {
     Some(stamp::state_dir()?.parent()?.join("hooks"))
+}
+
+/// The folder of the cached sets of `tag` of `slug`, or `None` where no
+/// state root is set or `tag` does not fit a path.
+pub(crate) fn sets_dir(slug: &str, tag: &str) -> Option<PathBuf> {
+    plain_rev(tag).ok()?;
+    Some(status_dir()?.join(slug.replace('/', "-")).join(tag))
+}
+
+/// The sets `names` from the cache folder `dir`, or `None` where one of
+/// them is missing.
+pub(crate) fn cached_sets(dir: &Path, names: &[String]) -> Option<Vec<(String, String)>> {
+    names
+        .iter()
+        .map(|name| {
+            fs::read_to_string(dir.join(format!("{name}.yaml")))
+                .ok()
+                .map(|text| (name.clone(), text))
+        })
+        .collect()
+}
+
+/// The sets `names` of `tag` of `slug`: each from the cache folder `dir`
+/// where it holds the set, else read through `gh` by `deadline` and
+/// written to `dir`. The set files of a tag never change.
+///
+/// # Errors
+///
+/// The set, the tag, and the reason, where a read fails.
+pub(crate) fn load_sets(
+    slug: &str,
+    tag: &str,
+    names: &[String],
+    dir: Option<&Path>,
+    deadline: Instant,
+) -> Result<Vec<(String, String)>, String> {
+    plain_rev(tag)?;
+    let mut gh_path = None;
+    let mut sets = Vec::new();
+    for name in names {
+        let path = dir.map(|dir| dir.join(format!("{name}.yaml")));
+        if let Some(text) = path.as_ref().and_then(|path| fs::read_to_string(path).ok()) {
+            sets.push((name.clone(), text));
+            continue;
+        }
+        let gh = match &gh_path {
+            Some(gh) => gh,
+            None => gh_path.insert(gh().map_err(|e| format!("set {name} of {tag}: {e}"))?),
+        };
+        let text = fetch_set(gh, slug, tag, name, deadline)
+            .map_err(|e| format!("set {name} of {tag}: {e}"))?;
+        if let (Some(dir), Some(path)) = (dir, &path) {
+            let _ = fs::create_dir_all(dir).and_then(|()| write_atomic(path, text.as_bytes()));
+        }
+        sets.push((name.clone(), text));
+    }
+    Ok(sets)
 }
 
 /// The current time in seconds since the epoch.
@@ -1005,13 +1085,59 @@ fn fresh(path: &Path) -> bool {
         })
 }
 
-/// A version of a tag such as `v1.2.0`.
-fn tag_version(tag: &str) -> Option<Version> {
-    Version::parse(tag.strip_prefix('v').unwrap_or(tag)).ok()
-}
-
 fn note(line: &str) {
     output::note(&format!("exobrain hooks: {line}"));
+}
+
+/// The line that names a newer CLI, where `latest` is a greater version
+/// than the running binary.
+pub(crate) fn cli_line(latest: &str) -> Option<String> {
+    let running = env!("CARGO_PKG_VERSION");
+    release_cache::newer(latest, running).then(|| {
+        format!(
+            "exobrain hooks: exobrain-tech {latest} is out, and this host runs exobrain {running}"
+        )
+    })
+}
+
+/// Whether `latest` is newer than the exobrain-tech `rev` of the project.
+pub(crate) fn behind(project: &Project, latest: &str) -> bool {
+    let Some(tag) = &project.tag else {
+        return false;
+    };
+    match (
+        release_cache::tag_version(latest),
+        release_cache::tag_version(tag),
+    ) {
+        (Some(_), Some(_)) => release_cache::newer(latest, tag),
+        _ => latest != tag,
+    }
+}
+
+/// The lines that report the revisions of `latest` that differ from the
+/// project, given the sets of `latest` where they are at hand. Nothing
+/// where the project is not behind `latest`.
+pub(crate) fn project_lines(
+    project: &Project,
+    latest: &str,
+    sets: Option<&[(String, String)]>,
+) -> Vec<String> {
+    let Some(tag) = project.tag.as_ref().filter(|_| behind(project, latest)) else {
+        return Vec::new();
+    };
+    let mut lines = Vec::new();
+    if let Some(expected) = sets.and_then(|sets| expected(sets).ok()) {
+        for difference in differences(&project.config, &expected) {
+            lines.push(format!(
+                "exobrain hooks: {latest} pins {} at {}, and this project pins {}",
+                difference.entry.repo.text, difference.expected.rev, difference.pinned
+            ));
+        }
+    }
+    lines.push(format!(
+        "exobrain hooks: this project selects {tag}; move it with `exobrain hooks sync --to {latest}` on the branch of your next change"
+    ));
+    lines
 }
 
 fn status(args: &StatusArgs) {
@@ -1045,15 +1171,14 @@ fn status(args: &StatusArgs) {
         let read = gh().and_then(|gh| {
             let tag = latest_tag(&gh, &slug)?;
             let _ = write_atomic(&latest_path, format!("{tag}\n").as_bytes());
-            for name in project.iter().flat_map(|p| p.sets.iter()) {
-                let path = repo_dir.join(&tag).join(format!("{name}.yaml"));
-                if path.is_file() {
-                    continue;
-                }
-                let text = fetch_set(&gh, &slug, &tag, name)
-                    .map_err(|e| format!("set {name} of {tag}: {e}"))?;
-                let _ = fs::create_dir_all(repo_dir.join(&tag))
-                    .and_then(|()| write_atomic(&path, text.as_bytes()));
+            if let Some(project) = &project {
+                load_sets(
+                    &slug,
+                    &tag,
+                    &project.sets,
+                    Some(&repo_dir.join(&tag)),
+                    deadline(),
+                )?;
             }
             Ok(())
         });
@@ -1070,50 +1195,15 @@ fn status(args: &StatusArgs) {
     else {
         return;
     };
-    let running = env!("CARGO_PKG_VERSION");
-    if let (Some(latest_version), Ok(running_version)) =
-        (tag_version(&latest), Version::parse(running))
-        && latest_version > running_version
-    {
-        note(&format!(
-            "exobrain-tech {latest} is out, and this host runs exobrain {running}"
-        ));
+    if let Some(line) = cli_line(&latest) {
+        output::note(&line);
     }
     if let Some(project) = &project {
-        report_project(project, &latest, &repo_dir.join(&latest));
-    }
-}
-
-/// Report the revisions of `latest` that differ from the project.
-fn report_project(project: &Project, latest: &str, sets_dir: &Path) {
-    let Some(tag) = &project.tag else { return };
-    let behind = match (tag_version(latest), tag_version(tag)) {
-        (Some(latest), Some(tag)) => latest > tag,
-        _ => latest != tag,
-    };
-    if !behind {
-        return;
-    }
-    let sets: Option<Vec<(String, String)>> = project
-        .sets
-        .iter()
-        .map(|name| {
-            fs::read_to_string(sets_dir.join(format!("{name}.yaml")))
-                .ok()
-                .map(|text| (name.clone(), text))
-        })
-        .collect();
-    if let Some(expected) = sets.and_then(|sets| expected(&sets).ok()) {
-        for difference in differences(&project.config, &expected) {
-            note(&format!(
-                "{latest} pins {} at {}, and this project pins {}",
-                difference.entry.repo.text, difference.expected.rev, difference.pinned
-            ));
+        let sets = cached_sets(&repo_dir.join(&latest), &project.sets);
+        for line in project_lines(project, &latest, sets.as_deref()) {
+            output::note(&line);
         }
     }
-    note(&format!(
-        "this project selects {tag}; move it with `exobrain hooks sync --to {latest}` on the branch of your next change"
-    ));
 }
 
 #[cfg(test)]

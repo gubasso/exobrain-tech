@@ -1,0 +1,15 @@
+{
+  "nodes": {
+    "exobrain-tech": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-BBBB", "owner": "gubasso", "repo": "exobrain-tech", "rev": "1111111111111111111111111111111111111111", "type": "github"},
+      "original": {"owner": "gubasso", "ref": "@PINNED_TAG@", "repo": "exobrain-tech", "type": "github"}
+    },
+    "nixpkgs": {
+      "locked": {"lastModified": 1790000000, "narHash": "sha256-AAAA", "owner": "NixOS", "repo": "nixpkgs", "rev": "0000000000000000000000000000000000000000", "type": "github"},
+      "original": {"owner": "NixOS", "ref": "nixos-unstable", "repo": "nixpkgs", "type": "github"}
+    },
+    "root": {"inputs": {"exobrain-tech": "exobrain-tech", "nixpkgs": "nixpkgs"}}
+  },
+  "root": "root",
+  "version": 7
+}

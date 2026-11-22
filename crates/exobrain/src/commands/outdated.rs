@@ -9,12 +9,21 @@
 //! The release check judges each root input pinned at a version tag of a
 //! GitHub repository against the latest tag of that repository, which
 //! [`crate::release_cache`] reads through `gh` once a week.
+//!
+//! The CLI check and the hook-set check run once per call, on the
+//! `.pre-commit-config.yaml` of the current folder. They judge the
+//! newest tag of the exobrain-tech repository, which the same release
+//! cache reads, against the running binary and against the revisions
+//! that the project pins. The set files of a tag are read once, and kept
+//! in the set cache of `exobrain hooks`.
 
 use std::path::{Component, Path, PathBuf};
+use std::time::Instant;
 
 use serde_json::Value;
 
 use crate::cli::outdated::{DEFAULT_LOCK, OutdatedArgs};
+use crate::commands::hooks::{self, Project};
 use crate::commands::store_guard::shell_word;
 use crate::error::Error;
 use crate::output;
@@ -29,6 +38,13 @@ const DAY: i64 = 86_400;
 
 /// The depth at which a follows path counts as a cycle.
 const MAX_FOLLOWS: usize = 32;
+
+/// The prek config that the hook-set check reads.
+const CONFIG: &str = ".pre-commit-config.yaml";
+
+/// The file in the set folder of a tag that holds the time of the last
+/// failed read of its sets.
+const SETS_FAILED: &str = ".failed";
 
 /// Run the command. It exits 0 in every case.
 ///
@@ -56,7 +72,15 @@ pub fn run(args: &OutdatedArgs) -> Result<u8, Error> {
             Loaded::Missing | Loaded::Unreadable(_) => Vec::new(),
         })
         .collect();
+    let config = hooks::read_config(Path::new(CONFIG));
+    let tech = config
+        .as_ref()
+        .and_then(hooks::tech_slug)
+        .or_else(hooks::own_slug)
+        .and_then(|slug| repo_of(&slug));
+    let project = config.and_then(Project::of);
     let mut repos: Vec<Repo> = pins.iter().flatten().map(|pin| pin.repo.clone()).collect();
+    repos.extend(tech.clone());
     repos.sort();
     repos.dedup();
     let lookups = release_cache::latest(&repos, args.refresh);
@@ -76,6 +100,22 @@ pub fn run(args: &OutdatedArgs) -> Result<u8, Error> {
             }
         }
     }
+    let latest = tech
+        .and_then(|tech| repos.binary_search(&tech).ok())
+        .and_then(|at| lookups[at].latest.as_deref());
+    let mut failed_sets = None;
+    if let Some(latest) = latest {
+        if let Some(line) = hooks::cli_line(latest) {
+            output::note(&line);
+        }
+        if let Some(project) = &project {
+            let (lines, failed) = hook_lines(project, latest, args.refresh);
+            for line in lines {
+                output::note(&line);
+            }
+            failed_sets = failed;
+        }
+    }
     for (repo, lookup) in repos.iter().zip(&lookups) {
         if let Some(error) = &lookup.failed {
             output::note(&format!(
@@ -84,7 +124,80 @@ pub fn run(args: &OutdatedArgs) -> Result<u8, Error> {
             ));
         }
     }
+    if let Some(line) = failed_sets {
+        output::note(&line);
+    }
     Ok(0)
+}
+
+/// The repository of the slug `owner/name`.
+fn repo_of(slug: &str) -> Option<Repo> {
+    let (owner, name) = slug.split_once('/')?;
+    Repo::new(owner, name)
+}
+
+/// The lines of the hook-set check of `project` against the newest tag
+/// `latest`, and the line of a failed read of its sets.
+///
+/// The sets come from the set cache. Where it lacks one, the check reads
+/// the sets through `gh` within one bounded call time, unless a read of
+/// them failed within the hour and `refresh` is unset.
+fn hook_lines(project: &Project, latest: &str, refresh: bool) -> (Vec<String>, Option<String>) {
+    if !hooks::behind(project, latest) {
+        return (Vec::new(), None);
+    }
+    let dir = hooks::sets_dir(&project.slug, latest);
+    let mut failed = None;
+    let sets = match dir
+        .as_deref()
+        .and_then(|dir| hooks::cached_sets(dir, &project.sets))
+    {
+        Some(sets) => Some(sets),
+        None if !refresh && dir.as_deref().is_some_and(failed_recently) => None,
+        None => {
+            let deadline = Instant::now() + release_cache::TIMEOUT;
+            match hooks::load_sets(
+                &project.slug,
+                latest,
+                &project.sets,
+                dir.as_deref(),
+                deadline,
+            ) {
+                Ok(sets) => {
+                    if let Some(dir) = &dir {
+                        let _ = std::fs::remove_file(dir.join(SETS_FAILED));
+                    }
+                    Some(sets)
+                }
+                Err(error) => {
+                    if let Some(dir) = &dir {
+                        let stamp = format!("{}\n", jiff::Timestamp::now().as_second());
+                        let _ = std::fs::create_dir_all(dir).and_then(|()| {
+                            hooks::write_atomic(&dir.join(SETS_FAILED), stamp.as_bytes())
+                        });
+                    }
+                    failed = Some(format!(
+                        "cannot read the hook sets of {} ({error}); the next read runs in 1 hour, or now with --refresh",
+                        project.slug
+                    ));
+                    None
+                }
+            }
+        }
+    };
+    (
+        hooks::project_lines(project, latest, sets.as_deref()),
+        failed,
+    )
+}
+
+/// Whether the set folder `dir` records a failed read within the hour.
+fn failed_recently(dir: &Path) -> bool {
+    let now = jiff::Timestamp::now().as_second();
+    std::fs::read_to_string(dir.join(SETS_FAILED))
+        .ok()
+        .and_then(|text| text.trim().parse::<i64>().ok())
+        .is_some_and(|then| (0..release_cache::FAILURE_TTL).contains(&(now - then)))
 }
 
 /// A lock as the command found it.

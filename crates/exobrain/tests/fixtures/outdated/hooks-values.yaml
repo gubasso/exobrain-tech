@@ -1,0 +1,15 @@
+# A project at exobrain-tech v1.1.0 whose typos hook carries its own
+# args and exclude, and which leaves out gitleaks of the common set.
+repos:
+  - repo: https://github.com/gubasso/exobrain-tech
+    rev: v1.1.0
+    hooks:
+      - id: hook-revisions
+        args: [--set, common]
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.52.2
+    hooks:
+      - id: typos
+        args: [--write-changes]
+        exclude: '^vendor/'
+        stages: [pre-push]

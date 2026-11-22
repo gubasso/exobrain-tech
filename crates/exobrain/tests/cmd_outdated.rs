@@ -52,9 +52,41 @@ fn write_lock(dir: &Path, rel: &str, days: i64) {
     std::fs::write(path, text).unwrap();
 }
 
-/// Run `exobrain outdated <args>` in `dir`.
+/// The repository that ships the binary, whose newest tag the CLI check
+/// and the hook-set check judge.
+const TECH: &str = "gubasso/exobrain-tech";
+
+/// The tag of the running binary.
+fn running_tag() -> String {
+    format!("v{}", env!("CARGO_PKG_VERSION"))
+}
+
+/// Write a fresh release cache of [`TECH`] under the state root `state`,
+/// on the tag of the running binary, so a call reads no tag of it and
+/// prints no CLI line.
+fn seed_tech(state: &Path) {
+    let now = Timestamp::now().as_second();
+    let entry = serde_json::json!({
+        "attempted": now,
+        "succeeded": now,
+        "latest": running_tag(),
+        "error": null,
+    });
+    let path = state.join(format!("exobrain/releases/{TECH}.json"));
+    std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    std::fs::write(path, entry.to_string()).unwrap();
+}
+
+/// Run `exobrain outdated <args>` in `dir`, with a state root of its own
+/// that holds a fresh release cache of [`TECH`], and no `gh`.
 fn outdated(dir: &Path, args: &[&str]) -> Output {
+    let world = TempDir::new().unwrap();
+    seed_tech(&world.path().join("state"));
     Command::new(assert_cmd::cargo::cargo_bin!("exobrain"))
+        .env_clear()
+        .env("PATH", world.path())
+        .env("HOME", world.path())
+        .env("XDG_STATE_HOME", world.path().join("state"))
         .arg("outdated")
         .args(args)
         .current_dir(dir)
@@ -356,9 +388,19 @@ fn outdated_warns_over_30_days_names_the_limit_in_its_help() {
 /// `STUB_SLEEP` seconds, leaves a child that holds its pipes for
 /// `STUB_HOLD` seconds, and fails when `STUB_FAIL` is set. It prints the
 /// file `tags/<owner>/<repo>` beside itself for the first page of tags,
-/// and `tags/<owner>/<repo>.<page>` for a later page.
+/// and `tags/<owner>/<repo>.<page>` for a later page. For a set file, it
+/// sleeps for `STUB_SET_SLEEP` seconds and prints `sets/<tag>/<set>.yaml`
+/// beside itself.
 const STUB_GH: &str = r#"#!/bin/sh
 echo "$*" >> "${0%/*}/gh.log"
+for a in "$@"; do case "$a" in repos/*/contents/*) c="$a" ;; esac; done
+if [ -n "${c:-}" ]; then
+    if [ -n "${STUB_SET_SLEEP:-}" ]; then @SLEEP@ "$STUB_SET_SLEEP"; fi
+    file=${c##*/}; file=${file%%\?*}; ref=${c##*ref=}
+    f="${0%/*}/sets/$ref/$file"
+    if [ -f "$f" ]; then @CAT@ "$f"; exit 0; fi
+    echo "gh: Not Found (HTTP 404)" >&2; exit 1
+fi
 if [ -n "${STUB_SLEEP:-}" ]; then @SLEEP@ "$STUB_SLEEP"; fi
 if [ -n "${STUB_HOLD:-}" ]; then @SLEEP@ "$STUB_HOLD" & fi
 if [ -n "${STUB_FAIL:-}" ]; then echo "error: stub failure" >&2; exit 1; fi
@@ -391,7 +433,8 @@ impl Gh {
         world
     }
 
-    /// A world with an empty `PATH` folder.
+    /// A world with an empty `PATH` folder, and a fresh release cache
+    /// of [`TECH`] on the tag of the running binary.
     fn bare() -> Self {
         let world = Self {
             dir: TempDir::new().unwrap(),
@@ -399,7 +442,20 @@ impl Gh {
         for sub in ["bin", "state", "home"] {
             std::fs::create_dir_all(world.root().join(sub)).unwrap();
         }
+        seed_tech(&world.root().join("state"));
         world
+    }
+
+    /// Drop the release cache of `slug`, so the next call reads its tags.
+    fn forget(&self, slug: &str) {
+        std::fs::remove_file(self.cache(slug)).unwrap();
+    }
+
+    /// Make the stub serve `text` as set `name` at `tag`.
+    fn set(&self, tag: &str, name: &str, text: &str) {
+        let dir = self.bin().join("sets").join(tag);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join(format!("{name}.yaml")), text).unwrap();
     }
 
     fn root(&self) -> PathBuf {
@@ -705,7 +761,12 @@ fn outdated_reads_each_release_once_a_week() {
         &world.run(&project, &["--refresh"], &[]),
         &[&rk_line("v0.10.1", "v0.11.0")],
     );
-    assert_eq!(world.calls().len(), 2, "--refresh reads now");
+    let rk_reads = world
+        .calls()
+        .iter()
+        .filter(|call| call.contains(RK))
+        .count();
+    assert_eq!(rk_reads, 2, "--refresh reads now");
 }
 
 #[test]
@@ -802,4 +863,182 @@ fn outdated_without_gh_exits_0() {
         &[&failed_line(RK, "gh is not on PATH")],
     );
     assert_lines(&world.run(&project, &[], &[]), &[]);
+}
+
+// The CLI check and the hook-set check. Each world drops the seeded cache
+// of exobrain-tech, so the call reads its tags through the stub.
+
+/// The `common` set of the newest tag `v1.2.0`.
+const COMMON: &str = include_str!("fixtures/outdated/hooks-common.yaml");
+
+/// The newest exobrain-tech tag of the hook-set tests. It is not greater
+/// than the running binary, so no CLI line joins the hook lines.
+const NEWEST: &str = "v1.2.0";
+
+/// A world whose stub serves [`NEWEST`] as the newest exobrain-tech tag,
+/// with its `common` set, and a project `p` whose config is `config`.
+fn hook_world(config: &str) -> (Gh, PathBuf) {
+    let world = Gh::new();
+    world.forget(TECH);
+    world.tags(TECH, &[NEWEST, "v1.1.0"]);
+    world.set(NEWEST, "common", COMMON);
+    let project = world.project("p");
+    std::fs::write(project.join(".pre-commit-config.yaml"), config).unwrap();
+    (world, project)
+}
+
+/// The fixture config at exobrain-tech `tag` that pins typos at `typos`.
+fn behind_config(tag: &str, typos: &str) -> String {
+    std::fs::read_to_string(fixture("hooks-behind.yaml"))
+        .unwrap()
+        .replace("@TAG@", tag)
+        .replace("@TYPOS@", typos)
+}
+
+fn typos_line() -> String {
+    format!(
+        "exobrain hooks: {NEWEST} pins https://github.com/crate-ci/typos at v1.52.2, and this project pins v1.40.0"
+    )
+}
+
+fn sync_line(tag: &str) -> String {
+    format!(
+        "exobrain hooks: this project selects {tag}; move it with `exobrain hooks sync --to {NEWEST}` on the branch of your next change"
+    )
+}
+
+fn cli_line(latest: &str) -> String {
+    format!(
+        "exobrain hooks: exobrain-tech {latest} is out, and this host runs exobrain {}",
+        env!("CARGO_PKG_VERSION")
+    )
+}
+
+fn tags_call(slug: &str) -> String {
+    format!("api repos/{slug}/tags?per_page=100&page=1 --jq .[].name")
+}
+
+fn set_call(tag: &str, name: &str) -> String {
+    format!(
+        "api -H Accept: application/vnd.github.raw repos/{TECH}/contents/programming/project-bootstrap/hook-sets/{name}.yaml?ref={tag}"
+    )
+}
+
+// outdated:reports-a-newer-cli
+
+#[test]
+fn outdated_reports_a_newer_cli() {
+    let world = Gh::new();
+    world.forget(TECH);
+    world.tags(TECH, &["v99.0.0", "v1.0.0"]);
+    let project = world.project("p");
+    assert_lines(&world.run(&project, &[], &[]), &[&cli_line("v99.0.0")]);
+    world.tags(TECH, &[&running_tag()]);
+    assert_lines(&world.run(&project, &["--refresh"], &[]), &[]);
+}
+
+#[test]
+fn outdated_without_a_config_keeps_the_cli_check() {
+    let world = Gh::new();
+    world.forget(TECH);
+    world.tags(TECH, &["v99.0.0"]);
+    let project = world.project("p");
+    assert_lines(&world.run(&project, &[], &[]), &[&cli_line("v99.0.0")]);
+    std::fs::write(project.join(".pre-commit-config.yaml"), "repos: [{").unwrap();
+    assert_lines(
+        &world.run(&project, &["--refresh"], &[]),
+        &[&cli_line("v99.0.0")],
+    );
+    assert_eq!(world.calls(), [tags_call(TECH), tags_call(TECH)]);
+}
+
+// outdated:reports-newer-hook-revisions
+
+#[test]
+fn outdated_reports_newer_hook_revisions() {
+    let (world, project) = hook_world(&behind_config("v1.1.0", "v1.40.0"));
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&typos_line(), &sync_line("v1.1.0")],
+    );
+    assert_eq!(world.calls(), [tags_call(TECH), set_call(NEWEST, "common")]);
+    // The sets of a tag never change, so the next call reads them from
+    // the set cache of `exobrain hooks`.
+    let cached = world
+        .root()
+        .join("state/exobrain/hooks/gubasso-exobrain-tech")
+        .join(NEWEST)
+        .join("common.yaml");
+    assert_eq!(std::fs::read_to_string(cached).unwrap(), COMMON);
+    assert_lines(
+        &world.run(&project, &["--refresh"], &[]),
+        &[&typos_line(), &sync_line("v1.1.0")],
+    );
+    assert_eq!(world.calls().len(), 3, "{:?}", world.calls());
+}
+
+#[test]
+fn outdated_silent_on_the_newest_tag() {
+    let (world, project) = hook_world(&behind_config(NEWEST, "v1.40.0"));
+    assert_lines(&world.run(&project, &[], &[]), &[]);
+    assert_eq!(world.calls(), [tags_call(TECH)]);
+}
+
+#[test]
+fn outdated_ignores_project_values() {
+    let config = std::fs::read_to_string(fixture("hooks-values.yaml")).unwrap();
+    let (world, project) = hook_world(&config);
+    assert_lines(&world.run(&project, &[], &[]), &[&sync_line("v1.1.0")]);
+}
+
+#[test]
+fn outdated_runs_the_hook_check_once() {
+    let (world, project) = hook_world(&behind_config("v1.1.0", "v1.40.0"));
+    write_lock(&project, "flake.lock", 0);
+    write_lock(&project, "nix/flake.lock", 0);
+    assert_lines(
+        &world.run(&project, &["flake.lock", "nix/flake.lock"], &[]),
+        &[&typos_line(), &sync_line("v1.1.0")],
+    );
+    assert_eq!(world.calls(), [tags_call(TECH), set_call(NEWEST, "common")]);
+}
+
+#[test]
+fn outdated_bounds_the_set_fetch() {
+    let (world, project) = hook_world(&behind_config("v1.1.0", "v1.40.0"));
+    let started = std::time::Instant::now();
+    let out = world.run(&project, &[], &[("STUB_SET_SLEEP", "30")]);
+    let took = started.elapsed();
+    assert!(took < std::time::Duration::from_secs(20), "took {took:?}");
+    assert_lines(
+        &out,
+        &[
+            &sync_line("v1.1.0"),
+            &format!(
+                "cannot read the hook sets of {TECH} (set common of {NEWEST}: gh timed out after 10 seconds); the next read runs in 1 hour, or now with --refresh"
+            ),
+        ],
+    );
+    // A failed read of the sets waits an hour, and --refresh reads now.
+    assert_lines(&world.run(&project, &[], &[]), &[&sync_line("v1.1.0")]);
+    assert_eq!(world.calls().len(), 2, "{:?}", world.calls());
+    assert_lines(
+        &world.run(&project, &["--refresh"], &[]),
+        &[&typos_line(), &sync_line("v1.1.0")],
+    );
+}
+
+// outdated:reads-github-only-through-gh
+
+#[test]
+fn outdated_shares_the_exobrain_tech_read() {
+    let (world, project) = hook_world(&behind_config(NEWEST, "v1.52.2"));
+    write_fixture(&project, "flake.lock", "tech.lock", 0, "v1.1.0");
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&format!(
+            "flake.lock: exobrain-tech is pinned at v1.1.0, and {NEWEST} is out. Move it with flake-edit update exobrain-tech when ready."
+        )],
+    );
+    assert_eq!(world.calls(), [tags_call(TECH)]);
 }
