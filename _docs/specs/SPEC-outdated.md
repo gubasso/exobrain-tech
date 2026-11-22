@@ -86,7 +86,7 @@ When `exobrain outdated` runs, the command MUST print one line on stderr for eac
 
 The command judges an input of the root node that names a node, not a follows path. Its node `original` has `type` `github` and a `ref` of the form `vMAJOR.MINOR.PATCH` or `MAJOR.MINOR.PATCH`. The command skips a branch, a commit, an input of every other type, and a follows path in silence, and reads no tag for them.
 
-The latest tag is the one that `flake-edit update` moves to. The command reads the first page of 100 tags of the repository, and reads the next pages only while every page is full and holds no version tag. It drops a `refs/tags/` prefix and every character before the first digit, pads `1` and `1.2` to three parts, and keeps each tag that then parses as a semantic version. The latest tag is the highest of them by semantic version precedence, a pre-release tag included. The command warns only when that tag is a greater version than the pinned tag.
+The latest tag is the one that `flake-edit update` moves to. The command reads the first page of 100 tags of the repository. Where that page is full and holds no version tag, the command reads the next pages until a page that holds fewer than 100 tags, or page 20. It drops a `refs/tags/` prefix and every character before the first digit, pads `1` and `1.2` to three parts, and keeps each tag that then parses as a semantic version. The latest tag is the highest of them by semantic version precedence, a pre-release tag included. The command warns only when that tag is a greater version than the pinned tag.
 
 The line names the lock as the call gave it. For `flake.lock`, the move is `flake-edit update <input>`. For every other lock, the move adds `--flake <folder> --lock-file <lock>`, because `flake-edit` reads `flake.nix` and `flake.lock` of the current folder by default:
 
@@ -127,7 +127,7 @@ Verify: `cargo nextest run -E 'test(/^outdated_(reads_each|retries|shares|keeps)
 
 ### `outdated:bounds-each-read` — outdated ends each read of the tags after 10 seconds
 
-The command MUST read every tag through `gh api`, as `hooks:read-github-only-through-gh` holds for the hooks verbs, and end the `gh` process of a read that runs longer than 10 seconds. The due reads of one call run in parallel, so they hold a shell load for 10 seconds at most.
+The command MUST read every tag through `gh api`, as `hooks:read-github-only-through-gh` holds for the hooks verbs, and end a read that runs longer than 10 seconds. A read ends when `gh` exits and both of its output pipes close. At the bound, the command ends the process group of `gh`, a child that `gh` leaves behind included. The due reads of one call run in parallel, so they hold a shell load for 10 seconds at most.
 
 A failed read, a timeout, a missing `gh`, and a `gh` with no login each record the error in the cache and print one line on stderr, once, at the failed attempt:
 

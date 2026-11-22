@@ -12,6 +12,7 @@
 use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
+use std::sync::mpsc;
 use std::time::{Duration, Instant};
 
 use semver::Version;
@@ -265,8 +266,10 @@ fn read_latest(repo: &Repo) -> Result<Option<String>, String> {
             .filter(|line| !line.is_empty())
             .map(ToOwned::to_owned)
             .collect();
+        // Page 1 ends the read when it holds a version tag. A later page
+        // ends it only when it is short, as the walk of flake-edit does.
         let full = found.len() >= PER_PAGE;
-        let any = found.iter().any(|name| tag_version(name).is_some());
+        let any = page == 1 && found.iter().any(|name| tag_version(name).is_some());
         names.extend(found);
         if !full || any {
             break;
@@ -320,8 +323,11 @@ fn gh() -> Result<PathBuf, String> {
     probe::which("gh", &path).ok_or_else(|| "gh is not on PATH".to_owned())
 }
 
-/// Run `gh api` with `args` and return its stdout. The call ends the
-/// process group of `gh` at `deadline`.
+/// Run `gh api` with `args` and return its stdout.
+///
+/// A call that has not ended, with end of file on both pipes, at
+/// `deadline` ends the process group of `gh`, so a child that `gh` leaves
+/// cannot hold the read open.
 ///
 /// # Errors
 ///
@@ -338,8 +344,13 @@ pub fn gh_api(gh: &Path, args: &[&str], deadline: Instant) -> Result<String, Str
         .process_group(0)
         .spawn()
         .map_err(|e| format!("cannot run gh: {e}"))?;
-    let stdout = child.stdout.take().map(drain);
-    let stderr = child.stderr.take().map(drain);
+    let (send, pipes) = mpsc::channel();
+    if let Some(pipe) = child.stdout.take() {
+        drain(Pipe::Out, pipe, send.clone());
+    }
+    if let Some(pipe) = child.stderr.take() {
+        drain(Pipe::Err, pipe, send);
+    }
     let status = loop {
         match child.try_wait() {
             Ok(Some(status)) => break Some(status),
@@ -347,7 +358,19 @@ pub fn gh_api(gh: &Path, args: &[&str], deadline: Instant) -> Result<String, Str
             Ok(None) | Err(_) => break None,
         }
     };
-    let Some(status) = status else {
+    let mut stdout = Vec::new();
+    let mut stderr = Vec::new();
+    let mut open = 2;
+    while status.is_some() && open > 0 {
+        let left = deadline.saturating_duration_since(Instant::now());
+        match pipes.recv_timeout(left) {
+            Ok((Pipe::Out, bytes)) => stdout = bytes,
+            Ok((Pipe::Err, bytes)) => stderr = bytes,
+            Err(_) => break,
+        }
+        open -= 1;
+    }
+    let (Some(status), 0) = (status, open) else {
         if let Some(pid) = rustix::process::Pid::from_raw(child.id().cast_signed()) {
             let _ = rustix::process::kill_process_group(pid, rustix::process::Signal::KILL);
         }
@@ -355,8 +378,6 @@ pub fn gh_api(gh: &Path, args: &[&str], deadline: Instant) -> Result<String, Str
         let _ = child.wait();
         return Err(format!("gh timed out after {} seconds", TIMEOUT.as_secs()));
     };
-    let stdout = stdout.and_then(|h| h.join().ok()).unwrap_or_default();
-    let stderr = stderr.and_then(|h| h.join().ok()).unwrap_or_default();
     if status.success() {
         return String::from_utf8(stdout).map_err(|_| "gh printed no UTF-8".to_owned());
     }
@@ -365,14 +386,27 @@ pub fn gh_api(gh: &Path, args: &[&str], deadline: Instant) -> Result<String, Str
     Err(cause.map_or_else(|| format!("gh api failed with {status}"), ToOwned::to_owned))
 }
 
+/// One output pipe of `gh`.
+enum Pipe {
+    /// stdout.
+    Out,
+    /// stderr.
+    Err,
+}
+
 /// Read all of `pipe` on a thread of its own, so a full pipe never stops
-/// the child.
-fn drain(mut pipe: impl std::io::Read + Send + 'static) -> std::thread::JoinHandle<Vec<u8>> {
+/// the child, and send the bytes at end of file. A thread that a timeout
+/// leaves behind ends when the killed group closes the pipe.
+fn drain(
+    which: Pipe,
+    mut pipe: impl std::io::Read + Send + 'static,
+    send: mpsc::Sender<(Pipe, Vec<u8>)>,
+) {
     std::thread::spawn(move || {
         let mut bytes = Vec::new();
         let _ = pipe.read_to_end(&mut bytes);
-        bytes
-    })
+        let _ = send.send((which, bytes));
+    });
 }
 
 #[cfg(test)]

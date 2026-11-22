@@ -353,16 +353,21 @@ fn outdated_warns_over_30_days_names_the_limit_in_its_help() {
 // `PATH` holds only the stub `gh`, and whose `XDG_STATE_HOME` is its own.
 
 /// The stub `gh`: it logs each call beside itself, sleeps for
-/// `STUB_SLEEP` seconds, fails when `STUB_FAIL` is set, and prints the
-/// file `tags/<owner>/<repo>` beside itself for the first page of tags.
+/// `STUB_SLEEP` seconds, leaves a child that holds its pipes for
+/// `STUB_HOLD` seconds, and fails when `STUB_FAIL` is set. It prints the
+/// file `tags/<owner>/<repo>` beside itself for the first page of tags,
+/// and `tags/<owner>/<repo>.<page>` for a later page.
 const STUB_GH: &str = r#"#!/bin/sh
 echo "$*" >> "${0%/*}/gh.log"
 if [ -n "${STUB_SLEEP:-}" ]; then @SLEEP@ "$STUB_SLEEP"; fi
+if [ -n "${STUB_HOLD:-}" ]; then @SLEEP@ "$STUB_HOLD" & fi
 if [ -n "${STUB_FAIL:-}" ]; then echo "error: stub failure" >&2; exit 1; fi
 case "$2" in
-repos/*"&page=1")
+repos/*/tags\?*)
     p=${2#repos/}; p=${p%%/tags*}
     f="${0%/*}/tags/${p%%/*}/${p#*/}"
+    page=${2##*page=}
+    if [ "$page" != 1 ]; then f="$f.$page"; fi
     if [ -f "$f" ]; then @CAT@ "$f"; fi
     ;;
 esac
@@ -419,6 +424,13 @@ impl Gh {
         let mut text = tags.join("\n");
         text.push('\n');
         std::fs::write(path, text).unwrap();
+    }
+
+    /// Make the stub report `tags` for `slug` on page `page`.
+    fn page(&self, slug: &str, page: u32, tags: &[String]) {
+        let path = self.bin().join("tags").join(format!("{slug}.{page}"));
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(path, tags.join("\n") + "\n").unwrap();
     }
 
     /// The calls of the stub `gh`.
@@ -544,6 +556,30 @@ fn outdated_orders_tags_like_flake_edit() {
         &world.run(&project, &[], &[]),
         &[&rk_line("v1.0.0", "v2.0.0-beta.1")],
     );
+}
+
+#[test]
+fn outdated_orders_tags_like_flake_edit_across_pages() {
+    // A full first page with no version tag starts the walk, which goes on
+    // to the first short page, as flake-edit 0.4.0 walks it.
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v1.0.0");
+    let letters = "abcdefghij".chars();
+    let names: Vec<String> = letters
+        .clone()
+        .flat_map(|a| letters.clone().map(move |b| format!("tag-{a}{b}")))
+        .collect();
+    let names: Vec<&str> = names.iter().map(String::as_str).collect();
+    world.tags(RK, &names);
+    let second: Vec<String> = (0..100).map(|n| format!("v1.0.{n}")).collect();
+    world.page(RK, 2, &second);
+    world.page(RK, 3, &["v2.0.0".to_owned()]);
+    assert_lines(
+        &world.run(&project, &[], &[]),
+        &[&rk_line("v1.0.0", "v2.0.0")],
+    );
+    assert_eq!(world.calls().len(), 3, "{:?}", world.calls());
 }
 
 #[test]
@@ -725,6 +761,20 @@ fn outdated_bounds_each_read() {
     let entry: serde_json::Value =
         serde_json::from_slice(&std::fs::read(world.cache(RK)).unwrap()).unwrap();
     assert_eq!(entry["error"], "gh timed out after 10 seconds");
+}
+
+#[test]
+fn outdated_bounds_each_read_past_an_exited_gh() {
+    // gh exits at once, and a child that it left holds its pipes open.
+    let world = Gh::new();
+    let project = world.project("p");
+    write_tags(&project, "v0.10.1");
+    world.tags(RK, &["v0.10.3"]);
+    let started = std::time::Instant::now();
+    let out = world.run(&project, &[], &[("STUB_HOLD", "30")]);
+    let took = started.elapsed();
+    assert!(took < std::time::Duration::from_secs(20), "took {took:?}");
+    assert_lines(&out, &[&failed_line(RK, "gh timed out after 10 seconds")]);
 }
 
 #[test]
