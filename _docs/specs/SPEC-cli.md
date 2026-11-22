@@ -30,12 +30,15 @@
     - [Scenario: A package manager upgrades a tool in place](#scenario-a-package-manager-upgrades-a-tool-in-place)
   - [`cli:host-check-exit-codes` — host-check exits by what it found](#clihost-check-exit-codes--host-check-exits-by-what-it-found)
     - [Scenario: A project has no file](#scenario-a-project-has-no-file)
+  - [`cli:a-verb-fills-a-named-gap` — Each verb fills a gap that the feature document names](#clia-verb-fills-a-named-gap--each-verb-fills-a-gap-that-the-feature-document-names)
+    - [Scenario: A verb repeats a native command](#scenario-a-verb-repeats-a-native-command)
+- [Unenforced](#unenforced)
 
 <!--TOC-->
 
 ## Purpose
 
-These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also warns about a large build folder of the checkout and runs `prek cache gc` once a week, and this spec owns that check and that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules. `outdated` reports what is behind in a project and changes nothing, and `SPEC-outdated.md` owns its rules. `skill` prints the agent skills that the binary carries, and this spec owns where a skill lives and how the binary serves it.
+These rules govern the `exobrain` binary that `crates/exobrain` builds: its verbs, their exit codes, and their output. Each verb fills a gap that no native tool covers, and `programming/project-bootstrap/COMPARISON-dev-tool-features.md` names each gap. The binary enforces rules that other specs own. `store-guard` finds the store copies that `project-platform:a-flake-is-read-from-its-git-tree` forbids. `SPEC-project-platform.md` owns that rule. This spec owns only how the guard finds, reports, and schedules the copies. The daily mode of the guard also warns about a large build folder of the checkout and runs `prek cache gc` once a week, and this spec owns that check and that schedule too. `host-check` reads `host-requirements.toml`, the list of host tools of a project's dev environment, and checks them on the host. This spec owns the format of that file and how the checker reads it, checks it, and reports. `hooks` holds the hook revisions of a project to the reference sets of its exobrain-tech tag, and `SPEC-hooks.md` owns its rules. `outdated` reports what is behind in a project and changes nothing, and `SPEC-outdated.md` owns its rules. `skill` prints the agent skills that the binary carries, and this spec owns where a skill lives and how the binary serves it.
 
 ## Requirements
 
@@ -301,3 +304,25 @@ The checker MUST exit with one of these codes:
 - THEN the checker exits 2 and names the folder it searched from
 
 Verify: `cargo nextest run -E 'test(host_check_exit_codes)'`
+
+### `cli:a-verb-fills-a-named-gap` — Each verb fills a gap that the feature document names
+
+The binary MUST carry only verbs that fill a gap that `programming/project-bootstrap/COMPARISON-dev-tool-features.md` names in the exobrain column of its tables.
+
+A gap is a feature of a dev environment that no native tool covers, such as a check of the host tools or a warning about the age of a pin. Where a native command covers a feature, a project runs that command, and the binary adds no verb for it. Where a tool outside the managers covers a gap, such as `flake-edit` for the move of a flake tag pin, the document names that tool, and the binary adds no verb either. The test reads each subcommand of the binary and requires the text `exobrain <verb>` in a table row of the document.
+
+#### Scenario: A verb repeats a native command
+
+- GIVEN a new verb `exobrain bump` that moves a flake tag pin, which `flake-edit update <input>` already moves
+- WHEN the document names no gap for `exobrain bump`
+- THEN the test fails and names `bump`, and a review of the document finds the native command
+
+Verify: `cargo nextest run -E 'test(a_verb_fills_a_named_gap)'`
+
+## Unenforced
+
+No command decides these rules, or a command decides only part of each. A reviewer confirms the rest.
+
+| Rule                           | Reviewer confirms                                                                                        |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `cli:a-verb-fills-a-named-gap` | Each gap that the comparison document names has no native command in any tool that the document compares |
