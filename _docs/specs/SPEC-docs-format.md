@@ -37,13 +37,13 @@ A ceiling the project records for an inherited chapter under `SPEC-budget-debt.m
 - WHEN more rules arrive
 - THEN the excess becomes a requirement in a spec or a decision record, not a longer chapter
 
-Verify: `pre-commit run chapter-size-cap --all-files`
+Verify: `prek run chapter-size-cap --all-files`
 
 ### `docs-format:author-instructions-stay-within-budget` — Author instructions stay within budget
 
-The author MUST keep the root author-instructions file at or below 100 lines and a subtree one at or below 150.
+The author MUST keep the root author-instructions file at or below 100 lines and a subtree one at or below 150, counting only the lines outside its managed blocks, and MUST keep each managed block at or below 20 lines, its markers included.
 
-A ceiling the project records for an inherited file under `SPEC-budget-debt.md` is judged instead of the budget, and it only comes down.
+A managed block runs from a whole-line `<!-- BEGIN <label> -->` to the `<!-- END <label> -->` of the same label. A tool rewrites its block at each upgrade, so the project cannot shorten it, and the budget judges only the text the project writes. A marker inside a fenced code block opens nothing. A BEGIN with no END, a block inside another, and an END with no BEGIN fail on their line, and every line then counts as the project's, so no marker hides the rest of the file. A failure names the lines that the blocks hold beside the project's count, because a session loads the whole file. A ceiling the project records for an inherited file under `SPEC-budget-debt.md` is judged against the project's count instead of the budget, and it only comes down.
 
 #### Scenario: A root file accumulates a subtree's rules
 
@@ -51,7 +51,13 @@ A ceiling the project records for an inherited file under `SPEC-budget-debt.md` 
 - WHEN it is written into the root file and pushes it past the cap
 - THEN it belongs in that subtree's own author-instructions file, which the root points at
 
-Verify: `pre-commit run agents-digest-size --all-files`
+#### Scenario: A tool's block grows at an upgrade
+
+- GIVEN a root file with 100 lines of the project's own and two managed blocks
+- WHEN a release adds a line to its block
+- THEN the gate passes, and one more line of the project's own fails it
+
+Verify: `prek run agents-digest-size --all-files`
 
 ### `docs-format:every-budget-carries-a-gate` — Every count-shaped budget carries a gate
 
@@ -95,7 +101,7 @@ The gate skips the decision records. A record states the reasoning of one moment
 - WHEN the author removes it
 - THEN the deletion leaves no trace in prose, only in the log
 
-Verify: `pre-commit run no-self-narration --all-files`
+Verify: `prek run no-self-narration --all-files`
 
 ### `docs-format:fence-declares-a-language` — Every fence declares a language
 
@@ -107,7 +113,7 @@ The author MUST give every fenced code block a language, using `text` when none 
 - WHEN no language is declared
 - THEN the linter rejects it and `text` is the correct declaration
 
-Verify: `pre-commit run markdownlint-cli2 --all-files`
+Verify: `prek run markdownlint-cli2 --all-files`
 
 ### `docs-format:prose-stays-unwrapped` — Prose stays unwrapped
 
@@ -123,7 +129,7 @@ Prose the project keeps outside the paths it declares for this gate belongs to t
 - WHEN an edit touches one sentence
 - THEN the diff rewraps neighboring lines it never changed, so the paragraph joins back onto one line and the editor soft-wraps it
 
-Verify: `pre-commit run prose-stays-unwrapped --all-files`
+Verify: `prek run prose-stays-unwrapped --all-files`
 
 ## Unenforced
 

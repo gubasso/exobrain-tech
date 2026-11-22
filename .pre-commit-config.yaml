@@ -820,7 +820,6 @@ repos:
         language: system
         files: '^(?:[^/]*\.md|_docs/(?:.*/)?[^/]*\.md|programming/(?:.*/)?[^/]*\.md|languages/(?:.*/)?[^/]*\.md|systems/(?:.*/)?[^/]*\.md|infra/(?:.*/)?[^/]*\.md|tools/(?:.*/)?[^/]*\.md|platforms/(?:.*/)?[^/]*\.md|workflows/(?:.*/)?[^/]*\.md|data/(?:.*/)?[^/]*\.md)$'
         types: [markdown]
-        exclude: '^(?:.*/)?CHANGELOG\.md$'
       - id: spec-requirement-parts
         name: 'spec requirement parts'
         entry: sdd gate spec-requirement-parts

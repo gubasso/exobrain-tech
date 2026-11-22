@@ -74,7 +74,6 @@
     },
     "spec-driven-docs": {
       "inputs": {
-        "exobrain-tech": [],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -87,16 +86,16 @@
         "spec-driven-docs": []
       },
       "locked": {
-        "lastModified": 1794766711,
-        "narHash": "sha256-bk2ABlC7rSAMMaxenPmraVMTCMzqVSPBvIeSHs+zLZI=",
+        "lastModified": 1795120803,
+        "narHash": "sha256-KfagB6YT/GIeT1jYLXIWiqRAzmrvj5qQTXILdG146ac=",
         "owner": "gubasso",
         "repo": "spec-driven-docs",
-        "rev": "57fa78f8791567281b375caff5f0ed9e50234a81",
+        "rev": "c82c3adb0534fee9efc36c9fd77d54069c321c09",
         "type": "github"
       },
       "original": {
         "owner": "gubasso",
-        "ref": "v0.18.1",
+        "ref": "v0.19.1",
         "repo": "spec-driven-docs",
         "type": "github"
       }
