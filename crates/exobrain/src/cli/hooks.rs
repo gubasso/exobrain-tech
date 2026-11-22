@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use clap::{Args, Subcommand};
 
-/// The config that `sync` and `status` read when a call names none.
+/// The config that `sync` reads when a call names none.
 pub const DEFAULT_CONFIG: &str = ".pre-commit-config.yaml";
 
 /// Hold the hook revisions of a project to the reference sets of its
@@ -23,8 +23,6 @@ pub enum HooksCommand {
     Check(CheckArgs),
     /// Move a config to the sets of an exobrain-tech tag.
     Sync(SyncArgs),
-    /// Report a newer exobrain-tech release, and always exit 0 (for `.envrc`).
-    Status(StatusArgs),
 }
 
 /// Arguments of `exobrain hooks check`.
@@ -47,17 +45,6 @@ pub struct SyncArgs {
     /// The exobrain-tech tag to move to. With none, the latest release.
     #[arg(long, value_name = "TAG")]
     pub to: Option<String>,
-    /// The prek config of the project.
-    #[arg(value_name = "CONFIG", default_value = DEFAULT_CONFIG)]
-    pub config: PathBuf,
-}
-
-/// Arguments of `exobrain hooks status`.
-#[derive(Debug, Args)]
-pub struct StatusArgs {
-    /// Read the latest release now, whatever the age of the last read.
-    #[arg(long)]
-    pub refresh: bool,
     /// The prek config of the project.
     #[arg(value_name = "CONFIG", default_value = DEFAULT_CONFIG)]
     pub config: PathBuf,

@@ -45,7 +45,7 @@ A project that follows this canon MUST run prek as its only hook runner. It MUST
 
 - The hook `hook-revisions` compares the `rev` of each repository in both the project configuration and its named sets, and fails on a difference. It reads only the files of the commit, and ignores every other field.
 - `exobrain hooks sync --to <tag>` moves the exobrain-tech entry and every revision of the named sets in one commit, on the branch of the work that needs it.
-- `exobrain hooks status`, which `.envrc` runs, reports a newer CLI or newer revisions, and exits 0.
+- `exobrain outdated`, which `.envrc` runs, reports a newer CLI or newer revisions, and exits 0.
 - `exobrain store-guard --daily`, which `.envrc` runs, also runs `prek cache gc` at most once a week.
 - The project lists `exobrain` in `host-requirements.toml` with the oldest version that carries `exobrain hooks check`, and takes it from the host.
 

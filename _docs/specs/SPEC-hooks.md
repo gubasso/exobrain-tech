@@ -14,20 +14,14 @@
     - [Scenario: A project moves to a new tag](#scenario-a-project-moves-to-a-new-tag)
   - [`hooks:sync-writes-all-or-nothing` — hooks sync writes the whole result or nothing](#hookssync-writes-all-or-nothing--hooks-sync-writes-the-whole-result-or-nothing)
     - [Scenario: The download of one set fails](#scenario-the-download-of-one-set-fails)
-  - [`hooks:status-reads-the-network-once-in-30-days` — hooks status reads the latest release at most once in 30 days](#hooksstatus-reads-the-network-once-in-30-days--hooks-status-reads-the-latest-release-at-most-once-in-30-days)
-    - [Scenario: direnv loads a project twice in one day](#scenario-direnv-loads-a-project-twice-in-one-day)
-  - [`hooks:status-reports-newer-releases` — hooks status reports a newer CLI and newer revisions](#hooksstatus-reports-newer-releases--hooks-status-reports-a-newer-cli-and-newer-revisions)
-    - [Scenario: A newer release moves typos](#scenario-a-newer-release-moves-typos)
-  - [`hooks:status-always-exits-0` — hooks status exits 0 in every case](#hooksstatus-always-exits-0--hooks-status-exits-0-in-every-case)
-    - [Scenario: A laptop runs direnv offline](#scenario-a-laptop-runs-direnv-offline)
-  - [`hooks:read-github-only-through-gh` — hooks sync and status reach GitHub only through gh](#hooksread-github-only-through-gh--hooks-sync-and-status-reach-github-only-through-gh)
+  - [`hooks:read-github-only-through-gh` — hooks sync reaches GitHub only through gh](#hooksread-github-only-through-gh--hooks-sync-reaches-github-only-through-gh)
     - [Scenario: CI runs the hooks](#scenario-ci-runs-the-hooks)
 
 <!--TOC-->
 
 ## Purpose
 
-These rules govern `exobrain hooks`, the verbs of the `exobrain` binary that hold the hook revisions of a project to the reference sets of its exobrain-tech tag. `hook-sets:hook-revisions-follow-the-exobrain-tech-tag` owns the convention, and chapter 04 of `programming/project-bootstrap/` holds the sets. This spec owns how `hooks check`, `hooks sync`, and `hooks status` read a config, compare it, rewrite it, and reach the network. `SPEC-cli.md` owns the rest of the binary, its output streams included.
+These rules govern `exobrain hooks`, the verbs of the `exobrain` binary that hold the hook revisions of a project to the reference sets of its exobrain-tech tag. `hook-sets:hook-revisions-follow-the-exobrain-tech-tag` owns the convention, and chapter 04 of `programming/project-bootstrap/` holds the sets. This spec owns how `hooks check` and `hooks sync` read a config, compare it, rewrite it, and reach the network. `SPEC-outdated.md` owns the warning about newer sets and a newer CLI. `SPEC-cli.md` owns the rest of the binary, its output streams included.
 
 ## Requirements
 
@@ -110,50 +104,14 @@ Verify: `cargo nextest run -E 'test(hooks_sync_rewrites_only_revisions)'`
 
 Verify: `cargo nextest run -E 'test(hooks_sync_writes_all_or_nothing)'`
 
-### `hooks:status-reads-the-network-once-in-30-days` — hooks status reads the latest release at most once in 30 days
+### `hooks:read-github-only-through-gh` — hooks sync reaches GitHub only through gh
 
-When `exobrain hooks status [--refresh] [<config>]` runs, the command MUST read the latest exobrain-tech release at most once in 30 days for each checkout, unless `--refresh` forces the read. The stamp is `${XDG_STATE_HOME:-$HOME/.local/state}/exobrain/hooks/<basename>-<digest16>.checked`, and it holds the time of the last read. The command writes the stamp before it reads, so a failed read waits 30 days too. It caches the latest tag, and the set files of each tag, under `exobrain/hooks/<owner>-<name>/`. A run between reads reports from that cache.
-
-#### Scenario: direnv loads a project twice in one day
-
-- GIVEN a checkout whose stamp is one day old
-- WHEN `.envrc` runs `exobrain hooks status`
-- THEN the command reads no network, and reports what the cache holds
-
-Verify: `cargo nextest run -E 'test(hooks_status_reads_the_network_once_in_30_days)'`
-
-### `hooks:status-reports-newer-releases` — hooks status reports a newer CLI and newer revisions
-
-`hooks status` MUST print one line on stderr when the latest tag is a newer version than the running `exobrain`. When the latest tag is newer than the exobrain-tech `rev` of the config, it MUST print one line for each repository whose `rev` differs from the sets of the latest tag, then one line that names `exobrain hooks sync --to <latest>`. On the latest tag, it prints nothing about the project.
-
-#### Scenario: A newer release moves typos
-
-- GIVEN a config at `v1.1.0` that pins typos at `v1.40.0`, and a latest release `v1.2.0` whose `common` set pins `v1.52.2`
-- WHEN `.envrc` runs `exobrain hooks status`
-- THEN stderr names typos with both revisions, and names `exobrain hooks sync --to v1.2.0`
-
-Verify: `cargo nextest run -E 'test(hooks_status_reports_newer_releases)'`
-
-### `hooks:status-always-exits-0` — hooks status exits 0 in every case
-
-`hooks status` MUST exit 0 in every case: with no network, with no `gh`, with no config, and with a config that it cannot parse. A failed read prints one line on stderr.
-
-#### Scenario: A laptop runs direnv offline
-
-- GIVEN a host with no network, whose stamp is 31 days old
-- WHEN `.envrc` runs `exobrain hooks status`
-- THEN the command prints one line about the failed read and exits 0
-
-Verify: `cargo nextest run -E 'test(hooks_status_always_exits_0)'`
-
-### `hooks:read-github-only-through-gh` — hooks sync and status reach GitHub only through gh
-
-`hooks check` MUST NOT read the network. `hooks sync` and `hooks status` MUST read GitHub only through `gh api` on the host `PATH`, for the repository of the exobrain-tech entry of the config. With no such entry, `status` reads the repository that ships the binary. They read two endpoints:
+`hooks check` MUST NOT read the network. `hooks sync` MUST read GitHub only through `gh api` on the host `PATH`, for the repository of the exobrain-tech entry of the config. It reads two endpoints:
 
 - `repos/<owner>/<name>/releases/latest`, for the latest tag
 - `repos/<owner>/<name>/contents/programming/project-bootstrap/hook-sets/<set>.yaml?ref=<tag>`, raw, for a set file
 
-`gh` carries the credentials of the operator. When `gh` is missing, `sync` fails and `status` prints one line.
+`gh` carries the credentials of the operator. When `gh` is missing, `sync` fails.
 
 #### Scenario: CI runs the hooks
 

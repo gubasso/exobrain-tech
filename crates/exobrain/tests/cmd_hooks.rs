@@ -8,7 +8,7 @@
 #![allow(clippy::unwrap_used, reason = "a test aborts on a broken fixture")]
 
 use std::os::unix::fs::PermissionsExt as _;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Output;
 
 use assert_cmd::Command;
@@ -374,106 +374,27 @@ fn hooks_sync_writes_all_or_nothing_and_leaves_no_temporary_file() {
     assert_eq!(names, [".pre-commit-config.yaml"]);
 }
 
-// --- status ---
-
-fn status_lines(out: &Output) -> Vec<String> {
-    stderr(out).lines().map(str::to_owned).collect()
-}
-
-fn stamp_files(dir: &Path) -> Vec<PathBuf> {
-    std::fs::read_dir(dir)
-        .unwrap()
-        .map(|entry| entry.unwrap().path())
-        .filter(|path| path.extension().is_some_and(|ext| ext == "checked"))
-        .collect()
-}
+// --- The verbs ---
 
 #[test]
-fn hooks_status_always_exits_0_with_no_network() {
+fn hooks_carries_only_check_and_sync() {
     let world = World::new();
-    let out = world.run(&["hooks", "status"], &[("STUB_OFFLINE", "1")]);
-    assert_eq!(code(&out), 0);
+    let out = world.run(&["hooks", "status"], &[]);
+    assert_eq!(code(&out), 2, "{}", stderr(&out));
     assert!(
-        stderr(&out).contains("cannot read the latest release"),
+        stderr(&out).contains("unrecognized subcommand 'status'"),
         "{}",
         stderr(&out)
     );
-    // No gh at all, and no config.
-    std::fs::remove_file(world.path("bin/gh")).unwrap();
-    std::fs::remove_file(world.path("project/.pre-commit-config.yaml")).unwrap();
-    let out = world.run(&["hooks", "status", "--refresh"], &[]);
-    assert_eq!(code(&out), 0, "{}", stderr(&out));
-}
-
-#[test]
-fn hooks_status_reads_the_network_once_in_30_days() {
-    let world = World::new();
-    let first = world.run(&["hooks", "status"], &[]);
-    assert_eq!(code(&first), 0);
-    let calls = world.gh_calls().len();
-    assert_eq!(
-        calls,
-        3,
-        "the latest tag and two sets: {:?}",
-        world.gh_calls()
-    );
-    let lines = status_lines(&first);
-    assert!(
-        lines.iter().any(|line| line.contains("v1.2.0 pins https://github.com/crate-ci/typos at v1.52.2, and this project pins v1.40.0")),
-        "{lines:?}"
-    );
-    assert!(
-        lines
-            .iter()
-            .any(|line| line.contains("exobrain hooks sync --to v1.2.0")),
-        "{lines:?}"
-    );
-
-    let second = world.run(&["hooks", "status"], &[]);
-    assert_eq!(code(&second), 0);
-    assert_eq!(world.gh_calls().len(), calls, "no read within 30 days");
-    assert_eq!(status_lines(&second), lines, "the cache reports the same");
-
-    let refresh = world.run(&["hooks", "status", "--refresh"], &[]);
-    assert_eq!(code(&refresh), 0);
-    assert_eq!(
-        world.gh_calls().len(),
-        calls + 1,
-        "--refresh reads the tag again"
-    );
-
-    let stamps = stamp_files(&world.path("state/exobrain/hooks"));
-    assert_eq!(stamps.len(), 1);
-    let old = jiff::Timestamp::now().as_second() - 31 * 24 * 60 * 60;
-    std::fs::write(&stamps[0], format!("{old}\n")).unwrap();
-    world.run(&["hooks", "status"], &[]);
-    assert_eq!(
-        world.gh_calls().len(),
-        calls + 2,
-        "a stamp of 31 days reads again"
-    );
-}
-
-#[test]
-fn hooks_status_reports_newer_releases_and_names_a_newer_cli() {
-    let world = World::new();
-    world.write("releases/latest", "v99.0.0\n");
-    let out = world.run(&["hooks", "status"], &[]);
-    assert_eq!(code(&out), 0);
-    let err = stderr(&out);
-    assert!(
-        err.contains("exobrain-tech v99.0.0 is out, and this host runs exobrain"),
-        "{err}"
-    );
-}
-
-#[test]
-fn hooks_status_reports_newer_releases_and_stays_quiet_on_the_latest_tag() {
-    let world = World::new();
-    let out = world.run(&["hooks", "sync", "--to", "v1.2.0"], &[]);
-    assert_eq!(code(&out), 0);
-    let out = world.run(&["hooks", "status"], &[]);
-    assert_eq!(code(&out), 0);
-    let err = stderr(&out);
-    assert!(!err.contains("this project selects"), "{err}");
+    let help = world.run(&["hooks", "--help"], &[]);
+    assert_eq!(code(&help), 0, "{}", stderr(&help));
+    let text = String::from_utf8(help.stdout).unwrap();
+    let verbs: Vec<&str> = text
+        .lines()
+        .skip_while(|line| !line.starts_with("Commands:"))
+        .skip(1)
+        .take_while(|line| !line.trim().is_empty())
+        .filter_map(|line| line.split_whitespace().next())
+        .collect();
+    assert_eq!(verbs, ["check", "sync", "help"], "{text}");
 }

@@ -1,7 +1,7 @@
 //! `exobrain hooks`: hold the hook revisions of a project to the
 //! reference sets of its exobrain-tech tag.
 //!
-//! `check` reads only local files. `sync` and `status` read GitHub through
+//! `check` reads only local files. `sync` reads GitHub through
 //! the host `gh`, through the bounded call of the release cache. The set
 //! fetch, the set cache, and the comparison with the sets of a tag serve
 //! `exobrain outdated` too.
@@ -20,7 +20,7 @@ use std::ops::Range;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use crate::cli::hooks::{CheckArgs, HooksArgs, HooksCommand, StatusArgs, SyncArgs};
+use crate::cli::hooks::{CheckArgs, HooksArgs, HooksCommand, SyncArgs};
 use crate::error::{Error, USAGE};
 use crate::{output, probe, release_cache, stamp};
 
@@ -37,9 +37,6 @@ pub const HOOK_ID: &str = "hook-revisions";
 /// The name of the repository whose `rev` selects the sets.
 const EXOBRAIN_TECH: &str = "exobrain-tech";
 
-/// `status` reads the latest release at most once in this many seconds.
-pub const STATUS_INTERVAL: i64 = 30 * 24 * 60 * 60;
-
 /// The repositories that prek resolves without a clone, and so without a
 /// `rev`.
 const LOCAL_REPOS: [&str; 3] = ["local", "meta", "builtin"];
@@ -54,16 +51,12 @@ const RENDERED: [(&str, &str); 2] = [
 ///
 /// # Errors
 ///
-/// `check` fails when it cannot read the config. `sync` and `status`
-/// report their own failures and never return an error.
+/// `check` fails when it cannot read the config. `sync` reports its own
+/// failures and never returns an error.
 pub fn run(args: &HooksArgs) -> Result<u8, Error> {
     match &args.command {
         HooksCommand::Check(args) => check(args),
         HooksCommand::Sync(args) => Ok(sync(args)),
-        HooksCommand::Status(args) => {
-            status(args);
-            Ok(0)
-        }
     }
 }
 
@@ -950,7 +943,7 @@ fn try_sync(args: &SyncArgs) -> Result<Vec<String>, String> {
     Ok(lines)
 }
 
-// --- status ---
+// --- The hook-set check of `exobrain outdated` ---
 
 /// The project facts that the hook-set check reads from the config.
 #[derive(Debug, Clone)]
@@ -990,12 +983,6 @@ pub(crate) fn read_config(path: &Path) -> Option<Config> {
     parse(&fs::read_to_string(path).ok()?).ok()
 }
 
-/// Read the project facts, or `None` when the config has no
-/// `hook-revisions` hook on a GitHub repository.
-fn project(path: &Path) -> Option<Project> {
-    Project::of(read_config(path)?)
-}
-
 /// The `<owner>/<name>` of the exobrain-tech entry of `config`, where it
 /// is a GitHub repository.
 pub(crate) fn tech_slug(config: &Config) -> Option<String> {
@@ -1007,8 +994,8 @@ pub(crate) fn own_slug() -> Option<String> {
     github_slug(env!("CARGO_PKG_REPOSITORY"))
 }
 
-/// The folder of the state of `status`.
-fn status_dir() -> Option<PathBuf> {
+/// The folder of the cached set files.
+fn sets_root() -> Option<PathBuf> {
     Some(stamp::state_dir()?.parent()?.join("hooks"))
 }
 
@@ -1016,7 +1003,7 @@ fn status_dir() -> Option<PathBuf> {
 /// state root is set or `tag` does not fit a path.
 pub(crate) fn sets_dir(slug: &str, tag: &str) -> Option<PathBuf> {
     plain_rev(tag).ok()?;
-    Some(status_dir()?.join(slug.replace('/', "-")).join(tag))
+    Some(sets_root()?.join(slug.replace('/', "-")).join(tag))
 }
 
 /// The sets `names` from the cache folder `dir`, or `None` where one of
@@ -1069,26 +1056,6 @@ pub(crate) fn load_sets(
     Ok(sets)
 }
 
-/// The current time in seconds since the epoch.
-fn now() -> i64 {
-    jiff::Timestamp::now().as_second()
-}
-
-/// Whether the stamp at `path` holds a time within the interval.
-fn fresh(path: &Path) -> bool {
-    fs::read_to_string(path)
-        .ok()
-        .and_then(|text| text.trim().parse::<i64>().ok())
-        .is_some_and(|then| {
-            let age = now() - then;
-            (0..STATUS_INTERVAL).contains(&age)
-        })
-}
-
-fn note(line: &str) {
-    output::note(&format!("exobrain hooks: {line}"));
-}
-
 /// The line that names a newer CLI, where `latest` is a greater version
 /// than the running binary.
 pub(crate) fn cli_line(latest: &str) -> Option<String> {
@@ -1138,72 +1105,6 @@ pub(crate) fn project_lines(
         "exobrain hooks: this project selects {tag}; move it with `exobrain hooks sync --to {latest}` on the branch of your next change"
     ));
     lines
-}
-
-fn status(args: &StatusArgs) {
-    let project = project(&args.config);
-    let Some(slug) = project.as_ref().map(|p| p.slug.clone()).or_else(own_slug) else {
-        return;
-    };
-    let Some(dir) = status_dir() else {
-        note("neither XDG_STATE_HOME nor HOME is set; skipped");
-        return;
-    };
-    let folder = args
-        .config
-        .parent()
-        .filter(|parent| !parent.as_os_str().is_empty())
-        .map_or_else(|| PathBuf::from("."), Path::to_path_buf);
-    let checkout = fs::canonicalize(&folder).unwrap_or(folder);
-    let stamp_path = dir.join(format!("{}.checked", stamp::key(&checkout)));
-    let repo_dir = dir.join(slug.replace('/', "-"));
-    let latest_path = repo_dir.join("latest");
-    if args.refresh || !fresh(&stamp_path) {
-        if let Err(e) = fs::create_dir_all(&repo_dir)
-            .and_then(|()| write_atomic(&stamp_path, format!("{}\n", now()).as_bytes()))
-        {
-            note(&format!(
-                "state folder {} is not writable ({e}); skipped",
-                dir.display()
-            ));
-            return;
-        }
-        let read = gh().and_then(|gh| {
-            let tag = latest_tag(&gh, &slug)?;
-            let _ = write_atomic(&latest_path, format!("{tag}\n").as_bytes());
-            if let Some(project) = &project {
-                load_sets(
-                    &slug,
-                    &tag,
-                    &project.sets,
-                    Some(&repo_dir.join(&tag)),
-                    deadline(),
-                )?;
-            }
-            Ok(())
-        });
-        if let Err(e) = read {
-            note(&format!(
-                "cannot read the latest release of {slug} ({e}); the next read runs in 30 days, or now with --refresh"
-            ));
-        }
-    }
-    let Some(latest) = fs::read_to_string(&latest_path)
-        .ok()
-        .map(|text| text.trim().to_owned())
-        .filter(|tag| plain_rev(tag).is_ok())
-    else {
-        return;
-    };
-    if let Some(line) = cli_line(&latest) {
-        output::note(&line);
-    }
-    if let Some(project) = &project {
-        let sets = cached_sets(&repo_dir.join(&latest), &project.sets);
-        for line in project_lines(project, &latest, sets.as_deref()) {
-            output::note(&line);
-        }
-    }
 }
 
 #[cfg(test)]
