@@ -11,25 +11,24 @@ Each section names the reading it maps.
 <https://github.com/gubasso/release-kit>. The pattern is implemented end to end. Read on 2026-11-16
 at release `v0.10.1`, trunk commit `20ffd0a`.
 
-| Concept              | The name it carries there                                                                     |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| Acquisition boundary | The project's own manager, with `rk self-depend` assisting rather than resolving              |
-| Host install answer  | `[acquisition]` in `.release-kit/config.toml`, written by `rk self-depend add --host`         |
-| Projection           | `Projection::compute` over `ProjectionInput`, in `src/projection.rs`                          |
-| Classification       | `classification` in `rk status --json`                                                        |
-| Stage                | `rk stage`, writing a `stage.json` receipt at schema `rk.stage/9`                             |
-| Compare              | `rk stage compare`, with state, provenance, the landing's word, and `replaceable`             |
-| Receipt              | `.release-kit/manifest.json`, at receipt schema 12                                            |
-| Direct landing       | `rk init`, `rk upgrade`, and `rk adopt`, each taking `--stage` and `--replace`                |
-| Landing outcomes     | `created`, `replaced`, `matched`, `preserved`, `drift`, `retired`, `dropped`, and `collision` |
-| Migration            | `rk migrate`: inventory, archive, mark, status, and close                                     |
-| Release state        | `rk release status`, at schema `rk.release-status/1`                                          |
-| Router skills        | `rk-setup`, and `rk-release` with one reference file per task                                 |
-| Documentation index  | `rk method` and `rk guide`                                                                    |
-| Version gate         | Five classes in `src/landing/gate.rs`, and a refusal exits 73                                 |
-| Project skills       | Each landing writes `rk-setup` and `rk-release` into `.claude/skills/` and `.agents/skills/`  |
-| Verification         | `rk status --check`                                                                           |
-| Cleanup              | `rk stage clean`                                                                              |
+| Concept              | The name it carries there                                                                                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Acquisition boundary | The project's own manager moves the pin with its native command. A flake project learns of a newer release from `exobrain outdated` and moves the tag with `flake-edit update <input>` |
+| Projection           | `Projection::compute` over `ProjectionInput`, in `src/projection.rs`                                                                                                                   |
+| Classification       | `classification` in `rk status --json`                                                                                                                                                 |
+| Stage                | `rk stage`, writing a `stage.json` receipt at schema `rk.stage/9`                                                                                                                      |
+| Compare              | `rk stage compare`, with state, provenance, the landing's word, and `replaceable`                                                                                                      |
+| Receipt              | `.release-kit/manifest.json`, at receipt schema 12                                                                                                                                     |
+| Direct landing       | `rk init`, `rk upgrade`, and `rk adopt`, each taking `--stage` and `--replace`                                                                                                         |
+| Landing outcomes     | `created`, `replaced`, `matched`, `preserved`, `drift`, `retired`, `dropped`, and `collision`                                                                                          |
+| Migration            | `rk migrate`: inventory, archive, mark, status, and close                                                                                                                              |
+| Release state        | `rk release status`, at schema `rk.release-status/1`                                                                                                                                   |
+| Router skills        | `rk-setup`, and `rk-release` with one reference file per task                                                                                                                          |
+| Documentation index  | `rk method` and `rk guide`                                                                                                                                                             |
+| Version gate         | Five classes in `src/landing/gate.rs`, and a refusal exits 73                                                                                                                          |
+| Project skills       | Each landing writes `rk-setup` and `rk-release` into `.claude/skills/` and `.agents/skills/`                                                                                           |
+| Verification         | `rk status --check`                                                                                                                                                                    |
+| Cleanup              | `rk stage clean`                                                                                                                                                                       |
 
 The stage receipt names what the stage holds: the candidates with their destination, kind, placement, and digest; the omissions with a reason; the collisions; the retired and the dropped destinations; and the reference material the stage exposes without landing.
 
@@ -62,27 +61,26 @@ The release skill's gate reads `rk release status --json` and picks `release`, `
 
 The upstream canon this repository runs as a pinned tool, named and linked once in the root `AGENTS.md` and versioned in `.spec-driven-docs/manifest.json`. Read on 2026-11-16 at release `v0.18.1`, trunk commit `57fa78f`.
 
-| Concept              | The name it carries there                                                           |
-| -------------------- | ----------------------------------------------------------------------------------- |
-| Acquisition boundary | The project's own manager, with `sdd self-depend` assisting                         |
-| Host install answer  | `acquisition` in the declaration, written by `sdd self-depend add --host`           |
-| Projection           | A payload embedded at compile time from the authored paths                          |
-| Classification       | `classification` in `sdd status --json`                                             |
-| Stage                | `sdd stage`, writing a `stage.json` receipt at schema `sdd.stage/1`                 |
-| Compare              | `sdd stage compare`, with state, ownership, provenance, and `replaceable`           |
-| Receipt              | `.spec-driven-docs/manifest.json`, at schema 3                                      |
-| Ownership classes    | Managed, adopted, and a marked region in a project-owned file                       |
-| Direct landing       | `sdd init --stage` and `sdd upgrade --stage`                                        |
-| Named replace        | `sdd upgrade --replace`, saving each replaced file first                            |
-| Environment and lint | `sdd env` and `sdd lint`, with `sdd lint prove`                                     |
-| Migration            | `sdd migrate`: inventory, archive, mark, status, and close                          |
-| Incremental landing  | `sdd init --incremental`, beside a corpus that stays, recording its debt            |
-| Router skills        | `sdd-setup`, with one reference file per task, and `sdd-write-docs`                 |
-| Documentation index  | `sdd docs`, then `sdd docs <topic>`                                                 |
-| Version gate         | Five classes in `src/landing/gate.rs`, and a refusal exits 73                       |
-| Project skills       | `sdd init` and `sdd upgrade` write `sdd-setup` and `sdd-write-docs` into both roots |
-| Verification         | `sdd verify`                                                                        |
-| Cleanup              | `sdd stage clean`                                                                   |
+| Concept              | The name it carries there                                                                                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Acquisition boundary | The project's own manager moves the pin with its native command. A flake project learns of a newer release from `exobrain outdated` and moves the tag with `flake-edit update <input>` |
+| Projection           | A payload embedded at compile time from the authored paths                                                                                                                             |
+| Classification       | `classification` in `sdd status --json`                                                                                                                                                |
+| Stage                | `sdd stage`, writing a `stage.json` receipt at schema `sdd.stage/1`                                                                                                                    |
+| Compare              | `sdd stage compare`, with state, ownership, provenance, and `replaceable`                                                                                                              |
+| Receipt              | `.spec-driven-docs/manifest.json`, at schema 3                                                                                                                                         |
+| Ownership classes    | Managed, adopted, and a marked region in a project-owned file                                                                                                                          |
+| Direct landing       | `sdd init --stage` and `sdd upgrade --stage`                                                                                                                                           |
+| Named replace        | `sdd upgrade --replace`, saving each replaced file first                                                                                                                               |
+| Environment and lint | `sdd env` and `sdd lint`, with `sdd lint prove`                                                                                                                                        |
+| Migration            | `sdd migrate`: inventory, archive, mark, status, and close                                                                                                                             |
+| Incremental landing  | `sdd init --incremental`, beside a corpus that stays, recording its debt                                                                                                               |
+| Router skills        | `sdd-setup`, with one reference file per task, and `sdd-write-docs`                                                                                                                    |
+| Documentation index  | `sdd docs`, then `sdd docs <topic>`                                                                                                                                                    |
+| Version gate         | Five classes in `src/landing/gate.rs`, and a refusal exits 73                                                                                                                          |
+| Project skills       | `sdd init` and `sdd upgrade` write `sdd-setup` and `sdd-write-docs` into both roots                                                                                                    |
+| Verification         | `sdd verify`                                                                                                                                                                           |
+| Cleanup              | `sdd stage clean`                                                                                                                                                                      |
 
 It departs from the rule of [Candidate artifacts and receipts](./candidate-artifacts-and-receipts.md#a-destination-the-candidate-stops-producing) in two ways. An edited managed file that the release no longer lands is a conflict rather than a dropped file. The upgrade refuses until `sdd upgrade --replace` names it, and then it saves the bytes and removes the file. The landing also removes a vouched file only under `.spec-driven-docs/`, `.claude/skills/`, and `.agents/skills/`. Elsewhere the file stays on disk and leaves the record.
 
