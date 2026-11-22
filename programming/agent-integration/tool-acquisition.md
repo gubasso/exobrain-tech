@@ -33,7 +33,7 @@ A venue joins the list only where the tool's own release publishes to it under c
 
 ## The pin
 
-Each manager records the version in its own form, and a sync moves what that manager records.
+Each manager records the version in its own form, and the native command of that manager moves it.
 
 ```text
 flake input      github:<owner>/<repo>/<tag> in flake.nix, and the input's node in flake.lock
@@ -49,42 +49,30 @@ One target runs one bump mechanism. Two mechanisms over the same files on the sa
 
 ## Keeping the pin fresh
 
-A pin a person moves by hand goes stale. The loop that moves it without a person has four properties a consumer can check for.
+A pin that nobody moves goes stale. The failure is invisible: everything works at the version of the landing day, nothing fails, and so nothing reports it.
 
-One transaction. Where the manager records two facts, a tag and its locked node, both move or neither does. A tag whose lock did not follow is a version the environment has not taken. Where the manager records one fact, the sync moves that one fact in place, because a second file would be a second pin.
+The manager of the project moves a pin with its native command:
 
-One rate limit. The sync runs from the project's shell entry, which fires on every directory entry, so a stamp kept per checkout holds it to at most one attempt a day.
+- A flake: `flake-edit update <input>` moves an input pinned at a version tag and relocks, and `nix flake update` moves a branch input.
+- mise: `mise upgrade --bump <tool>`.
+- asdf: `asdf set <tool> latest`.
+- devbox: `devbox update`, or `devbox add` for an exact pin.
 
-Two registers. The caller selects how the run reports. The shell-entry caller stays silent and exits 0 on every outcome, a failed sync included, because a development shell that refuses to open over a stale pin is worse than the stale pin. The operator caller reports every outcome against an exit-code matrix.
+Where the manager records two facts, a tag and its locked node, the move takes both. A tag whose lock did not follow is a version the environment has not taken. `flake-edit update` writes `flake.nix` before it locks. If the lock step fails, `git restore flake.nix` takes the pair back. The move leaves a diff over the manager file and its lock for review, and nothing commits or pushes it.
 
-No write the consumer did not review. What the loop leaves behind is a diff over the manager file and its lock. It never commits and never pushes.
+A report tells the project that a pin is behind, and moves nothing. mise reports with `mise outdated --bump`. A project on asdf or devbox uses the native report of its manager, with the limits that [Dev environment features](../project-bootstrap/COMPARISON-dev-tool-features.md#warn-when-a-pinned-tool-has-a-newer-release) records. Nix has no report for a flake input pinned at a version tag.
 
-```text
-directory entry -> shell loader -> sync, shell-entry caller
-                                     stamp   at most one attempt today
-                                     fence   both files move or neither
-                                     result  a diff waiting for review
-```
-
-Two conditions switch the loop off rather than complicate it: a continuous-integration environment, where the pin is whatever the checkout carries, and one variable the operator sets. Where the shell loader watches the files it loads from, a moved pair reloads the environment on the next prompt with no further step.
+`exobrain outdated` is an opt-in helper for that gap. A flake project that opts in runs it from `.envrc` and learns of a newer tag release on shell load. The command reads each upstream at most once a week, always exits 0, and names the command that moves the pin. A project that does not opt in uses its native tools.
 
 ## What a tool owes its consumers
 
-A tool distributed as another project's development dependency owes its consumers this loop. It is an obligation of the tool, not an extra the consumer earns by asking.
+A tool distributed as another project's development dependency owes its consumers a pin that they move with the manager they run. A pair of the matrix that renders gives them that. The tool owes no sync verb and no loop of its own, because one target runs one bump mechanism, and the manager of the project is that mechanism.
 
-Three things discharge it.
+The setup path raises acquisition as a decision the operator answers. Where a target carries no manager, the tool offers the route: a manager it serves, a host install, or wiring the operator does by hand. It records the answer so that a refusal is a decision and nobody asks twice. Only a recorded answer, a refusal included, silences the offer, because a project with no manager is usually a project nobody asked.
 
-- The tool ships the sync verb.
-- Its status verb reports, offline, whether a target carries the wire, and exits 0 for every state it reports, because a report is not a verdict.
-- Its setup path raises a missing wire as a decision the operator answers, instead of a verb the operator has to discover, and a target with no manager at all is a missing wire too.
+The alternative, where the consumer reads a manual and finds the route alone, is refused. A capability nobody offers reaches only the operator who already knew it existed, which is usually the tool's own author.
 
-The failure this prevents is a consumer pinned at a release nobody moves. It is invisible by construction. Everything works, at the version that was current on the day of the landing. Nothing fails, so nothing reports it, and the gap surfaces when somebody reads a manifest and compares it to a release list.
-
-The alternative, where the consumer reads a manual and wires the loop by hand, is refused. A capability nobody offers reaches only the operator who already knew it existed, which is usually the tool's own author.
-
-What decides the offer is whether the project answered, not whether a manager is wired. Where a target carries a manager and no freshness line, the tool offers the line. Where a target carries no manager, the tool offers the route: a manager it serves, a host install, or wiring the operator does by hand, and it records the answer so that a refusal is a decision and nobody asks twice. Only a recorded answer, a refusal included, silences the offer, because a project with no manager is usually a project nobody asked.
-
-A tool that ships a setup skill also provisions itself. Where the host lacks the tool, runs an older version than the repository records, or the repository records no way to obtain it, the skill asks how the project obtains the tool and how the environment loads it, proposes the manager the repository already carries, and runs each install as a step the operator approves. Every answer lands in a file the contributors share. A host install leaves no manager file, so the tool records it as a decision in its own configuration, with the lowest version a host may run, and its status reads that decision as a state of its own rather than as an unwired target. [Setup skill skeleton](./setup-skill-skeleton.md) states the task.
+A tool that ships a setup skill also provisions itself. Where the host lacks the tool, runs an older version than the repository records, or the repository records no way to obtain it, the skill asks how the project obtains the tool and how the environment loads it, proposes the manager the repository already carries, and runs each install as a step the operator approves. Every answer lands in a file the contributors share. A host install leaves no manager file, so the tool records it as a decision in its own configuration, with the lowest version a host can run. The tool reads that decision as a route of its own, not as a target with no route. [Setup skill skeleton](./setup-skill-skeleton.md) states the task.
 
 ## Serving against editing
 
@@ -92,7 +80,7 @@ A tool prints the fragment with its anchor and its placement, and edits no manif
 
 The reason is ownership. A manager file belongs to the project. A tool that edits it is a second writer into a file with one owner, and a lexical scan of another project's configuration language is not the judgment a write into it needs. Printed text also costs the automated path nothing, because an agent applies a fragment as readily as a person does.
 
-The freshness loop is the one bounded exception, and the consumer authorized it by landing the line that calls it. The four properties above are what bound it.
+The rule has no exception. A tool runs no loop that moves a pin, so it edits no manifest that the project owns. The manager of the project moves its own pin.
 
 ## Growing the lists
 

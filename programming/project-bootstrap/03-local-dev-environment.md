@@ -75,7 +75,7 @@ A version requirement uses Cargo's syntax, with an explicit operator. Cargo read
 schema = 1
 
 [tools.exobrain]
-version = ">=1.2.0"
+version = ">=2.0.0"
 
 [tools.git]
 version = ">=2.36.0"
@@ -87,16 +87,18 @@ version = ">=2.57.0"
 version = "*"
 ```
 
-The host supplies the `exobrain` CLI, like prek and git, so its `host-requirements.toml` entry names the oldest version that carries `exobrain hooks check`, which the hook `hook-revisions` calls ([04 — Reference hook sets](./04-quality-gates.md#reference-hook-sets)). The devshell holds no `exobrain` package, because a devshell copy comes first on the `PATH` and hides a newer host CLI. Each CI job that runs the hooks provides the CLI at the release that the project pins.
+The host supplies the `exobrain` CLI, like prek and git. Its `host-requirements.toml` entry names the oldest release that carries `exobrain outdated`, which `.envrc` runs. That release also carries `exobrain hooks check`, which the hook `hook-revisions` calls ([04 — Reference hook sets](./04-quality-gates.md#reference-hook-sets)). The devshell holds no `exobrain` package, because a devshell copy comes first on the `PATH` and hides a newer host CLI. Each CI job that runs the hooks provides the CLI at the release that the project pins.
 
 `exobrain host-check` reads the file. With no argument it checks every tool, and with names it checks only those. It reports each missing tool and each version that misses its requirement, one line each, and then exits 1. It never picks another tool. Where a tool is missing, the developer installs it. Nothing checks when a shell enters the folder, so `.envrc` holds no check. It holds two warnings of the `exobrain` CLI, each of which exits 0 and moves nothing:
 
 ```bash
-exobrain hooks status || true
+exobrain outdated || true
 exobrain store-guard --daily || true
 ```
 
-The first reports a newer CLI or newer hook revisions than the project pins. The second reports a store copy of the checkout once a day, and runs `prek cache gc` once a week.
+The first reports an old nixpkgs pin, a newer release of an input pinned at a version tag, a newer `exobrain` CLI, and newer hook-set revisions. A project with a lock other than `flake.lock` names each lock, such as `exobrain outdated flake.lock nix/flake.lock`. The second reports a store copy of the checkout once a day, and runs `prek cache gc` once a week. A flake project of this canon runs both (`project-platform:a-flake-project-runs-the-outdated-check`).
+
+Each warning names the command that moves the pin. `flake-edit update <input>` moves a tag pin and relocks, and the host supplies `flake-edit`. It writes `flake.nix` before it locks. If the lock step fails, run `git restore flake.nix`. [Dev environment features](./COMPARISON-dev-tool-features.md) names the native command of each tool for each feature, and each gap that `exobrain` fills.
 
 The call site decides where the check runs and names the tools that it needs:
 

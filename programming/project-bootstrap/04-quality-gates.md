@@ -117,7 +117,7 @@ The hook calls `exobrain hooks check --sets-dir {hook_repo}/programming/project-
 Four commands of the `exobrain` CLI carry the rest of the convention:
 
 - `exobrain hooks sync --to <tag>` moves the exobrain-tech entry and every revision of the named sets in one commit. A project moves when it has work, on the branch of that work, so the drift across projects shrinks to the number of exobrain-tech releases in use.
-- `exobrain hooks status`, which `.envrc` runs, reports a newer CLI or newer revisions than the project pins. It reads the latest exobrain-tech release at most once every 30 days, and always exits 0. A person or an agent reads it and decides when to move.
+- `exobrain outdated`, which `.envrc` runs, reports a newer CLI or newer revisions than the project pins, beside its checks of the flake lock. It reads the latest exobrain-tech release at most once a week, and always exits 0. A person or an agent reads it and decides when to move.
 - `exobrain store-guard --daily`, which `.envrc` runs too, also runs `prek cache gc` at most once a week. prek then removes every clone and environment that no configuration on disk pins, so the environments of a tag go when the last project leaves it.
 - `exobrain hooks check` is what `hook-revisions` calls, with the set files of the tag that prek cloned.
 

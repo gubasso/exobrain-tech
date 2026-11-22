@@ -1,6 +1,6 @@
 ---
 digest-of: programming/agent-integration
-last-synced: 2026-11-17
+last-synced: 2026-11-22
 token-estimate: 2000
 ---
 
@@ -62,7 +62,7 @@ How a project is built to be discovered, operated, and trusted by a coding agent
 
 ### Acquisition and versions
 
-- Manager against venue, crossed into one matrix: every pair renders or is manual with a closed reason, one target runs one bump mechanism, and the pin's freshness loop is the tool's obligation. A target with no manager is offered the route too, and only a recorded answer silences the offer.
+- Manager against venue, crossed into one matrix: every pair renders or is manual with a closed reason, one target runs one bump mechanism, and that mechanism is the native command of the project's manager. No tool owes a sync verb, and `exobrain outdated` is an opt-in report for a flake input pinned at a version tag. A target with no manager is offered the route too, and only a recorded answer silences the offer.
 - Every invocation carries a gate class. A writing command refuses a record that differs from the binary, a read-only one warns when the binary is newer, and the gate never writes.
 - A tool's own repository pins its previous release. The binary built from the tree runs only under test.
 - Acquisition belongs to the project's manager, and landing fetches no other version. A setup skill provisions its own tool, and the repository records how, a host install included.

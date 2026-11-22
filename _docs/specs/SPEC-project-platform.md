@@ -26,6 +26,8 @@
     - [Scenario: A hook evaluates its own flake](#scenario-a-hook-evaluates-its-own-flake)
   - [`project-platform:a-large-build-folder-gets-a-warning` — A large build folder gets a warning](#project-platforma-large-build-folder-gets-a-warning--a-large-build-folder-gets-a-warning)
     - [Scenario: A worktree restores its dependencies from the compile cache](#scenario-a-worktree-restores-its-dependencies-from-the-compile-cache)
+  - [`project-platform:a-flake-project-runs-the-outdated-check` — A flake project runs the outdated check](#project-platforma-flake-project-runs-the-outdated-check--a-flake-project-runs-the-outdated-check)
+    - [Scenario: A project keeps a second lock for its tools](#scenario-a-project-keeps-a-second-lock-for-its-tools)
   - [`project-platform:a-rust-project-builds-through-the-host-compile-cache` — A Rust project builds through the compile cache of the host](#project-platforma-rust-project-builds-through-the-host-compile-cache--a-rust-project-builds-through-the-compile-cache-of-the-host)
     - [Scenario: CI builds a Rust project](#scenario-ci-builds-a-rust-project)
 - [Unenforced](#unenforced)
@@ -262,6 +264,18 @@ A Rust project that follows this canon MUST run `exobrain store-guard --daily` f
 
 Verify: `cargo nextest run -E 'test(large_build_folder)'`
 
+### `project-platform:a-flake-project-runs-the-outdated-check` — A flake project runs the outdated check
+
+A project that follows this canon, and whose dev environment is a Nix flake, MUST run `exobrain outdated` from its `.envrc`, and MUST list `exobrain` in `host-requirements.toml`. Where a lock of the project is not `flake.lock`, the call names the path of each lock. The line ends in `|| true` and sits beside `exobrain store-guard --daily || true`, so the `.envrc` holds two warnings, and neither one moves a pin. No hook checks the line. `SPEC-outdated.md` owns what the command reports. The chapter that states the convention is `programming/project-bootstrap/03-local-dev-environment.md`, "Host requirements", and `programming/project-bootstrap/COMPARISON-dev-tool-features.md` names the gaps that the command fills.
+
+#### Scenario: A project keeps a second lock for its tools
+
+- GIVEN a flake project with `flake.lock` and `nix/flake.lock`
+- WHEN a developer enters the folder and direnv runs `.envrc`
+- THEN `.envrc` runs `exobrain outdated flake.lock nix/flake.lock || true`, and the shell opens whatever the command reports
+
+Verify: `just test-rust-envrc`
+
 ### `project-platform:a-rust-project-builds-through-the-host-compile-cache` — A Rust project builds through the compile cache of the host
 
 A Rust project that follows this canon MUST build through kache, the compile cache that the host owns. These parts carry the rule:
@@ -287,6 +301,7 @@ Verify: `just test-rust-envrc`
 
 No command decides these rules, or a command decides only part of each. A reviewer confirms the rest.
 
-| Rule                                                    | Reviewer confirms                                                 |
-| ------------------------------------------------------- | ----------------------------------------------------------------- |
-| `project-platform:library-topics-stay-platform-neutral` | The chapter states no operating system as a universal requirement |
+| Rule                                                       | Reviewer confirms                                                                                              |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `project-platform:library-topics-stay-platform-neutral`    | The chapter states no operating system as a universal requirement                                              |
+| `project-platform:a-flake-project-runs-the-outdated-check` | The `.envrc` of each flake project runs `exobrain outdated`, and its `host-requirements.toml` lists `exobrain` |

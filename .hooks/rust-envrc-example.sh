@@ -73,7 +73,7 @@ done
 
 want=$(printf '%s\n' \
   'use flake' \
-  'exobrain hooks status' \
+  'exobrain outdated' \
   'exobrain store-guard --daily' \
   'child kache' \
   "wrapper $work/bin/kache")
