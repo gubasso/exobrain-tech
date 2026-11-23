@@ -266,3 +266,25 @@ tracked:
         setup skill task files
       - advance last_checked
     dependents: []
+
+  - id: prek-cache-gc-running-hook-race
+    path: _docs/reference/known-issues/KI-prek-cache-gc-removes-a-running-hook-environment.md
+    last_checked: 2026-11-23
+    cadence_days: 30
+    why: >-
+      prek cache gc removes the clone and environment of a hook that still
+      runs, and a prek release can fix the lock scope or teach gc about live
+      runs at any time.
+    revalidate:
+      - re-read https://github.com/j178/prek/issues/3066 and note its state
+        and any linked fix
+      - read the release notes of each prek release since last_checked at
+        https://github.com/j178/prek/releases
+      - if a release fixes the race, retire the record, and change
+        cli:store-guard-daily-runs-prek-gc-once-a-week and its test with it
+      - otherwise correct the affected versions in the record and the rule,
+        and advance checked in the record
+      - advance last_checked
+    dependents:
+      - _docs/specs/SPEC-cli.md
+      - crates/exobrain/tests/cmd_store_guard.rs
