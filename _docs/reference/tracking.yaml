@@ -346,3 +346,29 @@ tracked:
       - correct the page and its version, then advance last_checked
     dependents:
       - programming/agent-integration/credential-gateways.md
+  - id: codex-sandbox
+    path: tools/codex/sandbox.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      The permission profile, the network proxy, and the bwrap behavior of
+      Codex are release-bound behavior of one vendor. Several facts come only
+      from probes of one release on one host, and the proxy and the
+      credential mask are features that are not ready.
+    revalidate:
+      - re-read https://learn.chatgpt.com/docs/permissions
+      - re-read https://learn.chatgpt.com/docs/sandboxing
+      - correct each documented setting - the permission profile,
+        features.network_proxy, network.domains, and allow_local_binding -
+        with the stage that codex features list shows for network_proxy and
+        credential_masking
+      - for the probe-only facts, rerun in a sandboxed command of the current
+        release - a request to the loopback gateway and to an unlisted host, a
+        second loopback port under the same allow entry, the route with
+        allow_local_binding = true, a deny under the /var/run symlink and a
+        deny glob under /tmp, and a commit from a linked worktree with write
+        on only the four paths of the page
+      - check the state of openai/codex pull request 52302
+      - correct the page and its version, then advance last_checked
+    dependents:
+      - programming/agent-integration/credential-gateways.md

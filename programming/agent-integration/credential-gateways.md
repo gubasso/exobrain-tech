@@ -113,6 +113,8 @@ An open loopback lets an agent reach every code runner that listens on it. A deb
 
 A code runner on loopback carries its own authentication, or it listens on a Unix socket that the sandbox denies. A runner with neither guard is an open shell on the host.
 
+[Codex sandbox](../../tools/codex/sandbox.md) records one sandbox proxy that reaches a loopback gateway and opens every loopback port with it.
+
 ## Checklist
 
 - [ ] The agent holds no credential, and a program on the host holds each one on loopback.
@@ -135,4 +137,5 @@ A code runner on loopback carries its own authentication, or it listens on a Uni
 - [Skill security](./skill-security.md): no secret in a prompt, a log, an example, or a fixture.
 - [Caddy](../../infra/web-server/caddy.md): a loopback HTTP gateway in Caddy, with its client settings.
 - [Claude Code sandbox](../../tools/claude-code/sandbox.md): the sandbox network, the socket settings, and the credential mask of Claude Code.
+- [Codex sandbox](../../tools/codex/sandbox.md): the permission profile, the network proxy, and the deny forms of Codex.
 - [Sandbox isolation backends](../../infra/sandbox-isolation-backends/00-threat-model-and-principles.md): the isolation boundary and its threat model.
