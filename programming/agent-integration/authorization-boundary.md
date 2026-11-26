@@ -6,7 +6,7 @@ An agent acts on what the request asks for and on nothing that merely follows fr
 
 An agent takes the actions the request names. A request to change code authorizes the file changes alone: no branch, no commit, no push, no merge, no release, and no message to anyone, unless the request names that action. An action does not become authorized because it is the next step of a workflow the agent knows.
 
-The boundary is prose in the instruction file, not a mechanism. The commit hooks and the forge's branch protections bound the end state: what a commit may contain, and what may reach the trunk. [Credential gateways](./credential-gateways.md) states how an agent reaches the forge without holding its credential, and why a gateway leaves the trunk to the forge. Neither one tells an agent from a person. A push the protections accept is a valid push whoever made it, so only the instruction the agent reads can say whether this agent was asked to make it.
+The boundary is prose in the instruction file, not a mechanism. The commit hooks and the forge's branch protections bound the end state: what a commit may contain, and what may reach the trunk. Neither one tells an agent from a person. A push the protections accept is a valid push whoever made it, so only the instruction the agent reads can say whether this agent was asked to make it. [Credential gateways](./credential-gateways.md) states how an agent reaches the forge without holding its credential, and why a gateway leaves the trunk to the forge.
 
 ## The cost the boundary carries
 
