@@ -1,7 +1,7 @@
 ---
 digest-of: tools/git
-last-synced: 2026-09-25
-token-estimate: 300
+last-synced: 2026-11-25
+token-estimate: 400
 ---
 
 # AGENTS
@@ -12,12 +12,13 @@ Git command references and workflow notes. Top-level material covers day-to-day 
 
 ## Key Points
 
-- **Commands**: Practical command snippets for checkout, branching, merge handling, and conflict recovery.
-- **Branching**: Feature-lifecycle notes and related command sequences for local and remote branch work. The example vocabulary is shared across the bucket: `master` is the trunk and `origin` the remote, and a branch a worked example names takes one of the two short-lived forms, `<type>/<slug>` or `<issue-id>-<slug>`. A command whose subject is the mechanic rather than the scenario writes its branch as an angle-bracket slot, so no reader copies a placeholder as a name. The model itself lives in [trunk-based development](../../workflows/trunk-based-development.md).
-- **Administration**: GitHub, Gitolite, and GitLab repository management notes.
-- **Authentication**: `gh`/`glab` auth runbooks — check status, keyring token storage, and HTTPS git credential-helper setup.
-- **Workflows**: Rebase and origin-state runbooks for repeatable branch operations, plus the `git-remote-gcrypt` recipe for a forge that stores only ciphertext.
-- **Comparison material**: Diffs and command examples complement the workflow guides.
+- Commands: Practical command snippets for checkout, branching, merge handling, and conflict recovery.
+- Branching: Feature-lifecycle notes and related command sequences for local and remote branch work. The example vocabulary is shared across the bucket: `master` is the trunk and `origin` the remote, and a branch a worked example names takes one of the two short-lived forms, `<type>/<slug>` or `<issue-id>-<slug>`. A command whose subject is the mechanic rather than the scenario writes its branch as an angle-bracket slot, so no reader copies a placeholder as a name. The model itself lives in [trunk-based development](../../workflows/trunk-based-development.md).
+- Administration: GitHub, Gitolite, and GitLab repository management notes.
+- Authentication: `gh`/`glab` auth runbooks — check status, keyring token storage, and HTTPS git credential-helper setup.
+- Storage gateway: git-annex reaches an encrypted remote through an rclone gateway that holds the credential and the crypt key. The page separates documented facts from dated probe results, and keeps the S3 signature failure as an unproven hypothesis.
+- Workflows: Rebase and origin-state runbooks for repeatable branch operations, plus the `git-remote-gcrypt` recipe for a forge that stores only ciphertext.
+- Comparison material: Diffs and command examples complement the workflow guides.
 
 ## Maintenance Notes
 

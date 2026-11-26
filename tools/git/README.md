@@ -59,10 +59,6 @@ git for-each-ref --format="%(refname:short) %(upstream:track) %(upstream:remoten
 
 ### Clone and switch to a branch
 
-```sh
-git checkout -b feat/auth origin/feat/auth
-```
-
 You can do it in one shot with `git`—create the local branch **with the same name** and set it to track the remote branch.
 
 Assuming the remote is `origin` and the branch is `feat/auth`:
@@ -196,6 +192,8 @@ This README keeps the git command mechanics. The day-to-day loop that feeds the 
   - checking, fixing, and setting up `glab` authentication (keyring + HTTPS credential helper)
 - [gh-auth.md](./gh-auth.md)
   - checking, fixing, and setting up `gh` authentication (keyring + HTTPS credential helper)
+- [git-annex-through-a-gateway.md](./git-annex-through-a-gateway.md)
+  - git-annex against an encrypted storage remote through an rclone gateway that holds the credential and the key
 - [workflows/](./workflows/)
   - end-to-end git workflow guides
 - [cmds-examples.md](./cmds-examples.md)

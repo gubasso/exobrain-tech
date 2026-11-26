@@ -372,3 +372,31 @@ tracked:
       - correct the page and its version, then advance last_checked
     dependents:
       - programming/agent-integration/credential-gateways.md
+  - id: git-annex-through-a-gateway
+    path: tools/git/git-annex-through-a-gateway.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      How git-annex caches and leaks credentials, which addresses it refuses,
+      how its S3 remote signs, and how rclone serves WebDAV and fixes its
+      crypt settings are release-bound behavior of two tools. Several facts
+      come only from probes of one release of each.
+    revalidate:
+      - re-read https://git-annex.branchable.com/special_remotes/webdav/
+      - re-read https://git-annex.branchable.com/special_remotes/S3/
+      - re-read https://git-annex.branchable.com/git-annex/ for
+        annex.cachecreds and annex.security.allowed-ip-addresses
+      - re-read https://rclone.org/commands/rclone_serve_webdav/
+      - re-read https://rclone.org/crypt/
+      - correct the WebDAV remote, the S3 remote, rclone serve webdav, and the
+        crypt settings with their fixed-at-first-object rule
+      - for the probe-only facts, rerun with the current releases - the S3
+        remote against rclone serve s3 on a high port and on port 80, a
+        loopback remote without annex.security.allowed-ip-addresses, a remote
+        with the default annex.cachecreds, a TCP connection of nixpkgs
+        git-annex on openSUSE Tumbleweed, and a restore from a fresh crypt
+        remote with only the password and salt
+      - correct the page and its versions, keep the S3 hypothesis labeled
+        unproven unless a probe proves it, then advance last_checked
+    dependents:
+      - programming/agent-integration/credential-gateways.md

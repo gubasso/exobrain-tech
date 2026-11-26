@@ -80,6 +80,8 @@ A storage remote follows the same rule. A program on the host holds the storage 
 
 The encryption key of the gateway is then the only restore key. Without it, the stored objects cannot be read again. Back the key up off the machine before the first copy.
 
+[git-annex through a gateway](../../tools/git/git-annex-through-a-gateway.md) shows this shape with an rclone gateway, and the git-annex settings it needs.
+
 ## What a gateway does not hold
 
 A gateway bounds what the agent can send. It does not decide what reaches the trunk, and it does not decide which actions a request authorizes. Two other owners hold those rules.
@@ -138,4 +140,5 @@ A code runner on loopback carries its own authentication, or it listens on a Uni
 - [Caddy](../../infra/web-server/caddy.md): a loopback HTTP gateway in Caddy, with its client settings.
 - [Claude Code sandbox](../../tools/claude-code/sandbox.md): the sandbox network, the socket settings, and the credential mask of Claude Code.
 - [Codex sandbox](../../tools/codex/sandbox.md): the permission profile, the network proxy, and the deny forms of Codex.
+- [git-annex through a gateway](../../tools/git/git-annex-through-a-gateway.md): git-annex against an rclone storage gateway, with the crypt settings and the restore key.
 - [Sandbox isolation backends](../../infra/sandbox-isolation-backends/00-threat-model-and-principles.md): the isolation boundary and its threat model.
