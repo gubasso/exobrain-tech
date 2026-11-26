@@ -486,57 +486,35 @@ fn weekly_prek_gc_runs_once_across_concurrent_checkouts() {
 }
 
 /// This test documents a race of prek that `SPEC-cli.md` records, against
-/// the host's prek. A hook runs outside the store lock, and `gc` keeps only
-/// what the configurations on disk pin. When the configuration moves its
-/// `rev` during a run, the weekly `gc` removes the clone that the running
-/// hook reads, and that hook run fails. If prek starts to keep the files
-/// of a running hook, this test fails, and the spec text changes with it.
+/// the host's prek. On prek 0.5.7 to 0.5.11, a hook runs outside the store
+/// lock, and `gc` keeps only what the configurations on disk pin. When the
+/// configuration moves its `rev` during a run, the weekly `gc` removes the
+/// clone that the running hook reads, and that hook run fails. On prek
+/// 0.5.12 and later, the run holds a shared lock on the store, and `gc`
+/// refuses while the hook runs.
 ///
-/// The test asserts the race only for the prek versions that the spec
-/// names. For any other version it prints the version and the reason on
+/// For a version before 0.5.7 the test prints the version and the reason on
 /// stderr and returns, and `.config/nextest.toml` shows that output.
 #[test]
-fn weekly_prek_gc_removes_the_clone_of_a_running_hook_whose_config_moved_its_rev() {
+fn weekly_prek_gc_during_a_hook_run_whose_config_moved_its_rev() {
     let world = World::new();
     let prek = world.real_prek();
     let version = support::prek_version(&prek);
-    let range = semver::VersionReq::parse(">=0.5.7, <=0.5.11").unwrap();
-    if !range.matches(&version) {
+    let racy = semver::VersionReq::parse(">=0.5.7, <=0.5.11").unwrap();
+    let fixed = semver::VersionReq::parse(">=0.5.12").unwrap();
+    if racy.matches(&version) {
+        eprintln!("prek {version} is inside 0.5.7 to 0.5.11: the test asserts the race");
+    } else if fixed.matches(&version) {
+        eprintln!("prek {version} is 0.5.12 or later: the test asserts the refusal");
+    } else {
         let rule = "cli:store-guard-daily-runs-prek-gc-once-a-week";
-        eprintln!(
-            "SKIP: prek {version} is outside 0.5.7 to 0.5.11, the range of the race that {rule} records; revisit that spec rule for prek {version}"
-        );
+        eprintln!("SKIP: prek {version} is before 0.5.7, outside the versions that {rule} records");
         return;
     }
-    eprintln!("prek {version} is inside 0.5.7 to 0.5.11: the test asserts the race");
     let sync = world.root().join("sync");
     std::fs::create_dir_all(&sync).unwrap();
 
-    // A hook repository with a script hook, tagged v1 and v2.
-    let hooks = world.repo("hooks", None);
-    std::fs::write(
-        hooks.join(".pre-commit-hooks.yaml"),
-        "- id: slow\n  name: slow\n  entry: slow.sh\n  language: script\n  pass_filenames: false\n  always_run: true\n",
-    )
-    .unwrap();
-    let script = format!(
-        "#!/bin/sh\nd=$(dirname \"$0\")\n: > '{started}'\ni=0\nwhile [ ! -e '{go}' ] && [ $i -lt 300 ]; do sleep 0.1; i=$((i+1)); done\ncat \"$d/payload\"\n",
-        started = sync.join("started").display(),
-        go = sync.join("go").display(),
-    );
-    std::fs::write(hooks.join("slow.sh"), script).unwrap();
-    let mut perms = std::fs::metadata(hooks.join("slow.sh"))
-        .unwrap()
-        .permissions();
-    std::os::unix::fs::PermissionsExt::set_mode(&mut perms, 0o755);
-    std::fs::set_permissions(hooks.join("slow.sh"), perms).unwrap();
-    std::fs::write(hooks.join("payload"), "v1\n").unwrap();
-    run_git(&hooks, &["add", "-A"]);
-    run_git(&hooks, &["commit", "-q", "-m", "v1"]);
-    run_git(&hooks, &["tag", "v1"]);
-    std::fs::write(hooks.join("payload"), "v2\n").unwrap();
-    run_git(&hooks, &["commit", "-q", "-am", "v2"]);
-    run_git(&hooks, &["tag", "v2"]);
+    let hooks = slow_hook_repo(&world, &sync);
 
     // A project that pins v1, and a hook run that waits inside the hook.
     let project = world.repo("project", None);
@@ -581,20 +559,71 @@ fn weekly_prek_gc_removes_the_clone_of_a_running_hook_whose_config_moved_its_rev
     let guard = world.guard(&project).arg("--daily").output().unwrap();
     assert_eq!(guard.status.code(), Some(0));
     let text = stderr_of(&guard);
-    assert!(text.contains("prek cache gc freed"), "{text}");
-    assert!(
-        !clones[0].exists(),
-        "gc removed the clone of the running hook"
-    );
+    if racy.matches(&version) {
+        assert!(text.contains("prek cache gc freed"), "{text}");
+        assert!(
+            !clones[0].exists(),
+            "gc removed the clone of the running hook"
+        );
+    } else {
+        assert!(
+            text.contains("exobrain store-guard: prek cache gc: error: Cache at")
+                && text.contains("is in use"),
+            "{text}"
+        );
+        assert!(clones[0].exists(), "gc kept the clone of the running hook");
+    }
 
     std::fs::write(sync.join("go"), "").unwrap();
     let out = run.wait_with_output().unwrap();
     let report = format!("{}{}", stdout_of(&out), stderr_of(&out));
-    assert!(!out.status.success(), "{report}");
-    assert!(
-        report.contains("payload: No such file or directory"),
-        "{report}"
+    if racy.matches(&version) {
+        assert!(!out.status.success(), "{report}");
+        assert!(
+            report.contains("payload: No such file or directory"),
+            "{report}"
+        );
+    } else {
+        // prek still fails the run, because the configuration changed during
+        // it, so the test judges the output and not the exit.
+        assert!(report.contains("payload of v1"), "{report}");
+        assert!(!report.contains("No such file or directory"), "{report}");
+    }
+}
+
+/// A hook repository with one script hook, tagged v1 and v2. The hook
+/// writes `sync/started`, waits up to 30 seconds for `sync/go`, and then
+/// prints the `payload` file of its clone.
+#[expect(
+    clippy::unwrap_used,
+    reason = "a fixture helper, where a broken fixture aborts the test"
+)]
+fn slow_hook_repo(world: &World, sync: &Path) -> std::path::PathBuf {
+    let hooks = world.repo("hooks", None);
+    std::fs::write(
+        hooks.join(".pre-commit-hooks.yaml"),
+        "- id: slow\n  name: slow\n  entry: slow.sh\n  language: script\n  pass_filenames: false\n  always_run: true\n",
+    )
+    .unwrap();
+    let script = format!(
+        "#!/bin/sh\nd=$(dirname \"$0\")\n: > '{started}'\ni=0\nwhile [ ! -e '{go}' ] && [ $i -lt 300 ]; do sleep 0.1; i=$((i+1)); done\ncat \"$d/payload\"\n",
+        started = sync.join("started").display(),
+        go = sync.join("go").display(),
     );
+    std::fs::write(hooks.join("slow.sh"), script).unwrap();
+    let mut perms = std::fs::metadata(hooks.join("slow.sh"))
+        .unwrap()
+        .permissions();
+    std::os::unix::fs::PermissionsExt::set_mode(&mut perms, 0o755);
+    std::fs::set_permissions(hooks.join("slow.sh"), perms).unwrap();
+    std::fs::write(hooks.join("payload"), "payload of v1\n").unwrap();
+    run_git(&hooks, &["add", "-A"]);
+    run_git(&hooks, &["commit", "-q", "-m", "v1"]);
+    run_git(&hooks, &["tag", "v1"]);
+    std::fs::write(hooks.join("payload"), "payload of v2\n").unwrap();
+    run_git(&hooks, &["commit", "-q", "-am", "v2"]);
+    run_git(&hooks, &["tag", "v2"]);
+    hooks
 }
 
 // cli:store-guard-daily-warns-about-a-large-build-folder

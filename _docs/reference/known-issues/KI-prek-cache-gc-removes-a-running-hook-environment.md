@@ -1,16 +1,16 @@
 ---
 upstream: https://github.com/j178/prek/issues/3066
-affects: prek cache gc while a prek hook run is in progress
+affects: prek cache gc while a prek hook run is in progress, on prek 0.5.7 to 0.5.11
 state: monitoring
 filing: filed
 workaround: none, a rerun of the failed hook run passes
-retire_when: a prek release keeps the store lock through the hook run, or teaches cache gc about live runs
-checked: 2026-11-23
+retire_when: the host runs prek 0.5.12 or later, the first release with the fix of prek PR 3068
+checked: 2026-11-26
 ---
 
 # prek cache gc removes the clone and environment of a hook that still runs
 
-prek 0.5.7 to 0.5.11. The last check on 2026-11-23 read prek 0.5.11 and the prek trunk at `a4f7dcf`. No release fixes the defect.
+prek 0.5.7 to 0.5.11. prek 0.5.12 fixes the defect with [PR 3068](https://github.com/j178/prek/pull/3068), commit `4b4f6d2`. The host runs prek 0.5.10 from nixpkgs `nixos-unstable`. On 2026-11-26, `nixos-unstable` held prek 0.5.10, the nixpkgs `master` held 0.5.11, and no nixpkgs pull request moved prek to 0.5.12. The record stays until the host runs 0.5.12.
 
 ## Symptom
 
@@ -29,7 +29,20 @@ Three parts act: the store lock, the hook run of `prek run`, and the sweep of `p
 
 The cause is that the lock covers the install and not the run. A triager first reads the failure as a broken hook repository. That reading is wrong, because a rerun installs the new `rev` and passes. The smallest fix holds a shared store lock through the last hook and lets `gc` take it exclusively.
 
-The upstream report reproduced the failure on prek 0.5.10 in 3 of 3 runs. The code path is the same in 0.5.7, 0.5.11, and the trunk at `a4f7dcf`. The local evidence is the test `weekly_prek_gc_removes_the_clone_of_a_running_hook_whose_config_moved_its_rev` in `crates/exobrain/tests/cmd_store_guard.rs`, which asserts the race.
+The upstream report reproduced the failure on prek 0.5.10 in 3 of 3 runs. The code path is the same in 0.5.7, 0.5.11, and the trunk at `a4f7dcf`. The local evidence is the test `weekly_prek_gc_during_a_hook_run_whose_config_moved_its_rev` in `crates/exobrain/tests/cmd_store_guard.rs`, which asserts the race on 0.5.7 to 0.5.11 and the refusal on 0.5.12 and later.
+
+## The fix in prek 0.5.12
+
+PR 3068 changes the lock of the store in `store.rs`, and `main.rs` picks the lock for each command.
+
+1. Every prek command that opens the store holds a shared lock on `<store>/.lock` until the command exits. A `prek run` holds it through its last hook.
+2. `prek run` takes a second lock, `<store>/.write.lock`, only while it clones and installs. A nested `prek run` in a hook can still install.
+3. `prek cache gc` and `prek cache clean` take `<store>/.lock` exclusively and do not wait. If any other prek command holds the store, they stop with `error: Cache at <store> is in use. Retry after other prek commands finish.` and exit 2.
+4. `prek cache gc --dry-run` takes only the write lock, and it removes nothing.
+
+The exclusive lock covers the whole sweep. The fix therefore covers both paths of the report: the clone and environment of a `rev`, and the `scratch/` folder. The reproduction of the report on the release binary of 0.5.12 printed the refusal, and the hook read its file. On the host prek 0.5.10, the same script removed the clone, and the hook failed.
+
+One path stays open. A prek before 0.5.12 holds no lock during its hooks. A `gc` of 0.5.12 on a store that a run of an older prek also uses can still remove the files of that run. On this host, one prek serves every store, so the path closes when the host prek reaches 0.5.12.
 
 ## Signal
 
