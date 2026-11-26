@@ -86,7 +86,7 @@ The encryption key of the gateway is then the only restore key. Without it, the 
 
 A gateway bounds what the agent can send. It does not decide what reaches the trunk, and it does not decide which actions a request authorizes. Two other owners hold those rules.
 
-- The forge holds the trunk. Branch protection and a separate bot identity for the agent let the forge refuse an update to the trunk from the agent, and let a reader tell the agent from a person.
+- The forge holds the trunk. Branch protection and a separate bot identity for the agent let the forge refuse an update to the trunk from the agent, and let a reader tell the agent from a person. [The authorization boundary](./authorization-boundary.md#the-forge-bounds-the-agent-identity) states the forge rules and why a gateway cannot hold them.
 - The instruction file holds the authorization boundary. [The authorization boundary](./authorization-boundary.md) states which actions a request authorizes.
 
 ## The residual risks
@@ -103,7 +103,7 @@ A loopback gateway serves every local process of the same user. That includes ho
 
 ### A token scope still allows its scope
 
-A token with write access to a repository can write to it through every route the allow list passes. The gateway narrows the routes, and the scope still bounds the rest. Give the token the smallest scope that the work needs.
+A token with write access to a repository can write to it through every route the allow list passes. The gateway narrows the routes, and the scope still bounds the rest. Give the token the smallest scope that the work needs. [The security baseline](../project-bootstrap/06-security-baseline.md#secrets-hygiene) states the token lifetime and its rotation.
 
 ### A shared desktop has escape sockets
 

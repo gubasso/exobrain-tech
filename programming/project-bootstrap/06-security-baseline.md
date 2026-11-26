@@ -12,6 +12,20 @@ Never commit secrets. Enforce it on three fronts:
 
 Prefer keyless auth (OIDC) wherever a workflow supports it, so there is no long-lived secret to leak.
 
+Where a token is needed, prefer one that a host program mints and that expires within hours. Rotate a long-lived key once a year, and at once on any suspicion of a leak. Rotate it by overlap:
+
+1. Add the new key.
+2. Make sure that the check passes with the new key.
+3. Remove the old key.
+
+A token that rotates itself needs three more guards:
+
+- The rotation writes the new token atomically to a persistent file that the sandbox denies. The program that uses the token reads that file on each request, so a rotation needs no restart.
+- A health check fails when the last good rotation is older than the rotation period allows, and it names the step that re-mints the token.
+- The operator's own client re-mints the token, never through the credential gateway of the agents.
+
+A project that agents push to protects its trunk on the forge against the agent identity. [The authorization boundary](../agent-integration/authorization-boundary.md#the-forge-bounds-the-agent-identity) states the rule.
+
 ## Dependency review & audit
 
 Track and vet dependencies:

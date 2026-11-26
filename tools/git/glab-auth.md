@@ -135,3 +135,60 @@ Then re-check step 4 (single helper, correct binary path) and step 5.
 ## How it works
 
 `glab auth git-credential` implements the [git credential helper protocol](https://git-scm.com/docs/gitcredentials). When git needs to authenticate an HTTPS remote, it calls the configured helper, which returns the token from `glab`'s store (keyring or `~/.config/glab-cli/config.yml`) — no prompt, no askpass. GitHub's `gh auth git-credential` uses the same mechanism; see [gh-auth.md](./gh-auth.md).
+
+## The identity for agents
+
+The runbook above logs in the operator. The agent identity never uses it: an agent holds no token and never runs `glab auth login`. A program on the host holds the token of the agent identity. [The authorization boundary](../../programming/agent-integration/authorization-boundary.md#the-forge-bounds-the-agent-identity) states why each purpose gets its own identity.
+
+The facts in this section come from the GitLab documentation for GitLab.com, read on 2026-11-25. One point is open, and it carries its label.
+
+### A group service account on Free
+
+The documentation states that project access tokens ([project tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/)) and group access tokens ([group tokens](https://docs.gitlab.com/user/group/settings/group_access_tokens/)) need Premium on GitLab.com. On Free, the agent identity is a group service account.
+
+The documentation states these facts about service accounts ([service accounts](https://docs.gitlab.com/user/profile/service_accounts/)):
+
+- They are available on Free, up to 100 for each top-level group on GitLab.com.
+- They use no seat.
+- They authenticate with a personal access token whose scopes the creator picks.
+- One created in a top-level group can be invited to any group or project on the instance.
+- One created in a subgroup reaches only that subgroup.
+
+Create the service account in an empty top-level group of its own, `<home-group>`. A subgroup home limits its reach to that subgroup. On GitLab.com, the Owner of a top-level group verifies their identity before they create service accounts.
+
+Invite the service account as Developer to each project that agents work on. Never make it a member of a group, because a group membership reaches every project of the group.
+
+Give its token the `api` and `write_repository` scopes. `glab mr create` needs `api`.
+
+Open point: no GitLab page states whether a service account can be invited to a project in a personal namespace. Until a test shows it, keep the projects that agents work on in a group.
+
+### The protections that keep a Developer off
+
+Protect the refs by role:
+
+| Ref                | Push              | Merge             | Create            |
+| ------------------ | ----------------- | ----------------- | ----------------- |
+| trunk              | "No one" (0)      | "Maintainer" (40) |                   |
+| release tags       |                   |                   | "Maintainer" (40) |
+| `release/*` branch | "Maintainer" (40) | "Maintainer" (40) |                   |
+
+A Developer then cannot push or merge the trunk or a `release/*` branch, and cannot create a release tag. No test on 2026-11-25 showed a Developer refused at a release tag or a `release/*` branch.
+
+A tag protection that only refuses an update or a deletion does not stop the creation of a tag. Set who can create a release tag in the tag protection.
+
+The documentation states that a protected CI/CD variable reaches merge request pipelines only when the project allows it ([CI/CD variables](https://docs.gitlab.com/ci/variables/)). Keep that setting off in a project that agents work on, so a merge request of the agent identity reads no protected variable.
+
+### The token lifetime and its rotation
+
+The documentation states these facts about the token ([personal access tokens API](https://docs.gitlab.com/api/personal_access_tokens/)):
+
+- A personal access token expires in 365 days at most.
+- `POST /personal_access_tokens/self/rotate` revokes the calling token and returns a new one. The new token expires after one week unless `expires_at` says otherwise.
+- A token with the `api` scope can rotate itself.
+- Any token can revoke itself.
+
+The gateway refuses the self-rotate and self-revoke endpoints for the agent, by the allow list rule of [credential gateways](../../programming/agent-integration/credential-gateways.md). An agent that rotates the token gets the new value, and an agent that revokes it stops every agent session. A program on the host rotates the token instead.
+
+The documentation states that the service accounts API rotates a service account token with the Owner role of the home group ([service accounts API](https://docs.gitlab.com/api/service_accounts/)). It also states that GitLab mails 60, 30, and 7 days before a token expires ([personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/)).
+
+[The security baseline](../../programming/project-bootstrap/06-security-baseline.md#secrets-hygiene) states how a token that rotates itself is stored and checked.

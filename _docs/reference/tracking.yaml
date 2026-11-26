@@ -421,3 +421,55 @@ tracked:
       - correct the page and its version, then advance last_checked
     dependents:
       - programming/agent-integration/credential-gateways.md
+  - id: gh-agent-identity
+    path: tools/git/gh-auth.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      The fine-grained token limit, the GitHub App permissions and token
+      lifetime, the App key limit, the plans that carry branch protection and
+      rulesets, and the ruleset rules are GitHub vendor behavior that changes
+      without notice.
+    revalidate:
+      - re-read the GitHub pages that the agent identity section of the page
+        cites
+      - correct the fine-grained token limit, the App permissions advice, the
+        installation token lifetime, the JWT recipe, the gh header behavior,
+        and the App key limit
+      - correct the plan list for personal accounts and for organizations,
+        and the ruleset rules, the release tag and release/** restrictions
+        included
+      - for the probe-only facts, read the rulesets API of a private
+        repository on a Free account and record its answer
+      - once a test proves it, record whether a pull request merge by a
+        non-bypass identity is refused under "Restrict updates"
+      - record whether a non-bypass identity can create a release-pattern
+        tag, and create or update a release/** branch
+      - correct the page, then advance last_checked
+    dependents:
+      - programming/agent-integration/authorization-boundary.md
+  - id: glab-agent-identity
+    path: tools/git/glab-auth.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      The Premium requirement of project and group tokens, the service account
+      limits and reach, the token lifetime, the rotate and revoke endpoints,
+      and the expiry mails are GitLab.com plan and token behavior that changes
+      without notice.
+    revalidate:
+      - re-read the GitLab pages that the agent identity section of the page
+        cites
+      - correct the Premium requirement of project and group tokens, the
+        service account limits and reach, the token lifetime, the rotate and
+        revoke endpoints, and the expiry mails
+      - correct the protection of the trunk, the release tags, and release/*
+        by role
+      - for the probe-only facts, once a test on a throwaway project shows
+        it, record whether a service account can be invited to a project in a
+        personal namespace
+      - record whether a Developer can create a release tag, or push or
+        merge a release/* branch
+      - correct the page, then advance last_checked
+    dependents:
+      - programming/agent-integration/authorization-boundary.md

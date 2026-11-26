@@ -1,7 +1,7 @@
 ---
 digest-of: programming/project-bootstrap
-last-synced: 2026-11-22
-token-estimate: 1480
+last-synced: 2026-11-25
+token-estimate: 1500
 ---
 
 # AGENTS
@@ -36,7 +36,7 @@ This tree is the source of truth for what a new project must have and in what or
   - 03 local dev environment: the Nix devShell and `.envrc`, the owner of each dependency, the host requirements, Rust builds, build output cleanup, and `.editorconfig`.
   - 04 quality gates: the formatter, the linter, git hooks in two stages, the hook scopes, the reference hook sets, the hook exception classes, generated files, and the task runner.
   - 05 CI: the hook stages repeated in the devshell, each step selected by stage and group, and the CI-only checks.
-  - 06 security baseline: secrets hygiene, dependency audit, and the OpenSSF Scorecard.
+  - 06 security baseline: secrets hygiene with short-lived tokens and rotation by overlap, the protected trunk of a project that agents push to, dependency audit, and the OpenSSF Scorecard.
 - Each dependency has one owner, the most specific file that declares it natively. The owners run in this order:
   1. The manifest of the stack: `pyproject.toml` with `uv.lock`, a PEP 723 block, `Cargo.toml`, or `package.json`.
   2. `.pre-commit-config.yaml`, for each hook tool that the hook runner can build.

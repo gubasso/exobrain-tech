@@ -6,11 +6,23 @@ An agent acts on what the request asks for and on nothing that merely follows fr
 
 An agent takes the actions the request names. A request to change code authorizes the file changes alone: no branch, no commit, no push, no merge, no release, and no message to anyone, unless the request names that action. An action does not become authorized because it is the next step of a workflow the agent knows.
 
-The boundary is prose in the instruction file, not a mechanism. The commit hooks and the forge's branch protections bound the end state: what a commit may contain, and what may reach the trunk. Neither one tells an agent from a person. A push the protections accept is a valid push whoever made it, so only the instruction the agent reads can say whether this agent was asked to make it. [Credential gateways](./credential-gateways.md) states how an agent reaches the forge without holding its credential, and why a gateway leaves the trunk to the forge.
+The boundary is prose in the instruction file, not a mechanism. The commit hooks and the forge bound the end state: what a commit can contain, and what can reach the trunk. Only the instruction that the agent reads says whether this agent was asked to take an action. The forge bounds what the agent identity can do, as the next section states. [Credential gateways](./credential-gateways.md) states how an agent reaches the forge without holding its credential.
+
+## The forge bounds the agent identity
+
+The operator, a release bot, and the agents each act at the forge as a separate identity. Each identity carries the minimum permissions of its purpose. With a shared identity, the forge cannot tell an agent from a person. With one identity per purpose, the forge can tell them apart and refuse the agent identity.
+
+An agent identity reaches only a repository whose trunk the forge protects against that identity. A repository that the forge cannot protect stays out of the reach of the agent identity. Agents commit there locally, and the operator pushes.
+
+Only the operator updates the trunk, and a rule at the forge enforces it. The rule lets only the operator update the trunk, create a release tag, or create or update a release branch. The release bot is the one other exception, for its own refs.
+
+A gateway cannot hold this rule. A git push goes through `git-receive-pack`, which carries the ref names in the request body and uses one path for every branch. A gateway that matches a method and a path cannot tell a push to the trunk from a push to a short-lived branch.
+
+[gh authentication](../../tools/git/gh-auth.md#the-identity-for-agents) and [glab authentication](../../tools/git/glab-auth.md#the-identity-for-agents) state the agent identity and the trunk rules of each forge.
 
 ## The cost the boundary carries
 
-The boundary makes the operator name each action. An operator who wants a whole run, from the change to the merge, types the same list at the start of every task: create the branch, commit, push, open the request, merge, prune. The list is long, it is the same every time, and a forgotten item stops the run halfway.
+The boundary makes the operator name each action. An operator who wants a whole run, from the change to the merge, types the same list at the start of every task: create the branch, commit, push, open the request, wait for the merge, prune. The list is long, it is the same every time, and a forgotten item stops the run halfway.
 
 That retyping is what wears a boundary down. An operator who tires of the list writes a standing permission into the instruction file, and the standing permission authorizes every task, including the ones the operator never meant to hand over. The fix is to make the list cheap to name, not to remove the need to name it.
 
@@ -37,15 +49,15 @@ A request that carries no term authorizes the file changes alone. That default i
 
 The ladder below is an example to adapt, not a fixed vocabulary. A project names its own terms and its own steps.
 
-| Term                    | What the operator authorizes by using it                                                                                                   |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `implement-and-request` | The file changes, then the branch, the commits, and the integration up to the point where a person decides. It stops before the merge.     |
-| `implement-and-merge`   | Everything `implement-and-request` names, then the integration itself, then the removal of the merged branch. It stops before the release. |
-| `full-implement`        | Everything `implement-and-merge` names, then the release, carried through to a published version.                                          |
+| Term                    | What the operator authorizes by using it                                                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `implement-and-request` | The file changes, then the branch, the commits, and the integration up to the point where the operator decides. It stops before the merge.                                      |
+| `implement-and-merge`   | Everything `implement-and-request` names, then the wait for the operator to merge, then the removal of the merged branch. It stops before the release.                          |
+| `full-implement`        | Everything `implement-and-merge` names, then the release request, then the wait for the operator to merge it, carried through to a published version that the release bot cuts. |
 
-A project that releases nothing carries the first two rows alone. A term must not name an action the project cannot take, because an agent that meets an impossible step improvises one.
+A project that releases nothing carries the first two rows alone. A term must not name an action the project cannot take, because an agent that meets an impossible step improvises one. An agent identity cannot update a protected trunk, so no term names an agent merge or an agent trunk push.
 
-An action in a term's list can take its form from an answer the project records. The integration step is one example. A project that integrates through the forge reads it as the push and the pull or merge request. A project that integrates locally reads it as the rebase onto the trunk and the separate trunk push. The term still names the action, and the recorded answer decides how the agent performs it, so one ladder serves both kinds of project.
+An action in a term's list can take its form from an answer the project records. The integration step is one example. A project that integrates through the forge reads it as the push of the branch and the pull or merge request, and the operator merges the request. A project that integrates locally reads it as the rebase onto the trunk, and the operator pushes the trunk. The term still names the action, and the recorded answer decides how the agent performs it, so one ladder serves both kinds of project.
 
 ## Making the file visible
 
@@ -59,7 +71,7 @@ The line names the glossary rather than importing it. An import loads with the f
 
 The glossary is not enforcement. A term widens what one request authorizes, and it does nothing else. It cannot stop an action, and an agent that ignores it meets no gate.
 
-The protections that hold are the trunk's: the required checks, the protected branch, and the merge rules that [trunk-based development](../../workflows/trunk-based-development.md) states. A project keeps those whether or not it lands a glossary, and the glossary never stands in for them.
+The protections that hold are the trunk's: the required checks, the protected branch, the merge rules that [trunk-based development](../../workflows/trunk-based-development.md) states, and the forge rule that keeps the agent identity off the trunk. A project keeps those whether or not it lands a glossary, and the glossary never stands in for them.
 
 ## See also
 

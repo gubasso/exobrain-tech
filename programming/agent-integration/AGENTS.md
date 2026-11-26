@@ -1,7 +1,7 @@
 ---
 digest-of: programming/agent-integration
 last-synced: 2026-11-25
-token-estimate: 2100
+token-estimate: 2200
 ---
 
 # AGENTS
@@ -22,6 +22,7 @@ How a project is built to be discovered, operated, and trusted by a coding agent
 - The root file is hand-authored rules and routing. Judgment has no generator. A per-directory digest is generated, carries frontmatter, and states no rule of its own.
 - Every sentence is loaded in every session, so routing beats restating. A subtree's rules go to its own file, reached by a plain pointer.
 - A request authorizes the actions it names, and a code change the file changes alone. A root glossary of compound terms, each a named list holding the one below, makes a run cheap to name. The root file lists the term names and points at it. The glossary enforces nothing.
+- One forge identity per purpose lets the forge refuse the agent identity. That identity reaches only a repository with a protected trunk, and only the operator updates the trunk, by a forge rule that no gateway can hold. A term names no agent merge or agent trunk push.
 
 ### Credential gateways
 
