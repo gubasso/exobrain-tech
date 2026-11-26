@@ -56,6 +56,24 @@ Owners: [Setup skill skeleton](./setup-skill-skeleton.md), [What the CLI owes a 
 
 Owner: [Skill security](./skill-security.md)
 
+## Credentials
+
+- [ ] The agent holds no credential, and a program on the host holds each one on loopback.
+- [ ] One-off work that needs the operator goes through a request that the operator runs.
+- [ ] No credential form relies on a mask that cannot carry it: Basic auth, ssh, and gpg go through a gateway or a host program.
+- [ ] No container or microVM is counted as a credential boundary.
+- [ ] Each upstream has its own gateway port, and the gateway builds the credential header itself.
+- [ ] The allow list matches method and path, refuses what the forge refuses too, and carries a reason and a source per entry.
+- [ ] A refusal answers 403 with a body that names the route, the refusing party, and the documentation.
+- [ ] The gateway runs with no admin API and no access log.
+- [ ] The client settings of the gateway live only in agent sessions.
+- [ ] A storage gateway encrypts on the host, and its key has an off-machine backup before the first copy.
+- [ ] The forge protects the trunk against a separate bot identity for the agent.
+- [ ] Every terminal remote-control socket is denied to the sandbox, with one host wrapper as the route.
+- [ ] Every code runner on loopback carries its own authentication or listens on a denied Unix socket.
+
+Owner: [Credential gateways](./credential-gateways.md)
+
 ## Distribution
 
 - [ ] One authored package, materialized into each root, with one owner per installed name.

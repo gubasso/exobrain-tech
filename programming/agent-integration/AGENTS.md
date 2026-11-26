@@ -1,7 +1,7 @@
 ---
 digest-of: programming/agent-integration
-last-synced: 2026-11-22
-token-estimate: 2000
+last-synced: 2026-11-25
+token-estimate: 2100
 ---
 
 # AGENTS
@@ -22,6 +22,11 @@ How a project is built to be discovered, operated, and trusted by a coding agent
 - The root file is hand-authored rules and routing. Judgment has no generator. A per-directory digest is generated, carries frontmatter, and states no rule of its own.
 - Every sentence is loaded in every session, so routing beats restating. A subtree's rules go to its own file, reached by a plain pointer.
 - A request authorizes the actions it names, and a code change the file changes alone. A root glossary of compound terms, each a named list holding the one below, makes a run cheap to name. The root file lists the term names and points at it. The glossary enforces nothing.
+
+### Credential gateways
+
+- An agent holds no credential. A program on the host holds each one on loopback, and one-off work goes to the operator as a request the operator runs. A mask carries only a header token, never Basic auth, ssh, or gpg, and a container or a microVM masks nothing.
+- The HTTP gateway builds the header, one port per upstream, with an allow list of method and path that carries a reason and a source per entry, a 403 that explains itself, and no admin API or access log. A code runner on loopback carries its own authentication or listens on a denied Unix socket.
 
 ### Skills and security
 
