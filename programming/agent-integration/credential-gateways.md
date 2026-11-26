@@ -26,6 +26,8 @@ A mask works only where the credential travels as plain text in a header, for ex
 
 A failed masked request fails closed. The real value never enters the sandbox, so the command that needed it fails, and nothing leaks.
 
+[Claude Code sandbox](../../tools/claude-code/sandbox.md) records one sandbox proxy that masks a credential, and how it reaches a loopback gateway by name and port.
+
 | Credential form             | Mask | HTTP gateway | Host program |
 | --------------------------- | ---- | ------------ | ------------ |
 | Bearer or token in a header | Yes  | Yes          | Yes          |
@@ -132,4 +134,5 @@ A code runner on loopback carries its own authentication, or it listens on a Uni
 - [The authorization boundary](./authorization-boundary.md): the actions a request authorizes, which no gateway decides.
 - [Skill security](./skill-security.md): no secret in a prompt, a log, an example, or a fixture.
 - [Caddy](../../infra/web-server/caddy.md): a loopback HTTP gateway in Caddy, with its client settings.
+- [Claude Code sandbox](../../tools/claude-code/sandbox.md): the sandbox network, the socket settings, and the credential mask of Claude Code.
 - [Sandbox isolation backends](../../infra/sandbox-isolation-backends/00-threat-model-and-principles.md): the isolation boundary and its threat model.

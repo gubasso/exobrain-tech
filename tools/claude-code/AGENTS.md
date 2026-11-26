@@ -1,14 +1,14 @@
 ---
 digest-of: tools/claude-code
-last-synced: 2026-09-14
-token-estimate: 420
+last-synced: 2026-11-25
+token-estimate: 690
 ---
 
 # AGENTS
 
 ## Scope
 
-Claude Code's own behavior, dated and sourced from that vendor's documentation, as adapters to the portable rules in `programming/agent-integration/`. Nothing here states a rule that holds for another runtime, and nothing here documents another product's skills or contracts.
+Claude Code's own behavior, dated and sourced from that vendor's documentation or from a dated probe, as adapters to the portable rules in `programming/agent-integration/`. Nothing here states a rule that holds for another runtime, and nothing here documents another product's skills or contracts.
 
 ## Key points
 
@@ -18,6 +18,15 @@ Claude Code's own behavior, dated and sourced from that vendor's documentation, 
 - The working directory and its ancestors load at launch. A `CLAUDE.md` below the working directory loads when Claude reads a file in that subtree. Files concatenate root-down, so the closest one is read last.
 - An `@import` expands when the file naming it loads, and its path resolves against that file rather than the working directory. Four hops maximum; an `@` inside code is text.
 - `.claude/rules/` is the path-scoped alternative: a rule with `paths` globs loads only against a matching file, and a rule without them loads at launch.
+
+### Sandbox (sandbox.md)
+
+- Each sandboxed command has its own network namespace on Linux, so it reaches a loopback gateway only through the proxy, never directly.
+- The sandbox forces `NO_PROXY` for `localhost` and `127.0.0.1`, so the gateway takes a hosts-file name plus a `127.0.0.1:<port>` entry in `allowedDomains`. Other ports stay refused.
+- `strictAllowlist: true` is the only setting that refuses an unlisted host in every permission mode.
+- `allowAllUnixSockets` opens every Unix socket on Linux, so each escape socket needs a `denyRead` entry.
+- A mask needs `tlsTerminate`, swaps a `fake_value_<uuid>` sentinel only in plain-text headers, and cannot carry Basic auth.
+- The page separates documented facts from probe results, and the probe results bind only the tested host and release.
 
 ### Skills (skills.md)
 
@@ -29,5 +38,5 @@ Claude Code's own behavior, dated and sourced from that vendor's documentation, 
 
 ## Maintenance notes
 
-- Both pages carry a verified date and the vendor URL they were read from. Re-read the source before changing a fact, and advance the date in the same edit.
+- Each page carries a verified date and the vendor URLs it was read from. Re-read the source before changing a fact, and advance the date in the same edit.
 - A rule that turns out to hold for any runtime belongs in the shelf chapter the page links, and the page keeps only this vendor's version of it.

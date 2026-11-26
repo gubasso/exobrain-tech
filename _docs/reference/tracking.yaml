@@ -321,3 +321,28 @@ tracked:
       - correct the page and its versions, then advance last_checked
     dependents:
       - programming/agent-integration/credential-gateways.md
+  - id: claude-code-sandbox
+    path: tools/claude-code/sandbox.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      The sandbox network, the credential mask, and the Unix socket behavior
+      of Claude Code are release-bound behavior of one vendor. Several facts
+      come only from probes of one release on one host, and the Linux issues
+      that bind the design are unverified on that release.
+    revalidate:
+      - re-read https://code.claude.com/docs/en/sandboxing
+      - re-read https://code.claude.com/docs/en/settings-reference
+      - correct each documented setting - allowedDomains, strictAllowlist,
+        allowAllUnixSockets, excludedCommands, and sandbox.credentials
+      - for the probe-only facts, rerun in a sandboxed command of the current
+        release - a direct loopback connection, the forced NO_PROXY against
+        one from the settings env, the hosts-file name with and without
+        127.0.0.1:<port> in allowedDomains, a port outside the allow list, an
+        unlisted host without strictAllowlist, a read of /proc/<pid>/environ,
+        and an excludedCommands entry under CLAUDE_CODE_SUBPROCESS_ENV_SCRUB
+      - check the state of anthropics/claude-code issues 95752, 52525, 86855,
+        and 95135
+      - correct the page and its version, then advance last_checked
+    dependents:
+      - programming/agent-integration/credential-gateways.md
