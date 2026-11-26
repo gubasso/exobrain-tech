@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1](https://github.com/gubasso/exobrain-tech/compare/v2.0.0...v2.0.1) - 2026-11-26
+
+### Fixed
+
+- *(store-guard)* retry a gc that prek refuses as in use
+
 ## [2.0.0](https://github.com/gubasso/exobrain-tech/compare/v1.2.0...v2.0.0) - 2026-11-22
 
 ### Added
