@@ -463,6 +463,43 @@ fn weekly_prek_gc_error_keeps_the_exit_code() {
 }
 
 #[test]
+fn weekly_prek_gc_retries_the_next_day_when_the_store_is_in_use() {
+    let world = World::new();
+    let repo = world.repo("repo", None);
+    world.stub_prek();
+    let refused = |world: &World| {
+        let out = world
+            .guard(&repo)
+            .arg("--daily")
+            .env("STUB_PREK_IN_USE", "1")
+            .output()
+            .unwrap();
+        assert_eq!(out.status.code(), Some(0));
+        assert!(out.stderr.is_empty(), "{}", stderr_of(&out));
+    };
+
+    // A first refusal leaves no weekly stamp.
+    refused(&world);
+    assert_eq!(world.gc_calls(), 1);
+    assert!(world.gc_stamps().is_empty(), "a refused gc leaves no stamp");
+
+    // The next day, gc runs and stamps the store.
+    world.clear_daily();
+    world.guard(&repo).arg("--daily").assert().code(0);
+    assert_eq!(world.gc_calls(), 2, "the next day tries again");
+    let stamps = world.gc_stamps();
+    assert_eq!(stamps.len(), 1);
+
+    // A refusal a week later keeps the stamp of the last gc that ran.
+    let old = days_ago(8);
+    std::fs::write(&stamps[0], &old).unwrap();
+    world.clear_daily();
+    refused(&world);
+    assert_eq!(world.gc_calls(), 3);
+    assert_eq!(std::fs::read_to_string(&stamps[0]).unwrap(), old);
+}
+
+#[test]
 fn weekly_prek_gc_runs_once_across_concurrent_checkouts() {
     let world = World::new();
     let first_repo = world.repo("first", None);
@@ -490,8 +527,8 @@ fn weekly_prek_gc_runs_once_across_concurrent_checkouts() {
 /// lock, and `gc` keeps only what the configurations on disk pin. When the
 /// configuration moves its `rev` during a run, the weekly `gc` removes the
 /// clone that the running hook reads, and that hook run fails. On prek
-/// 0.5.12 and later, the run holds a shared lock on the store, and `gc`
-/// refuses while the hook runs.
+/// 0.5.12 and later, the run holds a shared lock on the store, `gc`
+/// refuses while the hook runs, and the guard leaves no weekly stamp.
 ///
 /// For a version before 0.5.7 the test prints the version and the reason on
 /// stderr and returns, and `.config/nextest.toml` shows that output.
@@ -567,10 +604,10 @@ fn weekly_prek_gc_during_a_hook_run_whose_config_moved_its_rev() {
         );
     } else {
         assert!(
-            text.contains("exobrain store-guard: prek cache gc: error: Cache at")
-                && text.contains("is in use"),
-            "{text}"
+            !text.contains("prek cache gc"),
+            "a refused gc is silent: {text}"
         );
+        assert!(world.gc_stamps().is_empty(), "a refused gc leaves no stamp");
         assert!(clones[0].exists(), "gc kept the clone of the running hook");
     }
 

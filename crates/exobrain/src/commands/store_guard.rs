@@ -238,6 +238,7 @@ fn prek_gc(dir: &Path) {
     if !stamp::due_weekly(&stamp_path) {
         return;
     }
+    let previous = std::fs::read_to_string(&stamp_path).ok();
     if let Err(e) = stamp::write_stamp(&stamp_path) {
         output::note(&format!(
             "exobrain store-guard: cannot write {} ({e}); prek cache gc skipped",
@@ -255,13 +256,47 @@ fn prek_gc(dir: &Path) {
             }
         }
         Ok(None) => {}
+        // prek 0.5.12 and later refuse gc while another prek command uses
+        // the store. That gc did not run, so the next day tries again.
+        Err(e) if e.is_cache_in_use() => {
+            if let Err(e) = stamp::restore(&stamp_path, previous.as_deref()) {
+                output::note(&format!(
+                    "exobrain store-guard: cannot restore {} ({e})",
+                    stamp_path.display()
+                ));
+            }
+        }
         Err(e) => output::note(&format!("exobrain store-guard: prek cache gc: {e}")),
+    }
+}
+
+/// A `prek` run that exited with a failure.
+#[derive(Debug)]
+struct PrekFailure {
+    /// The exit code, or `None` when a signal ended the run or it never
+    /// started.
+    code: Option<i32>,
+    /// The first non-empty line of its stderr, or the exit status.
+    reason: String,
+}
+
+impl PrekFailure {
+    /// Whether prek refused because another prek command holds the store:
+    /// exit code 2 and the message `Cache at <store> is in use`.
+    fn is_cache_in_use(&self) -> bool {
+        self.code == Some(2) && self.reason.contains("is in use")
+    }
+}
+
+impl std::fmt::Display for PrekFailure {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.reason)
     }
 }
 
 /// The store that `prek cache dir` resolves, or `None` without `prek` on
 /// `PATH`.
-fn prek_store() -> Result<Option<PathBuf>, String> {
+fn prek_store() -> Result<Option<PathBuf>, PrekFailure> {
     Ok(prek(&["cache", "dir"])?
         .map(|stdout| PathBuf::from(stdout.trim()))
         .filter(|store| !store.as_os_str().is_empty()))
@@ -269,7 +304,7 @@ fn prek_store() -> Result<Option<PathBuf>, String> {
 
 /// Run `prek` with `args` and return its stdout, or `None` when `prek` is
 /// not on `PATH`.
-fn prek(args: &[&str]) -> Result<Option<String>, String> {
+fn prek(args: &[&str]) -> Result<Option<String>, PrekFailure> {
     let output = match Command::new("prek")
         .args(args)
         .env("PREK_COLOR", "never")
@@ -277,7 +312,12 @@ fn prek(args: &[&str]) -> Result<Option<String>, String> {
     {
         Ok(output) => output,
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(None),
-        Err(e) => return Err(e.to_string()),
+        Err(e) => {
+            return Err(PrekFailure {
+                code: None,
+                reason: e.to_string(),
+            });
+        }
     };
     if output.status.success() {
         return Ok(Some(String::from_utf8_lossy(&output.stdout).into_owned()));
@@ -288,7 +328,10 @@ fn prek(args: &[&str]) -> Result<Option<String>, String> {
         .map(str::trim)
         .find(|line| !line.is_empty())
         .map_or_else(|| output.status.to_string(), str::to_owned);
-    Err(reason)
+    Err(PrekFailure {
+        code: output.status.code(),
+        reason,
+    })
 }
 
 /// The freed size of a `prek cache gc` report: the last parenthesized

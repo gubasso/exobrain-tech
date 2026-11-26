@@ -128,7 +128,7 @@ When `gc` frees space, the guard prints one line on stderr with the freed size. 
 
 On prek 0.5.7 to 0.5.11, `gc` can remove the files of a running hook. `prek run` holds the store lock only while it prepares and installs the hooks, and the hooks run outside the lock. `gc` keeps only the clones and environments that the configurations on disk pin at that moment. It also deletes the `scratch/` folder of the store, where a hook with a shell entry writes its script as it starts. If a configuration moves a `rev` while its hooks run, a `gc` in that window removes the clone and the environment of the old `rev`. The effect is one failed hook run. A rerun installs the new `rev` and passes, and nothing else is lost. [`KI-prek-cache-gc-removes-a-running-hook-environment`](../reference/known-issues/KI-prek-cache-gc-removes-a-running-hook-environment.md) records the defect and the prek release that retires it.
 
-On prek 0.5.12 and later, every prek command holds a shared lock on the store until it exits, and `gc` refuses to start while another command holds it. The refusal is a `gc` failure, so the guard prints it on one line and exits 0. The weekly stamp already landed, so the next `gc` of that store waits for the next week.
+On prek 0.5.12 and later, every prek command holds a shared lock on the store until it exits. While another command holds it, `gc` refuses with exit code 2 and the message `Cache at <store> is in use`. That `gc` did not run, so the guard prints nothing. It also puts back the weekly stamp that it replaced, or removes the stamp when there was none before. The daily stamp holds the next try of that checkout to the next day.
 
 #### Scenario: A configuration moves its rev during a hook run
 

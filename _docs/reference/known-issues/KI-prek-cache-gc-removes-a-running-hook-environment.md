@@ -44,6 +44,8 @@ The exclusive lock covers the whole sweep. The fix therefore covers both paths o
 
 One path stays open. A prek before 0.5.12 holds no lock during its hooks. A `gc` of 0.5.12 on a store that a run of an older prek also uses can still remove the files of that run. On this host, one prek serves every store, so the path closes when the host prek reaches 0.5.12.
 
+`exobrain store-guard --daily` treats that refusal as a `gc` that did not run. It prints nothing, keeps no weekly stamp for it, and tries again the next day, by `cli:store-guard-daily-runs-prek-gc-once-a-week`.
+
 ## Signal
 
 A hook fails with `No such file or directory` on a path under `<store>/repos/` or `<store>/scratch/`, and a `prek cache gc` ran at the same time. `exobrain store-guard --daily` runs that `gc` once a week.

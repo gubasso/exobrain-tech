@@ -98,6 +98,26 @@ pub fn due_weekly(path: &Path) -> bool {
 ///
 /// Any I/O failure; on failure the temporary file is removed.
 pub fn write_stamp(path: &Path) -> std::io::Result<()> {
+    write_atomic(path, &format!("{}\n", today()))
+}
+
+/// Put back the stamp at `path` that a run replaced: write `previous`, or
+/// remove the stamp when there was none.
+///
+/// # Errors
+///
+/// A state folder that cannot hold the write or the removal.
+pub fn restore(path: &Path, previous: Option<&str>) -> std::io::Result<()> {
+    previous.map_or_else(
+        || match fs::remove_file(path) {
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+            other => other,
+        },
+        |text| write_atomic(path, text),
+    )
+}
+
+fn write_atomic(path: &Path, text: &str) -> std::io::Result<()> {
     let name = path
         .file_name()
         .ok_or_else(|| std::io::Error::other("the stamp path has no file name"))?;
@@ -106,7 +126,7 @@ pub fn write_stamp(path: &Path) -> std::io::Result<()> {
     let tmp = path.with_file_name(tmp_name);
     let written = fs::File::create(&tmp)
         .and_then(|mut file| {
-            file.write_all(format!("{}\n", today()).as_bytes())
+            file.write_all(text.as_bytes())
                 .and_then(|()| file.sync_all())
         })
         .and_then(|()| fs::rename(&tmp, path));

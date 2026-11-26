@@ -62,8 +62,9 @@ printf '}\n'
 
 /// The stub `prek`: `cache dir` prints the store of the world, and
 /// `cache gc` logs each call beside itself, sleeps for `STUB_PREK_SLEEP`
-/// seconds, fails when `STUB_PREK_FAIL` is set, and prints `STUB_PREK_OUT`
-/// or a report that frees 12.5 MiB.
+/// seconds, fails when `STUB_PREK_FAIL` is set, refuses as prek 0.5.12
+/// does for a store in use when `STUB_PREK_IN_USE` is set, and prints
+/// `STUB_PREK_OUT` or a report that frees 12.5 MiB.
 const STUB_PREK: &str = r#"#!/bin/sh
 case "$1 $2" in
 "cache dir") echo "@STORE@" ;;
@@ -71,6 +72,10 @@ case "$1 $2" in
     echo call >> "$(dirname "$0")/prek.log"
     sleep "${STUB_PREK_SLEEP:-0}"
     if [ -n "${STUB_PREK_FAIL:-}" ]; then echo "error: stub gc failure" >&2; exit 2; fi
+    if [ -n "${STUB_PREK_IN_USE:-}" ]; then
+        echo "error: Cache at \`@STORE@\` is in use. Retry after other prek commands finish." >&2
+        exit 2
+    fi
     printf '%s\n' "${STUB_PREK_OUT-Removed 1 repo, 2 hook envs (12.5MiB)}"
     ;;
 *) echo "stub prek: unexpected $*" >&2; exit 3 ;;
