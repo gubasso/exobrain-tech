@@ -156,7 +156,7 @@ ls | myeggs
 
 > key value variable
 
-[How to Use Key-Value Dictionary in Shell Script](https://fedingo.com/how-to-use-key-value-dictionary-in-shell-script/)
+[How to Use Key-Value Dictionary in Shell Script](https://web.archive.org/web/20250322185130/https://fedingo.com/how-to-use-key-value-dictionary-in-shell-script/)
 
 - `declare` inside function is local variable
 
@@ -250,7 +250,7 @@ find ${datapath} -name "${csv_fileext}.part*" | sort | \
 
 ## Parameter Expansion
 
-[How to Get Filename from Path in Shell Script](https://fedingo.com/how-to-get-filename-from-path-in-shell-script/)
+[How to Get Filename from Path in Shell Script](https://web.archive.org/web/20240124011204/https://fedingo.com/how-to-get-filename-from-path-in-shell-script/)
 
 - has simple examples
 
