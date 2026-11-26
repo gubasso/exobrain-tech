@@ -123,7 +123,7 @@ Sources:
 - [Bash exit status](https://www.gnu.org/s/bash/manual/html_node/Exit-Status.html)
 - [veithen.io: SIGTERM propagation in wrappers](https://veithen.io/2014/11/16/sigterm-propagation.html)
 - [Baeldung: SIGINT propagation parent/child](https://www.baeldung.com/linux/signal-propagation)
-- [R. Koucha: SIGWINCH & PTY handling](http://www.rkoucha.fr/tech_corner/sigwinch.html)
+- [R. Koucha: SIGWINCH & PTY handling](https://web.archive.org/web/20260513121417/http://rkoucha.fr/tech_corner/sigwinch.html)
 - [Wikipedia: Exit status](https://en.wikipedia.org/wiki/Exit_status)
 - [sudo manpage](https://www.sudo.ws/docs/man/sudo.man/)
 
@@ -419,7 +419,7 @@ DO NOT
 - veithen.io: SIGTERM propagation in wrappers —
   <https://veithen.io/2014/11/16/sigterm-propagation.html>
 - Baeldung: SIGINT propagation parent/child — <https://www.baeldung.com/linux/signal-propagation>
-- R. Koucha: SIGWINCH & PTY handling — <http://www.rkoucha.fr/tech_corner/sigwinch.html>
+- R. Koucha: SIGWINCH & PTY handling — <https://web.archive.org/web/20260513121417/http://rkoucha.fr/tech_corner/sigwinch.html>
 - sudo manpage — <https://www.sudo.ws/docs/man/sudo.man/>
 
 ### Subcommand / plugin conventions
