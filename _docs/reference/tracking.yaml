@@ -288,3 +288,36 @@ tracked:
     dependents:
       - _docs/specs/SPEC-cli.md
       - crates/exobrain/tests/cmd_store_guard.rs
+
+  - id: caddy-credential-gateway
+    path: infra/web-server/caddy.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      The admin API, the bind default, the access-log redaction, and the
+      header_up rules of Caddy, and the gh, glab, and git client settings, are
+      release-bound behavior of those programs. The real-token git push to
+      both forges and authenticated GitHub GraphQL through the gateway are
+      still open checks.
+    revalidate:
+      - re-read https://caddyserver.com/docs/api
+      - re-read https://caddyserver.com/docs/caddyfile/directives/bind
+      - re-read https://caddyserver.com/docs/caddyfile/options
+      - re-read https://caddyserver.com/docs/caddyfile/directives/log
+      - re-read https://caddyserver.com/docs/caddyfile/directives/reverse_proxy
+      - re-read https://cli.github.com/manual/gh_help_environment
+      - correct the admin API, the bind directive and the default_bind option,
+        the log directive, the header_up rules, and the gh environment
+        variables
+      - with the current releases against a local fixture, rerun the
+        probe-only facts - the listeners in ss -ltnp of a site address alone
+        and of the same site with default_bind 127.0.0.1, the access log of a
+        request that carries Private-Token, the admin API on its default port,
+        gh over HTTPS to a loopback gateway, glab with and without
+        api_protocol http, and a git push with a Bearer header to GitHub and to
+        GitLab
+      - move a pending check into a passed class only when a real-token run
+        proves it
+      - correct the page and its versions, then advance last_checked
+    dependents:
+      - programming/agent-integration/credential-gateways.md

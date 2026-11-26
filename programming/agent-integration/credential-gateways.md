@@ -46,6 +46,8 @@ The HTTP gateway is one case of the rule. It is a reverse proxy on loopback that
 
 The HTTP gateway carries no ssh and no gpg. Those stay with the general rule: a program on the host holds the key and does the operation, and the agent asks that program for the result.
 
+[Caddy](../../infra/web-server/caddy.md) records one implementation of this gateway, with the client settings of gh, glab, and git and the limits of its evidence.
+
 ### Its shape
 
 - One port per upstream, so a route can never send a credential to the wrong service.
@@ -129,4 +131,5 @@ A code runner on loopback carries its own authentication, or it listens on a Uni
 
 - [The authorization boundary](./authorization-boundary.md): the actions a request authorizes, which no gateway decides.
 - [Skill security](./skill-security.md): no secret in a prompt, a log, an example, or a fixture.
+- [Caddy](../../infra/web-server/caddy.md): a loopback HTTP gateway in Caddy, with its client settings.
 - [Sandbox isolation backends](../../infra/sandbox-isolation-backends/00-threat-model-and-principles.md): the isolation boundary and its threat model.
