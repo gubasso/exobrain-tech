@@ -1,6 +1,6 @@
 [package]
 name = "exobrain"
-version = "2.0.0"
+version = "2.0.1"
 description = "The exobrain-tech CLI: guards that enforce the rules of the knowledge base."
 edition.workspace = true
 rust-version.workspace = true
