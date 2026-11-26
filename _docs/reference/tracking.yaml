@@ -400,3 +400,24 @@ tracked:
         unproven unless a probe proves it, then advance last_checked
     dependents:
       - programming/agent-integration/credential-gateways.md
+  - id: kitty-remote-control
+    path: systems/security/kitty-remote-control.md
+    last_checked: 2026-11-25
+    cadence_days: 90
+    why: >-
+      The "Allow remote control?" dialog that a wrong password opens, its
+      default answer, and the remote control modes are release-bound behavior
+      of kitty. The dialog facts come from the source and a probe of one
+      release.
+    revalidate:
+      - re-read https://sw.kovidgoyal.net/kitty/remote-control/
+      - re-read https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.remote_control_password
+      - correct remote_control_password, allow_remote_control, and the
+        socket-only mode
+      - for the probe-only facts, read the password check in kitty/boss.py and
+        kitty/remote_control.py of the current release, and rerun a command
+        with a wrong non-empty password against a test kitty to see whether
+        the dialog opens and which answer it defaults to
+      - correct the page and its version, then advance last_checked
+    dependents:
+      - programming/agent-integration/credential-gateways.md

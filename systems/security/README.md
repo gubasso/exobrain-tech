@@ -5,6 +5,7 @@
 <!--TOC-->
 
 - [General](#general)
+- [Pages](#pages)
 - [References](#references)
 
 <!--TOC-->
@@ -18,6 +19,10 @@ For example you can generate a 128 character password (must all be on one line) 
 ```sh
 openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
 ```
+
+## Pages
+
+- [kitty remote control](./kitty-remote-control.md): why a kitty password is no guard against an agent, and the `socket-only` guard with a denied socket.
 
 ## References
 

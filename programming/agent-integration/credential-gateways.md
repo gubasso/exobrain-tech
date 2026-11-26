@@ -109,6 +109,8 @@ A token with write access to a repository can write to it through every route th
 
 A terminal remote-control socket that an agent can reach is an escape from the sandbox. A command sent through it runs in a terminal outside the sandbox. The guard is a socket that the sandbox denies, with one wrapper on the host as the only route to it. The same holds for every other desktop socket that starts a process or sends keys.
 
+[kitty remote control](../../systems/security/kitty-remote-control.md) records why a kitty password is no guard, and the kitty settings of the guard.
+
 ## Code runners on an open loopback
 
 An open loopback lets an agent reach every code runner that listens on it. A debugger, a notebook kernel, or a development server with a code console runs whatever the agent sends, outside the sandbox. This is the one real escape route of a sandbox whose loopback is open to reach a gateway.
@@ -140,5 +142,6 @@ A code runner on loopback carries its own authentication, or it listens on a Uni
 - [Caddy](../../infra/web-server/caddy.md): a loopback HTTP gateway in Caddy, with its client settings.
 - [Claude Code sandbox](../../tools/claude-code/sandbox.md): the sandbox network, the socket settings, and the credential mask of Claude Code.
 - [Codex sandbox](../../tools/codex/sandbox.md): the permission profile, the network proxy, and the deny forms of Codex.
+- [kitty remote control](../../systems/security/kitty-remote-control.md): the kitty remote control modes, the password dialog, and the `socket-only` guard.
 - [git-annex through a gateway](../../tools/git/git-annex-through-a-gateway.md): git-annex against an rclone storage gateway, with the crypt settings and the restore key.
 - [Sandbox isolation backends](../../infra/sandbox-isolation-backends/00-threat-model-and-principles.md): the isolation boundary and its threat model.
