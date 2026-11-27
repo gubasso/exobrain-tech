@@ -12,6 +12,19 @@ A Nix flake devShell for each project pins the toolchain and the dev tools decla
 
 A recipe or a script reaches the flake of its own project through `.` or a `git+file://` reference. It never uses a `path:` reference, which copies the ignored files of the tree into the store each time a file changes. [Nix gotcha 1](../../languages/nix/05-tooling-gotchas-resources.md#gotchas-that-bite-newcomers) explains the fetcher types.
 
+## Developer-specific values
+
+A value that only one developer sets, such as the ID of a bot or the path of a key file, lives outside the checkout. The file is `~/.config/project-env/<repo>.env`, in the shell syntax that direnv sources. `<repo>` is the folder name of the repository, written literally in `.envrc`, so every worktree shares one file. The `.envrc` of the project sources it with these lines:
+
+```bash
+project_env=$HOME/.config/project-env/<repo>.env
+if [ -r "$project_env" ]; then source_env "$project_env"; fi
+```
+
+direnv checks the allow only for `.envrc`, not for a file that `.envrc` sources. A sourced file inside the checkout is untracked, so a sandboxed agent can create one in a new worktree, and the shell of the developer loads it at the next `cd`. A folder outside the projects folder, which the sandbox denies, closes that path. The `if` test skips a file that the shell cannot read and exits 0, so a sandboxed `direnv exec` still loads the devshell. The [direnv stdlib](https://direnv.net/man/direnv-stdlib.1.html) documents `source_env`, which also watches the file for changes. A tracked template in the repository names the variables, with empty values.
+
+The file holds values that the developer chooses. A credential belongs behind a credential gateway, not in an environment variable.
+
 ## Who owns each dependency
 
 Each dependency of a project has exactly one owner: the most specific file that declares that kind of dependency natively. What uses the dependency picks the owner. To place a dependency, ask which file is the most specific one that can declare it natively. The owners run from the most specific to the most general:

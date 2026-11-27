@@ -1,6 +1,11 @@
 # shellcheck shell=bash
-# Developer-specific values for the release-kit bot setup steps. Gitignored:
-# this file names a private key on this machine and is never committed.
+# Developer-specific values for the release-kit bot setup steps. Copy this
+# file to ~/.config/project-env/exobrain-tech.env, outside the checkout, and
+# fill it in there. The .envrc of every worktree sources that one file. It
+# names a private key on this machine, so it never enters the repository.
+#
+# The file holds values that the operator chooses. A credential belongs
+# behind a credential gateway, not in an environment variable.
 #
 # Both are empty on purpose — rk setup guards on its own variables, so an
 # unfilled value fails loudly instead of reaching the GitHub API.
