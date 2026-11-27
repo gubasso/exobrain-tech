@@ -15,7 +15,7 @@
     # Freshness is the manager's own verb: nix flake update spec-driven-docs,
     # with the tag moved to match, followed by sdd upgrade.
     spec-driven-docs = {
-      url = "github:gubasso/spec-driven-docs/v0.19.1";
+      url = "github:gubasso/spec-driven-docs/v0.20.1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.spec-driven-docs.follows = "";
       inputs.release-kit.follows = "release-kit";
