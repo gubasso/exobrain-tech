@@ -1,10 +1,10 @@
 {
   "schema": "rk.setup-proof/1",
-  "rk_version": "0.9.15",
-  "verified_at": "2026-11-13T15:52:44Z",
+  "rk_version": "0.12.1",
+  "verified_at": "2026-11-28T19:01:29Z",
   "subject": {
     "target": {
-      "bot_app_id": "",
+      "bot_app_id": "4383445",
       "capabilities": "{\"nix_packaging\":true,\"reporting_policy\":false,\"scorecard\":false,\"workflow_guards\":false}",
       "forge": "github",
       "host": "github.com",
@@ -12,16 +12,19 @@
       "line_prefix": "release/",
       "lines_ruleset": "release-lines",
       "profile": "{\"technologies\":[\"rust\"],\"forge\":\"github\",\"release\":{\"mode\":\"automatic\",\"driver\":\"rust\",\"style\":\"trunk\",\"line_prefix\":\"release/\",\"registry\":\"none\"}}",
-      "protection": "{\"trunk_ruleset\":\"master-protection\",\"safety_ruleset\":\"master-safety\",\"tag_ruleset\":\"release-tags\",\"lines_ruleset\":\"release-lines\",\"title_check\":\"pr-title\",\"tag_pattern\":\"refs/tags/v*\",\"bypass_actors\":[\"repository-admin\"],\"allowed_merge_methods\":[\"rebase\"],\"strict_required_status_checks\":true,\"owned_trunk_rules\":[\"deletion\",\"non_fast_forward\",\"pull_request\",\"required_status_checks\",\"required_linear_history\"],\"required_approving_review_count\":0,\"dismiss_stale_reviews_on_push\":false,\"require_code_owner_review\":false,\"require_last_push_approval\":false,\"github\":{\"squash_title_source\":\"PR_TITLE\",\"squash_body_source\":\"PR_BODY\"},\"gitlab\":{\"merge_method\":\"ff\",\"squash_option\":\"never\",\"squash_commit_template\":\"%{title}\",\"push_access_level\":40,\"merge_access_level\":40}}",
+      "protection": "{\"trunk_ruleset\":\"master-protection\",\"safety_ruleset\":\"master-safety\",\"tag_ruleset\":\"release-tags\",\"lines_ruleset\":\"release-lines\",\"updates_ruleset\":null,\"tag_creation_ruleset\":\"release-tag-creation\",\"release_branch_ruleset\":\"release-branches\",\"release_environment\":\"release\",\"title_check\":\"pr-title\",\"tag_pattern\":\"refs/tags/v*\",\"bypass_actors\":[\"repository-admin\"],\"allowed_merge_methods\":[\"rebase\"],\"strict_required_status_checks\":true,\"owned_trunk_rules\":[\"deletion\",\"non_fast_forward\",\"pull_request\",\"required_status_checks\",\"required_linear_history\"],\"required_approving_review_count\":0,\"dismiss_stale_reviews_on_push\":false,\"require_code_owner_review\":false,\"require_last_push_approval\":false,\"github\":{\"squash_title_source\":\"PR_TITLE\",\"squash_body_source\":\"PR_BODY\"},\"gitlab\":{\"merge_method\":\"ff\",\"squash_option\":\"never\",\"squash_commit_template\":\"%{title}\",\"push_access_level\":40,\"merge_access_level\":40}}",
+      "release_branch_ruleset": "release-branches",
       "release_lines": "false",
       "repo": "gubasso/exobrain-tech",
       "required_check": "test",
       "retired_branches": "[\"main\",\"develop\"]",
       "safety_ruleset": "master-safety",
+      "tag_creation_ruleset": "release-tag-creation",
       "tag_ruleset": "release-tags",
       "title_check": "pr-commits",
       "trunk": "master",
-      "trunk_ruleset": "master-protection"
+      "trunk_ruleset": "master-protection",
+      "updates_ruleset": "master-updates"
     },
     "steps": [
       {
@@ -107,6 +110,12 @@
         "stance": "applicable"
       },
       {
+        "name": "protect-release-branches",
+        "proves": "only the release actors create or update a release line or a release request branch",
+        "prerequisites": [],
+        "stance": "applicable"
+      },
+      {
         "name": "merge-on-order",
         "proves": "no release request stands armed to merge itself",
         "prerequisites": [],
@@ -127,7 +136,7 @@
       }
     ]
   },
-  "subject_digest": "23553a34e242e926659960756ffe37d937c2d241c7df5313b601653068173426",
+  "subject_digest": "98392c38a882714a2db44c26bf19c3608e15274e8269e7d2453140533b1f21db",
   "steps": [
     {
       "name": "package-check",
@@ -159,7 +168,8 @@
     },
     {
       "name": "bot-secrets",
-      "state": "satisfied"
+      "state": "satisfied-with-limitation",
+      "limitation": "RELEASE_BOT_APP_ID and RELEASE_BOT_APP_PRIVATE_KEY remain repository secrets until master runs the upgraded release workflow; push it, then rk setup --apply removes them"
     },
     {
       "name": "forge-version",
@@ -178,12 +188,17 @@
       "state": "skipped"
     },
     {
+      "name": "protect-release-branches",
+      "state": "satisfied"
+    },
+    {
       "name": "merge-on-order",
       "state": "satisfied"
     },
     {
       "name": "protections-check",
-      "state": "satisfied"
+      "state": "satisfied-with-limitation",
+      "limitation": "bot-secrets: RELEASE_BOT_APP_ID and RELEASE_BOT_APP_PRIVATE_KEY remain repository secrets until master runs the upgraded release workflow; push it, then rk setup --apply removes them"
     },
     {
       "name": "private-vulnerability-reporting",

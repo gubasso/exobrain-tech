@@ -36,6 +36,8 @@ required_check = "test" # P: the check the trunk ruleset requires before a relea
 retired_branches = ["main", "develop"] # N: long-lived branches retired by the trunk
 release_lines = false # N: true runs protect-release-lines in a full apply
 excluded_steps = {} # N: step = why this target does not run it; `rk setup check` reports it and does not judge it
+[setup.bot]
+app_id = "4383445" # N: public App identifier; private credentials stay outside this file
 [protection]
 trunk_ruleset = "master-protection" # N: trunk ruleset name
 safety_ruleset = "master-safety" # N: safety ruleset name, bypassed by nobody
@@ -58,7 +60,7 @@ merge_method = "ff" # F: invariant, linear history
 squash_option = "never" # F: invariant, the squash git.merge_form names: always under squash, never under rebase
 squash_commit_template = "%{title}" # F: invariant, references title and description
 push_access_level = 40 # F: invariant, the level git.integration names
-merge_access_level = 40 # F: floor thirty
+merge_access_level = 40 # F: floor forty
 
 [security]
 contact = "" # P: one line naming who receives a report when the forge channel is unavailable; empty keeps the forge's own wording

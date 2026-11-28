@@ -28,7 +28,7 @@
     # `flake-edit update release-kit`, run from a shell, moves the tag and the
     # lock together.
     release-kit = {
-      url = "github:gubasso/release-kit/v0.10.3";
+      url = "github:gubasso/release-kit/v0.12.1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.release-kit.follows = "";
       inputs.spec-driven-docs.follows = "spec-driven-docs";
